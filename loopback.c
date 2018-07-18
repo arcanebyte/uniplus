@@ -4,6 +4,8 @@
 / This application can be used to determine functioning
 / serial ports on an Apple Lisa running UniPlus+ UNIX.
 /
+/ Works with Tecmar and Sapient Technologies Quad-Port Cards
+/
 / Author: James Denton (james.denton@outlook.com)
 / Twitter: @jimmdenton, @arcanebyte
 */
