@@ -5,6 +5,7 @@
 / serial ports on an Apple Lisa running UniPlus+ UNIX.
 /
 / Works with Tecmar and Sapient Technologies Quad-Port Cards
+/ May behave funny on tty0a and tty0b (built-in)
 /
 / Author: James Denton (james.denton@outlook.com)
 / Twitter: @jimmdenton, @arcanebyte
