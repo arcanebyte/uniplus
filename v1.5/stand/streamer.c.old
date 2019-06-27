@@ -1,0 +1,249 @@
+/*
+ * (C) 1984 UniSoft Corp. of Berkeley CA
+ *
+ * UniPlus Source Code. This program is proprietary
+ * with Unisoft Corporation and is not to be reproduced
+ * or used in any manner except as authorized in
+ * writing by Unisoft.
+ */
+
+#undef DEBUG
+extern short maxrow;
+extern short maxcol;
+extern short adm_row, adm_col;
+extern short row_ofs, col_ofs;
+extern short winscrl;
+
+#include "sys/types.h"
+#include "sys/param.h"
+#include "sys/inode.h"
+#include "saio.h"
+
+char getsbuf[50];
+char filename[50];
+
+#define MEMADDR ((char *)0x20000)
+
+main()
+{
+		/* This sets up the terminal emulator to use only the
+		 * window created by the boot ROM.
+		 */
+	maxrow = 13;
+	maxcol = 54;
+	row_ofs = 8;
+	col_ofs =25;
+	winscrl = 1;
+	adm_row = adm_col = 0;
+
+	printf("     Streaming Tape Utility\n\n");
+start:
+	printf("Type 'b' to backup disk to tape,\n");
+	printf("     'r' to restore disk from tape,\n");
+/*	printf("     'f' to format (Sunol only), or\n");*/
+	printf("     'c' to copy this diskette\n");
+retry:
+	printf(": ");
+	gets(getsbuf);
+	switch (getsbuf[0]) {
+	case 'B': case 'b':
+		backup();
+		goto start;
+	case 'R': case 'r':
+		restore();
+		goto start;
+	case 'F': case 'f':
+		format();
+		goto start;
+	case 'C': case 'c':
+		copyboot();
+		goto start;
+	default:
+		printf("'%c' is invalid - please try again\n",
+			getsbuf[0]);
+		goto retry;
+	}
+}
+
+backup()
+{
+	int dfp;
+	register char *p;
+	register struct streamer *bp;
+	register dbn, dblks, tblks, nblks;
+
+from:
+	do {
+		printf("Enter device to backup: "); gets(filename);
+		if (filename[0] == 0)
+			goto from;
+		dfp = open(filename, 2);
+	} while (dfp < 0);
+	for (p = filename; *p && *p != '('; p++) ;
+	*p = '\0';
+	for (bp = streamer; bp->dv_name; bp++) {	/* find streamer info */
+		if (match(filename, bp->dv_name))
+			goto gotit;
+	}
+	printf("%s invalid\nValid tape devices are\n", filename);
+	for (bp = streamer; bp->dv_name; bp++)
+		printf("  %s\n", bp->dv_name);
+	close(dfp);
+	goto from;
+gotit:
+	if ((dblks = (*bp->szdisk)(dfp)) < 0) {
+		*p = '(';
+		printf("can't find size of disk \"%s\"\n", filename);
+		goto out;
+	}
+	if ((tblks = (*bp->sztape)(dfp)) < 0) {
+		printf("can't find size of tape \"%s\"\n", filename);
+		goto out;
+	}
+	printf("%d blocks on disk, %d blocks on tape\n", dblks, tblks);
+	dbn = 0;
+	while (dblks > 0) {
+		nblks = (dblks<tblks) ? dblks : tblks;
+		printf("copying %d blocks from disk\n", nblks);
+		if ((*bp->totape)(dfp, dbn, nblks) < 0)
+			goto out;
+		dblks -= nblks;
+		dbn += nblks;
+		if (dblks) {
+			printf("%d blocks left to copy\n", dblks);
+			printf("change tapes and hit return ");
+			gets(getsbuf);
+		}
+	}
+	printf("backup done: last disk block = %d\n", dbn-1);
+out:	close(dfp);
+}
+
+restore()
+{
+	int dfp;
+	register char *p;
+	register struct streamer *bp;
+	register dbn, dblks, tblks, nblks;
+
+to:
+	do {
+		printf("Enter device to restore to: "); gets(filename);
+		if (filename[0] == 0)
+			goto to;
+		dfp = open(filename, 2);
+	} while (dfp < 0);
+	for (p = filename; *p && *p != '('; p++) ;
+	*p = '\0';
+	for (bp = streamer; bp->dv_name; bp++) {	/* find streamer info */
+		if (match(filename, bp->dv_name))
+			goto gotit;
+	}
+	printf("%s invalid\nValid tape devices are\n", filename);
+	for (bp = streamer; bp->dv_name; bp++)
+		printf("  %s\n", bp->dv_name);
+	close(dfp);
+	goto to;
+gotit:
+	if ((dblks = (*bp->szdisk)(dfp)) < 0) {
+		*p = '(';
+		printf("can't find size of disk \"%s\"\n", filename);
+		return;
+	}
+	if ((tblks = (*bp->sztape)(dfp)) < 0) {
+		printf("can't find size of tape \"%s\"\n", filename);
+		return;
+	}
+	printf("%d blocks on disk, %d blocks on tape\n", dblks, tblks);
+	dbn = 0;
+	while (dblks > 0) {
+		nblks = (dblks<tblks) ? dblks : tblks;
+		printf("copying %d blocks to disk\n", nblks);
+		if ((*bp->frtape)(dfp, dbn, nblks) < 0)
+			return;
+		dblks -= nblks;
+		dbn += nblks;
+		if (dblks) {
+			printf("%d blocks left to copy\n", dblks);
+			printf("change tapes and hit return ");
+			gets(getsbuf);
+		}
+	}
+	printf("restore done: last disk block = %d\n", dbn-1);
+}
+
+format()
+{
+	printf("formatting not implemented yet\n");
+}
+
+copyboot()
+{
+	register i, bn;
+	int fp;
+	register char *cp;
+	char *file = "sn(0,0)";
+
+        if ((fp = open(file,2)) <= 0) {
+		printf("Failed to open Sony\n");
+		while(1);
+	}
+	bn = 0;
+	cp = MEMADDR;
+	for (i=0; i<NBLKS+1; i++) {	/* read this program from disk */
+		lseek(fp, (off_t)(bn++ *BSIZE), 0);
+		if ((read(fp,cp,BSIZE)) != BSIZE) {
+			printf("READ ERROR\n");
+			while (1);
+		}
+		cp += BSIZE;
+	}
+again:
+	iob[fp-3].i_bblk = 0;
+	close(fp);
+	if (eject(0))
+		while(1);
+	printf("Insert diskette, then type return. ");
+	gets(getsbuf);
+	for (i=0; i<0xC0000; i++)	;
+        if ((fp = open(file,2)) <= 0) {
+		printf("Failed to open Sony\n");
+		while(1);
+	}
+	iob[fp-3].i_bblk = BOOTDISK;	/* flag to write boot header for bn 0 */
+	bn = 0;
+	cp = MEMADDR;
+	lseek(fp, (off_t)0, 0);		/* ignores write without this extra 1 */
+	if ((write(fp,cp,BSIZE)) != BSIZE) {
+		printf("WRITE ERROR\n");
+		while (1);
+	}
+	for (i=0; i<NBLKS+1; i++) {	/* write both programs to disk */
+		lseek(fp, (off_t)(bn++ *BSIZE), 0);
+		if (write(fp,cp,BSIZE) != BSIZE) {
+			printf("WRITE ERROR\n");
+			while (1);
+		}
+		cp += BSIZE;
+	}
+	printf("Do you want to continue copying? ('y' or 'n') ");
+	gets(getsbuf);
+	if (getsbuf[0] != 'n')
+		goto again;
+	iob[fp-3].i_bblk = 0;
+	close(fp);
+}
+
+static
+match(s1,s2)
+register char *s1,*s2;
+{
+	for (;;) {
+		if (*s1 != *s2)
+			return(0);
+		if (*s1++ && *s2++)
+			continue;
+		else
+			return(1);
+	}
+}

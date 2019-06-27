@@ -1,0 +1,652 @@
+3d2
+< 
+9d7
+< #include "sys/config.h"
+22d19
+< #include "net/if_ether.h"
+24a22,28
+> #define bswap(x)	(((((int)(x))>>8)&0xff)|((((int)(x))&0xff)<<8))
+> struct	eb_header {
+> 	u_char	eb_dhost[6];
+> 	u_char	eb_shost[6];
+> 	u_short	eb_type;
+> };
+> 
+118a123,173
+> /* stuff for apple */
+> #include <sys/pport.h>
+> #include <sys/cops.h>
+> #include <sys/d_profile.h>
+> #include <sys/profile.h>
+> 
+> #define	RC	0xa8		/* read cmd */
+> #define	WC	0xa0		/* write cmd */
+> #define	RD	0xb8		/* read data */
+> #define WD	0xb0		/* write data */
+> #define INPUT	0x00		/* ddra input */
+> #define	OUTPUT	0xFF		/* ddra output */
+> 
+> /* sometime, put the parallel port data somewhere besides the in disk driver */
+> extern struct device_d *pro_da[];
+> 
+> /* setup a register to write to it */
+> #define ebwr_setup(dp, regno) \
+> 	((dp)->d_irb = WC, \
+> 	(dp)->d_ddra = OUTPUT, \
+> 	(dp)->d_ira = regno, \
+> 	((dp)->d_irb = WD))
+> 
+> /* setup a register to read from it */
+> #define ebrd_setup(dp, regno) \
+> 	((dp)->d_irb = WC, \
+> 	(dp)->d_ddra = OUTPUT, \
+> 	(dp)->d_ira = (regno), \
+> 	(dp)->d_irb = RD, \
+> 	(dp)->d_ddra = INPUT)
+> 
+> /* write a register */
+> #define ebwr_reg(dp, regno, byte) \
+> 	((dp)->d_irb = WC, \
+> 	(dp)->d_ddra = OUTPUT, \
+> 	(dp)->d_ira = (regno), \
+> 	(dp)->d_irb = WD, \
+> 	(dp)->d_ira = (byte))
+> 
+> /* read a register */
+> #define ebrd_reg(dp, regno) \
+> 	((dp)->d_irb = WC, \
+> 	(dp)->d_ddra = OUTPUT, \
+> 	(dp)->d_ira = (regno), \
+> 	(dp)->d_irb = RD, \
+> 	(dp)->d_ddra = INPUT, \
+> 	((dp)->d_ira & 0xff))
+> 
+> /* ebportreset - reset port to normal state after xmit command */
+> #define ebportreset(dp) ((dp)->d_irb = RC, (dp)->d_ddra = INPUT)
+> 
+139a195
+> /*
+140a197
+> */
+152,154c209
+< 	struct	arpcom es_ac;		/* common Ethernet structures */
+< #define	es_if	es_ac.ac_if		/* network-visible interface */
+< #define	es_enaddr es_ac.ac_enaddr	/* hardware Ethernet address */
+---
+> 	struct	ifnet es_if;		/* network-visible interface */
+155a211
+> 	u_char	es_enaddr[6];		/* board's ethernet address */
+157a214,216
+> /* set to 1 to talk to old vax 4.1a bswaped code; to 0 for fixed vax code */
+> short oldvax = 0;
+> 
+164,166d222
+< /* set low 3 bytes to, eg, DEC manuf. number for us to pretend to be DEC */
+< long eb_masq = 0;
+< 
+177a234
+> 	register struct device_d *dp =  pro_da[pport];
+183c240
+< 	ifp->if_net = md->ui_flags & 0xFF000000;
+---
+> 	ifp->if_net = md->ui_flags;
+185c242,245
+< 	if (!appleinit(pport))
+---
+> #ifdef LATER
+> 	if (!iocheck((caddr_t)addr)) {
+> printf("\n  **Could not find eb%d; am not initializing network device...**\n",
+> 			ifp->if_unit);
+186a247,250
+> 	}
+> #endif
+> 
+> 	appleinit(pport);
+191,201c255,257
+< 	ebwr_reg(pport, EB_BBPCLEAR, 0);	/* reset bus-buffer pointer */
+< 	ebrd_setup(pport, EB_PROM);		/* setup for read from prom */
+< 	ebrd_data(pport, es->es_enaddr, 6);
+< 	/* hack to change the manufacturer */
+< 	if (eb_masq) {
+< 		char *mp;
+< 
+< 		mp =(char *)&eb_masq;
+< 		mp++;
+< 		bcopy(mp, es->es_enaddr, 3);
+< 	}
+---
+> 	ebwr_reg(dp, EB_BBPCLEAR, 0);	/* reset bus-buffer pointer */
+> 	ebrd_setup(dp, EB_PROM);		/* setup for read from prom */
+> 	ebrd_data(dp, es->es_enaddr, 6);
+215a272,273
+> 	ifp->if_host[0] = ((es->es_enaddr[3]&0xff)<<16) |
+> 	    ((es->es_enaddr[4]&0xff)<<8) | (es->es_enaddr[5]&0xff);
+218,220c276
+< 	/*
+< 	sin->sin_addr = arpmyaddr((struct arpcom *)0);
+< 	*/
+---
+> 	sin->sin_addr = if_makeaddr((u_long)ifp->if_net, (u_long)ifp->if_host[0]);
+222,224c278,281
+< 	/* this is a way to set addresses for now (without an ioctl()) */
+< 	sin->sin_addr.s_addr = (u_long)md->ui_flags;
+< 	ebsetaddr(ifp, sin);
+---
+> 	sin = (struct sockaddr_in *)&ifp->if_broadaddr;
+> 	sin->sin_family = AF_INET;
+> 	sin->sin_addr = if_makeaddr((u_long)ifp->if_net, (u_long)INADDR_ANY);
+> 	ifp->if_flags = IFF_BROADCAST;
+230d286
+< 
+244,246c300,301
+< 	register struct ifnet *ifp = &es->es_if;
+< 	register struct sockaddr_in *sin;
+< 	register pport;
+---
+> 	register pport = (int) ebinfo[unit]->ui_addr;
+> 	register struct device_d *dp =  pro_da[pport];
+250,255c305
+< 	sin = (struct sockaddr_in *)&ifp->if_addr;
+< 	if (sin->sin_addr.s_addr == 0)		/* address still unknown */
+< 	    return;
+< 	if ((es->es_if.if_flags & IFF_RUNNING) == 0) {
+< 	    pport = (int) ebinfo[unit]->ui_addr;
+< 	    s = splimp();
+---
+> 	s = splimp();
+257,259c307,309
+< 	    /* reset EDLC chip by toggeling reset bit */
+< 	    ebwr_reg(pport, EB_AUXCSR, EB_EDLCRES);
+< 	    ebwr_reg(pport, EB_AUXCSR, 0);
+---
+> 	/* reset EDLC chip by toggeling reset bit */
+> 	ebwr_reg(dp, EB_AUXCSR, EB_EDLCRES);
+> 	ebwr_reg(dp, EB_AUXCSR, 0);
+261,266c311,316
+< 	    /* Initialize the address RAM */
+< 	    ebwr_reg(pport, EB_BBPCLEAR, 0);	/* reset bus-buffer pointer */
+< 	    ebrd_setup(pport, EB_PROM);
+< 	    ebrd_data(pport, ebuf, 6);
+< 	    for (i = 0; i < 6; i++)
+< 		    ebwr_reg(pport, EB_ACTADDR0+i, ebuf[i]);
+---
+> 	/* Initialize the address RAM */
+> 	ebwr_reg(dp, EB_BBPCLEAR, 0);	/* reset bus-buffer pointer */
+> 	ebrd_setup(dp, EB_PROM);
+> 	ebrd_data(dp, ebuf, 6);
+> 	for (i = 0; i < 6; i++)
+> 	    	ebwr_reg(dp, EB_ACTADDR0+i, ebuf[i]);
+268,278c318,325
+< 	    /* Hang receive buffers and start any pending writes.  */
+< 	    ebwr_reg(pport, EB_RCVCMD, EB_RCVNORM);	/* normal bits */
+< 	    ebwr_reg(pport, EB_AUXCSR, (EB_RBASW|EB_RBBSW|EB_SYSEI));
+< 	    es->es_oactive = 0;
+< 	    es->es_if.if_flags |= IFF_UP|IFF_RUNNING;
+< 	    if (es->es_if.if_snd.ifq_head)
+< 		    ebstart(unit);
+< 	    ebok = pport;
+< 	    ebpoll(pport);
+< 	    splx(s);
+< 	}
+---
+> 	/* Hang receive buffers and start any pending writes.  */
+> 	ebwr_reg(dp, EB_RCVCMD, EB_RCVNORM);		/* normal bits */
+> 	ebwr_reg(dp, EB_AUXCSR, (EB_RBBSW|EB_RBASW|EB_SYSEI));
+> 	es->es_oactive = 0;
+> 	es->es_if.if_flags |= IFF_UP;
+> 	if (es->es_if.if_snd.ifq_head)
+> 		ebstart(unit);
+> 	splx(s);
+280,281c327
+< 	arpattach(&es->es_ac);
+< 	arpwhohas(&es->es_ac, &sin->sin_addr);
+---
+> 	ebok++;
+297c343,344
+< 	register int pport;
+---
+> 	register int pport = (int)ebinfo[unit]->ui_addr;
+> 	register struct device_d *dp =  pro_da[pport];
+299d345
+< 	register unsigned char csr;
+302d347
+< 	pport = (int)ebinfo[unit]->ui_addr;
+312,315c357,359
+< 	ebput(pport, m);
+< 	ebwr_reg(pport, EB_XCSR, (EB_EIEOF|EB_EI16COLL));
+< 	csr = ebrd_reg(pport, EB_AUXCSR) & EB_IMASK;
+< 	ebwr_reg(pport, EB_AUXCSR, csr | (EB_SYSEI|EB_XBUFSW));
+---
+> 	ebput(dp, m);
+> 	ebwr_reg(dp, EB_XCSR, (EB_EIEOF|EB_EI16COLL));
+> 	ebwr_reg(dp, EB_AUXCSR, (EB_SYSEI|EB_XBUFSW));
+322,326d365
+< int bbuf;
+< int abuf;
+< int bbabuf;
+< int abbbuf;
+< int nopkt;
+339,340c378,380
+< 	register bits = 0;
+< 	register unsigned char csr, xcsr;
+---
+> 	register struct device_d *dp =  pro_da[pport];
+> 	register unsigned char csr;
+> 	register bits;
+341a382
+> 	register something;
+344a386,389
+> 	if (!ebok)
+> 		return;
+> again:
+> 	something = 0;
+347,348c392,393
+< 	    csr = ebrd_reg(pport, EB_AUXCSR);
+< again:
+---
+> 
+> 	    csr = ebrd_reg(dp, EB_AUXCSR);
+353,355c398,400
+< 		    bbuf++;
+< 		    ebread(es, pport, EB_RCVBUFB);
+< 		    bits |= (EB_RBBSW|EB_SYSEI);
+---
+> 		    something++;
+> 		    ebread(es, dp, EB_RCVBUFB);
+> 		    bits = (EB_RBBSW|EB_SYSEI);
+361,363c406,408
+< 		    abuf++;
+< 		    ebread(es, pport, EB_RCVBUFA);
+< 		    bits |= (EB_RBASW|EB_SYSEI);
+---
+> 		    something++;
+> 		    ebread(es, dp, EB_RCVBUFA);
+> 		    bits = (EB_RBASW|EB_SYSEI);
+368,371c413,416
+< 		    bbabuf++;
+< 		    ebread(es, pport, EB_RCVBUFB);
+< 		    ebread(es, pport, EB_RCVBUFA);
+< 		    bits |= (EB_RBBSW|EB_RBASW|EB_SYSEI);
+---
+> 		    something++;
+> 		    ebread(es, dp, EB_RCVBUFB);
+> 		    ebread(es, dp, EB_RCVBUFA);
+> 		    bits = (EB_RBBSW|EB_RBASW|EB_SYSEI);
+376,379c421,424
+< 		    abbbuf++;
+< 		    ebread(es, pport, EB_RCVBUFA);
+< 		    ebread(es, pport, EB_RCVBUFB);
+< 		    bits |= (EB_RBBSW|EB_RBASW|EB_SYSEI);
+---
+> 		    something++;
+> 		    ebread(es, dp, EB_RCVBUFA);
+> 		    ebread(es, dp, EB_RCVBUFB);
+> 		    bits = (EB_RBBSW|EB_RBASW|EB_SYSEI);
+385,386c430
+< 		    nopkt++;
+< 		    bits |= (EB_RBBSW|EB_RBASW|EB_SYSEI);
+---
+> 		    bits = (EB_RBBSW|EB_RBASW|EB_SYSEI);
+393,395c437,438
+< 	    xcsr = ebrd_reg(pport, EB_AUXCSR);
+< 	    if (xcsr != csr) {
+< 		    csr = xcsr;
+---
+> 	    if (something) {
+> 		    ebwr_reg(dp, EB_AUXCSR, (int)((csr|bits)&EB_IMASK));
+398d440
+< 	    ebwr_reg(pport, EB_AUXCSR, (int)((csr|bits)&EB_IMASK));
+404c446
+< 			    csr = ebrd_reg(pport, EB_XCSR);
+---
+> 			    csr = ebrd_reg(dp, EB_XCSR);
+406c448
+< 				    csr = ebrd_reg(pport, EB_XCSR);
+---
+> 				    csr = ebrd_reg(dp, EB_XCSR);
+414c456
+< 				    ebwr_reg(pport, EB_COLLCNTR, 0);
+---
+> 				    ebwr_reg(dp, EB_COLLCNTR, 0);
+426c468
+< 	    ebportreset(pport);		/* clear pport */
+---
+> 	    ebportreset(dp);		/* clear pport */
+430c472
+< ebread(es, pport, buf)
+---
+> ebread(es, dp, buf)
+432c474
+< 	register int pport;
+---
+> 	register struct device_d *dp;
+435c477
+< 	register struct ether_header *eb;
+---
+> 	register struct eb_header *eb;
+441a484,485
+> /*
+> int i;
+442a487,497
+> printf("ebr.");
+> eb = (struct eb_header *)(ebbuf + EBRDOFF);
+> printf("s:");
+> for (i = 0; i < 6; i++)
+>     printf("%x.",eb->eb_shost[i]&0xff);
+> printf("  ");
+> printf("d:");
+> for (i = 0; i < 6; i++)
+>     printf("%x.",eb->eb_dhost[i]&0xff);
+> */
+> 
+444,445c499,500
+< 	ebwr_reg(pport, EB_BBPCLEAR, 0);	/* clear bus buffer pointer */
+< 	byte1 = ebrd_reg(pport, buf);		/* first byte of buffer */
+---
+> 	ebwr_reg(dp, EB_BBPCLEAR, 0);	/* clear bus buffer pointer */
+> 	byte1 = ebrd_reg(dp, buf);		/* first byte of buffer */
+450c505
+< 	byte2 = ebrd_reg(pport, buf);		/* second byte of buffer */
+---
+> 	byte2 = ebrd_reg(dp, buf);		/* second byte of buffer */
+454,455c509,510
+< 	ebrd_setup(pport, buf);
+< 	ebrd_data(pport, ebrbuf, eboff);
+---
+> 	ebrd_setup(dp, buf);
+> 	ebrd_data(dp, ebrbuf, eboff);
+464,465c519,520
+< 	len = eboff - sizeof (struct ether_header);
+< 	eb = (struct ether_header *)ebrbuf;
+---
+> 	len = eboff - sizeof (struct eb_header);
+> 	eb = (struct eb_header *)ebrbuf;
+466a522,523
+> 	if (oldvax)
+> 		eb->eb_type = bswap(eb->eb_type);
+468,470c525,527
+< 	if (eb->ether_type >= EBPUP_TRAIL &&
+< 	    eb->ether_type < EBPUP_TRAIL+EBPUP_NTRAILER) {
+< 		off = (eb->ether_type - EBPUP_TRAIL) * 512;
+---
+> 	if (eb->eb_type >= EBPUP_TRAIL &&
+> 	    eb->eb_type < EBPUP_TRAIL+EBPUP_NTRAILER) {
+> 		off = (eb->eb_type - EBPUP_TRAIL) * 512;
+473c530,532
+< 		eb->ether_type = *ebdataaddr(eb, off, u_short *);
+---
+> 		eb->eb_type = *ebdataaddr(eb, off, u_short *);
+> 		if (oldvax)
+> 		    eb->eb_type = bswap(eb->eb_type);
+474a534,535
+> 		if (oldvax)
+> 		    resid = bswap(resid);
+496,497c557
+< 	x = spl6();
+< 	switch (eb->ether_type) {
+---
+> 	switch (eb->eb_type) {
+504,508d563
+< 
+< 	case ETHERPUP_ARPTYPE:
+< 		arpinput(&es->es_ac, m);
+< 		splx(x);
+< 		return;
+512d566
+< 		splx(x);
+515a570
+> 	x = spl6();
+541,543c596
+< 	int type, s, error;
+< 	u_char edst[6];
+< 	struct in_addr idst;
+---
+> 	int type, dest, s, error;
+546c599
+< 	register struct ether_header *eb;
+---
+> 	register struct eb_header *eb;
+555,560c608,616
+< 		idst = ((struct sockaddr_in *)dst)->sin_addr;
+< 		if (!arpresolve(&es->es_ac, m, &idst, edst))
+< 			return (0);	/* if not yet resolved */
+< 		if (in_lnaof(idst) == INADDR_ANY)
+< 			mcopy = m_copy(m, 0, (int)M_COPYALL);
+< 		type = EBPUP_IPTYPE;
+---
+> 		dest = ((struct sockaddr_in *)dst)->sin_addr.s_addr;
+> 		if ((dest &~ 0xff000000) == 0)
+> 			mcopy = m_copy(m, 0, (int)(M_COPYALL));
+> 		else if (dest == ((struct sockaddr_in *)&es->es_if.if_addr)->
+> 		    sin_addr.s_addr) {
+> 			mcopy = m;
+> 			goto gotlocal;
+> 		}
+> 		type = (oldvax ? bswap(EBPUP_IPTYPE) : (EBPUP_IPTYPE));
+564,569d619
+< 	case AF_UNSPEC:
+< 		eb = (struct ether_header *)dst->sa_data;
+< 		bcopy((caddr_t)eb->ether_dhost, (caddr_t)edst, sizeof (edst));
+< 		type = eb->ether_type;
+< 		goto gottype;
+< 
+583c633
+< 	    MMINOFF + sizeof (struct ether_header) > m->m_off) {
+---
+> 	    MMINOFF + sizeof (struct eb_header) > m->m_off) {
+591c641
+< 		m->m_len = sizeof (struct ether_header);
+---
+> 		m->m_len = sizeof (struct eb_header);
+593,594c643,644
+< 		m->m_off -= sizeof (struct ether_header);
+< 		m->m_len += sizeof (struct ether_header);
+---
+> 		m->m_off -= sizeof (struct eb_header);
+> 		m->m_len += sizeof (struct eb_header);
+596,599c646,661
+< 	eb = mtod(m, struct ether_header *);
+< 	bcopy((caddr_t)edst, (caddr_t)eb->ether_dhost, sizeof (edst));
+< 	eb->ether_type = htons((u_short)type);
+< 	bcopy((caddr_t)es->es_enaddr, (caddr_t)eb->ether_shost, 6);
+---
+> 	eb = mtod(m, struct eb_header *);
+> 	for (i=0; i<6; i++)
+> 		eb->eb_shost[i] = es->es_enaddr[i];
+> 	if ((dest &~ 0xff000000) == 0) {
+> 		/* broadcast address */
+> 		for (i=0; i<6; i++)
+> 			eb->eb_dhost[i] = 0xff;
+> 	} else {
+> 		eb->eb_dhost[0] = es->es_enaddr[0];
+> 		eb->eb_dhost[1] = es->es_enaddr[1];
+> 		eb->eb_dhost[2] = es->es_enaddr[2];
+> 		eb->eb_dhost[3] = (dest>>16) & 0xff;
+> 		eb->eb_dhost[4] = (dest>>8) & 0xff;
+> 		eb->eb_dhost[5] = dest & 0xff;
+> 	}
+> 	eb->eb_type = type;
+631,632c693,694
+< ebput(pport, m)
+< 	register int pport;
+---
+> ebput(dp, m)
+> 	register struct device_d *dp;
+652,654c714,716
+< 	ebwr_reg(pport, EB_XBP_LO, off&0xff);
+< 	ebwr_reg(pport, EB_XBP_HI, ((off>>8)&7));
+< 	ebwr_setup(pport, EB_XMTBUF);
+---
+> 	ebwr_reg(dp, EB_XBP_LO, off&0xff);
+> 	ebwr_reg(dp, EB_XBP_HI, ((off>>8)&7));
+> 	ebwr_setup(dp, EB_XMTBUF);
+660c722
+< 		ebwr_data(pport, p, (short)len);
+---
+> 		ebwr_data(dp, p, (short)len);
+664c726
+< 		ebwr_data(pport, "", 1);
+---
+> 		ebwr_data(dp, "", 1);
+666,667c728,729
+< 	ebwr_reg(pport, EB_XBP_LO, off&0xff);
+< 	ebwr_reg(pport, EB_XBP_HI, ((off>>8)&7));
+---
+> 	ebwr_reg(dp, EB_XBP_LO, off&0xff);
+> 	ebwr_reg(dp, EB_XBP_HI, ((off>>8)&7));
+685c747
+< 	cp = ebrbuf + sizeof (struct ether_header);
+---
+> 	cp = ebrbuf + sizeof (struct eb_header);
+693a756
+> printf("(ebget)");
+698c761
+< 			cp = ebrbuf + sizeof (struct ether_header) + off;
+---
+> 			cp = ebrbuf + sizeof (struct eb_header) + off;
+714c777
+< 			cp = ebrbuf + sizeof (struct ether_header);
+---
+> 			cp = ebrbuf + sizeof (struct eb_header);
+725,730d787
+< #ifdef notdef
+< /* ebdelay -- wait about tim secs */
+< ebdelay(tim)
+< register tim;
+< {
+< 	register i;
+732,739c789
+< 	while (tim--){
+< 		i = 100000;
+< 		while (i--)
+< 			;
+< 	}
+< }
+< #endif
+< 
+---
+> #ifdef changing
+752a803,804
+> #endif
+> 
+772,773c824,825
+< 	ebwr_reg(pport, EB_AUXCSR, 1);		/* clear power-on interrupt */
+< 	ebportreset(pport);
+---
+> 	ebwr_reg(dp, EB_AUXCSR, 1);		/* clear power-on interrupt */
+> 	ebportreset(dp);
+775a828,854
+> /* write data to box.  must have done a ebwr_setup() first */
+> ebwr_data(dp, p, nbytes)
+> register struct device_d *dp;
+> register short nbytes;
+> register char *p;
+> {
+> 
+> 	if (nbytes )
+> 		do {
+> 			dp->d_ira = *p++;
+> 		} while (--nbytes);
+> }
+> 
+> /* read data from box.  must have done a ebrd_setup() first */
+> ebrd_data(dp, p, nbytes)
+> register struct device_d *dp;
+> register short nbytes;
+> register char *p;
+> {
+> 
+> 	if (nbytes )
+> 		do {
+> 			*p++ = dp->d_ira;
+> 		} while (--nbytes);
+> }
+> 
+> #ifdef changing
+801,828d879
+< /* write data to box.  must have done a ebwr_setup() first */
+< ebwr_data(pport, p, nbytes)
+< int pport;
+< register short nbytes;
+< register char *p;
+< {
+< 	register struct device_d *dp =  pro_da[pport];
+< 
+< 	if (nbytes )
+< 		do {
+< 			dp->d_ira = *p++;
+< 		} while (--nbytes);
+< }
+< 
+< /* read data from box.  must have done a ebrd_setup() first */
+< ebrd_data(pport, p, nbytes)
+< int pport;
+< register short nbytes;
+< register char *p;
+< {
+< 	register struct device_d *dp =  pro_da[pport];
+< 
+< 	if (nbytes )
+< 		do {
+< 			*p++ = dp->d_ira;
+< 		} while (--nbytes);
+< }
+< 
+865a917,918
+> #endif changing
+> 
+870d922
+< 	extern char slot[];
+872,879d923
+< 	if (!PPOK(i) || (slot[PPSLOT(i)] != PR0)) {/* check slot # and type */
+< 		printf("ethernet init: port %d, ", i);
+< 		if (slot[PPSLOT(i)] == PM3)
+< 			printf("Priam card\n");
+< 		else
+< 			printf("card ID 0x%x\n", slot[PPSLOT(i)]);
+< 		goto fail;
+< 	}
+887d930
+< 		return 1;
+890,891c933
+< 	printf("Can't find port for etherbox %d\n", i);
+< 	return 0;
+---
+> 		printf("Can't find port for etherbox %d\n", i);
+894,929d935
+< #ifdef doneinppintr
+< /* applereset -- reset apple interrupt hware */
+< applereset(pport)
+< {
+< 	register struct device_d *dp =  pro_da[pport];
+< 	dp->d_ifr = dp->d_ifr;		/* reset interrupt trap */
+< }
+< #endif
+< 
+< /* sigh */
+< 
+< short polleb = 1;
+< /* ...as opposed to pollcat... */
+< ebpoll(pport)
+< {
+< 	extern time_t lbolt;
+< 
+< 	if (polleb) {
+< 		ebintr(pport);
+< 		timeout(ebpoll, pport, v.v_hz);
+< 	}
+< }
+< 
+< ebsetaddr(ifp, sin)
+< 	register struct ifnet *ifp;
+< 	register struct sockaddr_in *sin;
+< {
+< 
+< 	ifp->if_addr = *(struct sockaddr *)sin;
+< 	ifp->if_net = in_netof(sin->sin_addr);
+< 	ifp->if_host[0] = in_lnaof(sin->sin_addr);
+< 	sin = (struct sockaddr_in *)&ifp->if_broadaddr;
+< 	sin->sin_family = AF_INET;
+< 	sin->sin_addr = if_makeaddr(ifp->if_net, INADDR_ANY);
+< 	ifp->if_flags |= IFF_BROADCAST;
+< }

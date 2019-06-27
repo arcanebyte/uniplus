@@ -1,0 +1,49 @@
+mkdir /xx/etc 
+mkdir /xx/bin 
+mkdir /xx/dev 
+mkdir /xx/usr
+mkdir /xx/usr/lib 
+mkdir /xx/usr/lib/uucp 
+mkdir /xx/usr/spool 
+mkdir /xx/usr/spool/uucp
+
+cp /etc/fsck /xx/etc/fsck
+cp /etc/fsck1b /xx/etc/fsck1b
+cp /etc/gettydefs /xx/etc/gettydefs
+cp /etc/init /xx/etc/init
+cp /etc/inittab /xx/etc/inittab
+cp /etc/passwd /xx/etc/passwd
+cp /etc/rc /xx/etc/rc
+cp /bin/adb /xx/bin/adb
+cp /bin/cat /xx/bin/cat
+cp /bin/chmod /xx/bin/chmod
+cp /bin/cu /xx/bin/cu
+cp /bin/date /xx/bin/date
+cp /bin/dd /xx/bin/dd
+cp /bin/echo /xx/bin/echo
+cp /bin/env /xx/bin/env
+cp /bin/ls /xx/bin/ls
+cp /bin/mkdir /xx/bin/mkdir
+cp /bin/mknod /xx/bin/mknod
+cp /bin/od /xx/bin/od
+cp /bin/rm /xx/bin/rm
+cp /bin/su /xx/bin/su
+cp /bin/sh /xx/bin/sh
+cp /bin/stty /xx/bin/stty
+cp /bin/sync /xx/bin/sync
+cp /usr/bin/take /xx/bin/take
+cp /usr/lib/uucp/L-devices /xx/usr/lib/uucp/L-devices
+
+mknod /xx/dev/console c 0 0
+mknod /xx/dev/systty c 0 0
+mknod /xx/dev/syscon c 0 0
+mknod /xx/dev/tty c 1 0
+mknod /xx/dev/mem c 2 0
+mknod /xx/dev/kmem c 2 1
+mknod /xx/dev/null c 2 2
+mknod /xx/dev/tty0 c 0 1
+mknod /xx/dev/tty1 c 0 2
+mknod /xx/dev/tty2 c 0 3
+mknod /xx/dev/w0a b 0 0
+mknod /xx/dev/w0h b 0 7
+mknod /xx/dev/swap b 0 1

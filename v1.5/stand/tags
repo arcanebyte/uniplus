@@ -1,0 +1,102 @@
+_stop	/v/sys/GEN/stand/sys.c	?^_stop(s)$?
+adm_advance	console.c	?^adm_advance()$?
+adm_clear	console.c	?^adm_clear()$?
+adm_putc	console.c	?^adm_putc (c)$?
+bminit	console.c	?^bminit ()		/* one time screen initialization */$?
+bminvert	console.c	?^bminvert (r, c)			/* reverse video char under curs?
+bmputc	console.c	?^bmputc (r, c, k)			/* draw a char at location r, c?
+bmwin	console.c	?^bmwin (cmd, tr, br, lc, rc)$?
+btod	pro.c	?^#define	btod(x)	(((x)+(BSIZE-1))>>BSHIFT)$?
+close	/v/sys/GEN/stand/sys.c	?^close(fdesc)$?
+coinit	console.c	?^coinit()$?
+cvinit	cv.c	?^cvinit(punit)$?
+cvop	cv.c	?^cvop(unit, na, a)$?
+cvopen	cv.c	?^cvopen(iobp)$?
+cvqwait	cv.c	?^#define cvqwait(a)	while(((a)->d_irb & ST_BUSY) ==?
+cvr	cv.c	?^cvr(unit, buff, n)$?
+cvrw	cv.c	?^cvrw(punit, bn, rflag, buff)$?
+cvstrategy	cv.c	?^cvstrategy(ip, func)$?
+cvw	cv.c	?^cvw(unit, buff)$?
+cvwait	cv.c	?^cvwait(addr)$?
+devclose	/v/sys/GEN/stand/sys.c	?^devclose(io)$?
+devopen	/v/sys/GEN/stand/sys.c	?^devopen(io)$?
+devread	/v/sys/GEN/stand/sys.c	?^devread(io)$?
+devwrite	/v/sys/GEN/stand/sys.c	?^devwrite(io)$?
+dlook	/v/sys/GEN/stand/sys.c	?^dlook(s, io)$?
+eject	sony.c	?^eject(unit)$?
+exit	/v/sys/GEN/stand/sys.c	?^exit()$?
+find	/v/sys/GEN/stand/sys.c	?^find(path, file)$?
+finit	/v/sys/GEN/stand/sys.c	?^finit()$?
+getc	/v/sys/GEN/stand/sys.c	?^getc(fdesc)$?
+getchar	/v/sys/GEN/stand/getchar.c	?^getchar ()$?
+gethex	/v/sys/GEN/stand/gethex.c	?^gethex(cp)$?
+getlocal	console.c	?^getlocal()$?
+gets	/v/sys/GEN/stand/prf.c	?^gets(buf)$?
+getw	/v/sys/GEN/stand/sys.c	?^getw(fdesc)$?
+if	sunol.c	?^	if (sop512(punit, 2, N_DIAGN, 1) < 0) { /* ??? ma?
+keycode	console.c	?^keycode(c)$?
+lseek	/v/sys/GEN/stand/sys.c	?^lseek(fdesc, addr, ptr)$?
+match	/v/sys/GEN/stand/sys.c	?^match(s1,s2)$?
+min	pro.c	?^#define min(a,b) ((a)<(b)?(a):(b))$?
+nullsys	c.c	?^nullsys()$?
+open	/v/sys/GEN/stand/sys.c	?^open(str, how)$?
+openi	/v/sys/GEN/stand/sys.c	?^openi(n,io)$?
+pm0intr	priam.c	?^pm0intr()$?
+pm1intr	priam.c	?^pm1intr()$?
+pm2intr	priam.c	?^pm2intr()$?
+pmackcc	priam.c	?^pmackcc(addr)$?
+pmadvance	tpriam.c	?^pmadvance(fp, count)$?
+pmcinit	priam.c	?^pmcinit(unit)$?
+pmdinit	priam.c	?^pmdinit(unit)$?
+pmdrw	priam.c	?^pmdrw(unit, bn, rflag, addr)$?
+pmdstrategy	priam.c	?^pmdstrategy(ip, func)$?
+pmerase	tpriam.c	?^pmerase(fp)$?
+pmfrtape	tpriam.c	?^pmfrtape()$?
+pmiintr	priam.c	?^pmiintr()$?
+pmioctl	priam.c	?^pmioctl(unit, cmd, parm)$?
+pmopen	priam.c	?^pmopen(iobp)$?
+pmrdsect	priam.c	?^pmrdsect()$?
+pmreten	tpriam.c	?^pmreten(fp)$?
+pmrewind	tpriam.c	?^pmrewind(fp)$?
+pmrflush	priam.c	?^pmrflush()$?
+pmrmrk	tpriam.c	?^pmrmrk(fp)$?
+pmrtsect	priam.c	?^pmrtsect()$?
+pmrwintr	priam.c	?^pmrwintr()$?
+pmszdisk	tpriam.c	?^pmszdisk()$?
+pmtintr	priam.c	?^pmtintr()$?
+pmtotape	tpriam.c	?^pmtotape(dtp, dfp, dbn)$?
+pmtrw	priam.c	?^pmtrw(unit, rflag, addr)$?
+pmtstrategy	priam.c	?^pmtstrategy(ip, func)$?
+pmwaitrf	priam.c	?^pmwaitrf(addr)$?
+pmwdsect	priam.c	?^pmwdsect()$?
+pmwflush	priam.c	?^pmwflush()$?
+pmwmrk	tpriam.c	?^pmwmrk(fp)$?
+pmwtsect	priam.c	?^pmwtsect()$?
+printf	/v/sys/GEN/stand/prf.c	?^printf(fmt, x1)$?
+printn	/v/sys/GEN/stand/prf.c	?^printn(n, b)$?
+prochk	pro.c	?^prochk(devp, state)$?
+proinit	pro.c	?^proinit(devp)$?
+proopen	pro.c	?^proopen(io)$?
+prorw	pro.c	?^prorw(func, pun, addr, cnt, bn)$?
+prostrategy	pro.c	?^prostrategy(ip, func)$?
+putchar	putchar.c	?^putchar(c)$?
+read	/v/sys/GEN/stand/sys.c	?^read(fdesc, buf, count)$?
+readsb	/v/sys/GEN/stand/sys.c	?^readsb(file)$?
+rom_mon	rom_mon.c	?^rom_mon(icon, msg, errcode)$?
+sbmap	/v/sys/GEN/stand/sys.c	?^sbmap(io, bn)$?
+scopy	sunol.c	?^scopy(dfp, srcvd, srcstart, destvd, deststart, cou?
+sfrtape	sunol.c	?^sfrtape(dfp, dbn, nblks)$?
+sneject	sony.c	?^sneject(ip)$?
+sninit	sony.c	?^sninit()$?
+snopen	sony.c	?^snopen(ip)$?
+snrw	sony.c	?^snrw(unit, bn, rw, addr)$?
+snstrategy	sony.c	?^snstrategy(ip, func)$?
+snwaitrdy	sony.c	?^snwaitrdy()$?
+sop	sunol.c	?^sop(unit, na, a)$?
+sop512	sunol.c	?^sop512(unit, na, a)$?
+srstat	sunol.c	?^srstat(addr)$?
+sszdisk	sunol.c	?^sszdisk(fp)$?
+ssztape	sunol.c	?^ssztape(fp)$?
+stotape	sunol.c	?^stotape(dfp, dbn, nblks)$?
+wgetlocal	wserial.c	?^wgetlocal()$?
+write	/v/sys/GEN/stand/sys.c	?^write(fdesc, buf, count)$?

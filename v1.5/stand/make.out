@@ -1,0 +1,7 @@
+ccv5net any -I/v/test/dist/alm/usr/include -I/v/sys/alm/sys/h -I/v/test/dist/dist/usr/include -I/v/sys/alm/stand -DSTANDALONE -Dmc68000 -OBPS -v -c c.c
+  Using pmm host
+  Preprocessing, Compiling, and Optimizing
+  Assembling
+ar68 r libsa.a c.o
+ld68 -s -X -R 60000 M.o boot.o nosercheck.o cvt.o mkser.o sn.o  copysboot.o sbblk.o wbblk.o pbblk.o libsa.a -lv5c -o nsboot
+fixbin68 nsboot
