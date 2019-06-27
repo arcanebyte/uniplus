@@ -1,0 +1,1 @@
+char *bsadr = (char *)(0x00064ef0);

@@ -1,0 +1,65 @@
+booter
+15501 1500
+d--777 3 1
+	etc  d--777 3 1
+		fsck ---755 3 1 /v/dist/dist.0/etc/fsck
+		fsck1b ---755 3 1 /v/dist/dist.0/etc/fsck1b
+		gettydefs ---755 3 1 /v/dist/dist/etc/gettydefs
+		group ---755 3 1 /v/dist/dist/etc/group
+		init ---755 3 1 /v/dist/dist.0/etc/init
+		inittab ---644 3 1 /v/dist/dist/etc/inittab
+		passwd ---644 3 1 /v/dist/dist/etc/passwd
+		rc ---755 3 1 /v/dist/dist/etc/rc
+		$
+	bin  d--777 3 1
+		adb  ---755 3 1 /v/dist/dist.0/bin/adb
+		cat  ---755 3 1 /v/dist/dist.0/bin/cat
+		chmod  ---755 3 1 /v/dist/dist.0/bin/chmod
+		chown  ---755 3 1 /v/dist/dist.0/bin/chown
+		chgrp  ---755 3 1 /v/dist/dist.0/bin/chgrp
+		cu  ---755 3 1 /v/dist/dist.0/bin/cu
+		date ---755 3 1 /v/dist/dist.0/bin/date
+		dd ---755 3 1 /v/dist/dist.0/bin/dd
+		echo  ---755 3 1 /v/dist/dist.0/bin/echo
+		env  ---755 3 1 /v/dist/dist.0/bin/env
+		ls ---755 3 1 /v/dist/dist.0/bin/ls
+		mkdir  ---755 3 1 /v/dist/dist.0/bin/mkdir
+		mknod  ---755 3 1 /v/dist/dist.0/bin/mknod
+		mv ---755 3 1 /v/dist/dist.0/bin/mv
+		od ---755 3 1 /v/dist/dist.0/bin/od
+		rm ---755 3 1 /v/dist/dist.0/bin/rm
+		su  ---755 3 1 /v/dist/dist.0/bin/su
+		sh  ---755 3 1 /v/dist/cmm/bin/sh
+		stty ---755 3 1 /v/dist/dist.0/bin/stty
+		sync ---755 3 1 /v/dist/dist.0/bin/sync
+		$
+	dev  d--777 3 1
+		console c--622 0 0 0 0
+		systty c--622 3 1 0 0
+		syscon c--622 3 1 0 0
+		tty c--666 6 6 1 0
+		mem c--600 6 6 2 0
+		kmem c--600 6 6 2 1
+		null c--666 6 6 2 2
+		tty0 c--622 6 6 0 1
+		tty1 c--622 6 6 0 2
+		tty2 c--622 6 6 0 3
+		w0a b--600 6 6 0 0
+		w0h b--600 6 6 0 7
+		swap b--600 6 6 0 1
+		$
+	usr  d--777 3 1
+		lib  d--777 3 1
+			uucp  d--777 3 1
+				L-devices  ---755 3 1 /v/dist/dist/usr/lib/uucp/L-devices
+				$
+			$
+		spool  d--777 3 1
+			uucp  d--777 3 1
+				$
+			$
+		bin  d--777 3 1
+			take  ---755 3 1 /v/dist/dist.0/usr/bin/take
+			$
+		$
+	$
