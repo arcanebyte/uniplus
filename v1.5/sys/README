@@ -1,0 +1,9 @@
+Changes made after release 1.5:
+priam.c:	added UNISOFT define which allows access to the boot blocks
+		of the disk - when it is not defined the results are the same
+		as for release 1.5 - it is not defined now
+
+conf.c:		changed the tt_addr field of co_ttptr[0] to 1 from 0 - otherwise
+		pstat thinks there is no co_ttptr[0]
+
+config.c:	changed oemmsg

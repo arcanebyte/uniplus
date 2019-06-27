@@ -1,0 +1,175 @@
+ARPTAB_HASH	if_ether.c	?^#define	ARPTAB_HASH(a) \\$?
+ARPTAB_LOOK	if_ether.c	?^#define	ARPTAB_LOOK(at,addr) { \\$?
+DTOM	tcp_input.c	?^#define DTOM(d) ( (struct mbuf *) ((d)->ti_mbuf) )?
+ECUNIT	if_ec.c	?^#define	ECUNIT(x)	minor(x)$?
+FAKE	fnet.c	?^FAKE()$?
+ILUNIT	if_il.c	?^#define	ILUNIT(x)	minor(x)$?
+INSQUE	tcp_input.c	?^#define INSQUE(i,p) { \\$?
+MEUNIT	if_me.c	?^#define	MEUNIT(x)	minor(x)$?
+arpattach	if_ether.c	?^arpattach(ac)$?
+arpinput	if_ether.c	?^arpinput(ac, m)$?
+arpmyaddr	if_ether.c	?^arpmyaddr(ac)$?
+arpresolve	if_ether.c	?^arpresolve(ac, m, destip, desten)$?
+arptfree	if_ether.c	?^arptfree(at)$?
+arptimer	if_ether.c	?^arptimer()$?
+arptnew	if_ether.c	?^arptnew(addr)$?
+arpwhohas	if_ether.c	?^arpwhohas(ac, addr)$?
+bswap	in_cksum.c	?^#define bswap(x)	(((((int)(x))>>8)&0xff)|((((int)(?
+ecattach	if_ec.c	?^ecattach(ui)$?
+eccollide	if_ec.c	?^eccollide(unit)$?
+ecdocoll	if_ec.c	?^ecdocoll(unit)$?
+ecget	if_ec.c	?^ecget(ecbuf, totlen, off0)$?
+ecinit	if_ec.c	?^ecinit(unit)$?
+ecoutput	if_ec.c	?^ecoutput(ifp, m0, dst)$?
+ecprobe	if_ec.c	?^ecprobe(reg)$?
+ecput	if_ec.c	?^ecput(ecbuf, m)$?
+ecread	if_ec.c	?^ecread(unit)$?
+ecreset	if_ec.c	?^ecreset(unit, uban)$?
+ecrint	if_ec.c	?^ecrint(unit)$?
+ecstart	if_ec.c	?^ecstart(dev)$?
+ecxint	if_ec.c	?^ecxint(unit)$?
+gethostname	fnet.c	?^gethostname()$?
+icmp_error	ip_icmp.c	?^icmp_error(oip, type, code)$?
+icmp_input	ip_icmp.c	?^icmp_input(m)$?
+icmp_reflect	ip_icmp.c	?^icmp_reflect(ip)$?
+icmp_send	ip_icmp.c	?^icmp_send(ip)$?
+if_attach	if.c	?^if_attach(ifp)$?
+if_down	if.c	?^if_down(ifp)$?
+if_ifonnetof	if.c	?^if_ifonnetof(net)$?
+if_ifwithaddr	if.c	?^if_ifwithaddr(addr)$?
+if_ifwithaf	if.c	?^if_ifwithaf(af)$?
+if_ifwithnet	if.c	?^if_ifwithnet(addr)$?
+if_makeaddr	in.c	?^struct in_addr $?
+if_mkaddr	in.c	?^if_mkaddr(net, host)$?
+if_rtinit	in.c	?^if_rtinit(ifp, flags)$?
+if_slowtimo	if.c	?^if_slowtimo()$?
+ifinit	if.c	?^ifinit()$?
+ifubareset	if.c	?^ifubareset(uban)$?
+ilattach	if_il.c	?^ilattach(ui)$?
+ilcint	if_il.c	?^ilcint(unit)$?
+ilinit	if_il.c	?^ilinit(unit)$?
+iloutput	if_il.c	?^iloutput(ifp, m0, dst)$?
+ilprobe	if_il.c	?^ilprobe(reg)$?
+ilreset	if_il.c	?^ilreset(unit, uban)$?
+ilrint	if_il.c	?^ilrint(unit)$?
+ilstart	if_il.c	?^ilstart(dev)$?
+iltotal	if_il.c	?^iltotal(is)$?
+ilwatch	if_il.c	?^ilwatch(unit)$?
+in_cksum	in_cksum.c	?^in_cksum(m, len)$?
+in_lnaof	in.c	?^in_lnaof(in)$?
+in_netof	in.c	?^in_netof(in)$?
+in_pcbattach	in_pcb.c	?^in_pcbattach(so, head, sndcc, rcvcc, sin)$?
+in_pcbconnect	in_pcb.c	?^in_pcbconnect(inp, sin)$?
+in_pcbdetach	in_pcb.c	?^in_pcbdetach(inp)$?
+in_pcbdisconnect	in_pcb.c	?^in_pcbdisconnect(inp)$?
+in_pcblookup	in_pcb.c	?^in_pcblookup(head, faddr, fport, laddr, lport, fla?
+in_pcbnotify	in_pcb.c	?^in_pcbnotify(head, dst, errno, abort)$?
+in_setsockaddr	in_pcb.c	?^in_setsockaddr(sin, inp)$?
+inet_hash	in.c	?^inet_hash(sin, hp)$?
+inet_netmatch	in.c	?^inet_netmatch(sin1, sin2)$?
+ip_ctlinput	ip_input.c	?^ip_ctlinput(cmd, arg)$?
+ip_deq	ip_input.c	?^ip_deq(p)$?
+ip_dooptions	ip_input.c	?^ip_dooptions(ip)$?
+ip_drain	ip_input.c	?^ip_drain()$?
+ip_enq	ip_input.c	?^ip_enq(p, prev)$?
+ip_forward	ip_input.c	?^ip_forward(ip)$?
+ip_freef	ip_input.c	?^ip_freef(fp)$?
+ip_init	ip_input.c	?^ip_init()$?
+ip_optcopy	ip_output.c	?^ip_optcopy(ip, jp, off)$?
+ip_output	ip_output.c	?^ip_output(m, opt, ro, allowbroadcast)$?
+ip_reass	ip_input.c	?^ip_reass(ip, fp)$?
+ip_slowtimo	ip_input.c	?^ip_slowtimo()$?
+ip_stripoptions	ip_input.c	?^ip_stripoptions(ip, mopt)$?
+ipintr	ip_input.c	?^ipintr()$?
+iptime	ip_icmp.c	?^iptime()$?
+loattach	if_loop.c	?^loattach()$?
+looutput	if_loop.c	?^looutput(ifp, m0, dst)$?
+meattach	if_me.c	?^meattach(md)$?
+medelay	if_me.c	?^medelay(tim)$?
+medocoll	if_me.c	?^medocoll(unit)$?
+meget	if_me.c	?^meget(mebuf, totlen, off0)$?
+meinit	if_me.c	?^meinit(unit)$?
+meintr	if_me.c	?^meintr()$?
+meoutput	if_me.c	?^meoutput(ifp, m0, dst)$?
+meput	if_me.c	?^meput(mebuf, m)$?
+meread	if_me.c	?^meread(es, mebuf)$?
+mesetaddr	if_me.c	?^mesetaddr(ifp, sin)$?
+mestart	if_me.c	?^mestart(dev)$?
+mewatch	if_me.c	?^mewatch()$?
+netinit	fnet.c	?^netinit()$?
+netintr	fnet.c	?^netintr()$?
+netreset	fnet.c	?^netreset()$?
+null_hash	af.c	?^null_hash(addr, hp)$?
+null_netmatch	af.c	?^null_netmatch(a1, a2)$?
+ptcclose	fnet.c	?^ptcclose(dev) dev_t dev;$?
+ptcioctl	fnet.c	?^ptcioctl(dev, cmd, addr, flag) caddr_t addr; dev_t?
+ptcopen	fnet.c	?^ptcopen(dev, flag) dev_t dev; int flag;$?
+ptcread	fnet.c	?^ptcread(dev) dev_t dev;$?
+ptcwrite	fnet.c	?^ptcwrite(dev) dev_t dev;$?
+ptsclose	fnet.c	?^ptsclose(dev) dev_t dev;$?
+ptsioctl	fnet.c	?^ptsioctl(dev, cmd, addr, flag) caddr_t addr; dev_t?
+ptsopen	fnet.c	?^ptsopen(dev, flag) dev_t dev;$?
+ptsread	fnet.c	?^ptsread(dev) dev_t dev;$?
+ptswrite	fnet.c	?^ptswrite(dev) dev_t dev;$?
+pup_hash	pup.c	?^pup_hash(spup, hp)$?
+pup_netmatch	pup.c	?^pup_netmatch(spup1, spup2)$?
+raw_attach	raw_cb.c	?^raw_attach(so)$?
+raw_bind	raw_cb.c	?^raw_bind(so, nam)$?
+raw_connaddr	raw_cb.c	?^raw_connaddr(rp, nam)$?
+raw_ctlinput	raw_usrreq.c	?^raw_ctlinput(cmd, arg)$?
+raw_detach	raw_cb.c	?^raw_detach(rp)$?
+raw_disconnect	raw_cb.c	?^raw_disconnect(rp)$?
+raw_init	raw_usrreq.c	?^raw_init()$?
+raw_input	raw_usrreq.c	?^raw_input(m0, proto, src, dst)$?
+raw_usrreq	raw_usrreq.c	?^raw_usrreq(so, req, m, nam)$?
+rawintr	raw_usrreq.c	?^rawintr()$?
+returnerr	tcp_output.c	?^#define returnerr(e) { error = (e); goto out; }$?
+rip_input	raw_ip.c	?^rip_input(m)$?
+rip_output	raw_ip.c	?^rip_output(m0, so)$?
+rtalloc	route.c	?^rtalloc(ro)$?
+rtfree	route.c	?^rtfree(rt)$?
+rtinit	route.c	?^rtinit(dst, gateway, flags)$?
+rtrequest	route.c	?^rtrequest(req, entry)$?
+saccept	fnet.c	?^saccept()$?
+sconnect	fnet.c	?^sconnect()$?
+select	fnet.c	?^select()$?
+sethostname	fnet.c	?^sethostname()$?
+soclose	fnet.c	?^soclose(so, exiting) struct socket *so; int exitin?
+soioctl	fnet.c	?^soioctl(so, cmd, cmdp) struct socket *so; int cmd;?
+soreceive	fnet.c	?^soreceive(so, asa) struct socket *so; struct socka?
+sosend	fnet.c	?^sosend(so, asa) struct socket *so; struct sockaddr?
+sostat	fnet.c	?^sostat(so, sb) struct socket *so; struct stat *sb;?
+sreceive	fnet.c	?^sreceive()$?
+ssend	fnet.c	?^ssend()$?
+ssockad	fnet.c	?^ssockad()$?
+ssocket	fnet.c	?^ssocket()$?
+tcp_abort	tcp_subr.c	?^tcp_abort(inp)$?
+tcp_attach	tcp_usrreq.c	?^tcp_attach(so, sa)$?
+tcp_canceltimers	tcp_timer.c	?^tcp_canceltimers(tp)$?
+tcp_close	tcp_subr.c	?^tcp_close(tp)$?
+tcp_ctlinput	tcp_subr.c	?^tcp_ctlinput(cmd, arg)$?
+tcp_disconnect	tcp_usrreq.c	?^tcp_disconnect(tp)$?
+tcp_dooptions	tcp_input.c	?^tcp_dooptions(tp, om)$?
+tcp_drain	tcp_subr.c	?^tcp_drain()$?
+tcp_drop	tcp_subr.c	?^tcp_drop(tp, errno)$?
+tcp_fasttimo	tcp_timer.c	?^tcp_fasttimo()$?
+tcp_init	tcp_subr.c	?^tcp_init()$?
+tcp_input	tcp_input.c	?^tcp_input(m0)$?
+tcp_newtcpcb	tcp_subr.c	?^tcp_newtcpcb(inp)$?
+tcp_output	tcp_output.c	?^tcp_output(tp)$?
+tcp_pulloutofband	tcp_input.c	?^tcp_pulloutofband(so, ti)$?
+tcp_reass	tcp_input.c	?^tcp_reass(tp, ti)$?
+tcp_respond	tcp_subr.c	?^tcp_respond(tp, ti, ack, seq, flags)$?
+tcp_setpersist	tcp_output.c	?^tcp_setpersist(tp)$?
+tcp_slowtimo	tcp_timer.c	?^tcp_slowtimo()$?
+tcp_template	tcp_subr.c	?^tcp_template(tp)$?
+tcp_timers	tcp_timer.c	?^tcp_timers(tp, timer)$?
+tcp_trace	tcp_debug.c	?^tcp_trace(act, ostate, tp, ti, req)$?
+tcp_usrclosed	tcp_usrreq.c	?^tcp_usrclosed(tp)$?
+tcp_usrreq	tcp_usrreq.c	?^tcp_usrreq(so, req, m, addr)$?
+udp_abort	udp_usrreq.c	?^udp_abort(inp)$?
+udp_ctlinput	udp_usrreq.c	?^udp_ctlinput(cmd, arg)$?
+udp_init	udp_usrreq.c	?^udp_init()$?
+udp_input	udp_usrreq.c	?^udp_input(m0)$?
+udp_output	udp_usrreq.c	?^udp_output(inp, m0)$?
+udp_usrreq	udp_usrreq.c	?^udp_usrreq(so, req, m, nam)$?
