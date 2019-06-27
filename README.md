@@ -1,3 +1,3 @@
 # uniplus
 
-This repository will hold various code for Apple Lisa operating systems, including UNIX, XENIX, Lisa Office System, and more.
+This repository contains files related to UniSoft UniPlus+ UNIX for the Apple Lisa.
