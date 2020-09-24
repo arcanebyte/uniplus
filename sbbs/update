@@ -1,0 +1,24 @@
+#! /bin/sh
+# Update file for the bbs
+
+if [ ! -f $dir/new/$bbs_name ] ; then
+   echo > $dir/new/$bbs_name
+fi
+
+line=`grep "^$basen:" $dir/new/$bbs_name`
+if [ "$line" = "" ] ; then
+   echo "$basen:$1" >> $dir/new/$bbs_name
+   exit
+fi
+
+nq=`echo "$line" | awk -F: '{print $2}'`
+if [ $nq -gt $1 ] ; then
+  exit
+fi
+
+file=/tmp/sbbs.tmp.$$
+
+grep -v "^$basen:" $dir/new/$bbs_name > $file
+cat $file > $dir/new/$bbs_name
+rm $file
+echo "$basen:$1" >> $dir/new/$bbs_name

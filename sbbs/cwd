@@ -1,0 +1,63 @@
+#! /bin/sh
+# Change Password
+
+stty -echo
+echo "Enter your current password: \c"
+pwd="`line | tr \"[A-Z]\" \"[a-z]\"`"
+echo "\n"
+if [ `echo "$pwd\c" | wc -c` -eq 1 ];then
+pwd=`echo "$pwd" | tr -d "!"`
+fi
+if [ -z "$pwd" ] ; then 
+  echo "Password change is aborted."
+  stty echo
+  exit
+fi
+
+
+pid=$$
+echo "$pwd" > /tmp/sbbs.buf.$pid
+pwd=`crypt "$pwd" < /tmp/sbbs.buf.$pid`
+rm /tmp/sbbs.buf.$pid
+cpwd=`fgrep -x "$bbs_name $pwd" $dir/admin/profile/logins`
+
+if [ "$cpwd" = "" ] ; then
+  echo "Sorry."
+  stty echo
+  exit
+fi
+
+echo "Enter new password: \c"
+npwd="`line | tr \"[A-Z]\" \"[a-z]\"`"
+echo "\n"
+echo "Enter new password again: \c"
+ntest="`line | tr \"[A-Z]\" \"[a-z]\"`"
+echo "\n"
+
+if [ "$ntest" != "$npwd" ] ; then
+   echo "Aborted."
+   stty echo
+   exit
+fi
+
+
+
+if [ -z "$npwd" ]; then
+  echo "Password change aborted."
+  stty echo
+  exit
+fi
+
+pid=$$
+echo "$npwd" > /tmp/sbbs.buf.$pid
+npwd=`crypt "$npwd" < /tmp/sbbs.buf.$pid`
+rm /tmp/sbbs.buf.$pid
+
+ed - $dir/admin/profile/logins << EOE
+H
+/^$bbs_name /d
+w
+EOE
+echo "$bbs_name $npwd" >> $dir/admin/profile/logins
+echo "Password has been changed."
+stty echo

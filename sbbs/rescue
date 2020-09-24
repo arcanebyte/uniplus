@@ -1,0 +1,21 @@
+#! /bin/sh
+# Shell cleanup/rescue script.
+
+length=`cat $dir/admin/profile/log | wc -l`
+if [ $length -eq $logc ] ; then
+  proc=$$
+  sed "1d" $dir/admin/profile/log > $dir/admin/profile/log.$proc
+  mv $dir/admin/profile/log.$proc $dir/admin/profile/log ; rm $dir/admin/profile/log.$proc
+fi
+
+echo "$bn\t$login_time\t`date | cut -c9-19`<CD>" >> $dir/admin/profile/log
+
+file=/tmp/sbbs.hup.$$
+$dir/programs/lock /tmp/sbbs.hup.lock
+grep -v "^$bbs_name:" $dir/misc/usr > $file
+cat $file > $dir/misc/usr
+rm /tmp/sbbs.hup.lock
+rm $file
+rm /tmp/sbbs.*
+echo "$cmd_list" >> $dir/admin/profile/cmdlog
+echo "$fullname" > $dir/admin/profile/lastcaller

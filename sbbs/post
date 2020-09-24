@@ -1,0 +1,54 @@
+#! /bin/sh
+# Post bulletins.
+if [ "$1" = "" ] ; then
+  echo "<CR = abort> Enter subject: \c"
+  read subject
+  count=`echo "$subject" | wc -c`
+  if [ $count -le 4 -a $count -gt 1 ] ; then
+    echo "Please make your subject 4 characters or more."
+    exit
+  fi
+  if [ "$subject" = "" ] ; then
+    exit
+  fi
+  echo "Correct? <Y> \c"
+  read yn
+  set yn=`echo $yn`
+  if [ "$yn" = N -o "$yn" = n ] ; then
+    exit
+  fi
+else
+  subject=$1
+  echo "Include message in reply?(n)\c"
+  read yn
+  yn=`echo $yn | tr -d "!"`
+  if [ "$yn" = Y -o "$yn" = y ] ; then
+    xflag=1
+  fi
+fi
+date=`date`
+from="$bbs_name ("
+from="$from$fullname)"
+file=/tmp/sbbs.pst.$$
+echo "From   : #$from " >> $file
+echo "Subject: $subject" >> $file
+echo "Date   : $date" >> $file
+echo "\n" ; echo "\n" >> $file
+if [ "$xflag" = 1 ] ; then
+   sed -n '6,$s/^/> /
+           6,$p' $2 >> $file
+fi
+echo "Enter your message now."
+echo "Enter a CTRL-D for editor."
+while : ; do
+  cat >> $file
+  $dir/programs/edit $file null
+  status=$?
+  if [ $status = 1 ];then
+    continue
+  fi
+  if [ $status = 2 ];then
+    exit
+  fi
+  break
+done

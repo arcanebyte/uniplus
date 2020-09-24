@@ -1,0 +1,225 @@
+#! /bin/sh
+# Editor
+
+while : ; do
+
+echo "SBBS Editor) \c"
+cmd=`line | tr -d "!"`
+cmd="`echo \"$cmd\" | cut -c1`"
+
+if [ "$cmd" = "" ];then
+  continue
+fi
+
+if [ "$cmd" = "?" ] ; then
+  cat $dir/misc/ecom
+  continue
+fi
+
+if [ $cmd = C -o $cmd = c ];then
+  echo "(continue)"
+  exit 1
+fi
+
+if [ $cmd = P -o $cmd = p ];then
+  echo "UNIX spell checker:not 100% accurate."
+  echo "---------------{spelling errors}------"
+  echo ` spell $1`
+  continue
+fi
+
+if [ $cmd = A -o $cmd = a ];then
+  echo "---------ABORT---------"
+  echo "Do you realy want to do this?"
+  echo "<N>: \c"
+  read yn
+  yn=`echo $yn | cut -c1`
+  if [ "$yn" = Y -o "$yn" = y ];then
+    echo "-<ABORT>-"
+    rm $1
+    exit 2
+  fi
+  echo "ABORT was aborted."
+  continue
+fi
+
+if [ $cmd = S -o $cmd = s ];then
+  echo "Saving message..."
+  if [ "$2" != "" ];then
+    $dir/programs/lock /tmp/sbbs.pst.lock
+    ml=`ls $dir/bbs/$basen|wc -l`
+    ml=`expr $ml + 1`
+    cat $1 > $dir/bbs/$basen/$ml 
+    rm $1
+    rm /tmp/sbbs.pst.lock
+  else
+    exit 3
+  fi
+  echo "Message saved..."
+  exit 
+fi
+
+if [ $cmd = L -o $cmd = l ];then
+  l=`cat $1|wc -l`
+  l=`expr $l - 5`
+  if [ $l -eq 0 ];then
+    continue
+  fi
+  while : ; do
+    echo "A)ll   R)ange: \c"
+    read x
+    x=`echo $x | cut -c1`
+    if [ -z "$x" ] ; then
+      continue
+    fi
+    if [ $x = A -o $x = a ] ; then
+      start=1 ; end=$l
+      begin=1
+    else
+      echo "Start at: \c"
+      read start
+      begin="$start"
+      if [ -z "$start" ] ; then
+        continue
+      fi
+      start=`expr $start + 0` 2> /dev/null 
+      if [ $? -ne 0 ] ; then
+        echo "Bad number."
+        continue
+      fi
+      if [ $start -gt $l -o $start -lt 1 ] ; then
+        echo "Out of range."
+        echo "(1-$l)"
+        continue
+      fi 
+      echo "End at: \c"
+      read end
+      if [ -z "$end" ] ; then
+        continue
+      fi 
+      end=`expr $end + 0` 2> /dev/null
+      if [ $? -ne 0 ] ; then
+        echo "Bad number."
+        continue
+      fi 
+      if [ $end -lt $start -o $end -gt $l ] ; then
+        echo "Bad range."
+        continue
+      fi
+    fi
+    break
+    done
+
+    file=/tmp/sbbs.tmp.$$
+    # start=`expr $start + 5`
+    # end=`expr $end + 5`
+
+    sed -n '6,$p' $1 >$file
+
+ed - $file << Z
+$start,${end}n
+Z
+
+    rm $file
+    string=""
+  continue
+fi
+
+if [ $cmd = E -o $cmd = e ];then
+  echo "Edit what line? \c"
+  read l
+  l=`echo $l`
+  if [ "$l" = "" ];then
+    continue
+  fi
+  l=`expr $l + 5` 2> /dev/null
+  if [ $? -ne 0 ];then
+    echo "Illegal number."
+    continue
+  fi
+  wc=`cat $1|wc -l`
+  if [ $l -gt $wc ];then
+    echo "Range out of bounds."
+    continue
+  elif [ $l -lt 6 ];then
+    echo "Range out of bounds."
+    continue
+  fi
+  echo "Old line reads"
+  ed - $1 <<- EOS
+  $l p
+EOS
+  echo "Enter new line"
+  read qr
+  ed - $1 <<- EOS
+  $l a
+$qr
+.
+  $l d
+  w
+EOS
+continue
+fi
+
+if [ $cmd = D -o $cmd = d ];then
+  echo "Delete what line? \c"
+  read l
+  l=`expr $l + 5`
+  if [ $? -ne 0 ];then
+    echo "Illegal number."
+    continue
+  fi
+  wc=`cat $1|wc -l`
+  if [ $l -lt 6 ];then
+    echo "Range out of bounds."
+    continue
+  elif [ $l -gt $wc ];then
+    echo "Range out of bounds."
+    continue
+  fi
+  ed - $1 <<- EOS
+  $l d
+  w
+EOS
+  continue
+fi
+
+if [ $cmd = I -o $cmd = i ] ; then
+  echo "Insert at what line? \c"
+  read insert
+  insert=`expr $insert + 0 2> /dev/null`
+  if [ $? -ne 0 ] ; then
+    echo "Bad number."
+    continue
+  fi
+  insert_limit=`cat $1 | wc -l`
+  insert_limit=`expr $insert_limit - 5`
+
+  if [ $insert -gt $insert_limit -o $insert -lt 1 ];then
+    echo "Out of range."
+    continue
+  fi
+  echo "Start inserting now. Type CTRL-D on a\nblank space to get to editor."
+  file=/tmp/sbbs.tpi.$$
+  cat > $file
+  {
+   ed - $1 << EOS
+   $insert+5,\$p
+   $insert+5,\$d
+   w
+EOS
+  } >> $file
+  cat $file >> $1
+  rm $file
+  continue
+fi
+
+if [ $cmd = R -o $cmd = r ] ; then
+   file=/tmp/sbbs.rot.$$
+   sed -n '1,5p' $1 > $file
+   sed -n '6,$p' $1 | tr "[a-m][n-z][A-M][N-Z]" "[n-z][a-m][N-Z][A-M]" >> $file
+   mv $file $1
+   continue
+fi   
+echo "Illegal command."
+done

@@ -1,0 +1,173 @@
+#! /bin/sh
+# Main udl system
+
+$cls
+
+echo "================================"
+echo "The $bbs UP/DOWN load system"
+echo "================================"
+echo "\n"
+while : ; do
+echo ""
+echo "UD/L) \c"
+read nu
+
+if [ -z "$nu" ] ; then
+  continue
+fi
+
+nu=`echo "$nu" | tr -d "!"`
+
+if [ "$nu" = N -o "$nu" = n ] ; then
+  $dir/programs/udlnew
+  continue
+fi
+
+if [ "$nu" = E -o "$nu" = e ] ; then
+  exit
+fi
+
+if [ "$nu" = C -o "$nu" = c ] ; then
+   if [ $access -lt 2 ] ; then
+      echo "Sorry , you may not create DataBases.\nConsult your local SysOp or Co-SysOp if\nyou wish to have a DataBase."
+      continue
+   fi
+   echo "Enter title of DataBase: \c"
+   read DataBase
+
+   if [ -z "$DataBase" ] ; then
+      echo "(abort)"
+      continue
+   fi
+
+   title="$DataBase"
+
+   DataBase=`ls $dir/udl | wc -l`
+   DataBase=`echo $DataBase`
+ 
+   mkdir $dir/udl/$DataBase
+   echo "\c" >> $dir/udl/$DataBase/.udlrc
+   echo "$DataBase: $title" >> $dir/misc/udlrc
+   continue
+fi 
+if [ "$nu" = "L" -o "$nu" = "l" ] ;then
+   cat $dir/misc/udlrc
+   continue
+fi
+
+if [ "$nu" = "?" ] ; then
+  cat << EOH
+   (C) Create a message base            (N) New downloads
+   (E) Exit                             (L) List DataBases
+   (n) Enter DataBase number n.
+EOH
+continue
+fi
+
+at=`expr $nu + 0 2> /dev/null`||continue
+
+test=`grep "^$nu:" $dir/misc/udlrc`
+
+if [ -z "$test" ] ; then
+  echo "Base does not exist."
+  continue
+fi
+
+dbase=$nu
+dbase=`echo $dbase`
+
+while : ; do
+echo "File) \c"
+read file
+
+if [ "$file" = "?" ] ; then
+  cat << HELP
+        (E) Exit to $bbs main           (C) Chose another DataBase
+        (L) List files.
+
+	Enter file number to download.
+
+	To upload, type a number that is not available on this base. (And
+not less then 1)
+HELP
+continue
+fi
+
+if [ "$file" = L -o "$file" = l ]; then
+  cat $dir/udl/$dbase/.udlrc
+  continue
+fi
+
+if [ "$file" = E -o "$file" = e ]; then
+  exit
+fi
+
+if [ "$file" = C -o "$file" = c ]; then
+  continue 2
+fi
+
+file=`expr $file + 0 2> /dev/null`
+
+if [ $? != 0 ] ; then
+  continue
+fi
+
+test=`grep "^$file:" $dir/udl/$dbase/.udlrc`
+
+if [ -z "$test" ] ; then
+  echo "File doesn't exist."
+  echo "Do you wish to upload it? <N> \c"
+  read upload
+  upload=`echo "$upload" | tr -d "!" | cut -c1`
+  if [ "$upload" != Y -a "$upload" != y ] ; then
+    continue
+  fi
+  echo "Enter an 80 character or less description\n: \c"
+  read des
+  des=`echo "$des" | tr "|" ":"`
+  des=`echo "$des" | cut -c-80`
+  name=$file
+  file=`ls $dir/udl/new | wc -l`
+  file=`expr $file + 1`
+  echo "$file| $des [Uploaded by #$bbs_name]|$dbase" >> $dir/udl/new/.udlrc
+  echo "Protocols available: "
+  awk -F: '{print $1 ":  " $2}' $dir/misc/protocols.up
+  echo "(ENTER to abort)"
+  echo "Protocol) \c"
+  read proto
+  proto=`expr $proto + 0 2> /dev/null`
+  if [ $? -ne 0 ] ; then
+     proto=1
+  else
+     at=`grep "^$proto:" $dir/misc/protocols.up`
+     if [ -z "$at" ] ; then
+        proto=1
+     else
+        cmd="`echo \"$at\" | awk -F: '{print $3}'`"
+        eval $cmd $dir/udl/new/$file
+     fi
+  fi
+  continue
+fi
+
+
+echo "Transfer protocols: "
+awk -F: '{print $1 ":" $2}' $dir/misc/protocols.down
+echo "(ENTER to abort)"
+echo "Protocol) \c"
+  read proto
+  proto=`expr $proto + 0 2> /dev/null`
+  if [ $? -ne 0 ] ; then
+     proto=1
+  else
+     at=`grep "^$proto:" $dir/misc/protocols.down`
+     if [ -z "$at" ] ; then
+        proto=1
+     else
+        cmd="`echo \"$at\" | awk -F: '{print $3}'`"
+        eval $cmd $dir/udl/$dbase/$file
+     fi
+  fi
+  continue
+done
+done

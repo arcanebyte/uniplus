@@ -1,0 +1,580 @@
+
+SBBS ADMINISTRATION HELP
+---- -------------- ----
+
+After you have read the instructions on how to set up SBBS, you must get
+your self familiarized with all the SBBS files.
+
+I have assumed that you ran 'install' and your SYSOP account was set up.
+A 'SYSOP' account is a special user that has many privileges. Among them are
+user-management systems, Message Bases, and U/DL bases. There are more; these
+will be explained.
+
+
+I.   Familiarization of SBBS
+
+   Your account was created when you ran the program install. Install makes
+the necessary preparations to allow SBBS to run. If you are not the head
+SYSOP and didn't run install you may skip this whole section on SBBS
+familiarization as it does not concern you.
+
+   Your ID and password was stored in a file called ~/admin/profile/logins.
+Other information on you is stored in ~/admin/profiles/members. Check these
+files out and see how they are stored. (In the examples, we will assumed you
+called ONCE before.)
+
+    $ cd $home/admin/profile            < $home equals SBBSs home directory.
+    $ ls
+    cmdlog      < User command log
+    lastcaller  < The last caller
+    log         < Log of users and their times of login and logout
+    logins      < User IDs and passwords
+    members     < More information on users
+    newusers    < New Users who have called.
+    $ cat lastcaller
+    JOHN JONES
+    $ cat cmdlog
+    1:?:M:U:E     < Commands Sysop entered.
+    $ cat log
+    1 11:33:22 Tue Jun 20 1987 EST 11:50:22 Tue Jun 20 1987 EST
+    $ cat newusers  < Normally when new users call their name and other
+                      information is stored here. The one who ran install
+                      does not have his name there because he is assumed to be
+                      the sysop. (And, if you remember, he/she has a level=3)
+    $ cat logins < encrypted password.
+    1 XzUymakPPPqx
+    $ cat members
+    1:3:JOHN JONES:123 ANYWHERE ST.:TOWNSVILLE:NEW JERSEY:46642:781-620-1235
+
+    ^ ^      ^        ^                 ^           ^        ^         ^
+   ID Access Name   Street            City      State     Zip    Phone Number
+
+    Now let's explore the files in the "mail" and "new" directories.
+
+    $ cd $home/mail
+    $ ls
+    1
+    $ cd 1
+    $ ls
+    1
+    2
+
+    The directory "1" in the "mail" directory is where all of user 1's
+mail is. Since it is private, we woun't look at the mail. (Files "1" and "2")
+
+    $ cd $home/new
+    $ ls
+    1
+    $ cat 1
+    1:4
+
+    This is a file that contains information on the last message he
+read from the Message Bases (More on this later). In Message Base "1", he
+read all the way up to message #4. This, for your information, is the "General"
+Message Base.
+
+    Now let's look at the "bulletins" and "udl" directories.
+
+    $ cd $home/bulletins
+    $ ls
+    1  < This is a bulletin from the sysop (User #1) welcoming everyone to
+         his new system.
+    $ cat 1
+     < Bulletin >
+    $ 
+
+    The bulletin will be displayed to any one logging in to his system one
+time only. They may reread the bulletins by a special command.
+
+    $ cd $home/udl
+    $ ls
+    new
+    $
+
+    This directory stores all the files the users upload. He has created no
+"Topics". Topics are specific areas where users store files. These files
+pertain to the "Topic". The directories are stored as numbers. The actual
+topic-names are stored in files. The "new" directory is automatically
+created when the SysOp ran "install". It stores "new" uploads that are awaiting
+approval be the SysOp or CoSysOps.
+
+    Now we explore the final directory.
+
+    $ cd $home/misc
+    $ ls
+    bbsrc
+    closing
+    com
+    config
+    ecom
+    main_menu
+    newnews
+    openmes
+    prlib
+    protocols.down
+    protocols.up
+    udlrc
+    usr
+    $ cat bbsrc < List Message Bases.
+    1:General
+    $ cat udlrc < Remember he hasn't set up any UDL DataBases. This contains
+                  the available Topics.
+    $ cat usr   < IDs, names, and ttys of who is CURRENTLY using SBBS.
+    $ cat openmes
+    [[[ Welcome to Cleveland Electronic City
+    [[[ Serving its users since 1981 providing the best community service.
+    [[[   Try out our new feature - "mayor". Where you may write to the 
+    [[[ may about whats on your mind.
+
+    This is the file that will ALWAYS be displayed when one logs on your SBBS
+system.
+
+    $ cat closing
+
+    Thank you for calling. Call these other boards:
+
+    CitCom: 216-222-3333
+    Ataraforce: 216-444-5555
+    IBbsM: 216-666-7777
+
+    This message is displayed ALWAYS when one exits SBBS.
+
+    $ cat newnews
+    1:1
+
+    This file containes information on what the last bulletin read was.
+    Remember the "bulletins" directory?
+
+    $ cat prlib
+    1: Access DataBase XI:/u/local/dbxi
+    2: List or add city services:/u/local/cleserv
+    3: List or add 216 numbers.:/u/local/216list
+    
+    This is the program library. This is available online to SBBS users. The
+first field (Of 3 seperated by colons) is the option number that the user
+types to access it. Field 2 is the formal name the user sees. Field three
+is the actual program to run. This may contain variables , quotes and ';'
+seperaters if you wish. But a special "variable" must be set to do this;
+otherwise it will take the whole third field as the program to run -- without
+evaluating the metacharacters.
+
+    $ cat com ecom main_menu <menus
+    <com menu  (bbs)>
+    <ecom menu (editor)>
+    <main_menu menu. (main menu)>
+    $ cat protocols.up
+    1:Ascii:echo Start Transmitting. Send a CTRL-D when finished. ; cat >>
+    The first field is the udl protocol option. It is one of the options listed
+when someone uploads a file. It was automatically set up when "install"
+was run. The second field is the formal name the protocol. The third is the
+actual program to run. That special variable isn't needed here because all
+metacharacters will automatically be evaluated. So be careful to quote
+any metacharacter that is to be taken literally like *,",;,etc.
+
+    Please understand it. You must enter the protocols yourself. (except Ascii)
+
+    Examples:
+
+    2:Xmodem:/u/local/umodem -rt
+    3:Kermit:/u/local/kermie -rb
+
+    Don't worry about file names. This is done for you because the file
+names will differ as people upload more and more of them.
+
+    $ cat protocols.down
+    1:Ascii:Prepare for transmission in 10 seconds. ; cat
+    The same applies for this file except its used when downloading.
+
+    Examples:
+
+    2:Xmodem:/u/local/umodem -st
+    3:Kermit:/u/local/kermie -sb
+
+    $ cat config
+    $
+
+    Where all system variables (including the one to evaluate the
+third field or "prlib") are stored.
+
+    The format is "variable=value" or simply "variable=" for some of them.
+
+    Consult config.tbl in your documentation package for more details.
+
+    Now it's time to learn how to use SBBS it self.
+
+II.   SBBS - THE BBS
+
+    There are two ways to tackle this difficult task of explaining SBBS.
+I could explain the whole SBBS system , including the general commands that
+are available to all the users OR I could explain only the commands
+available to high-level users.
+
+    But do to the accident that caused my administration documentation to be
+completely erased, I have no time to be complete. I will try my best to be able
+to explain how to run SBBS. But you will have to wait until SBBS is released
+to the public before a better documentation is written up.
+
+    Log on to SBBS
+
+    It will display the copyright message and prompt you for your ID.
+You may exit here by typing OFF. If you are new to SBBS you would type NEW. It
+will ask you questions and create an account for you. An account is your own
+ID which makes you a member of SBBS. After your ID is created, you may then
+log in SBBS with your newly created ID. If you enter your ID, it will ask for
+a password. You told SBBS this when you requested to be a new user or when (if
+you are the SBBS administrator) you ran install. Type the password. It will not
+be echoed back to you. This is to protect your password. If your password
+attempt fails then it will reject you. If you enter incorrect information
+three times in a row you will be knocked off. If you are accepted, you will be
+put in SBBS. You will be told the last caller if there is one. You are then
+put in the "SBBS main" prompt. The two important commands to remember are
+'A' and '?'. A command is a letter you type from SBBS main to do something.
+A '?' will tell SBBS to display a summary of commands. 'A' is a special
+command and can ONLY be used by level-3 users. It's the Administrative Shell.
+
+    Levels of users
+
+    There are four "levels". These levels tell what privileges a user may
+have. The user who ran install automaticly has a level of 3. Anyone
+who used NEW from the SBBS login automaticly has an access of 0. Here is
+a list of the four levels and what they can do.
+
+    Level-3: These users (usually only 1) may access EVERYTHING on SBBS.
+    Level-2: These users may access everything including the Administration
+             commands except 'A'. This is the shell.
+    Level-1: "Normal" access. This access level has access to all the
+             commands save the Administration commands.
+    Level-0: Limited access. Usually new users.
+
+    More on the login routine
+
+    If you are a Level-3 user, please read this section. Otherwise you may
+skip it or read it for background. But only Level-3 users may perform the
+following things.
+
+    From SBBS main, type A. You will get a shell. I assume that you are in the
+SBBS home directory. If not, change to it.
+
+    $ cd misc
+
+    There are a few things we will deal with "config". The file called config
+will allow you to configure your SBBS system to your specifications. These
+configuration commands are called C variables. (No relation to that hidious
+programming language called "C" :-[ ) These C variables are stored in the
+config file; in this format:
+         variable=value
+              or simply
+         variable=
+    To learn what all the C variables are and what they do, consult the
+documentation config.tbl. This is a full explanation of all the variables and
+what they do. We will explain a few of them now.
+
+    First there are two C variables we will learn. Cycle and newuser. As you
+recall, if your login attempt fails a certain amount of times, you will be
+kicked off. You can control the amount of times it takes by the cycle C
+variable. The format is cycle=times.
+
+    Example:
+
+    cycle=5    - This allows five mess-ups before it disconnects a user.
+
+    The next C variable is newuser. The purpose of this one is to print a file
+when a person requests to be a new user. This is usually used to print the
+rules or instructions on how to use the system. The form is newuser=file. The
+file should be an absolute path to avoid errors. Never fully assume a certain
+situation is true. Always think of all possibilities.
+
+    There is also another C variable. Form is "elite=". No value is
+necessary. This instructs SBBS not to accept new users. It will also fail to
+notify users that there is such an option as NEW.
+
+    A few more C variables.
+
+    name=Erie Coast Boating and Sailing Club
+    version=1.0.0
+    shell=/bin/csh
+
+    These are almost self explanitory.  Name and version will print there
+respected values from time to time. Including the Login routine. The shell
+C variable is the shell to run when the 'A' command is used. Otherwise, as you
+know, the default shell is /bin/sh.
+
+    Becoming new to helping the new
+
+    Since you are a level-2 or a level-3 user, you may validate other new
+users. This is done be raising them from level-0 to level-1. There are special
+commands to work with new users and existing users.
+
+    Getting a User Log
+
+    A User Log is a list of who called and when. It also tells when they left.
+As you have recalled if you read the section on files, this is the file
+~/admin/profile/log. SBBS will keep track up to 20 log entries before it
+only prints the last 20 callers only. You may change this number by the use
+of the C variable "log". Just suply how many entries to keep after the equal
+sign and SBBS will do it. The command is 'U'.It may be used by all level users.
+
+    Listing users
+
+    From time to time you may wish to list certain users. Type 'L' and you
+are now in the list mode. Again, this option may be used by all, but only
+level-2 or level-3 users may see the information such as the street address.
+The other Level-0 and level-1 users only see limited information such as ID,
+name, and access. Just type the ID of the user to view and his information
+is shown. Type -1 as an ID to escape to the main menu.
+
+    The neucleous of user management
+
+    This is the 'V' command; available only to level-2 and level-3 users. In
+here you have six commands. Since you are at a command prompt, you may type
+'?' if you need help.
+
+    The first is 'L'. This command lists all the new users. This so you know
+who is new and you may do something to them. (Usually raise their access to 1)
+
+    The next is 'A'. This command allows you to change the access level of any
+user -- not just new ones. Simply type the ID of the user and his new access.
+
+    Another is 'C'. This one will clear new users from the new user file in
+order to avoid confusion. This will only clear people on the new user file.
+Just type the ID to clear. Note that this is different from 'R', which
+deletes a user from the SBBS logins and members files and thus deletes or
+Removes a user from SBBS. 'C' merely deletes the line from the new user file.
+
+    The final user management command, 'R', removes a user completely from
+SBBS. Type the ID of the user and it will display there name and ask for
+confirmation. Be careful with this command.
+
+    One of two other commands in the 'V' command/function is 'V'. (Coincidental
+, nothing more) It allows you to "view" the command log. The log that tells
+what each user did. It shows the ID, colon, the-next-commands-seperated by
+colons.
+
+    Example:
+    1:M:L:U:I:E
+
+    NOTE: This only keeps track of commands entered in SBBS main. Not the
+commands entered in Validation Mode or any other mode or sub-menu.
+
+    'D' for delete/refresh will clear the command log because SBBS does not
+do this for you. Therefor, you don't need a C variable.
+
+    Some other miscellaneous things
+
+    The following is a discussion on some other miscellaneous things.
+
+    Many times when a person logs on a BBS, they get a welcome message. SBBS
+does the same thing. It shows a file that is shown every time a person logs
+in. You may not see it but that's because the file is blank. To show the
+file and add your message, edit ~/misc/openmes. This file is sort of like
+UNIX's motd file. Once you're finished, any people that logs in will see this
+message.
+
+    On the other side of the scale, many times you want "Good bye" message. This
+is easy to accomplish too. Just edit ~/misc/closing. Add what you want and
+that will be shown next time you log off.
+
+    Sometimes you want to show information on your BBS to other users.
+This can be done by the 'I' command. It will display information if there is
+any. If there is not and you would like to add it. Edit ~/misc/info. Add the
+information. Of course you must have level-3 access to do this as editing
+any file requires the 'A' command. The same applies for the former two files.
+
+    As was discussed before, there may be times you wish to post "updates"
+about events surrounding your BBS system or services. As I told you, the
+bulletins are only displayed once. But they can be reread by another command.
+Type 'B' from SBBS main and enter the subject of the update. There is a
+default provided for you. You don't have to use this default. Then you compose
+the message using the SBBS editor. And you're done.
+
+    You may reshow any bulletins by the 'O' command from SBBS main. In fact,
+any user can. Just answer Y or N when it asks you if you wish to read a certain
+bulletin. When it scans through all of them, it will exit.
+
+    Message Bases--a way to communicate
+
+    There is a way to have all users talk to each other through one common
+area; called the Message Bases. It's the 'M' command from SBBS main. The
+Message Bases are divided into specific topics - called (strangely enough)
+a "message base". Each message base has a name and a number associated with it.
+The name is what the messages posted in this area concern. The number is how
+you identify the base. You would not be required to enter the whole topic
+which may be more then one word.
+
+    Posting, Killing, and Editing.
+
+    After entering the message base, you will be put in the "General" base.
+(#1) You can post or read messages in this area. To post a message, type 'P'
+from Message Main (The "General)" prompt.) prompt. Enter the subject of
+your message. The subject is more specific about what your message is
+about. It should pertain to the topic. Which is General. So it could be any-
+thing. For someone to read it (including you) you type either 'I', 'F', 'R', or
+'N'. 'G' reads messages from all message bases. If you don't know what these
+commands stand for, type '?' at Message Main.
+
+    You may wish to kill a message you made. Any user may do this. Simply
+type 'K' and enter the message number. (not the subject. The number can be
+seen when reading your message.) Unless you are a level-2 or level-3 user,
+you may not kill messages you did not post. Level-2 and level-3 may delete
+any message.
+
+    Editing a message
+
+    You may have made a mistake you will regret. Don't fret. Just use option
+'O' (For "open message to edit." Not 'E'. don't get thrown off.) and type
+the message you were going to edit. If you are not a level-2 or level-3 user,
+you may only edit YOUR message. Level-2 and level-3 users may edit any message.
+
+    Creating a message base
+
+    If you just installed SBBS, chances are that there is only the General
+message base. To list all of the message bases, type 'L' from Message Main.
+If you wish to create more, type 'C'. Then enter the topic for the message
+base. It then asks for you to confirm your topic and creates it. This is ONLY
+available to the level-2 and level-3 users.
+
+    The MBM
+
+    MBM stands for Message Base Manager. An MBM assumes privileges for level
+2-3 users. But his power is limited to a particular message base only. And he
+still may not use the 'C' option. Further more, an MBM only exists in
+message bases. Not any other place. He may be an MBM of more then one message
+base but these must be specificly told to SBBS. There may be only one MBM. The
+following are available to level-2/3 users and the MBM. This controls what
+restrictions on a message base may be imposed and what the MBM is. This
+option is 'Z'. It's a sub-menu with the options inside. Only level-2 , level-3,
+and MBMs may use it. And they can use ALL of the features COMPLETELY. (NOTE:
+MBMs can use the E and K commands from Message Main just like a level-2 or
+level-3 user.)
+
+    The 'Z' command in Message Main
+
+    When you type this command, some information about the current message
+base is displayed. You may get this information back by the 'I' command. If
+you need help type '?' , as always. To exit type 'E'.
+
+    Changing or assigning the MBM
+
+    The 'B' command from this sub-menu allows it. Even an MBM may use this to
+switch over control to another user. Type the ID of the user who you want to
+be MBM.
+
+    Restrictions
+
+    The 'C' command allows you to change restrictions. It shows three different
+restrictions: access, restricted list, none. To lift any restrictions, type
+'N'. To restrict users by access, type 'A'. Then type a list of accesses that
+MAY use that message base. INCLUDE YOURS OR YOU WILL NEVER GET BACK IN! You
+may also make a restricted list--the 'R' option. Type the users ALLOWED in. 
+Again, INCLUDE YOUR ID NUMBER! OR YOU WILL NEVER GET BACK IN! If you make a
+mistake, don't worry. As long as you don't exit the message base, you can
+correct it. If you wish to add or delete restrictions, you have to retype them.
+For accesses this isn't to bad. But for a restricted list it may be tedious.
+You must type ALL IDs of the users to let in.
+    The Program Library and UDL
+
+    Choose option 'P' from SBBS main. What you get is list of programs
+available. Type the number of the program and it will run it for you. Two
+special "commands" are also available: '$', and '#'. '$' will exit to the
+main menu. '#' will relist the programs.
+
+    Of course, you will want to add your special programs. You may do this
+only if you are a level-3 user. Go get the Administrative shell. Then go to
+the misc directory and edit prlib. Each line should be three fields seperated
+by colons. The first field is a unique number that identifies that program. It
+must be a number and it is a good idea for them to be in order! :-) The second
+field is the formal name. This is the name the user sees when he lists the
+programs available. The third field is the actual program to run.
+
+    If you wish to use arguments, environment variables , quotes,
+redirection characters or ';'s then you must set up a C variable called "eval"
+so that it may EVALuate the line. Using all of the things including file
+substitution. It doesn't require a value but be sure to have the equal sign.
+
+    Examples:
+
+    1:DCoM II:/u/local/decom
+    2:Extrox Editor:/u/local/extrox
+
+    (allowed with C variable eval set)
+
+    1:Telex System:/u/local/telex -r
+    2:Rod Trox:/u/local/dep -r ; ls|wc
+
+
+    The File Facilities
+
+    There is a feature that allows people to store and retrieve text and/or
+program files. This is done by the DataBases. It's the 'D' command.
+
+    From the UDL main prompt you can enter a DataBase, exit(E), list(L) the
+DataBases again, (It lists automaticly the DataBases available. When you
+first install SBBS, there will be none.) create a DataBase,(Only with if you're
+level-2 or level-3.) or approve new uploads. (Level-2/level-3 only.
+Explained later.)
+
+    To enter a DataBase, enter its number. You will be put in that DataBase
+and be at the new FILE prompt.
+
+    Chances are that if you just installed SBBS you woun't have any Data-
+Bases. You may create them. A DataBase is an area with a specific topic that
+describes files in that area. To create a DataBase, type 'C'. Then describe
+what that DataBase is intended for. It will be stored and given a number. You
+may now enter the DataBase.
+
+    At the FILE mode, you can do things like upload, download and list files.
+Again, if you need help, type '?'.
+
+    Uploading files
+
+    If you upload a file, it must be approved by a level-2 or level-3 user.
+If you are one, you must approve it your self. To upload, answer all questions
+and choose a protocol. A protocol tells how both of your computers communicate.
+There is already one -- ascii. This simply shows the file and your computer
+is responsible for "capturing" it. You may add more protocols if you are a
+level-3 user. Choose 'A' from SBBS main and go to the misc directory. Edit
+protocols.up. (Note: Download protocols take there own seperate file. Every
+thing you learned about setting upload protocols may be applied to download
+protocols. Remember that download protocols are used when downloading a
+file. It takes its protocol from protocols.down)
+Again, it has three fields seperated by a comma. And again the first field is
+the number the user chooses to use that protocol. Again the second field is
+the name the user sees. The third field is the program that runs the protocol.
+One is there already. Its the ascii one. Please note that C variable eval need
+not be set to evaluate metacharacters as it will automaticly evaluate the line.
+
+    Examples:
+
+    1:Ascii:echo Transmit. Enter A CTRL-D when finished. ; cat >>
+    (That line already in file)
+    2:Xmodem:/u/local/umodem -rt
+    3:Kermit:/u/local/kermie -rt
+
+    Remember to also edit protocols.down for adding the simmular protocols.
+
+    1:Ascii:echo Prepare to receive. ; cat
+    (already in there)
+    2:Xmodem:/u/local/umodem -st
+    3:Kermit:/u/local/kermie -st
+
+    See the little but important differences between the two files?
+
+    Approving files
+
+    Finally, a file uploaded must be approved. Choose 'N' from UDL main. If
+they're no uploads it will send you back with a "No uploads." message. Other-
+wise it will cycle through all the uploaded files. Remember where they're
+stored? The udl/new directory. It will print information on the file (like
+who uploaded it and what DataBase) and ask you what to do with it. Make a
+decision and go on. Once you're through, it will do what you told it to and
+exit. The commands are:
+
+    a - Abort. Go back to UDL main and leave all files in tact..
+    v - View first and last ten lines of a file.
+    d - Delete that file and don't move it to a DataBase.
+    m - Move the file to that DataBase -- approve it.
+
+
+    This concludes are administration documentation. Direct questions to
+robertd@ncoast.UUCP
+...uunet!amdahl!sun!mandrill!ncoast!robertd

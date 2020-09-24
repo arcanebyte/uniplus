@@ -1,0 +1,39 @@
+#! /bin/sh
+# Access permisions for message bases
+
+if [ $access -gt 3 ] ; then
+   exit 0
+fi
+
+a=`grep "^b$1=" $dir/misc/config`
+if [ -z "$a" ] ; then
+  exit 0
+fi
+
+string=`echo $a | awk -F= '{print $2}'`
+
+type=`echo $string | awk -F, '{print $1}'`
+
+if [ "$type" = "restrict" ] ; then
+  name=`echo $string|grep ,$bbs_name,`
+  if [ -z "$name" ] ; then
+    echo "This base requires that you be on a\nrestricted list. Ask your sysop for more\ndetails."
+    exit 1
+  else
+    exit 0
+  fi
+fi
+
+if [ "$type" = "access" ] ; then
+  axess=`echo $string | grep ,$access,`
+  if [ -z "$axess" ] ; then
+    echo "This base requires that you have the\nfollowing accesses:$string. Please\ncontact your sysop for more details."
+    exit 1
+  else
+
+    exit 0
+  fi
+fi
+
+echo "Unrecognized variable value in config."
+exit 2

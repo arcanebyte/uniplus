@@ -1,0 +1,58 @@
+#! /bin/sh
+# Shell program menu
+# Takes input from a file called
+# $dir/misc/prlib
+
+
+if [ -r $dir/misc/prlib ] ; then
+  echo "\n\n"
+else
+  echo "No programs available."
+  exit
+fi
+echo "$: Leave program"
+echo "#: List programs"
+awk -F: '{print $1 ":" $2}' $dir/misc/prlib
+
+while :;do
+echo "Program) \c"
+read prg
+prg=`echo "$prg" | tr -d "!"`
+prg=`echo $prg`
+com=`echo "$prg" | cut -c1`
+
+if [ -z "$prg" ] ; then
+  continue
+fi
+
+if [ "$com" = '$' ] ; then
+  exit
+fi
+
+if [ "$com" = '#' ] ; then
+  echo "$: Leave program"
+  echo "#: List programs"
+  cut -c-20 $dir/misc/prlib
+  continue
+fi
+
+
+
+
+a=`expr $prg + 0 2> /dev/null`||continue
+a=`grep "^$a:" $dir/misc/prlib`
+
+if [ -z "$a" ] ; then
+  echo "Program not found"
+  continue
+fi
+prg="`echo \"$a\" | awk -F: '{print $3}' `"
+
+eflag=`grep "^eval=" $dir/misc/config`
+if [ -z "$eflag" ] ; then
+$prg
+else
+eval $prg
+fi
+done
+

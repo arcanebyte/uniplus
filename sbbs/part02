@@ -1,0 +1,2532 @@
+# This is a shell archive.  Save this into a file, edit it
+# and delete all lines above this comment.  Then give this
+# file to sh by executing the command "sh file".  The files
+# will be extracted into the current directory owned by
+# you with default permissions.
+#
+# The files contained herein are:
+#             access            bbs           chat        control
+#                cwd             db           edit      initial.c
+#            install          killm         lock.c      login-sig
+#            mailbox          medit          mkbul          mkusr
+#               news           post        program         rescue
+#               sbbs       sendmail            udl         udlnew
+#             update          users            usr              z
+#     
+#
+echo 'x - access'
+sed 's/^X//' <<'________This_Is_The_END________' >>access
+X#! /bin/sh
+X# Access permisions for message bases
+X
+Xif [ $access -gt 3 ] ; then
+X   exit 0
+Xfi
+X
+Xa=`grep "^b$1=" $dir/misc/config`
+Xif [ -z "$a" ] ; then
+X  exit 0
+Xfi
+X
+Xstring=`echo $a | awk -F= '{print $2}'`
+X
+Xtype=`echo $string | awk -F, '{print $1}'`
+X
+Xif [ "$type" = "restrict" ] ; then
+X  name=`echo $string|grep ,$bbs_name,`
+X  if [ -z "$name" ] ; then
+X    echo "This base requires that you be on a\nrestricted list. Ask your sysop for more\ndetails."
+X    exit 1
+X  else
+X    exit 0
+X  fi
+Xfi
+X
+Xif [ "$type" = "access" ] ; then
+X  axess=`echo $string | grep ,$access,`
+X  if [ -z "$axess" ] ; then
+X    echo "This base requires that you have the\nfollowing accesses:$string. Please\ncontact your sysop for more details."
+X    exit 1
+X  else
+X
+X    exit 0
+X  fi
+Xfi
+X
+Xecho "Unrecognized variable value in config."
+Xexit 2
+________This_Is_The_END________
+echo 'x - bbs'
+sed 's/^X//' <<'________This_Is_The_END________' >>bbs
+X#! /bin/sh
+X# SBBS - revision
+X# New bbs setup.
+X# 
+X# SBBS - By Rob DeMarco
+X# Copyright(C) 1987 By Rob DeMarco
+X# All rights reserved.
+X
+X# New revision started on June 16,
+X# 1987
+X
+Xrflag=0
+Xbase=General ;basen=1;export base basen
+Xflag=0
+X$dir/programs/access 1
+Xif [ $? -eq 1 ] ; then
+X   echo "Access to message bases is not allowed."
+X   exit
+Xfi
+X
+Xecho "\n\n"
+X
+Xwhile : ; do
+X
+Xif [ "$gflag" = "x" ] ; then
+X   if [ $sflag = 1 ] ; then
+X      global=`expr $global + 1`
+X   fi
+X   if [ $global -gt $bc ] ; then
+X      gflag=z
+X   fi 
+X   if [ $sflag = 1 ] ; then
+X      sflag=0 
+X      if [ $skflag = 0 ] ; then
+X         command=n
+X      else
+X         skflag=0 ; command=""
+X      fi
+X   else
+X      sflag=1 ; command=j$global
+X      echo "Examining base #$global"
+X   fi
+Xelse
+Xecho "$base) \c"
+Xread command
+Xfi
+Xskflag=0
+X
+Xcmd=`echo "$command" | cut -c1`
+X
+Xif [ "$cmd" = "" ] ; then
+X  continue
+Xfi
+X
+X
+Xif [ "$cmd" = E -o "$cmd" = e ] ; then
+X  exit
+Xfi
+X
+Xif [ "$cmd" = K -o "$cmd" = k ] ; then
+X  $dir/programs/killm
+X  continue
+Xfi
+X
+Xif [ "$cmd" = "?" ] ; then
+X  cat $dir/misc/com
+X  continue
+Xfi
+X
+Xif [ $cmd = C -o $cmd = c ];then
+X  if [ "$access" -lt 2 ];then
+X    echo "Only the SysOp or Co-SySops may create\nnew boards. Contact them if you wish\nto."
+X    continue
+X  fi
+X  while : ; do
+X  echo "Enter the name of this board, 40 char."
+X  echo "max."
+X  echo "{========1=========2=========3========}"
+X  read name
+X  name=`echo "$name" | cut -c-40`
+X  name=`echo "$name" | tr -d ":"`
+X  echo "Board name is $name."
+X  echo "Correct? <Y> \c"
+X  read yn
+X  yn=`echo $yn | cut -c1`
+X  if [ "$yn" = N -o "$yn" = n ];then
+X    continue
+X  fi
+X  break
+X  done
+X  bn=`ls $dir/bbs | wc -l`
+X  bn=`echo $bn`
+X  bn=`expr $bn + 1`
+X  cr="$bn:$name"
+X  echo "$cr" >> $dir/misc/bbsrc
+X  mkdir $dir/bbs/$bn
+X  continue
+Xfi
+X
+Xif [ $cmd = L -o $cmd = l ];then
+X  cat $dir/misc/bbsrc
+X  continue
+Xfi
+X
+Xif [ $cmd = M -o $cmd = m ];then
+X   echo "Board #\tMessage Base manager:"
+X   grep "^mbm" $dir/misc/config | tr = "	" | cut -c4- | sort -n
+Xcontinue
+Xfi
+X
+Xif [ $cmd = J -o $cmd = j ];then
+X  b=`echo "$command" | cut -c2-`
+X  l=`ls $dir/bbs | wc -l`
+X  l=`echo $l`
+X  if [ "$b" = "" ];then
+X    while : ; do
+X    echo "Jump to what base (1-$l)? \c"
+X    read b
+X    b=`echo $b | tr -d "!"`
+X    if [ "$b" = "" ];then
+X      continue
+X    fi
+X    break
+X    done
+X  fi
+X  b=`expr $b + 0 2> /dev/null`
+X  if [ $? != 0 ];then
+X    b=1
+X    continue
+X  fi
+X  if [ $b -lt 1 -o $b -gt $l ];then
+X    echo "That board doesn't exist."
+X    continue
+X  fi
+X  $dir/programs/access $b
+X  if [ $? = 1 ] ; then
+X    skflag=1
+X    continue
+X  fi
+X  basen=$b ; export basen
+X  base="`grep \"^$basen:\" $dir/misc/bbsrc | awk -F: '{print $2}'`"
+X  export base
+X  continue
+Xfi
+X
+Xif [ "$cmd" = P -o "$cmd" = p ] ; then
+X  $dir/programs/post
+X  continue
+Xfi
+X
+Xif [ $cmd = I -o $cmd = i ];then
+X  number=`ls $dir/bbs/$basen | wc -l`
+X  if [ $number = 0 ];then
+X    echo "They're no messages in this base."
+X    continue
+X  fi
+X  echo "Read what message number? (1): \c"
+X  read rnumber
+X  if [ "$rnumber" = "" ];then
+X    rnumber=1
+X  fi
+X  rnumber=`expr $rnumber + 0 2> /dev/null`
+X  if [ $? != 0 ] ; then
+X    rnumber=1
+X  fi
+X  if [ $rnumber -lt 1 ] ; then
+X    rnumber=1
+X  fi
+X  if [ $rnumber -gt $number ];then
+X    echo "That message doesn't exist."
+X    continue
+X  fi
+X  $cls
+X  number=`echo $number`
+X  echo "{Message $rnumber of $number}"
+X  cat $dir/bbs/$basen/$rnumber
+X  $dir/programs/update $rnumber
+X  continue
+Xfi
+X
+Xif [ $cmd = S -o $cmd = s ] ; then
+X   a=`ls $dir/bbs/$basen | wc -l`
+X   a=`echo $a`
+X   if [ $a -eq 0 ] ; then
+X      echo "They're no messages in this base."
+X      continue
+X   fi
+X   echo "Start scanning (1): \c"
+X   read scan
+X   scan=`expr $scan + 0 2> /dev/null`
+X   if [ $? -ne 0 ] ; then
+X      scan=1
+X   fi
+X   if [ $scan -gt $a ] ; then
+X      scan=1
+X   fi
+X   while [ $scan -le $a ] ; do
+X         echo "{Message $scan of $a}"
+X         sed -n '1,3p' $dir/bbs/$basen/$scan
+X         echo "---------------------------------------"
+X         echo "[ Q to quit, <RETURN> to continue ] \c"
+X         read scanf
+X         scanf=`echo $scanf | tr -d "!"`
+X         if [ "$scanf" = Q -o "$scanf" = q ] ; then
+X           continue 2
+X         fi
+X         scan=`expr $scan + 1`
+X   done
+X   continue
+Xfi
+X
+Xif [ $cmd = Q -o $cmd = q ] ; then
+X   a=`ls $dir/bbs/$basen | wc -l`
+X   if [ $a -eq 0 ] ; then
+X      echo "They're no messages in this base."
+X      continue
+X   fi
+X   echo "Start scanning (1): \c"
+X   read scan
+X   scan=`expr $scan + 0 2> /dev/null`
+X   if [ $? -ne 0 ] ; then
+X      scan=1
+X   fi
+X   if [ $scan -gt $a ] ; then
+X      scan=1
+X   fi
+X   while [ $scan -le $a ] ; do
+X         wc=`cat $dir/bbs/$basen/$scan | wc -l`
+X         if [ $wc -eq 1 ] ; then
+X            echo "$scan\t<KILLED>"
+X            scan=`expr $scan + 1`
+X            continue
+X         else
+X            echo "$scan\t\c"
+X            sed -n '2p' $dir/bbs/$basen/$scan
+X         fi
+X         scan=`expr $scan + 1`
+X   done
+X   continue
+Xfi
+X
+Xif [ "$cmd" = O -o "$cmd" = o ] ; then
+X   $dir/programs/medit
+X   continue
+Xfi
+X
+Xif [ $cmd = Z -o $cmd = z ] ; then
+X   $dir/programs/z
+X   continue
+Xfi
+X
+Xif [ $cmd = G -o $cmd = g ] ; then
+X   gflag=x ; bc=`ls $dir/bbs | wc -l`
+X   bc=`echo $bc` ; sflag=0 ; global=1
+X   continue
+Xfi
+X
+Xif [ $cmd = N -o $cmd = n ];then
+X  if [ ! -f $dir/new/$bbs_name ];then
+X    echo > $dir/new/$bbs_name
+X  fi
+X  info=`grep "^$basen:" $dir/new/$bbs_name`
+X  if [ "$info" = "" ] ; then
+X    echo "$basen:0" >> $dir/new/$bbs_name
+X    mp=1
+X  else
+X    mp=`echo "$info" | awk -F: '{print $2}'`
+X    mp=`expr $mp + 1`
+X  fi
+X    tst=`ls $dir/bbs/$basen|wc -l`
+X    if [ $mp -gt $tst ];then
+X      echo "They're no new messages."
+X      continue
+X    fi
+X  cmd=F
+X  f=x
+X  number=`ls $dir/bbs/$basen|wc -l`
+Xfi
+X
+Xif [ "$cmd" != "F" -a "$cmd" != "f" -a "$cmd" != R -a "$cmd" != r -a "$cmd" != N -a "$cmd" != n ] ; then
+X   continue
+Xfi
+Xif [ "$f" != x ] ; then
+X  if [ $cmd = F -o $cmd = f -o $cmd = R -o $cmd = r ] ; then
+X    f=_
+X  fi
+Xfi
+X
+Xif [ "$f" = _ ];then
+X  number=`ls $dir/bbs/$basen | wc -l`
+X  if [ $cmd = F -o $cmd = f ];then
+X    default=1
+X  fi
+X  if [ $cmd = R -o $cmd = r ] ; then
+X    default=$number
+X  fi
+X  if [ $number = 0 ] ; then
+X    continue
+X  fi
+X  default=`echo $default`
+X  echo "Start at message number ($default): \c"
+X  read mp
+X  if [ "$mp" = "" ];then
+X    mp=$default
+X  fi
+X  mp=`expr $mp + 0 2> /dev/null`
+X  if [ $? != 0 ] ; then
+X    mp=1
+X  fi
+X  if [ $mp -lt 1 ];then
+X    mp=1
+X  fi
+X  if [ $mp -gt $number ];then
+X    echo "That message doesn't exist."
+X    continue
+X  fi
+Xfi
+Xwhile : ; do
+X     $cls
+X     number=`echo $number`
+X     echo "{Message $mp of $number}"
+X     if [ "$rot13" = 1 ] ; then
+X        rot13=0
+X        sed -n '1,5p' $dir/bbs/$basen/$mp
+X        sed -n '6,$p' $dir/bbs/$basen/$mp | tr "[A-M][N-Z][a-m][n-z]" "[N-Z][A-M][n-z][a-m]" 
+X     else
+X        cat $dir/bbs/$basen/$mp
+X     fi
+X     $dir/programs/update $mp
+X  echo "[R]eply [A] Read Again [N]ext [Q]uit\n[X] Read as rot13 message <N>: \c"
+X  read o
+X  o=`echo $o | cut -c1`
+X  if [ "$o" = "" ];then
+X    o=N
+X  fi
+X  if [ $o = A -o $o = a ];then
+X    continue
+X  fi
+X  if [ $o = X -o $o = x ];then
+X    rot13=1
+X    continue
+X  fi
+X  if [ $o = Q -o $o = q ];then
+X    $dir/programs/update $mp
+X    continue 2
+X  fi
+X  if [ $o = R -o $o = r ];then
+X    t=`cat $dir/bbs/$basen/$mp | wc -l`
+X    if [ $t = 1 ];then
+X      echo "You can not reply to a killed \n message."
+X      rflag=1
+X      continue 
+X    fi
+X    echo "Is this [A](Private) or [B]public?<B> \c"
+X    read pop
+X    if [ "$pop" = A -o "$pop" = a ];then
+X      arg1="`sed -n 1p $dir/bbs/$basen/$mp`"
+X      arg1=`echo "$arg1" | cut -c10-`
+X      arg1=`echo "$arg1" | awk -F\( '{print $1}'`
+X      arg1=`echo "$arg1" | cut -c2-`
+X      subj="`sed -n 2p $dir/bbs/$basen/$mp`"
+X      subj=`echo "$subj"|cut -c10-`
+X      $dir/programs/sendmail $arg1 "$subj" $mp
+X    else
+X      subject="`sed -n 2p $dir/bbs/$basen/$mp`"
+X      subject=`echo "$subject" | cut -c10-`
+X      sub=`echo "$subject"|cut -c-4`
+X      if [ "$sub" != "Re: " ];then
+X        subject="Re: $subject"
+X      fi
+X
+X      flag=1 ; xcmd=$cmd ; cmd=P ; $dir/programs/post "$subject" $dir/bbs/$basen/$mp
+X      flag=0
+X      cmd=$xcmd
+X      if [ $rflag = 0 ];then
+X        number=`expr $number + 1`
+X      fi
+X      if [ $number -gt `ls $dir/bbs/$basen | wc -l` ];then
+X        number=`expr $number - 1`
+X        rflag=0
+X      fi
+X    fi
+X  fi
+X  if [ $cmd = R -o $cmd = r ];then
+X    mp=`expr $mp - 1`
+X    if [ $mp -lt 1 ];then
+X      echo "Scan complete."
+X      continue 2
+X    fi
+X    continue
+X  else
+X    mp=`expr $mp + 1`
+X    if [ $mp -gt $number ];then
+X      echo "Scan complete."
+X      continue 2
+X    fi
+X    continue
+X  fi
+Xdone
+Xecho "Illegal command."
+Xdone
+________This_Is_The_END________
+echo 'x - chat'
+sed 's/^X//' <<'________This_Is_The_END________' >>chat
+X#! /bin/sh
+X# Shell script for chat
+X
+Xecho "ID\tName"
+Xecho "--\t----"
+Xawk -F: '{print $1 "\t" $2}' $dir/misc/usr
+Xecho "Enter user id to chat with: \c"
+Xread y
+Xy=`echo $y | tr -d "!"`
+Xa=`grep "^$y:" $dir/misc/usr`
+X
+Xif [ "$a" = "" ] ; then
+X  echo "No such user on."
+X  exit 1
+Xfi 
+Xy=`echo $a | awk -F: '{print $3}'`
+Xecho "Message from UID #$bbs_name on tty\n$tty.Choose option T from $bbs main." > $y
+Xif [ $? != 0 ] ; then
+X  echo "Permision to chat is denied."
+X  exit
+Xfi
+X
+Xecho "Enter message - line by line. Press"
+Xecho "CTRL-D when finshed."
+X
+Xwhile : ; do
+X echo ":\c"
+X read msg || break
+X echo "$msg" > $y
+Xdone
+X
+Xecho "Message/chat terminated."
+Xecho "    [ END OF MESSAGE ]" > $y
+________This_Is_The_END________
+echo 'x - control'
+sed 's/^X//' <<'________This_Is_The_END________' >>control
+X#! /bin/sh
+X# Inhibit or allow message/chat
+X# request.
+X
+Xecho "<N>o messages from other users."
+Xecho "<Y>es, allow messages from other users."
+Xread y
+Xy=`echo $y | tr "[A-Z]" "[a-z]"`
+Xy=`echo $y | tr -d "!"`
+Xif [ "$y" != n -a "$y" != y ] ; then
+X  echo "N or Y."
+X  exit 1
+Xfi
+X
+Xif [ "$y" = n ] ; then
+X   chmod og-rwx `tty`
+Xelse
+X   chmod og+wrx `tty`
+Xfi
+________This_Is_The_END________
+echo 'x - cwd'
+sed 's/^X//' <<'________This_Is_The_END________' >>cwd
+X#! /bin/sh
+X# Change Password
+X
+Xstty -echo
+Xecho "Enter your current password: \c"
+Xpwd="`line | tr \"[A-Z]\" \"[a-z]\"`"
+Xecho "\n"
+Xif [ `echo "$pwd\c" | wc -c` -eq 1 ];then
+Xpwd=`echo "$pwd" | tr -d "!"`
+Xfi
+Xif [ -z "$pwd" ] ; then 
+X  echo "Password change is aborted."
+X  stty echo
+X  exit
+Xfi
+X
+X
+Xpid=$$
+Xecho "$pwd" > /tmp/sbbs.buf.$pid
+Xpwd=`crypt "$pwd" < /tmp/sbbs.buf.$pid`
+Xrm /tmp/sbbs.buf.$pid
+Xcpwd=`fgrep -x "$bbs_name $pwd" $dir/admin/profile/logins`
+X
+Xif [ "$cpwd" = "" ] ; then
+X  echo "Sorry."
+X  stty echo
+X  exit
+Xfi
+X
+Xecho "Enter new password: \c"
+Xnpwd="`line | tr \"[A-Z]\" \"[a-z]\"`"
+Xecho "\n"
+Xecho "Enter new password again: \c"
+Xntest="`line | tr \"[A-Z]\" \"[a-z]\"`"
+Xecho "\n"
+X
+Xif [ "$ntest" != "$npwd" ] ; then
+X   echo "Aborted."
+X   stty echo
+X   exit
+Xfi
+X
+X
+X
+Xif [ -z "$npwd" ]; then
+X  echo "Password change aborted."
+X  stty echo
+X  exit
+Xfi
+X
+Xpid=$$
+Xecho "$npwd" > /tmp/sbbs.buf.$pid
+Xnpwd=`crypt "$npwd" < /tmp/sbbs.buf.$pid`
+Xrm /tmp/sbbs.buf.$pid
+X
+Xed - $dir/admin/profile/logins << EOE
+XH
+X/^$bbs_name /d
+Xw
+XEOE
+Xecho "$bbs_name $npwd" >> $dir/admin/profile/logins
+Xecho "Password has been changed."
+Xstty echo
+________This_Is_The_END________
+echo 'x - db'
+sed 's/^X//' <<'________This_Is_The_END________' >>db
+X#! /bin/sh
+X# Display Bulletin (db)
+X
+X
+Xnob=`ls $dir/bulletins | wc -l`
+X
+Xif [ $nob = 0 ] ; then
+X  exit
+Xfi
+X
+Xcb=1
+X
+Xwhile [ $cb -le $nob ] ; do
+X  while : ; do
+X    echo "Bulletin #$cb - read? \c"
+X    read yn
+X    yn=`echo $yn | tr -d "!"`
+X    yn=`echo $yn | cut -c1`
+X
+X    if [ "$yn" = N -o "$yn" = n ]; then
+X      break
+X    fi
+X
+X    if [ "$yn" = Y -o "$yn" = y ]; then
+X      cat $dir/bulletins/$cb
+X      echo "Hit <ENTER> to go on: \c"
+X      read junk
+X      break
+X    fi
+X    echo "Please enter Yes or No"
+X    continue
+X  done
+X  cb=`expr $cb + 1`
+Xdone
+________This_Is_The_END________
+echo 'x - edit'
+sed 's/^X//' <<'________This_Is_The_END________' >>edit
+X#! /bin/sh
+X# Editor
+X
+Xwhile : ; do
+X
+Xecho "SBBS Editor) \c"
+Xcmd=`line | tr -d "!"`
+Xcmd="`echo \"$cmd\" | cut -c1`"
+X
+Xif [ "$cmd" = "" ];then
+X  continue
+Xfi
+X
+Xif [ "$cmd" = "?" ] ; then
+X  cat $dir/misc/ecom
+X  continue
+Xfi
+X
+Xif [ $cmd = C -o $cmd = c ];then
+X  echo "(continue)"
+X  exit 1
+Xfi
+X
+Xif [ $cmd = P -o $cmd = p ];then
+X  echo "UNIX spell checker:not 100% accurate."
+X  echo "---------------{spelling errors}------"
+X  echo ` spell $1`
+X  continue
+Xfi
+X
+Xif [ $cmd = A -o $cmd = a ];then
+X  echo "---------ABORT---------"
+X  echo "Do you realy want to do this?"
+X  echo "<N>: \c"
+X  read yn
+X  yn=`echo $yn | cut -c1`
+X  if [ "$yn" = Y -o "$yn" = y ];then
+X    echo "-<ABORT>-"
+X    rm $1
+X    exit 2
+X  fi
+X  echo "ABORT was aborted."
+X  continue
+Xfi
+X
+Xif [ $cmd = S -o $cmd = s ];then
+X  echo "Saving message..."
+X  if [ "$2" != "" ];then
+X    $dir/programs/lock /tmp/sbbs.pst.lock
+X    ml=`ls $dir/bbs/$basen|wc -l`
+X    ml=`expr $ml + 1`
+X    cat $1 > $dir/bbs/$basen/$ml 
+X    rm $1
+X    rm /tmp/sbbs.pst.lock
+X  else
+X    exit 3
+X  fi
+X  echo "Message saved..."
+X  exit 
+Xfi
+X
+Xif [ $cmd = L -o $cmd = l ];then
+X  l=`cat $1|wc -l`
+X  l=`expr $l - 5`
+X  if [ $l -eq 0 ];then
+X    continue
+X  fi
+X  while : ; do
+X    echo "A)ll   R)ange: \c"
+X    read x
+X    x=`echo $x | cut -c1`
+X    if [ -z "$x" ] ; then
+X      continue
+X    fi
+X    if [ $x = A -o $x = a ] ; then
+X      start=1 ; end=$l
+X      begin=1
+X    else
+X      echo "Start at: \c"
+X      read start
+X      begin="$start"
+X      if [ -z "$start" ] ; then
+X        continue
+X      fi
+X      start=`expr $start + 0` 2> /dev/null 
+X      if [ $? -ne 0 ] ; then
+X        echo "Bad number."
+X        continue
+X      fi
+X      if [ $start -gt $l -o $start -lt 1 ] ; then
+X        echo "Out of range."
+X        echo "(1-$l)"
+X        continue
+X      fi 
+X      echo "End at: \c"
+X      read end
+X      if [ -z "$end" ] ; then
+X        continue
+X      fi 
+X      end=`expr $end + 0` 2> /dev/null
+X      if [ $? -ne 0 ] ; then
+X        echo "Bad number."
+X        continue
+X      fi 
+X      if [ $end -lt $start -o $end -gt $l ] ; then
+X        echo "Bad range."
+X        continue
+X      fi
+X    fi
+X    break
+X    done
+X
+X    file=/tmp/sbbs.tmp.$$
+X    # start=`expr $start + 5`
+X    # end=`expr $end + 5`
+X
+X    sed -n '6,$p' $1 >$file
+X
+Xed - $file << Z
+X$start,${end}n
+XZ
+X
+X    rm $file
+X    string=""
+X  continue
+Xfi
+X
+Xif [ $cmd = E -o $cmd = e ];then
+X  echo "Edit what line? \c"
+X  read l
+X  l=`echo $l`
+X  if [ "$l" = "" ];then
+X    continue
+X  fi
+X  l=`expr $l + 5` 2> /dev/null
+X  if [ $? -ne 0 ];then
+X    echo "Illegal number."
+X    continue
+X  fi
+X  wc=`cat $1|wc -l`
+X  if [ $l -gt $wc ];then
+X    echo "Range out of bounds."
+X    continue
+X  elif [ $l -lt 6 ];then
+X    echo "Range out of bounds."
+X    continue
+X  fi
+X  echo "Old line reads"
+X  ed - $1 <<- EOS
+X  $l p
+XEOS
+X  echo "Enter new line"
+X  read qr
+X  ed - $1 <<- EOS
+X  $l a
+X$qr
+X.
+X  $l d
+X  w
+XEOS
+Xcontinue
+Xfi
+X
+Xif [ $cmd = D -o $cmd = d ];then
+X  echo "Delete what line? \c"
+X  read l
+X  l=`expr $l + 5`
+X  if [ $? -ne 0 ];then
+X    echo "Illegal number."
+X    continue
+X  fi
+X  wc=`cat $1|wc -l`
+X  if [ $l -lt 6 ];then
+X    echo "Range out of bounds."
+X    continue
+X  elif [ $l -gt $wc ];then
+X    echo "Range out of bounds."
+X    continue
+X  fi
+X  ed - $1 <<- EOS
+X  $l d
+X  w
+XEOS
+X  continue
+Xfi
+X
+Xif [ $cmd = I -o $cmd = i ] ; then
+X  echo "Insert at what line? \c"
+X  read insert
+X  insert=`expr $insert + 0 2> /dev/null`
+X  if [ $? -ne 0 ] ; then
+X    echo "Bad number."
+X    continue
+X  fi
+X  insert_limit=`cat $1 | wc -l`
+X  insert_limit=`expr $insert_limit - 5`
+X
+X  if [ $insert -gt $insert_limit -o $insert -lt 1 ];then
+X    echo "Out of range."
+X    continue
+X  fi
+X  echo "Start inserting now. Type CTRL-D on a\nblank space to get to editor."
+X  file=/tmp/sbbs.tpi.$$
+X  cat > $file
+X  {
+X   ed - $1 << EOS
+X   $insert+5,\$p
+X   $insert+5,\$d
+X   w
+XEOS
+X  } >> $file
+X  cat $file >> $1
+X  rm $file
+X  continue
+Xfi
+X
+Xif [ $cmd = R -o $cmd = r ] ; then
+X   file=/tmp/sbbs.rot.$$
+X   sed -n '1,5p' $1 > $file
+X   sed -n '6,$p' $1 | tr "[a-m][n-z][A-M][N-Z]" "[n-z][a-m][N-Z][A-M]" >> $file
+X   mv $file $1
+X   continue
+Xfi   
+Xecho "Illegal command."
+Xdone
+________This_Is_The_END________
+echo 'x - initial.c'
+sed 's/^X//' <<'________This_Is_The_END________' >>initial.c
+X
+X /* Initial "shell" */
+Xmain()
+X{
+X
+X  /* Fake shell name */
+X
+X  execl ("/bin/sh", "sbbs", "-c", "/u/robertd/lib/sbbs/programs/login-sig", (char *) 0);
+X}
+________This_Is_The_END________
+echo 'x - install'
+sed 's/^X//' <<'________This_Is_The_END________' >>install
+X#! /bin/sh
+X# Install version 1.0
+X
+Xdir=/u/robertd/lib/sbbs ; export dir
+Xecho "Install version 1.0"
+Xecho "\n\n"
+Xecho 'Please enter sbbs $home directory: \c'
+Xread home
+X
+Xecho "Creating directories..."
+Xmkdir $home/admin
+Xmkdir $home/admin/profile
+Xmkdir $home/bbs
+Xmkdir $home/bbs/1
+Xmkdir $home/udl
+Xmkdir $home/bulletins
+Xmkdir $home/misc
+Xmkdir $home/mail
+Xmkdir $home/udl/new
+Xmkdir $home/new
+X
+Xecho "Initializing files..."
+X
+Xecho "1:General" > $home/misc/bbsrc
+Xecho "\c" > $home/misc/prlib
+Xecho "\c" > $home/misc/config
+Xecho "\c" > $home/misc/udlrc
+Xecho "\c" > $home/admin/profile/lastcaller
+Xecho "\c" > $home/admin/profile/logins
+Xecho "\c" > $home/admin/profile/members
+Xecho "\c" > $home/admin/profile/log
+Xecho "\c" > $home/admin/profile/newusers
+Xecho "\c" > $home/misc/usr
+Xecho "\c" > $home/admin/profile/cmdlog
+Xecho "\c" > $home/misc/info
+Xecho "\c" > $home/misc/closing
+Xecho "\c" > $home/misc/openmes
+Xecho "\c" > $home/misc/newnews
+Xecho "1:Ascii:echo Recieving buffer. Begin. Send CTRL-D when finished. ; cat >> " > $home/misc/protocols.up
+Xecho "1:Ascii:echo Prepare to recieve. ; sleep 10 ; cat" > $home/misc/protocols.down
+Xcat << EOH > $home/misc/main_menu
+X
+X    (A)dministration shell              (B) Post Bulletins
+X    (C)hange Password                   (D)ataBases
+X    (E)xit from SBBS                    (I)nformation
+X    (L)ist users                        (M)essage bases
+X    (O)pening bulletins                 (P)rogram menu
+X    (Q) Allow/disallow chat requests    (R)ead private mail to you
+X    (T) Talk to users                   (U)ser log
+X    (V)alidate users                    (W)rite to other users
+XEOH
+X
+Xcat << EOH > $home/misc/com
+X   (C) Create message base              (L) List message bases
+X   (Jx) Jump to a message base x        (P) Post a message
+X   (I) Read an individual message       (F) Retrieve forward sequential
+X   (R) Retrieve reverse sequential      (N) Read new messages
+X   (G) Global scan                      (K) Kill a message
+X   (E) Exit SBBS BBS                    (S) Scan messages
+X   (Q) Quick scan of messages           (M) List MBMs.(Message Base Manager)
+X   (O) Open a message to edit           (Z) Manage message bases
+XEOH
+X
+Xcat << EOH > $home/misc/ecom
+X   (A)bort message                      (D)elete line
+X   (E)dit a line                        (I)nsert at line
+X   (C)ontinue entering message          (S)ave message
+X   (P)roof read message(spell check)    (L)ist message
+X   (R)ot 13 / DeRot 13 a message.
+XEOH
+Xecho "Compiling .c programs..."
+X
+Xcc -o $home/programs/initial $home/programs/initial.c
+Xcc -o $home/programs/lock $home/programs/lock.c
+X
+Xecho "Making sysop user..."
+Xecho ""
+Xecho "Please enter your REAL name. "
+Xecho ""
+Xecho ">> Name: \c"
+Xread rname
+Xrname=`echo "$rname"| tr -d "!"`
+Xrname=`echo "$rname"| tr -d ":" `
+Xrname=`echo "$rname"| tr -s " "`
+Xrname=`echo "$rname"| tr "[a-z]" "[A-Z]"`
+Xname=`cat $home/admin/profile/members | wc -l`
+Xname=`expr $name + 1`
+Xecho ""
+Xecho "Write your user ID down and don't lose it."
+Xecho "You will need it to login again."
+Xecho ""
+Xecho ">> Your user ID is: $name"
+Xecho ""
+Xecho "Now choose a password. It must be at least four characters."
+Xwhile : ; do
+Xecho ""
+Xecho ">> Password: \c"
+Xread pass
+Xpc=`echo "$pass" | wc -c`
+Xif [ $pc -lt 5 ] ; then
+X  echo ""
+X  echo "Make it at least four characters."
+X  continue 
+Xelse 
+X  pass="`echo \"$pass\" | tr \"[A-Z]\" \"[a-z]\"`"
+X  break
+Xfi
+Xdone
+Xecho ""
+Xwhile : ; do
+Xecho "Enter your phone number. Format is XXX-XXX-XXXX."
+Xecho ""
+Xecho ">> Phone: \c"
+Xread num
+Xnum="`echo \"$num\" | tr -d \":\"`"
+Xif [ `echo $num | wc -c` -ne 13 ] ; then
+X  echo ""
+X  echo "Try again."
+X  continue
+Xfi
+Xbreak
+Xdone
+Xecho ">> Modem Phone (if any): \c"
+Xread data
+Xecho ">> Address: \c"
+Xread add
+Xadd=`echo $add | tr -d ":"`
+Xecho ">> City: \c"
+Xread city
+Xcity=`echo $city | tr -d ":"`
+Xecho ">> State: \c"
+Xread state
+Xstate=`echo $state | tr -d ":"`
+Xecho ">> Zip Code (five digits): \c"
+Xread zip
+Xzip=`echo $zip | tr -d ":"`
+Xecho "$name:$rname:$pass:$num:$data:$city:$state:$add" >> $home/admin/profile/newusers 
+X$home/programs/mkusr $name "$pass" "$rname" 3 "$add" "$city" "$state" $zip "$num"
+Xecho ""
+Xecho "New account has been created. "
+Xecho ">> ID: $name"
+Xecho ">> Password: $pass"
+Xecho ""
+________This_Is_The_END________
+echo 'x - killm'
+sed 's/^X//' <<'________This_Is_The_END________' >>killm
+X#! /bin/sh
+X# Shell script to kill a message.
+Xz=`ls $dir/bbs/$basen | wc -l`
+Xif [ $z -eq 0 ] ; then
+X   exit
+Xfi
+X
+Xlm=`ls $dir/bbs/$basen | wc -l`
+Xlm=`echo $lm`
+X
+Xecho "Enter message number to kill ($lm): \c"
+Xread kill
+X
+Xkill=`expr $kill + 0 2> /dev/null`
+X
+Xif [ $? != 0 ] ; then
+X  kill=$lm
+Xfi
+X
+X
+Xif [ $kill -lt 1 -o $kill -gt $lm ];then
+X   echo "Message not killed." ; exit
+Xfi
+X
+Xfrom="`sed -n 1p $dir/bbs/$basen/$kill`"
+X
+Xfrom="`echo \"$from\" | cut -c11-`"
+Xfrom="`echo \"$from\" | awk '{print $1}'`"
+Xmbm=`grep "^mbm$basen:" $dir/misc/config` ; mbm="${mbm:+y}"
+Xif [ $from -ne $bbs_name -a $access -lt 2 -a "$mbm" != y ] ; then
+X  echo You cannot delete that message.
+X  exit
+Xfi
+X
+Xecho "Message $kill is unavailable." > $dir/bbs/$basen/$kill
+________This_Is_The_END________
+echo 'x - lock.c'
+sed 's/^X//' <<'________This_Is_The_END________' >>lock.c
+X
+X#include <stdio.h>
+X#include <fcntl.h>
+X#include <errno.h>
+X
+Xextern int errno;
+X
+Xmain(argc, argv)
+Xchar **argv; {
+X	int fd;
+X
+X	if (argc != 2) {
+X		fprintf(stderr, "Usage: lock name\n");
+X		exit(1);
+X	}
+X	while ((fd = open(argv[1], O_RDWR|O_CREAT|O_EXCL, 0666)) == -1) {
+X		if (errno != EEXIST)
+X			break;
+X		sleep(10);
+X	}
+X	if (fd == -1) {
+X		perror(argv[1]);
+X		exit(1);
+X	}
+X	close(fd);
+X	exit(0);
+X}
+X
+________This_Is_The_END________
+echo 'x - login-sig'
+sed 's/^X//' <<'________This_Is_The_END________' >>login-sig
+X#!/bin/sh
+X#
+X# %Z% %M% %I% %D% %Q%
+X# %P%
+X# 
+X# SBBS version 1.0
+X
+Xtrap "" 2 3   # trapping
+Xstty intr '^C'
+X
+Xdir=/u/robertd/lib/sbbs   # Change to your system
+Xexport dir
+Xlogins=$dir/admin/profile/logins
+Xbbs="`grep \"^name=\" $dir/misc/config | cut -c6-`"
+Xversion="`grep \"^version=\" $dir/misc/config | cut -c9-`"
+Xexport version bbs
+Xecho ""
+Xecho ">> Welcome to $bbs (SBBS version $version)"
+Xecho '>> Copyright (C) 1987, Rob DeMarco'
+X
+Xcycle=`grep "^cycle=" $dir/misc/config`
+Xcycle=`echo $cycle | cut -c7-`
+Xif [ -z "$cycle" ] ;then 
+X cycle=3
+Xfi
+Xcycle=`echo $cycle`
+Xcyclep=1
+Xelite=`grep "^elite=\$" $dir/misc/config`
+Xif [ ! -z "$elite" ] ; then
+X  elite=1
+Xelse
+X  elite=0
+X  echo ">> If you are a new user, use NEW for your ID."
+Xfi
+Xecho ">> Enter OFF to leave system."
+Xecho ""
+X
+Xwhile [ $cyclep -le $cycle ] ; do
+X     echo ">> Your ID? \c"
+X     bbs_name="`line | tr \"[A-Z]\" \"[a-z]\"`"
+X     bbs_name=`echo $bbs_name | tr -d "!"`
+X     if [ "$bbs_name" = '' ] ; then
+X       continue
+X     fi
+X
+X     if [ "$bbs_name" = off ] ; then
+X        exit
+X     fi
+X
+X     if [ "$bbs_name" = new -a $elite -eq 0 ] ; then
+X       ni=`grep "^newuser=" $dir/misc/config | cut -c9-`
+X       if [ ! -z "$ni" ] ; then
+X         cat $ni
+X         echo ">> Press RETURN to continue.\c"
+X         read junk
+X       fi
+X         
+X       echo ""
+X       echo "Please enter your REAL name. "
+X       echo ""
+X       echo ">> Name: \c"
+X       read rname
+X       rname=`echo "$rname"| tr -d "!"`
+X       rname=`echo "$rname"| tr -d ":" `
+X       rname=`echo "$rname"| tr -s " "`
+X       rname=`echo "$rname"| tr "[a-z]" "[A-Z]"`
+X       name=`cat $dir/admin/profile/members | wc -l`
+X       name=`expr $name + 1`
+X       echo ""
+X       echo "Write your user ID down and don't lose it."
+X       echo "You will need it to login again."
+X       echo ""
+X       echo ">> Your user ID is: $name"
+X       echo ""
+X       echo "Now choose a password. It must be at least four characters."
+X       while : ; do
+X       echo ""
+X       echo ">> Password: \c"
+X       stty -echo
+X       read pass
+X       stty echo ; echo "\n\c"
+X       pc=`echo "$pass" | wc -c`
+X       if [ $pc -lt 5 ] ; then
+X         echo ""
+X         echo "Make it at least four characters."
+X         continue 
+X       else 
+X         pass="`echo \"$pass\" | tr \"[A-Z]\" \"[a-z]\"`"
+X         break
+X       fi
+X       done
+X       echo ""
+X       while : ; do
+X       echo "Enter your phone number. Format is XXX-XXX-XXXX."
+X       echo ""
+X       echo ">> Phone: \c"
+X       read num
+X       num="`echo \"$num\" | tr -d \":\"`"
+X       if [ `echo $num | wc -c` -ne 13 ] ; then
+X         echo ""
+X         echo "Try again."
+X         continue
+X       fi
+X       break
+X       done
+X       echo ">> Modem Phone (if any): \c"
+X       read data
+X       echo ">> Address: \c"
+X       read add
+X       add=`echo $add | tr -d ":"`
+X       echo ">> City: \c"
+X       read city
+X       city=`echo $city | tr -d ":"`
+X       echo ">> State: \c"
+X       read state
+X       state=`echo $state | tr -d ":"`
+X       echo ">> Zip Code (five digits): \c"
+X       read zip
+X       zip=`echo $zip | tr -d ":"`
+X       echo "$name:$rname:$pass:$num:$data:$city:$state:$add" >> $dir/admin/profile/newusers 
+X       $dir/programs/mkusr $name "$pass" "$rname" 0 "$add" "$city" "$state" $zip "$num"
+X       echo ""
+X       echo "New account has been created. "
+X       echo ">> ID: $name"
+X       echo ">> Password: $pass"
+X       echo ""
+X       echo "Now finish logging in normally."
+X       echo ""
+X       continue
+X     fi
+X     echo ">> Password: \c"
+X     stty -echo
+X     bbs_passwordc="`line | tr \"[A-Z]\" \"[a-z]\"`"
+X     echo "\n"
+X     stty echo
+X     pid=$$
+X     echo "$bbs_passwordc" > /tmp/sbbs.buf.$pid
+X     bbs_password=`crypt "$bbs_passwordc" < /tmp/sbbs.buf.$pid`
+X     dataset="$bbs_name $bbs_password"
+X     datatest=`fgrep -x "$dataset" $logins`
+X
+X     if [ -z "$datatest" ];then
+X      echo
+X      echo "Either the ID or the password is wrong; try again."
+X      rm /tmp/sbbs.buf.$pid
+X      cyclep=`expr $cyclep + 1`
+X      continue
+X     fi
+X     export bbs_name bbs_password
+X     rm /tmp/sbbs.buf.$pid
+X     fullname=`grep "^$bbs_name:" $dir/admin/profile/members | awk -F: '{print $3 }'` ; export fullname
+X     access=`grep "^$bbs_name:" $dir/admin/profile/members | awk -F: '{print $2}'`
+X     export access
+X     cat $dir/misc/openmes
+X     $dir/programs/news
+X     bn=`echo "$bbs_name" | cut -c-7`
+X     login_time=`date | cut -c9-19`
+X     export bn login_time
+X     exec $dir/programs/sbbs
+Xdone
+Xecho ""
+Xecho "Call back when you can remember your password
+Xecho "or finally decide to login as NEW."
+Xexit
+________This_Is_The_END________
+echo 'x - mailbox'
+sed 's/^X//' <<'________This_Is_The_END________' >>mailbox
+X#! /bin/sh
+X# Read private messages.
+X#
+X
+Xaapath=$dir/mail
+X
+Xa=`ls $aapath/"$bbs_name" | wc -l`
+Xb=`echo $a`
+Xa=1
+X
+Xif [ $b -eq 0 ] ; then
+X  echo "No mail"
+X  exit
+Xfi
+X
+Xwhile [ $a -le $b ] ; do
+Xts=""
+X     echo "..........................."
+X     cat $aapath/"$bbs_name"/$a
+X     echo "..........................."
+X
+X     while [ "$ts" != "pass" ] ; do
+X          echo "[N]ext message [R]eply [A] Read again:\c"
+X          read cmd
+X          cmd=`echo "$cmd"|tr -d "!"`
+X          if [ "$cmd" = "" ] ; then
+X            continue
+X          fi
+X
+X          if [ $cmd = A -o $cmd = a -o $cmd = r -o $cmd = R -o $cmd = N -o $cmd = n ] ; then
+X            ts=pass
+X            continue
+X          fi
+X     done
+X
+X     if [ $cmd = N -o $cmd = n ] ; then
+X       rm $dir/mail/"$bbs_name"/$a
+X       a=`expr $a + 1`
+X       continue
+X     fi
+X
+X     if [ $cmd = A -o $cmd = a ] ; then
+X       continue
+X     fi
+X
+X
+X     to=`sed -n 1p $aapath/"$bbs_name"/$a`
+X     to=`echo "$to" | cut -c8-`
+X     to=`echo "$to" | awk '{print $1}'`
+X     if [ $to -eq $bbs_name ] ; then
+X       echo "Attempting to reply to yourself - abort"
+X       continue
+X     fi
+X     file=sbbs.mle.$$
+X
+X     echo "From: #$bbs_name ($fullname)"> /tmp/$file
+X     echo "Date: `date`" >> /tmp/$file
+X     echo "Message to: #$to (you)\n\n" >> /tmp/$file
+X     echo "Include message in reply?(n)\c"
+X     read yn
+X     if [ "$yn" = Y -o "$yn" = y ];then
+X       echo "In your message you wrote to me...." >> /tmp/$file
+X       sed -n '6,$s/^/> /
+X               6,$p' $aapath/$bbs_name/$a >> /tmp/$file
+X       echo "You may use the editor to trim the "
+X       echo "quoted message down to what you need."
+X     fi
+X     echo "Enter your message now."
+X     echo "Type a CTRL-D for editor."
+X     while : ; do
+X       cat >> /tmp/$file
+X       $dir/programs/edit /tmp/$file
+X       status=$?
+X       if [ $status = 1 ] ; then
+X         continue
+X       fi
+X       if [ $status = 2 ] ; then
+X         continue 2
+X       fi
+X       if [ $status = 3 ] ; then
+X         nol=`ls $aapath/"$to" | wc -l`
+X         nol=`echo $nol`
+X         nol=`expr $nol + 1`
+X         cat /tmp/$file > $aapath/"$to"/$nol
+X         rm /tmp/$file
+X         echo "Message Saved."
+X         break
+X       fi 
+X    done
+Xdone
+________This_Is_The_END________
+echo 'x - medit'
+sed 's/^X//' <<'________This_Is_The_END________' >>medit
+X#! /bin/sh
+X# edit:
+X# SBBS version 1.0;
+X#
+X
+Xz=`ls $dir/bbs/$basen | wc -l`
+Xif [ $z -eq 0 ] ; then
+X   exit
+Xfi
+Xmbm=`grep "^mbm$basen=" $dir/misc/config | awk -F= '{print $2}'`
+Xmbm=${mbm:+1}
+X
+X
+Xecho "Edit what message? (1): \c"
+Xread m
+X
+Xm=`expr $m + 0 2> /dev/null`
+X
+Xif [ $? != 0 ] ; then
+X   m=1
+Xfi
+X
+Xl=`ls $dir/bbs/$basen | wc -l`
+X
+Xif [ $m -lt 1 -o $m -gt $l ] ; then
+X   echo "Message not edited."
+Xfi
+X
+Xwc_l=`cat $dir/bbs/$basen/$m | wc -l`
+Xif [ $wc_l -eq 1 ] ; then
+X   echo "This message was killed."
+X   exit
+Xfi
+X
+Xzz="`sed -n 1p $dir/bbs/$basen/$m | cut -c11- | awk '{print $1}' `"
+Xif [ $access -lt 2 -a "$mbm" != 1 -a $zz != $bbs_name ] ; then
+X   echo "Your access is too low."
+X   exit
+Xfi
+Xfile=/tmp/sbbs.edt.$$
+Xcat $dir/bbs/$basen/$m > $file
+X
+Xwhile : ; do
+X      $dir/programs/edit $file
+X
+X      status=$?
+X
+X      case $status in
+X
+X           1) cat >> $file
+X              continue
+X              ;;
+X           2) exit
+X              ;;
+X           *) mv $file $dir/bbs/$basen/$m
+X              echo "Message saved..."
+X              break
+X              ;;
+X      esac
+Xdone
+________This_Is_The_END________
+echo 'x - mkbul'
+sed 's/^X//' <<'________This_Is_The_END________' >>mkbul
+X#! /bin/sh
+X# Post a system bulletin.
+X
+X
+Xif [ "$access" -lt 2 ]; then
+X  echo "Sorry - You are not allowed to post\nbulletins."
+X  exit
+Xfi
+X
+Xfile=/tmp/sbbs.pbl.$$
+Xecho "Subject <$bbs update>: \c"
+Xread subj
+Xsubj=`echo "$subj" | tr -d "!"`
+Xif [ -z "$subj" ] ; then
+X   subj="$bbs update"
+Xfi
+X
+Xecho "Enter your bulletin now. Press CTRL-D"
+Xecho "for editor.\n"
+Xecho "From: #$bbs_name ($fullname)\nDate: `date`" > $file
+Xecho "Subj: $subj" >> $file
+Xecho "      $bbs version $version\n" >> $file
+Xwhile : ; do
+X      cat >> $file
+X      $dir/programs/edit $file
+X      status=$?
+X      if [ $status = 1 ] ; then
+X        continue
+X      elif [ $status = 2 ] ; then
+X        exit
+X      else
+X        $dir/programs/lock /tmp/sbbs.pbl.lock
+X        z=`ls $dir/bulletins | wc -l`
+X        z=`expr $z + 1`
+X        cat $file > $dir/bulletins/$z
+X        rm $file
+X        rm /tmp/sbbs.pbl.lock
+X        echo "Message saved..."
+X        exit
+X      fi
+Xdone
+________This_Is_The_END________
+echo 'x - mkusr'
+sed 's/^X//' <<'________This_Is_The_END________' >>mkusr
+X#! /bin/sh
+X# mkusr - make user.
+X
+Xname="$1:"
+Xpassword=$2
+Xfname=$3
+Xaccess=$4
+Xif [ "$access" = "" ] ; then
+X  access=1
+Xfi
+X
+Xtfile=/tmp/sig.data.$$
+Xecho $password > $tfile
+Xcryp=`crypt "$password" < $tfile`
+X
+Xecho "$1 $cryp" >> $dir/admin/profile/logins
+X
+Xname="$1:$4:$3:$5:$6:$7:$8:$9"
+Xecho "$name" >> $dir/admin/profile/members
+Xrm $tfile
+X
+Xmkdir $dir/mail/"$1"
+________This_Is_The_END________
+echo 'x - news'
+sed 's/^X//' <<'________This_Is_The_END________' >>news
+X#! /bin/sh
+X# news : A bulletin update system
+X
+Xp=$dir/misc/newnews
+Xc=$dir/bulletins
+Xg="`grep \"^$bbs_name:\" $p`"
+X
+Xif [ "$g" != "" ] ; then
+X  rec="`grep \"^$bbs_name:\" $p `"
+X  rec="`echo \"$rec\" | awk -F: '{print $2}'`"
+X else
+X  rec=1
+X  echo "$bbs_name:1" >> $p
+Xfi
+X
+Xb=`ls $c | wc -l`
+X
+Xif [ $rec -gt $b ] ; then
+X  sleep 5
+X  exit
+Xfi
+X
+Xecho "===========[System News]==========="
+X
+Xwhile [ $rec -le $b ] ; do
+X  cat $c/$rec
+X  f=/tmp/sbbs.tpb.$$
+X  $dir/programs/lock /tmp/sbbs.lock
+X  grep -v "^$bbs_name:" $p > $f
+X  cat $f > $p
+X  rm $f
+X  rc=`expr $rec + 1`
+X  echo "$bbs_name:$rc" >> $p
+X  rm /tmp/sbbs.lock
+X  echo "Continue or Quit) C\b\c"
+X  read default
+X  default=`echo $default | cut -c1`
+X  if [ "$default" = Q -o "$default" = q ] ; then
+X    exit
+X  fi
+X  rec=`expr $rec + 1`
+Xdone
+________This_Is_The_END________
+echo 'x - post'
+sed 's/^X//' <<'________This_Is_The_END________' >>post
+X#! /bin/sh
+X# Post bulletins.
+Xif [ "$1" = "" ] ; then
+X  echo "<CR = abort> Enter subject: \c"
+X  read subject
+X  count=`echo "$subject" | wc -c`
+X  if [ $count -le 4 -a $count -gt 1 ] ; then
+X    echo "Please make your subject 4 characters or more."
+X    exit
+X  fi
+X  if [ "$subject" = "" ] ; then
+X    exit
+X  fi
+X  echo "Correct? <Y> \c"
+X  read yn
+X  set yn=`echo $yn`
+X  if [ "$yn" = N -o "$yn" = n ] ; then
+X    exit
+X  fi
+Xelse
+X  subject=$1
+X  echo "Include message in reply?(n)\c"
+X  read yn
+X  yn=`echo $yn | tr -d "!"`
+X  if [ "$yn" = Y -o "$yn" = y ] ; then
+X    xflag=1
+X  fi
+Xfi
+Xdate=`date`
+Xfrom="$bbs_name ("
+Xfrom="$from$fullname)"
+Xfile=/tmp/sbbs.pst.$$
+Xecho "From   : #$from " >> $file
+Xecho "Subject: $subject" >> $file
+Xecho "Date   : $date" >> $file
+Xecho "\n" ; echo "\n" >> $file
+Xif [ "$xflag" = 1 ] ; then
+X   sed -n '6,$s/^/> /
+X           6,$p' $2 >> $file
+Xfi
+Xecho "Enter your message now."
+Xecho "Enter a CTRL-D for editor."
+Xwhile : ; do
+X  cat >> $file
+X  $dir/programs/edit $file null
+X  status=$?
+X  if [ $status = 1 ];then
+X    continue
+X  fi
+X  if [ $status = 2 ];then
+X    exit
+X  fi
+X  break
+Xdone
+________This_Is_The_END________
+echo 'x - program'
+sed 's/^X//' <<'________This_Is_The_END________' >>program
+X#! /bin/sh
+X# Shell program menu
+X# Takes input from a file called
+X# $dir/misc/prlib
+X
+X
+Xif [ -r $dir/misc/prlib ] ; then
+X  echo "\n\n"
+Xelse
+X  echo "No programs available."
+X  exit
+Xfi
+Xecho "$: Leave program"
+Xecho "#: List programs"
+Xawk -F: '{print $1 ":" $2}' $dir/misc/prlib
+X
+Xwhile :;do
+Xecho "Program) \c"
+Xread prg
+Xprg=`echo "$prg" | tr -d "!"`
+Xprg=`echo $prg`
+Xcom=`echo "$prg" | cut -c1`
+X
+Xif [ -z "$prg" ] ; then
+X  continue
+Xfi
+X
+Xif [ "$com" = '$' ] ; then
+X  exit
+Xfi
+X
+Xif [ "$com" = '#' ] ; then
+X  echo "$: Leave program"
+X  echo "#: List programs"
+X  cut -c-20 $dir/misc/prlib
+X  continue
+Xfi
+X
+X
+X
+X
+Xa=`expr $prg + 0 2> /dev/null`||continue
+Xa=`grep "^$a:" $dir/misc/prlib`
+X
+Xif [ -z "$a" ] ; then
+X  echo "Program not found"
+X  continue
+Xfi
+Xprg="`echo \"$a\" | awk -F: '{print $3}' `"
+X
+Xeflag=`grep "^eval=" $dir/misc/config`
+Xif [ -z "$eflag" ] ; then
+X$prg
+Xelse
+Xeval $prg
+Xfi
+Xdone
+X
+________This_Is_The_END________
+echo 'x - rescue'
+sed 's/^X//' <<'________This_Is_The_END________' >>rescue
+X#! /bin/sh
+X# Shell cleanup/rescue script.
+X
+Xlength=`cat $dir/admin/profile/log | wc -l`
+Xif [ $length -eq $logc ] ; then
+X  proc=$$
+X  sed "1d" $dir/admin/profile/log > $dir/admin/profile/log.$proc
+X  mv $dir/admin/profile/log.$proc $dir/admin/profile/log ; rm $dir/admin/profile/log.$proc
+Xfi
+X
+Xecho "$bn\t$login_time\t`date | cut -c9-19`<CD>" >> $dir/admin/profile/log
+X
+Xfile=/tmp/sbbs.hup.$$
+X$dir/programs/lock /tmp/sbbs.hup.lock
+Xgrep -v "^$bbs_name:" $dir/misc/usr > $file
+Xcat $file > $dir/misc/usr
+Xrm /tmp/sbbs.hup.lock
+Xrm $file
+Xrm /tmp/sbbs.*
+Xecho "$cmd_list" >> $dir/admin/profile/cmdlog
+Xecho "$fullname" > $dir/admin/profile/lastcaller
+________This_Is_The_END________
+echo 'x - sbbs'
+sed 's/^X//' <<'________This_Is_The_END________' >>sbbs
+X#! /bin/sh
+X# SBBS Main menu.
+X
+Xtrap 'trap "" 15 14 3 2 1 ; $dir/programs/rescue ; exit 0' 1
+Xtrap "" 2 3
+Xtty=`tty`
+Xexport tty
+Xecho "$bbs_name:$fullname:$tty" >> $dir/misc/usr
+X
+Xlogc="`grep \"^log=\" $dir/misc/config`"
+Xcls="`grep \"^cls=\" $dir/misc/config`"
+X
+Xif [ "$cls" = "" ] ; then
+X  cls="echo \c"
+Xelse
+X  cls=`echo "$cls" | cut -c5-`
+Xfi
+Xexport cls
+X
+Xif [ "$logc" = "" ] ; then
+X  logc=20 ; export logc
+Xelse
+X  logc=`echo $logc | cut -c5-`
+X  logc=`expr $logc + 0 2> /dev/null`
+X  if [ $? != 0 ] ; then
+X    logc=20 ; export logc
+X  else
+X    export logc
+X  fi
+Xfi
+Xcmd_list="#$bbs_name" ; export cmd_list
+Xecho "\n\n"
+Xmaill=`ls $dir/mail/"$bbs_name" | wc -l`
+X
+Xecho "Last caller was `cat $dir/admin/profile/lastcaller`."
+X
+Xif [ $maill -gt 0 ] ; then
+X  echo "You have mail waiting! Choose option R at $bbs main prompt."
+Xfi
+X
+X
+X
+Xwhile : ; do
+X     echo "$bbs main) \c"
+X     read cmd
+X     cmd=`echo "$cmd" | tr -d "!"`
+X
+X     cmd=`echo "$cmd"`
+X     if [ -z "$cmd" ] ; then
+X       continue;
+X     fi
+X     cmd=`echo "$cmd" | cut -c1`
+X     cmd_list="$cmd_list:$cmd";export cmd_list
+X
+X     if [ "$cmd" = "?" ] ; then
+X       cat $dir/misc/main_menu
+X       continue
+X     fi
+X
+X     if [ $cmd = M -o $cmd = m ] ; then
+X       $dir/programs/bbs
+X       continue
+X     fi
+X
+X     if [ $cmd = O -o $cmd = o ] ; then
+X       $dir/programs/db
+X       continue
+X     fi
+X
+X
+X     if [ $cmd = I -o $cmd = i ] ; then
+X       cat $dir/misc/info
+X       continue
+X     fi
+X
+X     if [ $cmd = L -o $cmd = l ] ; then
+X       $dir/programs/users
+X       continue
+X     fi
+X
+X     if [ $cmd = E -o $cmd = e ] ; then
+X       $dir/programs/lock /tmp/sbbs.hup.lock
+X       file=/tmp/sbbs.hup.$$
+X       grep -v "^$bbs_name:" $dir/misc/usr > $file
+X       cat $file > $dir/misc/usr ; rm $file
+X       rm /tmp/sbbs.hup.lock
+X       length=`cat $dir/admin/profile/log | wc -l`
+X       if [ $length -eq $logc ] ; then
+X         proc=$$
+X         sed 1d $dir/admin/profile/log > $dir/admin/profile/log.$proc
+X         mv $dir/admin/profile/log.$proc $dir/admin/profile/log
+X       fi
+X       echo "$bn\t$login_time\t`date | cut -c9-19`" >> $dir/admin/profile/log
+X       echo "$cmd_list" >> $dir/admin/profile/cmdlog
+X       echo "Thank you for calling, $fullname"
+X       echo "Loging off at `date`"
+X       echo ""
+X       cat $dir/misc/closing
+X       echo "$fullname" > $dir/admin/profile/lastcaller
+X       echo "$bbs (SBBS $version) disconnecting..."
+X       exit
+X     fi
+X
+X     if [ $cmd = A -o $cmd = a ];then
+X       if [ $access -lt 3 ];then
+X         echo "Only the system administrater may get \naccess to the shell."
+X         continue 
+X       fi
+X       sh=`grep "^shell=" $dir/misc/config | cut -c7-`
+X       if [ -z "$sh" ] ; then
+X          /bin/sh
+X       else
+X          $sh
+X       fi
+X       continue
+X     fi
+X
+X     if [ $cmd = D -o $cmd = d ] ; then
+X       $dir/programs/udl
+X       continue
+X     fi 
+X
+X     if [ $cmd = W -o $cmd = w ] ; then
+X       $dir/programs/sendmail
+X       continue
+X     fi
+X
+X     if [ $cmd = R -o $cmd = r ] ; then
+X       $dir/programs/mailbox
+X       continue
+X     fi
+X
+X     if [ $cmd = P -o $cmd = p ] ; then
+X       if [ "$access" -eq 0 ] ; then
+X         echo "Only level 1 and greater people have\naccess to the program library."
+X         continue
+X       fi 
+X       $dir/programs/program
+X       continue
+X     fi
+X
+X     if [ $cmd = B -o $cmd = b ] ; then
+X       $dir/programs/mkbul
+X       continue
+X     fi  
+X
+X     if [ $cmd = C -o $cmd = c ] ; then
+X       $dir/programs/cwd
+X       continue
+X     fi
+X
+X     if [ $cmd = v -o $cmd = V ] ; then
+X       $dir/programs/usr
+X       continue
+X     fi
+X     if [ $cmd = u -o $cmd = U ] ; then
+X       echo "NOTE: <CD> denotes loss of carrier."
+X       cat $dir/admin/profile/log
+X       continue
+X     fi
+X     if [ $cmd = t -o $cmd = T ] ; then
+X       $dir/programs/chat
+X       continue
+X     fi
+X     if [ $cmd = q -o $cmd = Q ] ; then
+X       $dir/programs/control
+X       continue
+X     fi
+Xdone
+________This_Is_The_END________
+echo 'x - sendmail'
+sed 's/^X//' <<'________This_Is_The_END________' >>sendmail
+X#! /bin/sh
+X# Send - part of the email package of
+X# sbbs
+Xappath=$dir/admin/profile
+X
+Xif [ "$1" = "" ] ; then
+Xecho "Enter user name or # to send mail to:"
+Xread name
+Xto=`echo "$name"| tr "[a-z]" "[A-Z]"`
+Xto=`echo "$to" | tr -s " "`
+Xelse
+Xto=$1
+Xecho "Include message in reply?(n)\c"
+Xread yn
+Xyn=`echo $yn | tr -d "!"`
+Xif [ "$yn" = Y -o "$yn" = y ] ; then
+X  xflag=1
+Xfi
+Xfi
+Xq=`expr $to + 0 2> /dev/null`
+Xif [ $? -ne 0 ] ; then
+X  t=`awk -F: '{print $3}' $dir/admin/profile/members | grep "^$to\$"`
+X  flagh=1
+Xelse
+Xt=`grep "^$to:" $appath/members`
+Xfi
+Xif [ "$t" = "" ] ; then
+X  echo "There is no user $to"
+X  exit
+Xfi
+Xif [ "$flagh" =  1 ] ; then
+X  flagh=0
+X  to=`awk -F: '{print $1 ":" $3}' $dir/admin/profile/members | grep ":$to\$"`
+X  to=`echo "$to"| awk -F: '{print $1}'`
+Xfi
+Xk=`grep "^$to:" $dir/admin/profile/members | awk -F: '{print $3}'`
+Xif [ -z "$k" ] ; then
+X  echo "User was deleted."
+X  exit
+Xfi
+X
+Xno=`ls $dir/mail/"$to" | wc -l`
+Xno=`echo $no`
+Xno=`expr $no + 1`
+X
+Xfile=sbbs.sml.$$
+Xecho "From: #$bbs_name ($fullname)" >> /tmp/$file
+Xecho "Date: `date`" >> /tmp/$file
+Xecho "Message to: #$to(you)" >> /tmp/$file
+Xif [ "$1" != "" ] ; then
+X  echo "Reply from bulletin: \"$2\"\n" >> /tmp/$file
+Xfi
+Xif [ "$xflag" = 1 ] ; then
+X   sed -n '6,$s/^/> /
+X           6,$p' $dir/bbs/$basen/$3 >> /tmp/$file
+Xfi
+Xif [ "$1" = "" ] ; then
+Xecho "\n" >> /tmp/$file
+Xfi
+Xecho "Enter your message now."
+Xecho "Enter CTRL-D for editor."
+Xwhile : ; do
+X   cat >> /tmp/$file
+X   $dir/programs/edit /tmp/$file
+X   p=$?
+X   if [ $p = 2 ] ; then
+X     exit
+X   fi
+X   if [ $p = 1 ] ; then
+X     continue
+X   fi
+X   if [ $p = 3 ] ; then
+X     cat /tmp/$file > $dir/mail/"$to"/$no
+X     rm /tmp/$file
+X     echo "Message Saved..."
+X     exit
+X   fi
+Xdone
+________This_Is_The_END________
+echo 'x - udl'
+sed 's/^X//' <<'________This_Is_The_END________' >>udl
+X#! /bin/sh
+X# Main udl system
+X
+X$cls
+X
+Xecho "================================"
+Xecho "The $bbs UP/DOWN load system"
+Xecho "================================"
+Xecho "\n"
+Xwhile : ; do
+Xecho ""
+Xecho "UD/L) \c"
+Xread nu
+X
+Xif [ -z "$nu" ] ; then
+X  continue
+Xfi
+X
+Xnu=`echo "$nu" | tr -d "!"`
+X
+Xif [ "$nu" = N -o "$nu" = n ] ; then
+X  $dir/programs/udlnew
+X  continue
+Xfi
+X
+Xif [ "$nu" = E -o "$nu" = e ] ; then
+X  exit
+Xfi
+X
+Xif [ "$nu" = C -o "$nu" = c ] ; then
+X   if [ $access -lt 2 ] ; then
+X      echo "Sorry , you may not create DataBases.\nConsult your local SysOp or Co-SysOp if\nyou wish to have a DataBase."
+X      continue
+X   fi
+X   echo "Enter title of DataBase: \c"
+X   read DataBase
+X
+X   if [ -z "$DataBase" ] ; then
+X      echo "(abort)"
+X      continue
+X   fi
+X
+X   title="$DataBase"
+X
+X   DataBase=`ls $dir/udl | wc -l`
+X   DataBase=`echo $DataBase`
+X 
+X   mkdir $dir/udl/$DataBase
+X   echo "\c" >> $dir/udl/$DataBase/.udlrc
+X   echo "$DataBase: $title" >> $dir/misc/udlrc
+X   continue
+Xfi 
+Xif [ "$nu" = "L" -o "$nu" = "l" ] ;then
+X   cat $dir/misc/udlrc
+X   continue
+Xfi
+X
+Xif [ "$nu" = "?" ] ; then
+X  cat << EOH
+X   (C) Create a message base            (N) New downloads
+X   (E) Exit                             (L) List DataBases
+X   (n) Enter DataBase number n.
+XEOH
+Xcontinue
+Xfi
+X
+Xat=`expr $nu + 0 2> /dev/null`||continue
+X
+Xtest=`grep "^$nu:" $dir/misc/udlrc`
+X
+Xif [ -z "$test" ] ; then
+X  echo "Base does not exist."
+X  continue
+Xfi
+X
+Xdbase=$nu
+Xdbase=`echo $dbase`
+X
+Xwhile : ; do
+Xecho "File) \c"
+Xread file
+X
+Xif [ "$file" = "?" ] ; then
+X  cat << HELP
+X        (E) Exit to $bbs main           (C) Chose another DataBase
+X        (L) List files.
+X
+X	Enter file number to download.
+X
+X	To upload, type a number that is not available on this base. (And
+Xnot less then 1)
+XHELP
+Xcontinue
+Xfi
+X
+Xif [ "$file" = L -o "$file" = l ]; then
+X  cat $dir/udl/$dbase/.udlrc
+X  continue
+Xfi
+X
+Xif [ "$file" = E -o "$file" = e ]; then
+X  exit
+Xfi
+X
+Xif [ "$file" = C -o "$file" = c ]; then
+X  continue 2
+Xfi
+X
+Xfile=`expr $file + 0 2> /dev/null`
+X
+Xif [ $? != 0 ] ; then
+X  continue
+Xfi
+X
+Xtest=`grep "^$file:" $dir/udl/$dbase/.udlrc`
+X
+Xif [ -z "$test" ] ; then
+X  echo "File doesn't exist."
+X  echo "Do you wish to upload it? <N> \c"
+X  read upload
+X  upload=`echo "$upload" | tr -d "!" | cut -c1`
+X  if [ "$upload" != Y -a "$upload" != y ] ; then
+X    continue
+X  fi
+X  echo "Enter an 80 character or less description\n: \c"
+X  read des
+X  des=`echo "$des" | tr "|" ":"`
+X  des=`echo "$des" | cut -c-80`
+X  name=$file
+X  file=`ls $dir/udl/new | wc -l`
+X  file=`expr $file + 1`
+X  echo "$file| $des [Uploaded by #$bbs_name]|$dbase" >> $dir/udl/new/.udlrc
+X  echo "Protocols available: "
+X  awk -F: '{print $1 ":  " $2}' $dir/misc/protocols.up
+X  echo "(ENTER to abort)"
+X  echo "Protocol) \c"
+X  read proto
+X  proto=`expr $proto + 0 2> /dev/null`
+X  if [ $? -ne 0 ] ; then
+X     proto=1
+X  else
+X     at=`grep "^$proto:" $dir/misc/protocols.up`
+X     if [ -z "$at" ] ; then
+X        proto=1
+X     else
+X        cmd="`echo \"$at\" | awk -F: '{print $3}'`"
+X        eval $cmd $dir/udl/new/$file
+X     fi
+X  fi
+X  continue
+Xfi
+X
+X
+Xecho "Transfer protocols: "
+Xawk -F: '{print $1 ":" $2}' $dir/misc/protocols.down
+Xecho "(ENTER to abort)"
+Xecho "Protocol) \c"
+X  read proto
+X  proto=`expr $proto + 0 2> /dev/null`
+X  if [ $? -ne 0 ] ; then
+X     proto=1
+X  else
+X     at=`grep "^$proto:" $dir/misc/protocols.down`
+X     if [ -z "$at" ] ; then
+X        proto=1
+X     else
+X        cmd="`echo \"$at\" | awk -F: '{print $3}'`"
+X        eval $cmd $dir/udl/$dbase/$file
+X     fi
+X  fi
+X  continue
+Xdone
+Xdone
+________This_Is_The_END________
+echo 'x - udlnew'
+sed 's/^X//' <<'________This_Is_The_END________' >>udlnew
+X#! /bin/sh
+X# New file check.
+X
+Xif [ $access -lt 2 ] ; then
+X  echo "You may not allow new uploads."
+X  exit
+Xfi
+X
+Xa=`ls $dir/udl/new | wc -l`
+X
+Xif [ $a -eq 0 ] ; then
+X  echo "No uploads."
+X  exit
+Xfi
+X
+X
+X$cls ; b=1
+X
+Xwhile [ $b -le $a ] ; do
+X
+X     c="`sed -n ${b}p $dir/udl/new/.udlrc`"
+X     echo "File:\c"
+X     echo "$c" | awk -F\| '{print $1}'
+X     echo "Description:\c"
+X     echo "$c" | awk -F\| '{print $2}'
+X     echo "DataBase:\c"
+X     echo "$c" | awk -F\| '{print $3}'
+X
+X     while : ; do
+X     echo "Upload) \c"
+X     read cmd
+X
+X     if [ -z "$cmd" ] ; then
+X       continue
+X     fi
+X
+X     if [ "$cmd" = "?" ] ; then
+X       cat << EOH
+X
+X       D: Delete file.
+X       M: Move this file.
+X       V: View this file.
+X       A: Abort session.
+XEOH
+X     fi
+X
+X     if [ $cmd = D -o $cmd = d ];then
+X       set="$set"0
+X       b=`expr $b + 1`
+X       continue 2
+X     fi
+X
+X     if [ $cmd = M -o $cmd = m ];then
+X       set="$set"1
+X       b=`expr $b + 1`
+X       continue 2
+X     fi
+X
+X     if [ $cmd = V -o $cmd = v ];then
+X        echo "First ten lines..."
+X        sed -n '1,10p' $dir/udl/new/$b
+X        echo "Press <RETURN>:\c"
+X        read junk
+X        echo "Last ten lines..."
+X        tail -10 $dir/udl/new/$b
+X        echo "Press <RETURN>:\c"
+X        read junk
+X        continue
+X     fi
+X
+X     if [ $cmd = A -o $cmd = a ];then
+X       echo "Session aborted. Files restored."
+X       exit
+X     fi
+X
+X     done
+X
+Xdone
+X
+Xsetc=`echo "$set" | wc -c`
+Xsetc=`expr $setc - 1`
+X
+Xa=1
+Xecho "Sorting....."
+Xwhile [ $a -le $setc ] ; do
+X      string="`sed -n ${a}p $dir/udl/new/.udlrc`"
+X      sett=`echo "$set" | cut -c$a`
+X      if [ $sett -eq 0 ] ; then
+X        a=`expr $a + 1`
+X        continue
+X      fi
+X      datab=`echo "$string" | awk -F\| '{print $3}'`
+X      desc="`echo \"$string\" | awk -F\| '{print $2}'`"
+X      num=`ls $dir/udl/$datab | wc -l`
+X      num=`expr $num + 1`
+X      echo "$num: $desc" >> $dir/udl/$datab/.udlrc
+X      mv $dir/udl/new/$a $dir/udl/$datab/$num
+X      a=`expr $a + 1`
+Xdone
+Xecho "\c" > $dir/udl/new/.udlrc
+Xrm $dir/udl/new/* 2> /dev/null
+Xecho "done"
+________This_Is_The_END________
+echo 'x - update'
+sed 's/^X//' <<'________This_Is_The_END________' >>update
+X#! /bin/sh
+X# Update file for the bbs
+X
+Xif [ ! -f $dir/new/$bbs_name ] ; then
+X   echo > $dir/new/$bbs_name
+Xfi
+X
+Xline=`grep "^$basen:" $dir/new/$bbs_name`
+Xif [ "$line" = "" ] ; then
+X   echo "$basen:$1" >> $dir/new/$bbs_name
+X   exit
+Xfi
+X
+Xnq=`echo "$line" | awk -F: '{print $2}'`
+Xif [ $nq -gt $1 ] ; then
+X  exit
+Xfi
+X
+Xfile=/tmp/sbbs.tmp.$$
+X
+Xgrep -v "^$basen:" $dir/new/$bbs_name > $file
+Xcat $file > $dir/new/$bbs_name
+Xrm $file
+Xecho "$basen:$1" >> $dir/new/$bbs_name
+________This_Is_The_END________
+echo 'x - users'
+sed 's/^X//' <<'________This_Is_The_END________' >>users
+X#! /bin/sh
+X# List Users
+X
+Xecho "Enter -1 to exit."
+X
+Xwhile : ; do
+X      echo "User ID) \c"
+X      read id
+X
+X      id=`expr $id + 0 2> /dev/null`
+X      if [ $? != 0 ] ; then
+X        echo "Enter the ID #."
+X        continue
+X      fi
+X      if [ $id -eq -1 ] ; then
+X        exit
+X      fi
+X      
+X      t="`grep \"^$id:\" $dir/admin/profile/members`"
+X
+X      if [ -z "$t" ] ; then
+X        echo "ID doesn't exist."
+X        continue
+X      fi
+X
+X      if [ $access -lt 2 ] ; then
+X        echo "$t" | awk -F: '{print "ID #:" $1 "\t" "Access:" $2 "\nFull Name:" $3}'
+X      else
+X        echo "$t" | awk -F: '{print "Uid: " $1 "\tAccess: " $2 "\nFull Name: " $3 "\tAddress: " $4 "\nCity: " $5 "\tState: " $6 "\nZip: " $7 "\tPhone: " $8}'
+X      fi
+Xdone
+________This_Is_The_END________
+echo 'x - usr'
+sed 's/^X//' <<'________This_Is_The_END________' >>usr
+X#! /bin/sh
+X# Validate, list, remove, access
+X
+Xif [ $access -lt 2 ] ; then
+X  echo "Sorry - You may not use the validation\nfunction with a level less then 2."
+Xfi
+Xecho "\n\n"
+Xwhile : ; do
+X  echo "$bbs validation) \c"
+X  read cmd
+X  cmd=`echo "$cmd" | tr -d "!"`
+X  if [ -z "$cmd" ] ; then
+X    continue
+X  fi
+X
+X  cmd=`echo "$cmd" | tr "[A-Z]" "[a-z]"`
+X
+X  if [ "$cmd" = "?" ] ; then
+X    cat << EOH
+X
+X    (L) List new users on file          (A) Change access of a user
+X    (R) Remove a user                   (C) Clear a new user
+X    (V) View command log                (D) Delete (refresh) command log
+X    (E) Exit valadation menu
+XEOH
+X    continue
+X  fi
+X
+X  if [ $cmd = e ] ; then
+X    exit
+X  fi
+X
+X  if [ $cmd = l ] ; then
+X    cat $dir/admin/profile/newusers
+X    continue
+X  fi
+X
+X  if [ $cmd = a ] ; then
+X    if [ $access = 3 ] ; then
+X      axlim=3
+X    else
+X      axlim=1
+X    fi
+X    while : ; do
+X    echo "Enter user ID: \c"
+X    read alias
+X    ab="`grep \"^$alias:\" $dir/admin/profile/members`"
+X    if [ -z "$ab" ] ; then
+X      echo "That user doesn't exist!"
+X      continue
+X    fi
+X    break
+X    done
+X    while : ; do
+X    echo "Enter new access (0-$axlim): \c"
+X    read axess
+X    axess=`expr $axess + 0 2> /dev/null`
+X    if [ $? = 2 ] ; then
+X      echo "Ilformed number."
+X      continue
+X    fi
+X    if [ $axess -lt 0 -o $axess -gt $axlim ] ; then
+X      echo "Out of range - (0-$axlim)"
+X      continue 2
+X    fi
+X    break
+X    done
+X    lin="`echo \"$ab\" | awk -F: '{print $1}'`"
+X    lin="$lin:$axess:`echo \"$ab\" | awk -F: '{print $3 ":" $4 ":" $5 ":" $6 ":" $7 ":" $8}'`"
+X    file=/tmp/sbbs.tmp.$$
+X    $dir/programs/lock /tmp/sbbs.tmp.lock
+X    grep -v "^$alias:" $dir/admin/profile/members > $file
+X    cat $file > $dir/admin/profile/members
+X    rm /tmp/sbbs.tmp.lock
+X    rm $file
+X    echo "$lin" >> $dir/admin/profile/members
+X    echo "Access changed successfully."
+X  fi
+X
+X  if [ $cmd = c ] ; then
+X    echo "Enter the user number: \c"
+X    read number
+X    a=`grep "^$number:" $dir/admin/profile/newusers`
+X    if [ -z "$a" ] ; then
+X      echo "There is no newuser #$number"
+X      continue
+X    fi
+X    file=/tmp/sbbs.tnw.$$
+X    $dir/programs/lock /tmp/sbbs.tnw.lock
+X    grep -v "^$number:" $dir/admin/profile/newusers > $file
+X    cat $file > $dir/admin/profile/newusers
+X    rm /tmp/sbbs.tnw.lock
+X    rm $file
+X    echo "Newuser #$number cleared from newuser file."
+X    continue
+X  fi
+X
+X  if [ $cmd = r ] ; then
+X    echo "Enter user # to delete: \c"
+X    read delete
+X    a=`grep "^$delete:" $dir/admin/profile/members`
+X    if [ -z "$a" ] ; then
+X      echo "#$delete doesn't exist."
+X      continue
+X    fi
+X    named=`echo "$a" | awk -F: '{print $3}'`
+X    axess=`echo "$a" | awk -F: '{print $2}'`
+X    if [ $axess -ge $access -a $access -ne 3 ] ; then
+X      echo "Sorry, access level of said user is higher or equal to yours."
+X      continue
+X    fi
+X    if [ "$named" = "" ] ; then
+X      echo "Record was deleted."
+X      continue
+X    fi
+X    echo "Delete $named? \c"
+X    read yn
+X    if [ $yn != Y -a $yn != y ] ; then
+X      continue
+X    fi
+X    rm -r $dir/mail/$delete
+X    rm $dir/new/$delete 2> /dev/null
+X    file=/tmp/sbbs.rmu.$$
+X    $dir/programs/lock /tmp/sbbs.rmu.lock
+X    grep -v "^$delete " $dir/admin/profile/logins > $file 
+X    cat $file > $dir/admin/profile/logins
+X    rm $file
+X    rm /tmp/sbbs.rmu.lock
+X    $dir/programs/lock /tmp/sbbs.rmr.lock ; uslimit=`cat $dir/admin/profile/members|wc -l`
+X    file=/tmp/sbbs.rmr.$$
+X    grep -v "^$delete:" $dir/admin/profile/members > $file   
+X    cat $file > $dir/admin/profile/members
+X    if [ $delete -ne $uslimit ] ; then
+X       echo "$delete:0"  >> $dir/admin/profile/members
+X    fi
+X    rm $file
+X    rm /tmp/sbbs.rmr.lock
+X    th=`grep "^$delete:" $dir/misc/newnews`
+X    if [ ! -z "$th" ] ; then
+X    ed - $dir/misc/newnews << EOS
+X    /^$delete:/d
+X    w
+XEOS
+X    fi
+X    echo "User deleted."
+X  fi
+X
+X  if [ $cmd = v ] ; then
+X     cat $dir/admin/profile/cmdlog
+X     continue
+X  fi
+X
+X  if [ $cmd = d ] ; then
+X     echo "Delete? <N>: \c"
+X     read d
+X     d="`echo $d | cut -c1`"
+X     if [ "$d" = y -o "$d" = Y ] ; then
+X        echo "\c" > $dir/admin/profile/cmdlog
+X        continue
+X     fi
+X     echo "Aborted."
+X  fi
+Xdone
+________This_Is_The_END________
+echo 'x - z'
+sed 's/^X//' <<'________This_Is_The_END________' >>z
+X#! /bin/sh
+X# Administrate a message base;
+X# 
+X
+Xm=`grep "^mbm$basen=" $dir/misc/config | awk -F= '{print $2}'`
+X
+Xm=${m:-n}
+X
+Xif [ $access -lt 2 -a $m = n ] ; then
+X   echo "Access too low / not a MBM."
+X   exit
+Xfi
+X
+Xecho "\n\n" ; cmd=I
+X
+Xwhile : ; do
+X
+X      if [ -z "$cmd" ] ; then
+X         echo "MBM) \c"
+X         read cmd
+X         cmd="`echo \"$cmd\"|tr \"[a-z]\" \"[A-Z]\"`"
+X      fi
+X
+X      if [ "$cmd" = "?" ] ; then
+X         cat << 'EOMenu'
+X
+X    {I}nformation
+X    {C}hange status of access / Modify
+X       active list.
+X    {B}ase manager change (Change MBM)
+X    {E}xit
+XEOMenu
+X         cmd=
+X         continue
+X      fi
+X
+X      if [ "$cmd" = E ] ; then
+X         exit
+X      fi
+X
+X      if [ "$cmd" = I ] ; then
+X         echo "Message base: `grep \"^$basen:\" $dir/misc/bbsrc|awk -F: '{print $2}'`"
+X         axs="`grep \"^b$basen=\" $dir/misc/config`"
+X         axs="${axs:-NONE}"
+X         if [ "$axs" != "NONE" ];then
+X            axs="`echo \"$axs\" | awk -F= '{print $2}'`"
+X            axs="`echo \"$axs\" | awk -F, '{print $1}'`"
+X         fi
+X         echo "Protection: $axs"
+X         echo "Base #: $basen"
+X         echo "MBM: #`grep \"^mbm$basen=\" $dir/misc/config | awk -F= '{print $2}'"
+X         msg=`ls $dir/bbs/$basen | wc -l `
+X         msg=`echo $msg`
+X         echo "Messages: $msg"
+X         cmd=
+X      fi
+X
+X      if [ "$cmd" = C ] ; then
+X         echo "Wait...\c"
+X         check="`grep \"^b$basen=\" $dir/misc/config`"
+X         if [ ! -z "$check" ] ; then
+X            ed - $dir/misc/config  << EOF
+X/^$check\$/d
+Xw
+XEOF
+X         fi
+X         echo "\b\b\b\b\b\b\bDone..."
+X         echo "\n\nAccess=[R]estricted list [A]ccess\n[N]one <N>: \c"
+X         read op
+X         op="`echo \"$op\"|tr \"[a-z]\" \"[A-Z]\"|cut -c1`"
+X         if [ "$op" = A ] ; then
+X            echo "Enter access levels allowed seperated\nby commas."
+X            read ar
+X            ar="`echo \"$ar\" | tr -d \" \" `"
+X            echo "b$basen=access,$ar," >> $dir/misc/config
+X            cmd=
+X            continue
+X         fi
+X         if [ "$op" = R ] ; then
+X            echo "Enter users, seperated by commas. "
+X            read users
+X            users="`echo \"$users\" | tr -d \" \" `"
+X            echo "b$basen=restrict,$users," >> $dir/misc/config
+X            cmd=
+X            continue
+X         fi
+X         cmd=
+X         continue
+X      fi
+X
+X      if [ "$cmd" = B ] ; then
+X         echo "Current MBM:\c"
+X         a="`grep \"^mbm$basen=\" $dir/misc/config | awk -F= '{print $2}'`"
+X         echo "${a:-(none)}"
+X         echo "Enter new mbm: \c"
+X         read nmbm
+X         if [ -z "$a" ] ; then
+X            echo "mbm$basen=$nmbm" >> $dir/misc/config
+X         else
+X            ed - $dir/misc/config << EOL
+X/^mbm$basen=$a\$/c
+Xmbm$basen=$nmbm
+X.
+Xw
+XEOL
+X         fi
+X      fi
+X      cmd=
+Xdone
+________This_Is_The_END________
+exit
+

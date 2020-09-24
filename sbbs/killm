@@ -1,0 +1,35 @@
+#! /bin/sh
+# Shell script to kill a message.
+z=`ls $dir/bbs/$basen | wc -l`
+if [ $z -eq 0 ] ; then
+   exit
+fi
+
+lm=`ls $dir/bbs/$basen | wc -l`
+lm=`echo $lm`
+
+echo "Enter message number to kill ($lm): \c"
+read kill
+
+kill=`expr $kill + 0 2> /dev/null`
+
+if [ $? != 0 ] ; then
+  kill=$lm
+fi
+
+
+if [ $kill -lt 1 -o $kill -gt $lm ];then
+   echo "Message not killed." ; exit
+fi
+
+from="`sed -n 1p $dir/bbs/$basen/$kill`"
+
+from="`echo \"$from\" | cut -c11-`"
+from="`echo \"$from\" | awk '{print $1}'`"
+mbm=`grep "^mbm$basen:" $dir/misc/config` ; mbm="${mbm:+y}"
+if [ $from -ne $bbs_name -a $access -lt 2 -a "$mbm" != y ] ; then
+  echo You cannot delete that message.
+  exit
+fi
+
+echo "Message $kill is unavailable." > $dir/bbs/$basen/$kill

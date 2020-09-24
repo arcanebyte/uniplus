@@ -1,0 +1,401 @@
+#! /bin/sh
+# SBBS - revision
+# New bbs setup.
+# 
+# SBBS - By Rob DeMarco
+# Copyright(C) 1987 By Rob DeMarco
+# All rights reserved.
+
+# New revision started on June 16,
+# 1987
+
+rflag=0
+base=General ;basen=1;export base basen
+flag=0
+$dir/programs/access 1
+if [ $? -eq 1 ] ; then
+   echo "Access to message bases is not allowed."
+   exit
+fi
+
+echo "\n\n"
+
+while : ; do
+
+if [ "$gflag" = "x" ] ; then
+   if [ $sflag = 1 ] ; then
+      global=`expr $global + 1`
+   fi
+   if [ $global -gt $bc ] ; then
+      gflag=z
+   fi 
+   if [ $sflag = 1 ] ; then
+      sflag=0 
+      if [ $skflag = 0 ] ; then
+         command=n
+      else
+         skflag=0 ; command=""
+      fi
+   else
+      sflag=1 ; command=j$global
+      echo "Examining base #$global"
+   fi
+else
+echo "$base) \c"
+read command
+fi
+skflag=0
+
+cmd=`echo "$command" | cut -c1`
+
+if [ "$cmd" = "" ] ; then
+  continue
+fi
+
+
+if [ "$cmd" = E -o "$cmd" = e ] ; then
+  exit
+fi
+
+if [ "$cmd" = K -o "$cmd" = k ] ; then
+  $dir/programs/killm
+  continue
+fi
+
+if [ "$cmd" = "?" ] ; then
+  cat $dir/misc/com
+  continue
+fi
+
+if [ $cmd = C -o $cmd = c ];then
+  if [ "$access" -lt 2 ];then
+    echo "Only the SysOp or Co-SySops may create\nnew boards. Contact them if you wish\nto."
+    continue
+  fi
+  while : ; do
+  echo "Enter the name of this board, 40 char."
+  echo "max."
+  echo "{========1=========2=========3========}"
+  read name
+  name=`echo "$name" | cut -c-40`
+  name=`echo "$name" | tr -d ":"`
+  echo "Board name is $name."
+  echo "Correct? <Y> \c"
+  read yn
+  yn=`echo $yn | cut -c1`
+  if [ "$yn" = N -o "$yn" = n ];then
+    continue
+  fi
+  break
+  done
+  bn=`ls $dir/bbs | wc -l`
+  bn=`echo $bn`
+  bn=`expr $bn + 1`
+  cr="$bn:$name"
+  echo "$cr" >> $dir/misc/bbsrc
+  mkdir $dir/bbs/$bn
+  continue
+fi
+
+if [ $cmd = L -o $cmd = l ];then
+  cat $dir/misc/bbsrc
+  continue
+fi
+
+if [ $cmd = M -o $cmd = m ];then
+   echo "Board #\tMessage Base manager:"
+   grep "^mbm" $dir/misc/config | tr = "	" | cut -c4- | sort -n
+continue
+fi
+
+if [ $cmd = J -o $cmd = j ];then
+  b=`echo "$command" | cut -c2-`
+  l=`ls $dir/bbs | wc -l`
+  l=`echo $l`
+  if [ "$b" = "" ];then
+    while : ; do
+    echo "Jump to what base (1-$l)? \c"
+    read b
+    b=`echo $b | tr -d "!"`
+    if [ "$b" = "" ];then
+      continue
+    fi
+    break
+    done
+  fi
+  b=`expr $b + 0 2> /dev/null`
+  if [ $? != 0 ];then
+    b=1
+    continue
+  fi
+  if [ $b -lt 1 -o $b -gt $l ];then
+    echo "That board doesn't exist."
+    continue
+  fi
+  $dir/programs/access $b
+  if [ $? = 1 ] ; then
+    skflag=1
+    continue
+  fi
+  basen=$b ; export basen
+  base="`grep \"^$basen:\" $dir/misc/bbsrc | awk -F: '{print $2}'`"
+  export base
+  continue
+fi
+
+if [ "$cmd" = P -o "$cmd" = p ] ; then
+  $dir/programs/post
+  continue
+fi
+
+if [ $cmd = I -o $cmd = i ];then
+  number=`ls $dir/bbs/$basen | wc -l`
+  if [ $number = 0 ];then
+    echo "They're no messages in this base."
+    continue
+  fi
+  echo "Read what message number? (1): \c"
+  read rnumber
+  if [ "$rnumber" = "" ];then
+    rnumber=1
+  fi
+  rnumber=`expr $rnumber + 0 2> /dev/null`
+  if [ $? != 0 ] ; then
+    rnumber=1
+  fi
+  if [ $rnumber -lt 1 ] ; then
+    rnumber=1
+  fi
+  if [ $rnumber -gt $number ];then
+    echo "That message doesn't exist."
+    continue
+  fi
+  $cls
+  number=`echo $number`
+  echo "{Message $rnumber of $number}"
+  cat $dir/bbs/$basen/$rnumber
+  $dir/programs/update $rnumber
+  continue
+fi
+
+if [ $cmd = S -o $cmd = s ] ; then
+   a=`ls $dir/bbs/$basen | wc -l`
+   a=`echo $a`
+   if [ $a -eq 0 ] ; then
+      echo "They're no messages in this base."
+      continue
+   fi
+   echo "Start scanning (1): \c"
+   read scan
+   scan=`expr $scan + 0 2> /dev/null`
+   if [ $? -ne 0 ] ; then
+      scan=1
+   fi
+   if [ $scan -gt $a ] ; then
+      scan=1
+   fi
+   while [ $scan -le $a ] ; do
+         echo "{Message $scan of $a}"
+         sed -n '1,3p' $dir/bbs/$basen/$scan
+         echo "---------------------------------------"
+         echo "[ Q to quit, <RETURN> to continue ] \c"
+         read scanf
+         scanf=`echo $scanf | tr -d "!"`
+         if [ "$scanf" = Q -o "$scanf" = q ] ; then
+           continue 2
+         fi
+         scan=`expr $scan + 1`
+   done
+   continue
+fi
+
+if [ $cmd = Q -o $cmd = q ] ; then
+   a=`ls $dir/bbs/$basen | wc -l`
+   if [ $a -eq 0 ] ; then
+      echo "They're no messages in this base."
+      continue
+   fi
+   echo "Start scanning (1): \c"
+   read scan
+   scan=`expr $scan + 0 2> /dev/null`
+   if [ $? -ne 0 ] ; then
+      scan=1
+   fi
+   if [ $scan -gt $a ] ; then
+      scan=1
+   fi
+   while [ $scan -le $a ] ; do
+         wc=`cat $dir/bbs/$basen/$scan | wc -l`
+         if [ $wc -eq 1 ] ; then
+            echo "$scan\t<KILLED>"
+            scan=`expr $scan + 1`
+            continue
+         else
+            echo "$scan\t\c"
+            sed -n '2p' $dir/bbs/$basen/$scan
+         fi
+         scan=`expr $scan + 1`
+   done
+   continue
+fi
+
+if [ "$cmd" = O -o "$cmd" = o ] ; then
+   $dir/programs/medit
+   continue
+fi
+
+if [ $cmd = Z -o $cmd = z ] ; then
+   $dir/programs/z
+   continue
+fi
+
+if [ $cmd = G -o $cmd = g ] ; then
+   gflag=x ; bc=`ls $dir/bbs | wc -l`
+   bc=`echo $bc` ; sflag=0 ; global=1
+   continue
+fi
+
+if [ $cmd = N -o $cmd = n ];then
+  if [ ! -f $dir/new/$bbs_name ];then
+    echo > $dir/new/$bbs_name
+  fi
+  info=`grep "^$basen:" $dir/new/$bbs_name`
+  if [ "$info" = "" ] ; then
+    echo "$basen:0" >> $dir/new/$bbs_name
+    mp=1
+  else
+    mp=`echo "$info" | awk -F: '{print $2}'`
+    mp=`expr $mp + 1`
+  fi
+    tst=`ls $dir/bbs/$basen|wc -l`
+    if [ $mp -gt $tst ];then
+      echo "They're no new messages."
+      continue
+    fi
+  cmd=F
+  f=x
+  number=`ls $dir/bbs/$basen|wc -l`
+fi
+
+if [ "$cmd" != "F" -a "$cmd" != "f" -a "$cmd" != R -a "$cmd" != r -a "$cmd" != N -a "$cmd" != n ] ; then
+   continue
+fi
+if [ "$f" != x ] ; then
+  if [ $cmd = F -o $cmd = f -o $cmd = R -o $cmd = r ] ; then
+    f=_
+  fi
+fi
+
+if [ "$f" = _ ];then
+  number=`ls $dir/bbs/$basen | wc -l`
+  if [ $cmd = F -o $cmd = f ];then
+    default=1
+  fi
+  if [ $cmd = R -o $cmd = r ] ; then
+    default=$number
+  fi
+  if [ $number = 0 ] ; then
+    continue
+  fi
+  default=`echo $default`
+  echo "Start at message number ($default): \c"
+  read mp
+  if [ "$mp" = "" ];then
+    mp=$default
+  fi
+  mp=`expr $mp + 0 2> /dev/null`
+  if [ $? != 0 ] ; then
+    mp=1
+  fi
+  if [ $mp -lt 1 ];then
+    mp=1
+  fi
+  if [ $mp -gt $number ];then
+    echo "That message doesn't exist."
+    continue
+  fi
+fi
+while : ; do
+     $cls
+     number=`echo $number`
+     echo "{Message $mp of $number}"
+     if [ "$rot13" = 1 ] ; then
+        rot13=0
+        sed -n '1,5p' $dir/bbs/$basen/$mp
+        sed -n '6,$p' $dir/bbs/$basen/$mp | tr "[A-M][N-Z][a-m][n-z]" "[N-Z][A-M][n-z][a-m]" 
+     else
+        cat $dir/bbs/$basen/$mp
+     fi
+     $dir/programs/update $mp
+  echo "[R]eply [A] Read Again [N]ext [Q]uit\n[X] Read as rot13 message <N>: \c"
+  read o
+  o=`echo $o | cut -c1`
+  if [ "$o" = "" ];then
+    o=N
+  fi
+  if [ $o = A -o $o = a ];then
+    continue
+  fi
+  if [ $o = X -o $o = x ];then
+    rot13=1
+    continue
+  fi
+  if [ $o = Q -o $o = q ];then
+    $dir/programs/update $mp
+    continue 2
+  fi
+  if [ $o = R -o $o = r ];then
+    t=`cat $dir/bbs/$basen/$mp | wc -l`
+    if [ $t = 1 ];then
+      echo "You can not reply to a killed \n message."
+      rflag=1
+      continue 
+    fi
+    echo "Is this [A](Private) or [B]public?<B> \c"
+    read pop
+    if [ "$pop" = A -o "$pop" = a ];then
+      arg1="`sed -n 1p $dir/bbs/$basen/$mp`"
+      arg1=`echo "$arg1" | cut -c10-`
+      arg1=`echo "$arg1" | awk -F\( '{print $1}'`
+      arg1=`echo "$arg1" | cut -c2-`
+      subj="`sed -n 2p $dir/bbs/$basen/$mp`"
+      subj=`echo "$subj"|cut -c10-`
+      $dir/programs/sendmail $arg1 "$subj" $mp
+    else
+      subject="`sed -n 2p $dir/bbs/$basen/$mp`"
+      subject=`echo "$subject" | cut -c10-`
+      sub=`echo "$subject"|cut -c-4`
+      if [ "$sub" != "Re: " ];then
+        subject="Re: $subject"
+      fi
+
+      flag=1 ; xcmd=$cmd ; cmd=P ; $dir/programs/post "$subject" $dir/bbs/$basen/$mp
+      flag=0
+      cmd=$xcmd
+      if [ $rflag = 0 ];then
+        number=`expr $number + 1`
+      fi
+      if [ $number -gt `ls $dir/bbs/$basen | wc -l` ];then
+        number=`expr $number - 1`
+        rflag=0
+      fi
+    fi
+  fi
+  if [ $cmd = R -o $cmd = r ];then
+    mp=`expr $mp - 1`
+    if [ $mp -lt 1 ];then
+      echo "Scan complete."
+      continue 2
+    fi
+    continue
+  else
+    mp=`expr $mp + 1`
+    if [ $mp -gt $number ];then
+      echo "Scan complete."
+      continue 2
+    fi
+    continue
+  fi
+done
+echo "Illegal command."
+done

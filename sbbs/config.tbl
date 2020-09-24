@@ -1,0 +1,77 @@
+    The following is a list of valid
+variables for config. NOTE: All
+variables are in the form "variable=v".
+There are NO spaces between the "="
+sign. Even if there is no value needed
+to suply to the variable, there must
+be an "=" sign after the variable.
+
+    Example:
+
+      cycle=4
+      elite=
+
+    Not:
+
+      cycle = 4
+      elite
+
+    Default numeric values will appear
+in parentheses. Anything in {}'s should
+be substituted with its real value and
+be a PART of the variable name on the
+left side of the "=".
+
+[ Variable ]   [ Meaning ]
+------------ / ------------------------
+name=name      The name of your BBS is
+               "name".Example:name=UNIX
+version=vs     The version of your SBBS
+               BBS is "vs".
+cycle=cycle(3) Number of times SBBS
+               will prompt a user to
+               re-enter illegal ID or
+               password before exiting.
+cls=cls_cmd    This tells SBBS what
+               program to run when it
+               needs to clear the
+               screen. DEFAULT: echo ^L
+eval=          Set eval flag. This
+               evaluates commands found
+               in ~/misc/prlib,
+               ~/misc/protocols.up, and
+               ~/misc/protocols.down.
+               This allows commands to
+               be called up with
+               arguments, environment
+               variables, etc.
+elite=         Set elite flag. This
+               will disallow new users
+               from registering.
+newuser=file   What file to show when
+               a new user registers.
+shell=shl_prg  Shell to run when the
+               administrator runs the
+               "A" option. Default:
+               /bin/sh.
+log=lognoms(10)How many log names to
+               keep in the userlog
+               before clearing it and
+               starting again.
+mbm{b}=mbm     The user with the ID of
+               "mbm" will have control
+               of message base "b".
+               This can be set by the
+               administrator or MBM of
+               the base WITH IN SBBS by
+               the "Z" option in the
+               Message Base.
+b{b}=r:d       Message Base "b" is to
+               have a restriction type
+               of "r". ("restrict" or
+               "access") And allow only
+               people with IDs or
+               access levels (Depending
+               on value of "r") to
+               access that Message Base.
+

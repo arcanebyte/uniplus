@@ -1,0 +1,109 @@
+#! /bin/sh
+# Administrate a message base;
+# 
+
+m=`grep "^mbm$basen=" $dir/misc/config | awk -F= '{print $2}'`
+
+m=${m:-n}
+
+if [ $access -lt 2 -a $m = n ] ; then
+   echo "Access too low / not a MBM."
+   exit
+fi
+
+echo "\n\n" ; cmd=I
+
+while : ; do
+
+      if [ -z "$cmd" ] ; then
+         echo "MBM) \c"
+         read cmd
+         cmd="`echo \"$cmd\"|tr \"[a-z]\" \"[A-Z]\"`"
+      fi
+
+      if [ "$cmd" = "?" ] ; then
+         cat << 'EOMenu'
+
+    {I}nformation
+    {C}hange status of access / Modify
+       active list.
+    {B}ase manager change (Change MBM)
+    {E}xit
+EOMenu
+         cmd=
+         continue
+      fi
+
+      if [ "$cmd" = E ] ; then
+         exit
+      fi
+
+      if [ "$cmd" = I ] ; then
+         echo "Message base: `grep \"^$basen:\" $dir/misc/bbsrc|awk -F: '{print $2}'`"
+         axs="`grep \"^b$basen=\" $dir/misc/config`"
+         axs="${axs:-NONE}"
+         if [ "$axs" != "NONE" ];then
+            axs="`echo \"$axs\" | awk -F= '{print $2}'`"
+            axs="`echo \"$axs\" | awk -F, '{print $1}'`"
+         fi
+         echo "Protection: $axs"
+         echo "Base #: $basen"
+         echo "MBM: #`grep \"^mbm$basen=\" $dir/misc/config | awk -F= '{print $2}'"
+         msg=`ls $dir/bbs/$basen | wc -l `
+         msg=`echo $msg`
+         echo "Messages: $msg"
+         cmd=
+      fi
+
+      if [ "$cmd" = C ] ; then
+         echo "Wait...\c"
+         check="`grep \"^b$basen=\" $dir/misc/config`"
+         if [ ! -z "$check" ] ; then
+            ed - $dir/misc/config  << EOF
+/^$check\$/d
+w
+EOF
+         fi
+         echo "\b\b\b\b\b\b\bDone..."
+         echo "\n\nAccess=[R]estricted list [A]ccess\n[N]one <N>: \c"
+         read op
+         op="`echo \"$op\"|tr \"[a-z]\" \"[A-Z]\"|cut -c1`"
+         if [ "$op" = A ] ; then
+            echo "Enter access levels allowed seperated\nby commas."
+            read ar
+            ar="`echo \"$ar\" | tr -d \" \" `"
+            echo "b$basen=access,$ar," >> $dir/misc/config
+            cmd=
+            continue
+         fi
+         if [ "$op" = R ] ; then
+            echo "Enter users, seperated by commas. "
+            read users
+            users="`echo \"$users\" | tr -d \" \" `"
+            echo "b$basen=restrict,$users," >> $dir/misc/config
+            cmd=
+            continue
+         fi
+         cmd=
+         continue
+      fi
+
+      if [ "$cmd" = B ] ; then
+         echo "Current MBM:\c"
+         a="`grep \"^mbm$basen=\" $dir/misc/config | awk -F= '{print $2}'`"
+         echo "${a:-(none)}"
+         echo "Enter new mbm: \c"
+         read nmbm
+         if [ -z "$a" ] ; then
+            echo "mbm$basen=$nmbm" >> $dir/misc/config
+         else
+            ed - $dir/misc/config << EOL
+/^mbm$basen=$a\$/c
+mbm$basen=$nmbm
+.
+w
+EOL
+         fi
+      fi
+      cmd=
+done

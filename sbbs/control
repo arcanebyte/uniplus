@@ -1,0 +1,19 @@
+#! /bin/sh
+# Inhibit or allow message/chat
+# request.
+
+echo "<N>o messages from other users."
+echo "<Y>es, allow messages from other users."
+read y
+y=`echo $y | tr "[A-Z]" "[a-z]"`
+y=`echo $y | tr -d "!"`
+if [ "$y" != n -a "$y" != y ] ; then
+  echo "N or Y."
+  exit 1
+fi
+
+if [ "$y" = n ] ; then
+   chmod og-rwx `tty`
+else
+   chmod og+wrx `tty`
+fi

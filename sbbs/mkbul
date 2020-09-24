@@ -1,0 +1,41 @@
+#! /bin/sh
+# Post a system bulletin.
+
+
+if [ "$access" -lt 2 ]; then
+  echo "Sorry - You are not allowed to post\nbulletins."
+  exit
+fi
+
+file=/tmp/sbbs.pbl.$$
+echo "Subject <$bbs update>: \c"
+read subj
+subj=`echo "$subj" | tr -d "!"`
+if [ -z "$subj" ] ; then
+   subj="$bbs update"
+fi
+
+echo "Enter your bulletin now. Press CTRL-D"
+echo "for editor.\n"
+echo "From: #$bbs_name ($fullname)\nDate: `date`" > $file
+echo "Subj: $subj" >> $file
+echo "      $bbs version $version\n" >> $file
+while : ; do
+      cat >> $file
+      $dir/programs/edit $file
+      status=$?
+      if [ $status = 1 ] ; then
+        continue
+      elif [ $status = 2 ] ; then
+        exit
+      else
+        $dir/programs/lock /tmp/sbbs.pbl.lock
+        z=`ls $dir/bulletins | wc -l`
+        z=`expr $z + 1`
+        cat $file > $dir/bulletins/$z
+        rm $file
+        rm /tmp/sbbs.pbl.lock
+        echo "Message saved..."
+        exit
+      fi
+done

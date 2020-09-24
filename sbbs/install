@@ -1,0 +1,143 @@
+#! /bin/sh
+# Install version 1.0
+
+dir=/u/robertd/lib/sbbs ; export dir
+echo "Install version 1.0"
+echo "\n\n"
+echo 'Please enter sbbs $home directory: \c'
+read home
+
+echo "Creating directories..."
+mkdir $home/admin
+mkdir $home/admin/profile
+mkdir $home/bbs
+mkdir $home/bbs/1
+mkdir $home/udl
+mkdir $home/bulletins
+mkdir $home/misc
+mkdir $home/mail
+mkdir $home/udl/new
+mkdir $home/new
+
+echo "Initializing files..."
+
+echo "1:General" > $home/misc/bbsrc
+echo "\c" > $home/misc/prlib
+echo "\c" > $home/misc/config
+echo "\c" > $home/misc/udlrc
+echo "\c" > $home/admin/profile/lastcaller
+echo "\c" > $home/admin/profile/logins
+echo "\c" > $home/admin/profile/members
+echo "\c" > $home/admin/profile/log
+echo "\c" > $home/admin/profile/newusers
+echo "\c" > $home/misc/usr
+echo "\c" > $home/admin/profile/cmdlog
+echo "\c" > $home/misc/info
+echo "\c" > $home/misc/closing
+echo "\c" > $home/misc/openmes
+echo "\c" > $home/misc/newnews
+echo "1:Ascii:echo Recieving buffer. Begin. Send CTRL-D when finished. ; cat >> " > $home/misc/protocols.up
+echo "1:Ascii:echo Prepare to recieve. ; sleep 10 ; cat" > $home/misc/protocols.down
+cat << EOH > $home/misc/main_menu
+
+    (A)dministration shell              (B) Post Bulletins
+    (C)hange Password                   (D)ataBases
+    (E)xit from SBBS                    (I)nformation
+    (L)ist users                        (M)essage bases
+    (O)pening bulletins                 (P)rogram menu
+    (Q) Allow/disallow chat requests    (R)ead private mail to you
+    (T) Talk to users                   (U)ser log
+    (V)alidate users                    (W)rite to other users
+EOH
+
+cat << EOH > $home/misc/com
+   (C) Create message base              (L) List message bases
+   (Jx) Jump to a message base x        (P) Post a message
+   (I) Read an individual message       (F) Retrieve forward sequential
+   (R) Retrieve reverse sequential      (N) Read new messages
+   (G) Global scan                      (K) Kill a message
+   (E) Exit SBBS BBS                    (S) Scan messages
+   (Q) Quick scan of messages           (M) List MBMs.(Message Base Manager)
+   (O) Open a message to edit           (Z) Manage message bases
+EOH
+
+cat << EOH > $home/misc/ecom
+   (A)bort message                      (D)elete line
+   (E)dit a line                        (I)nsert at line
+   (C)ontinue entering message          (S)ave message
+   (P)roof read message(spell check)    (L)ist message
+   (R)ot 13 / DeRot 13 a message.
+EOH
+echo "Compiling .c programs..."
+
+cc -o $home/programs/initial $home/programs/initial.c
+cc -o $home/programs/lock $home/programs/lock.c
+
+echo "Making sysop user..."
+echo ""
+echo "Please enter your REAL name. "
+echo ""
+echo ">> Name: \c"
+read rname
+rname=`echo "$rname"| tr -d "!"`
+rname=`echo "$rname"| tr -d ":" `
+rname=`echo "$rname"| tr -s " "`
+rname=`echo "$rname"| tr "[a-z]" "[A-Z]"`
+name=`cat $home/admin/profile/members | wc -l`
+name=`expr $name + 1`
+echo ""
+echo "Write your user ID down and don't lose it."
+echo "You will need it to login again."
+echo ""
+echo ">> Your user ID is: $name"
+echo ""
+echo "Now choose a password. It must be at least four characters."
+while : ; do
+echo ""
+echo ">> Password: \c"
+read pass
+pc=`echo "$pass" | wc -c`
+if [ $pc -lt 5 ] ; then
+  echo ""
+  echo "Make it at least four characters."
+  continue 
+else 
+  pass="`echo \"$pass\" | tr \"[A-Z]\" \"[a-z]\"`"
+  break
+fi
+done
+echo ""
+while : ; do
+echo "Enter your phone number. Format is XXX-XXX-XXXX."
+echo ""
+echo ">> Phone: \c"
+read num
+num="`echo \"$num\" | tr -d \":\"`"
+if [ `echo $num | wc -c` -ne 13 ] ; then
+  echo ""
+  echo "Try again."
+  continue
+fi
+break
+done
+echo ">> Modem Phone (if any): \c"
+read data
+echo ">> Address: \c"
+read add
+add=`echo $add | tr -d ":"`
+echo ">> City: \c"
+read city
+city=`echo $city | tr -d ":"`
+echo ">> State: \c"
+read state
+state=`echo $state | tr -d ":"`
+echo ">> Zip Code (five digits): \c"
+read zip
+zip=`echo $zip | tr -d ":"`
+echo "$name:$rname:$pass:$num:$data:$city:$state:$add" >> $home/admin/profile/newusers 
+$home/programs/mkusr $name "$pass" "$rname" 3 "$add" "$city" "$state" $zip "$num"
+echo ""
+echo "New account has been created. "
+echo ">> ID: $name"
+echo ">> Password: $pass"
+echo ""

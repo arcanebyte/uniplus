@@ -1,0 +1,169 @@
+#! /bin/sh
+# SBBS Main menu.
+
+trap 'trap "" 15 14 3 2 1 ; $dir/programs/rescue ; exit 0' 1
+trap "" 2 3
+tty=`tty`
+export tty
+echo "$bbs_name:$fullname:$tty" >> $dir/misc/usr
+
+logc="`grep \"^log=\" $dir/misc/config`"
+cls="`grep \"^cls=\" $dir/misc/config`"
+
+if [ "$cls" = "" ] ; then
+  cls="echo \c"
+else
+  cls=`echo "$cls" | cut -c5-`
+fi
+export cls
+
+if [ "$logc" = "" ] ; then
+  logc=20 ; export logc
+else
+  logc=`echo $logc | cut -c5-`
+  logc=`expr $logc + 0 2> /dev/null`
+  if [ $? != 0 ] ; then
+    logc=20 ; export logc
+  else
+    export logc
+  fi
+fi
+cmd_list="#$bbs_name" ; export cmd_list
+echo "\n\n"
+maill=`ls $dir/mail/"$bbs_name" | wc -l`
+
+echo "Last caller was `cat $dir/admin/profile/lastcaller`."
+
+if [ $maill -gt 0 ] ; then
+  echo "You have mail waiting! Choose option R at $bbs main prompt."
+fi
+
+
+
+while : ; do
+     echo "$bbs main) \c"
+     read cmd
+     cmd=`echo "$cmd" | tr -d "!"`
+
+     cmd=`echo "$cmd"`
+     if [ -z "$cmd" ] ; then
+       continue;
+     fi
+     cmd=`echo "$cmd" | cut -c1`
+     cmd_list="$cmd_list:$cmd";export cmd_list
+
+     if [ "$cmd" = "?" ] ; then
+       cat $dir/misc/main_menu
+       continue
+     fi
+
+     if [ $cmd = M -o $cmd = m ] ; then
+       $dir/programs/bbs
+       continue
+     fi
+
+     if [ $cmd = O -o $cmd = o ] ; then
+       $dir/programs/db
+       continue
+     fi
+
+
+     if [ $cmd = I -o $cmd = i ] ; then
+       cat $dir/misc/info
+       continue
+     fi
+
+     if [ $cmd = L -o $cmd = l ] ; then
+       $dir/programs/users
+       continue
+     fi
+
+     if [ $cmd = E -o $cmd = e ] ; then
+       $dir/programs/lock /tmp/sbbs.hup.lock
+       file=/tmp/sbbs.hup.$$
+       grep -v "^$bbs_name:" $dir/misc/usr > $file
+       cat $file > $dir/misc/usr ; rm $file
+       rm /tmp/sbbs.hup.lock
+       length=`cat $dir/admin/profile/log | wc -l`
+       if [ $length -eq $logc ] ; then
+         proc=$$
+         sed 1d $dir/admin/profile/log > $dir/admin/profile/log.$proc
+         mv $dir/admin/profile/log.$proc $dir/admin/profile/log
+       fi
+       echo "$bn\t$login_time\t`date | cut -c9-19`" >> $dir/admin/profile/log
+       echo "$cmd_list" >> $dir/admin/profile/cmdlog
+       echo "Thank you for calling, $fullname"
+       echo "Loging off at `date`"
+       echo ""
+       cat $dir/misc/closing
+       echo "$fullname" > $dir/admin/profile/lastcaller
+       echo "$bbs (SBBS $version) disconnecting..."
+       exit
+     fi
+
+     if [ $cmd = A -o $cmd = a ];then
+       if [ $access -lt 3 ];then
+         echo "Only the system administrater may get \naccess to the shell."
+         continue 
+       fi
+       sh=`grep "^shell=" $dir/misc/config | cut -c7-`
+       if [ -z "$sh" ] ; then
+          /bin/sh
+       else
+          $sh
+       fi
+       continue
+     fi
+
+     if [ $cmd = D -o $cmd = d ] ; then
+       $dir/programs/udl
+       continue
+     fi 
+
+     if [ $cmd = W -o $cmd = w ] ; then
+       $dir/programs/sendmail
+       continue
+     fi
+
+     if [ $cmd = R -o $cmd = r ] ; then
+       $dir/programs/mailbox
+       continue
+     fi
+
+     if [ $cmd = P -o $cmd = p ] ; then
+       if [ "$access" -eq 0 ] ; then
+         echo "Only level 1 and greater people have\naccess to the program library."
+         continue
+       fi 
+       $dir/programs/program
+       continue
+     fi
+
+     if [ $cmd = B -o $cmd = b ] ; then
+       $dir/programs/mkbul
+       continue
+     fi  
+
+     if [ $cmd = C -o $cmd = c ] ; then
+       $dir/programs/cwd
+       continue
+     fi
+
+     if [ $cmd = v -o $cmd = V ] ; then
+       $dir/programs/usr
+       continue
+     fi
+     if [ $cmd = u -o $cmd = U ] ; then
+       echo "NOTE: <CD> denotes loss of carrier."
+       cat $dir/admin/profile/log
+       continue
+     fi
+     if [ $cmd = t -o $cmd = T ] ; then
+       $dir/programs/chat
+       continue
+     fi
+     if [ $cmd = q -o $cmd = Q ] ; then
+       $dir/programs/control
+       continue
+     fi
+done

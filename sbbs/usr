@@ -1,0 +1,163 @@
+#! /bin/sh
+# Validate, list, remove, access
+
+if [ $access -lt 2 ] ; then
+  echo "Sorry - You may not use the validation\nfunction with a level less then 2."
+fi
+echo "\n\n"
+while : ; do
+  echo "$bbs validation) \c"
+  read cmd
+  cmd=`echo "$cmd" | tr -d "!"`
+  if [ -z "$cmd" ] ; then
+    continue
+  fi
+
+  cmd=`echo "$cmd" | tr "[A-Z]" "[a-z]"`
+
+  if [ "$cmd" = "?" ] ; then
+    cat << EOH
+
+    (L) List new users on file          (A) Change access of a user
+    (R) Remove a user                   (C) Clear a new user
+    (V) View command log                (D) Delete (refresh) command log
+    (E) Exit valadation menu
+EOH
+    continue
+  fi
+
+  if [ $cmd = e ] ; then
+    exit
+  fi
+
+  if [ $cmd = l ] ; then
+    cat $dir/admin/profile/newusers
+    continue
+  fi
+
+  if [ $cmd = a ] ; then
+    if [ $access = 3 ] ; then
+      axlim=3
+    else
+      axlim=1
+    fi
+    while : ; do
+    echo "Enter user ID: \c"
+    read alias
+    ab="`grep \"^$alias:\" $dir/admin/profile/members`"
+    if [ -z "$ab" ] ; then
+      echo "That user doesn't exist!"
+      continue
+    fi
+    break
+    done
+    while : ; do
+    echo "Enter new access (0-$axlim): \c"
+    read axess
+    axess=`expr $axess + 0 2> /dev/null`
+    if [ $? = 2 ] ; then
+      echo "Ilformed number."
+      continue
+    fi
+    if [ $axess -lt 0 -o $axess -gt $axlim ] ; then
+      echo "Out of range - (0-$axlim)"
+      continue 2
+    fi
+    break
+    done
+    lin="`echo \"$ab\" | awk -F: '{print $1}'`"
+    lin="$lin:$axess:`echo \"$ab\" | awk -F: '{print $3 ":" $4 ":" $5 ":" $6 ":" $7 ":" $8}'`"
+    file=/tmp/sbbs.tmp.$$
+    $dir/programs/lock /tmp/sbbs.tmp.lock
+    grep -v "^$alias:" $dir/admin/profile/members > $file
+    cat $file > $dir/admin/profile/members
+    rm /tmp/sbbs.tmp.lock
+    rm $file
+    echo "$lin" >> $dir/admin/profile/members
+    echo "Access changed successfully."
+  fi
+
+  if [ $cmd = c ] ; then
+    echo "Enter the user number: \c"
+    read number
+    a=`grep "^$number:" $dir/admin/profile/newusers`
+    if [ -z "$a" ] ; then
+      echo "There is no newuser #$number"
+      continue
+    fi
+    file=/tmp/sbbs.tnw.$$
+    $dir/programs/lock /tmp/sbbs.tnw.lock
+    grep -v "^$number:" $dir/admin/profile/newusers > $file
+    cat $file > $dir/admin/profile/newusers
+    rm /tmp/sbbs.tnw.lock
+    rm $file
+    echo "Newuser #$number cleared from newuser file."
+    continue
+  fi
+
+  if [ $cmd = r ] ; then
+    echo "Enter user # to delete: \c"
+    read delete
+    a=`grep "^$delete:" $dir/admin/profile/members`
+    if [ -z "$a" ] ; then
+      echo "#$delete doesn't exist."
+      continue
+    fi
+    named=`echo "$a" | awk -F: '{print $3}'`
+    axess=`echo "$a" | awk -F: '{print $2}'`
+    if [ $axess -ge $access -a $access -ne 3 ] ; then
+      echo "Sorry, access level of said user is higher or equal to yours."
+      continue
+    fi
+    if [ "$named" = "" ] ; then
+      echo "Record was deleted."
+      continue
+    fi
+    echo "Delete $named? \c"
+    read yn
+    if [ $yn != Y -a $yn != y ] ; then
+      continue
+    fi
+    rm -r $dir/mail/$delete
+    rm $dir/new/$delete 2> /dev/null
+    file=/tmp/sbbs.rmu.$$
+    $dir/programs/lock /tmp/sbbs.rmu.lock
+    grep -v "^$delete " $dir/admin/profile/logins > $file 
+    cat $file > $dir/admin/profile/logins
+    rm $file
+    rm /tmp/sbbs.rmu.lock
+    $dir/programs/lock /tmp/sbbs.rmr.lock ; uslimit=`cat $dir/admin/profile/members|wc -l`
+    file=/tmp/sbbs.rmr.$$
+    grep -v "^$delete:" $dir/admin/profile/members > $file   
+    cat $file > $dir/admin/profile/members
+    if [ $delete -ne $uslimit ] ; then
+       echo "$delete:0"  >> $dir/admin/profile/members
+    fi
+    rm $file
+    rm /tmp/sbbs.rmr.lock
+    th=`grep "^$delete:" $dir/misc/newnews`
+    if [ ! -z "$th" ] ; then
+    ed - $dir/misc/newnews << EOS
+    /^$delete:/d
+    w
+EOS
+    fi
+    echo "User deleted."
+  fi
+
+  if [ $cmd = v ] ; then
+     cat $dir/admin/profile/cmdlog
+     continue
+  fi
+
+  if [ $cmd = d ] ; then
+     echo "Delete? <N>: \c"
+     read d
+     d="`echo $d | cut -c1`"
+     if [ "$d" = y -o "$d" = Y ] ; then
+        echo "\c" > $dir/admin/profile/cmdlog
+        continue
+     fi
+     echo "Aborted."
+  fi
+done

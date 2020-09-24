@@ -1,0 +1,102 @@
+#! /bin/sh
+# New file check.
+
+if [ $access -lt 2 ] ; then
+  echo "You may not allow new uploads."
+  exit
+fi
+
+a=`ls $dir/udl/new | wc -l`
+
+if [ $a -eq 0 ] ; then
+  echo "No uploads."
+  exit
+fi
+
+
+$cls ; b=1
+
+while [ $b -le $a ] ; do
+
+     c="`sed -n ${b}p $dir/udl/new/.udlrc`"
+     echo "File:\c"
+     echo "$c" | awk -F\| '{print $1}'
+     echo "Description:\c"
+     echo "$c" | awk -F\| '{print $2}'
+     echo "DataBase:\c"
+     echo "$c" | awk -F\| '{print $3}'
+
+     while : ; do
+     echo "Upload) \c"
+     read cmd
+
+     if [ -z "$cmd" ] ; then
+       continue
+     fi
+
+     if [ "$cmd" = "?" ] ; then
+       cat << EOH
+
+       D: Delete file.
+       M: Move this file.
+       V: View this file.
+       A: Abort session.
+EOH
+     fi
+
+     if [ $cmd = D -o $cmd = d ];then
+       set="$set"0
+       b=`expr $b + 1`
+       continue 2
+     fi
+
+     if [ $cmd = M -o $cmd = m ];then
+       set="$set"1
+       b=`expr $b + 1`
+       continue 2
+     fi
+
+     if [ $cmd = V -o $cmd = v ];then
+        echo "First ten lines..."
+        sed -n '1,10p' $dir/udl/new/$b
+        echo "Press <RETURN>:\c"
+        read junk
+        echo "Last ten lines..."
+        tail -10 $dir/udl/new/$b
+        echo "Press <RETURN>:\c"
+        read junk
+        continue
+     fi
+
+     if [ $cmd = A -o $cmd = a ];then
+       echo "Session aborted. Files restored."
+       exit
+     fi
+
+     done
+
+done
+
+setc=`echo "$set" | wc -c`
+setc=`expr $setc - 1`
+
+a=1
+echo "Sorting....."
+while [ $a -le $setc ] ; do
+      string="`sed -n ${a}p $dir/udl/new/.udlrc`"
+      sett=`echo "$set" | cut -c$a`
+      if [ $sett -eq 0 ] ; then
+        a=`expr $a + 1`
+        continue
+      fi
+      datab=`echo "$string" | awk -F\| '{print $3}'`
+      desc="`echo \"$string\" | awk -F\| '{print $2}'`"
+      num=`ls $dir/udl/$datab | wc -l`
+      num=`expr $num + 1`
+      echo "$num: $desc" >> $dir/udl/$datab/.udlrc
+      mv $dir/udl/new/$a $dir/udl/$datab/$num
+      a=`expr $a + 1`
+done
+echo "\c" > $dir/udl/new/.udlrc
+rm $dir/udl/new/* 2> /dev/null
+echo "done"

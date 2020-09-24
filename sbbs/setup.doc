@@ -1,0 +1,81 @@
+.ll 70
+.in 5
+.nf
+.ce 4
+SBBS: The Sigma Bulletin Board System
+Setup Guide(*)
+
+SBBS is copyright (C) 1987 by Rob DeMarco.
+
+
+
+.fi
+.ce 1
+Introduction
+
+SBBS runs as a login shell and takes a bit of work to install properly.
+This document will help you do so and explain a few things about the way
+SBBS operates.
+
+Included with the SBBS package are four documentation files. They are:
+
+.in +5
+.nf
+README    - an explanatory note
+setup.doc - how to set up and configure an SBBS system
+admin.doc - SBBS administration functions
+config.tbl- valid configuration variables
+.in -5
+.fi
+
+
+.ce 1
+Installing SBBS
+
+The most efficient way to run SBBS is to create a seperate login account for
+the SBBS program. As SBBS maintains its own list of BBS users (and their
+passwords), this allows users to simply type "su sbbs" to enter the program.
+Alternately, if your version of UNIX ignores the default login shell when a
+"su" command is executed, users can use "exec login sbbs". With a bit of
+imagination and a knowledge of shell programming techniques, any number of
+alternate methods can be devised.
+
+All SBBS programs and files reside in one directory. The software is normally
+configured to be based in the directory /u/sbbs, although this can be changed
+to suit your particular needs. If you wish to place SBBS elsewhere, edit the
+file login-sig and change the line
+
+.in +5
+dir=/u/sbbs
+.in -5
+
+reflect the desired location.
+
+After you have decided on SBBS's home, make sure that directory is created and
+then create a subdirectory called programs. All files from the shell
+archives should be kept in this directory, usually called /u/sbbs/programs.
+
+From this point on, the directory you have chosen for SBBS to reside in will
+be referred to as ~sbbs.
+
+After insuring that a copy of every file from the shell archives exists in
+~sbbs/programs, run the "install" program. This will automatically create the
+necessary SBBS data files.
+
+Finally, add an appropriate line to your /etc/passwd file to allow users to
+access SBBS. A typical example follows.
+
+.in +5
+sbbs::1000:1000:SBBS user:/u/sbbs:/u/sbbs/programs/initial
+.in -5
+
+
+.ce 1
+Support
+
+If you wish to become a registered owner of SBBS, contact robertd@ncoast.UUCP.
+Support will include periodic updates and possibly an SBBS newsletter.
+---------------------
+* Writen By Rob DeMarco (robertd@ncoast)
+Revised and edited by Bill Wisner (billw@killer)
+Updated by Rob DeMarco

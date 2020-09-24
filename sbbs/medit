@@ -1,0 +1,60 @@
+#! /bin/sh
+# edit:
+# SBBS version 1.0;
+#
+
+z=`ls $dir/bbs/$basen | wc -l`
+if [ $z -eq 0 ] ; then
+   exit
+fi
+mbm=`grep "^mbm$basen=" $dir/misc/config | awk -F= '{print $2}'`
+mbm=${mbm:+1}
+
+
+echo "Edit what message? (1): \c"
+read m
+
+m=`expr $m + 0 2> /dev/null`
+
+if [ $? != 0 ] ; then
+   m=1
+fi
+
+l=`ls $dir/bbs/$basen | wc -l`
+
+if [ $m -lt 1 -o $m -gt $l ] ; then
+   echo "Message not edited."
+fi
+
+wc_l=`cat $dir/bbs/$basen/$m | wc -l`
+if [ $wc_l -eq 1 ] ; then
+   echo "This message was killed."
+   exit
+fi
+
+zz="`sed -n 1p $dir/bbs/$basen/$m | cut -c11- | awk '{print $1}' `"
+if [ $access -lt 2 -a "$mbm" != 1 -a $zz != $bbs_name ] ; then
+   echo "Your access is too low."
+   exit
+fi
+file=/tmp/sbbs.edt.$$
+cat $dir/bbs/$basen/$m > $file
+
+while : ; do
+      $dir/programs/edit $file
+
+      status=$?
+
+      case $status in
+
+           1) cat >> $file
+              continue
+              ;;
+           2) exit
+              ;;
+           *) mv $file $dir/bbs/$basen/$m
+              echo "Message saved..."
+              break
+              ;;
+      esac
+done

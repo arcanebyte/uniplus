@@ -1,0 +1,31 @@
+#! /bin/sh
+# List Users
+
+echo "Enter -1 to exit."
+
+while : ; do
+      echo "User ID) \c"
+      read id
+
+      id=`expr $id + 0 2> /dev/null`
+      if [ $? != 0 ] ; then
+        echo "Enter the ID #."
+        continue
+      fi
+      if [ $id -eq -1 ] ; then
+        exit
+      fi
+      
+      t="`grep \"^$id:\" $dir/admin/profile/members`"
+
+      if [ -z "$t" ] ; then
+        echo "ID doesn't exist."
+        continue
+      fi
+
+      if [ $access -lt 2 ] ; then
+        echo "$t" | awk -F: '{print "ID #:" $1 "\t" "Access:" $2 "\nFull Name:" $3}'
+      else
+        echo "$t" | awk -F: '{print "Uid: " $1 "\tAccess: " $2 "\nFull Name: " $3 "\tAddress: " $4 "\nCity: " $5 "\tState: " $6 "\nZip: " $7 "\tPhone: " $8}'
+      fi
+done

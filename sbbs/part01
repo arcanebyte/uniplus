@@ -1,0 +1,786 @@
+#!/bin/sh
+# shar:	Shell Archiver
+#	Run the following text with /bin/sh to create:
+#	README
+#	admin.doc
+#	config.tbl
+#	setup.doc
+sed 's/^X//' << 'SHAR_EOF' > README
+X
+XSBBS Copyright(C) 1987 Rob DeMarco
+XAll rights reserved. 
+X
+XSBBS may be modified only at your site.
+XIt may be redistributed but NOT
+Xmodified in any way and all files must
+Xstay intact.
+XIt may not be sold.
+X
+X    The following files are programs that SBBS use or documentations. Move
+Xall the programs to a specific place and move the documentations were best
+Xput. Read setup.doc before installing SBBS.
+X
+X    This archive(s) contain four documentations (including this one),
+X    two C programs - initial.c and lock.c(*).
+X    ~28 shell script files writen in Bourne Shell.
+X
+X----
+X* initial.c is a fake "shell" that is called up when a person logs in as a
+XSBBS user or su's to it. It contains a simple function; execl(). This runs
+Xa shell script login-sig as the LOWEST level shell. If your system doesn't
+Xsuport execl(), look for a simular function.
+X
+Xlock.c shouldn't give you much trouble. It works on a system III and can
+Xbe easily modified to work on any system.
+X
+XDo neccessary changes to these files BEFORE you run "install".
+X
+X
+SHAR_EOF
+sed 's/^X//' << 'SHAR_EOF' > admin.doc
+X
+XSBBS ADMINISTRATION HELP
+X---- -------------- ----
+X
+XAfter you have read the instructions on how to set up SBBS, you must get
+Xyour self familiarized with all the SBBS files.
+X
+XI have assumed that you ran 'install' and your SYSOP account was set up.
+XA 'SYSOP' account is a special user that has many privileges. Among them are
+Xuser-management systems, Message Bases, and U/DL bases. There are more; these
+Xwill be explained.
+X
+X
+XI.   Familiarization of SBBS
+X
+X   Your account was created when you ran the program install. Install makes
+Xthe necessary preparations to allow SBBS to run. If you are not the head
+XSYSOP and didn't run install you may skip this whole section on SBBS
+Xfamiliarization as it does not concern you.
+X
+X   Your ID and password was stored in a file called ~/admin/profile/logins.
+XOther information on you is stored in ~/admin/profiles/members. Check these
+Xfiles out and see how they are stored. (In the examples, we will assumed you
+Xcalled ONCE before.)
+X
+X    $ cd $home/admin/profile            < $home equals SBBSs home directory.
+X    $ ls
+X    cmdlog      < User command log
+X    lastcaller  < The last caller
+X    log         < Log of users and their times of login and logout
+X    logins      < User IDs and passwords
+X    members     < More information on users
+X    newusers    < New Users who have called.
+X    $ cat lastcaller
+X    JOHN JONES
+X    $ cat cmdlog
+X    1:?:M:U:E     < Commands Sysop entered.
+X    $ cat log
+X    1 11:33:22 Tue Jun 20 1987 EST 11:50:22 Tue Jun 20 1987 EST
+X    $ cat newusers  < Normally when new users call their name and other
+X                      information is stored here. The one who ran install
+X                      does not have his name there because he is assumed to be
+X                      the sysop. (And, if you remember, he/she has a level=3)
+X    $ cat logins < encrypted password.
+X    1 XzUymakPPPqx
+X    $ cat members
+X    1:3:JOHN JONES:123 ANYWHERE ST.:TOWNSVILLE:NEW JERSEY:46642:781-620-1235
+X
+X    ^ ^      ^        ^                 ^           ^        ^         ^
+X   ID Access Name   Street            City      State     Zip    Phone Number
+X
+X    Now let's explore the files in the "mail" and "new" directories.
+X
+X    $ cd $home/mail
+X    $ ls
+X    1
+X    $ cd 1
+X    $ ls
+X    1
+X    2
+X
+X    The directory "1" in the "mail" directory is where all of user 1's
+Xmail is. Since it is private, we woun't look at the mail. (Files "1" and "2")
+X
+X    $ cd $home/new
+X    $ ls
+X    1
+X    $ cat 1
+X    1:4
+X
+X    This is a file that contains information on the last message he
+Xread from the Message Bases (More on this later). In Message Base "1", he
+Xread all the way up to message #4. This, for your information, is the "General"
+XMessage Base.
+X
+X    Now let's look at the "bulletins" and "udl" directories.
+X
+X    $ cd $home/bulletins
+X    $ ls
+X    1  < This is a bulletin from the sysop (User #1) welcoming everyone to
+X         his new system.
+X    $ cat 1
+X     < Bulletin >
+X    $ 
+X
+X    The bulletin will be displayed to any one logging in to his system one
+Xtime only. They may reread the bulletins by a special command.
+X
+X    $ cd $home/udl
+X    $ ls
+X    new
+X    $
+X
+X    This directory stores all the files the users upload. He has created no
+X"Topics". Topics are specific areas where users store files. These files
+Xpertain to the "Topic". The directories are stored as numbers. The actual
+Xtopic-names are stored in files. The "new" directory is automatically
+Xcreated when the SysOp ran "install". It stores "new" uploads that are awaiting
+Xapproval be the SysOp or CoSysOps.
+X
+X    Now we explore the final directory.
+X
+X    $ cd $home/misc
+X    $ ls
+X    bbsrc
+X    closing
+X    com
+X    config
+X    ecom
+X    main_menu
+X    newnews
+X    openmes
+X    prlib
+X    protocols.down
+X    protocols.up
+X    udlrc
+X    usr
+X    $ cat bbsrc < List Message Bases.
+X    1:General
+X    $ cat udlrc < Remember he hasn't set up any UDL DataBases. This contains
+X                  the available Topics.
+X    $ cat usr   < IDs, names, and ttys of who is CURRENTLY using SBBS.
+X    $ cat openmes
+X    [[[ Welcome to Cleveland Electronic City
+X    [[[ Serving its users since 1981 providing the best community service.
+X    [[[   Try out our new feature - "mayor". Where you may write to the 
+X    [[[ may about whats on your mind.
+X
+X    This is the file that will ALWAYS be displayed when one logs on your SBBS
+Xsystem.
+X
+X    $ cat closing
+X
+X    Thank you for calling. Call these other boards:
+X
+X    CitCom: 216-222-3333
+X    Ataraforce: 216-444-5555
+X    IBbsM: 216-666-7777
+X
+X    This message is displayed ALWAYS when one exits SBBS.
+X
+X    $ cat newnews
+X    1:1
+X
+X    This file containes information on what the last bulletin read was.
+X    Remember the "bulletins" directory?
+X
+X    $ cat prlib
+X    1: Access DataBase XI:/u/local/dbxi
+X    2: List or add city services:/u/local/cleserv
+X    3: List or add 216 numbers.:/u/local/216list
+X    
+X    This is the program library. This is available online to SBBS users. The
+Xfirst field (Of 3 seperated by colons) is the option number that the user
+Xtypes to access it. Field 2 is the formal name the user sees. Field three
+Xis the actual program to run. This may contain variables , quotes and ';'
+Xseperaters if you wish. But a special "variable" must be set to do this;
+Xotherwise it will take the whole third field as the program to run -- without
+Xevaluating the metacharacters.
+X
+X    $ cat com ecom main_menu <menus
+X    <com menu  (bbs)>
+X    <ecom menu (editor)>
+X    <main_menu menu. (main menu)>
+X    $ cat protocols.up
+X    1:Ascii:echo Start Transmitting. Send a CTRL-D when finished. ; cat >>
+X    The first field is the udl protocol option. It is one of the options listed
+Xwhen someone uploads a file. It was automatically set up when "install"
+Xwas run. The second field is the formal name the protocol. The third is the
+Xactual program to run. That special variable isn't needed here because all
+Xmetacharacters will automatically be evaluated. So be careful to quote
+Xany metacharacter that is to be taken literally like *,",;,etc.
+X
+X    Please understand it. You must enter the protocols yourself. (except Ascii)
+X
+X    Examples:
+X
+X    2:Xmodem:/u/local/umodem -rt
+X    3:Kermit:/u/local/kermie -rb
+X
+X    Don't worry about file names. This is done for you because the file
+Xnames will differ as people upload more and more of them.
+X
+X    $ cat protocols.down
+X    1:Ascii:Prepare for transmission in 10 seconds. ; cat
+X    The same applies for this file except its used when downloading.
+X
+X    Examples:
+X
+X    2:Xmodem:/u/local/umodem -st
+X    3:Kermit:/u/local/kermie -sb
+X
+X    $ cat config
+X    $
+X
+X    Where all system variables (including the one to evaluate the
+Xthird field or "prlib") are stored.
+X
+X    The format is "variable=value" or simply "variable=" for some of them.
+X
+X    Consult config.tbl in your documentation package for more details.
+X
+X    Now it's time to learn how to use SBBS it self.
+X
+XII.   SBBS - THE BBS
+X
+X    There are two ways to tackle this difficult task of explaining SBBS.
+XI could explain the whole SBBS system , including the general commands that
+Xare available to all the users OR I could explain only the commands
+Xavailable to high-level users.
+X
+X    But do to the accident that caused my administration documentation to be
+Xcompletely erased, I have no time to be complete. I will try my best to be able
+Xto explain how to run SBBS. But you will have to wait until SBBS is released
+Xto the public before a better documentation is written up.
+X
+X    Log on to SBBS
+X
+X    It will display the copyright message and prompt you for your ID.
+XYou may exit here by typing OFF. If you are new to SBBS you would type NEW. It
+Xwill ask you questions and create an account for you. An account is your own
+XID which makes you a member of SBBS. After your ID is created, you may then
+Xlog in SBBS with your newly created ID. If you enter your ID, it will ask for
+Xa password. You told SBBS this when you requested to be a new user or when (if
+Xyou are the SBBS administrator) you ran install. Type the password. It will not
+Xbe echoed back to you. This is to protect your password. If your password
+Xattempt fails then it will reject you. If you enter incorrect information
+Xthree times in a row you will be knocked off. If you are accepted, you will be
+Xput in SBBS. You will be told the last caller if there is one. You are then
+Xput in the "SBBS main" prompt. The two important commands to remember are
+X'A' and '?'. A command is a letter you type from SBBS main to do something.
+XA '?' will tell SBBS to display a summary of commands. 'A' is a special
+Xcommand and can ONLY be used by level-3 users. It's the Administrative Shell.
+X
+X    Levels of users
+X
+X    There are four "levels". These levels tell what privileges a user may
+Xhave. The user who ran install automaticly has a level of 3. Anyone
+Xwho used NEW from the SBBS login automaticly has an access of 0. Here is
+Xa list of the four levels and what they can do.
+X
+X    Level-3: These users (usually only 1) may access EVERYTHING on SBBS.
+X    Level-2: These users may access everything including the Administration
+X             commands except 'A'. This is the shell.
+X    Level-1: "Normal" access. This access level has access to all the
+X             commands save the Administration commands.
+X    Level-0: Limited access. Usually new users.
+X
+X    More on the login routine
+X
+X    If you are a Level-3 user, please read this section. Otherwise you may
+Xskip it or read it for background. But only Level-3 users may perform the
+Xfollowing things.
+X
+X    From SBBS main, type A. You will get a shell. I assume that you are in the
+XSBBS home directory. If not, change to it.
+X
+X    $ cd misc
+X
+X    There are a few things we will deal with "config". The file called config
+Xwill allow you to configure your SBBS system to your specifications. These
+Xconfiguration commands are called C variables. (No relation to that hidious
+Xprogramming language called "C" :-[ ) These C variables are stored in the
+Xconfig file; in this format:
+X         variable=value
+X              or simply
+X         variable=
+X    To learn what all the C variables are and what they do, consult the
+Xdocumentation config.tbl. This is a full explanation of all the variables and
+Xwhat they do. We will explain a few of them now.
+X
+X    First there are two C variables we will learn. Cycle and newuser. As you
+Xrecall, if your login attempt fails a certain amount of times, you will be
+Xkicked off. You can control the amount of times it takes by the cycle C
+Xvariable. The format is cycle=times.
+X
+X    Example:
+X
+X    cycle=5    - This allows five mess-ups before it disconnects a user.
+X
+X    The next C variable is newuser. The purpose of this one is to print a file
+Xwhen a person requests to be a new user. This is usually used to print the
+Xrules or instructions on how to use the system. The form is newuser=file. The
+Xfile should be an absolute path to avoid errors. Never fully assume a certain
+Xsituation is true. Always think of all possibilities.
+X
+X    There is also another C variable. Form is "elite=". No value is
+Xnecessary. This instructs SBBS not to accept new users. It will also fail to
+Xnotify users that there is such an option as NEW.
+X
+X    A few more C variables.
+X
+X    name=Erie Coast Boating and Sailing Club
+X    version=1.0.0
+X    shell=/bin/csh
+X
+X    These are almost self explanitory.  Name and version will print there
+Xrespected values from time to time. Including the Login routine. The shell
+XC variable is the shell to run when the 'A' command is used. Otherwise, as you
+Xknow, the default shell is /bin/sh.
+X
+X    Becoming new to helping the new
+X
+X    Since you are a level-2 or a level-3 user, you may validate other new
+Xusers. This is done be raising them from level-0 to level-1. There are special
+Xcommands to work with new users and existing users.
+X
+X    Getting a User Log
+X
+X    A User Log is a list of who called and when. It also tells when they left.
+XAs you have recalled if you read the section on files, this is the file
+X~/admin/profile/log. SBBS will keep track up to 20 log entries before it
+Xonly prints the last 20 callers only. You may change this number by the use
+Xof the C variable "log". Just suply how many entries to keep after the equal
+Xsign and SBBS will do it. The command is 'U'.It may be used by all level users.
+X
+X    Listing users
+X
+X    From time to time you may wish to list certain users. Type 'L' and you
+Xare now in the list mode. Again, this option may be used by all, but only
+Xlevel-2 or level-3 users may see the information such as the street address.
+XThe other Level-0 and level-1 users only see limited information such as ID,
+Xname, and access. Just type the ID of the user to view and his information
+Xis shown. Type -1 as an ID to escape to the main menu.
+X
+X    The neucleous of user management
+X
+X    This is the 'V' command; available only to level-2 and level-3 users. In
+Xhere you have six commands. Since you are at a command prompt, you may type
+X'?' if you need help.
+X
+X    The first is 'L'. This command lists all the new users. This so you know
+Xwho is new and you may do something to them. (Usually raise their access to 1)
+X
+X    The next is 'A'. This command allows you to change the access level of any
+Xuser -- not just new ones. Simply type the ID of the user and his new access.
+X
+X    Another is 'C'. This one will clear new users from the new user file in
+Xorder to avoid confusion. This will only clear people on the new user file.
+XJust type the ID to clear. Note that this is different from 'R', which
+Xdeletes a user from the SBBS logins and members files and thus deletes or
+XRemoves a user from SBBS. 'C' merely deletes the line from the new user file.
+X
+X    The final user management command, 'R', removes a user completely from
+XSBBS. Type the ID of the user and it will display there name and ask for
+Xconfirmation. Be careful with this command.
+X
+X    One of two other commands in the 'V' command/function is 'V'. (Coincidental
+X, nothing more) It allows you to "view" the command log. The log that tells
+Xwhat each user did. It shows the ID, colon, the-next-commands-seperated by
+Xcolons.
+X
+X    Example:
+X    1:M:L:U:I:E
+X
+X    NOTE: This only keeps track of commands entered in SBBS main. Not the
+Xcommands entered in Validation Mode or any other mode or sub-menu.
+X
+X    'D' for delete/refresh will clear the command log because SBBS does not
+Xdo this for you. Therefor, you don't need a C variable.
+X
+X    Some other miscellaneous things
+X
+X    The following is a discussion on some other miscellaneous things.
+X
+X    Many times when a person logs on a BBS, they get a welcome message. SBBS
+Xdoes the same thing. It shows a file that is shown every time a person logs
+Xin. You may not see it but that's because the file is blank. To show the
+Xfile and add your message, edit ~/misc/openmes. This file is sort of like
+XUNIX's motd file. Once you're finished, any people that logs in will see this
+Xmessage.
+X
+X    On the other side of the scale, many times you want "Good bye" message. This
+Xis easy to accomplish too. Just edit ~/misc/closing. Add what you want and
+Xthat will be shown next time you log off.
+X
+X    Sometimes you want to show information on your BBS to other users.
+XThis can be done by the 'I' command. It will display information if there is
+Xany. If there is not and you would like to add it. Edit ~/misc/info. Add the
+Xinformation. Of course you must have level-3 access to do this as editing
+Xany file requires the 'A' command. The same applies for the former two files.
+X
+X    As was discussed before, there may be times you wish to post "updates"
+Xabout events surrounding your BBS system or services. As I told you, the
+Xbulletins are only displayed once. But they can be reread by another command.
+XType 'B' from SBBS main and enter the subject of the update. There is a
+Xdefault provided for you. You don't have to use this default. Then you compose
+Xthe message using the SBBS editor. And you're done.
+X
+X    You may reshow any bulletins by the 'O' command from SBBS main. In fact,
+Xany user can. Just answer Y or N when it asks you if you wish to read a certain
+Xbulletin. When it scans through all of them, it will exit.
+X
+X    Message Bases--a way to communicate
+X
+X    There is a way to have all users talk to each other through one common
+Xarea; called the Message Bases. It's the 'M' command from SBBS main. The
+XMessage Bases are divided into specific topics - called (strangely enough)
+Xa "message base". Each message base has a name and a number associated with it.
+XThe name is what the messages posted in this area concern. The number is how
+Xyou identify the base. You would not be required to enter the whole topic
+Xwhich may be more then one word.
+X
+X    Posting, Killing, and Editing.
+X
+X    After entering the message base, you will be put in the "General" base.
+X(#1) You can post or read messages in this area. To post a message, type 'P'
+Xfrom Message Main (The "General)" prompt.) prompt. Enter the subject of
+Xyour message. The subject is more specific about what your message is
+Xabout. It should pertain to the topic. Which is General. So it could be any-
+Xthing. For someone to read it (including you) you type either 'I', 'F', 'R', or
+X'N'. 'G' reads messages from all message bases. If you don't know what these
+Xcommands stand for, type '?' at Message Main.
+X
+X    You may wish to kill a message you made. Any user may do this. Simply
+Xtype 'K' and enter the message number. (not the subject. The number can be
+Xseen when reading your message.) Unless you are a level-2 or level-3 user,
+Xyou may not kill messages you did not post. Level-2 and level-3 may delete
+Xany message.
+X
+X    Editing a message
+X
+X    You may have made a mistake you will regret. Don't fret. Just use option
+X'O' (For "open message to edit." Not 'E'. don't get thrown off.) and type
+Xthe message you were going to edit. If you are not a level-2 or level-3 user,
+Xyou may only edit YOUR message. Level-2 and level-3 users may edit any message.
+X
+X    Creating a message base
+X
+X    If you just installed SBBS, chances are that there is only the General
+Xmessage base. To list all of the message bases, type 'L' from Message Main.
+XIf you wish to create more, type 'C'. Then enter the topic for the message
+Xbase. It then asks for you to confirm your topic and creates it. This is ONLY
+Xavailable to the level-2 and level-3 users.
+X
+X    The MBM
+X
+X    MBM stands for Message Base Manager. An MBM assumes privileges for level
+X2-3 users. But his power is limited to a particular message base only. And he
+Xstill may not use the 'C' option. Further more, an MBM only exists in
+Xmessage bases. Not any other place. He may be an MBM of more then one message
+Xbase but these must be specificly told to SBBS. There may be only one MBM. The
+Xfollowing are available to level-2/3 users and the MBM. This controls what
+Xrestrictions on a message base may be imposed and what the MBM is. This
+Xoption is 'Z'. It's a sub-menu with the options inside. Only level-2 , level-3,
+Xand MBMs may use it. And they can use ALL of the features COMPLETELY. (NOTE:
+XMBMs can use the E and K commands from Message Main just like a level-2 or
+Xlevel-3 user.)
+X
+X    The 'Z' command in Message Main
+X
+X    When you type this command, some information about the current message
+Xbase is displayed. You may get this information back by the 'I' command. If
+Xyou need help type '?' , as always. To exit type 'E'.
+X
+X    Changing or assigning the MBM
+X
+X    The 'B' command from this sub-menu allows it. Even an MBM may use this to
+Xswitch over control to another user. Type the ID of the user who you want to
+Xbe MBM.
+X
+X    Restrictions
+X
+X    The 'C' command allows you to change restrictions. It shows three different
+Xrestrictions: access, restricted list, none. To lift any restrictions, type
+X'N'. To restrict users by access, type 'A'. Then type a list of accesses that
+XMAY use that message base. INCLUDE YOURS OR YOU WILL NEVER GET BACK IN! You
+Xmay also make a restricted list--the 'R' option. Type the users ALLOWED in. 
+XAgain, INCLUDE YOUR ID NUMBER! OR YOU WILL NEVER GET BACK IN! If you make a
+Xmistake, don't worry. As long as you don't exit the message base, you can
+Xcorrect it. If you wish to add or delete restrictions, you have to retype them.
+XFor accesses this isn't to bad. But for a restricted list it may be tedious.
+XYou must type ALL IDs of the users to let in.
+X    The Program Library and UDL
+X
+X    Choose option 'P' from SBBS main. What you get is list of programs
+Xavailable. Type the number of the program and it will run it for you. Two
+Xspecial "commands" are also available: '$', and '#'. '$' will exit to the
+Xmain menu. '#' will relist the programs.
+X
+X    Of course, you will want to add your special programs. You may do this
+Xonly if you are a level-3 user. Go get the Administrative shell. Then go to
+Xthe misc directory and edit prlib. Each line should be three fields seperated
+Xby colons. The first field is a unique number that identifies that program. It
+Xmust be a number and it is a good idea for them to be in order! :-) The second
+Xfield is the formal name. This is the name the user sees when he lists the
+Xprograms available. The third field is the actual program to run.
+X
+X    If you wish to use arguments, environment variables , quotes,
+Xredirection characters or ';'s then you must set up a C variable called "eval"
+Xso that it may EVALuate the line. Using all of the things including file
+Xsubstitution. It doesn't require a value but be sure to have the equal sign.
+X
+X    Examples:
+X
+X    1:DCoM II:/u/local/decom
+X    2:Extrox Editor:/u/local/extrox
+X
+X    (allowed with C variable eval set)
+X
+X    1:Telex System:/u/local/telex -r
+X    2:Rod Trox:/u/local/dep -r ; ls|wc
+X
+X
+X    The File Facilities
+X
+X    There is a feature that allows people to store and retrieve text and/or
+Xprogram files. This is done by the DataBases. It's the 'D' command.
+X
+X    From the UDL main prompt you can enter a DataBase, exit(E), list(L) the
+XDataBases again, (It lists automaticly the DataBases available. When you
+Xfirst install SBBS, there will be none.) create a DataBase,(Only with if you're
+Xlevel-2 or level-3.) or approve new uploads. (Level-2/level-3 only.
+XExplained later.)
+X
+X    To enter a DataBase, enter its number. You will be put in that DataBase
+Xand be at the new FILE prompt.
+X
+X    Chances are that if you just installed SBBS you woun't have any Data-
+XBases. You may create them. A DataBase is an area with a specific topic that
+Xdescribes files in that area. To create a DataBase, type 'C'. Then describe
+Xwhat that DataBase is intended for. It will be stored and given a number. You
+Xmay now enter the DataBase.
+X
+X    At the FILE mode, you can do things like upload, download and list files.
+XAgain, if you need help, type '?'.
+X
+X    Uploading files
+X
+X    If you upload a file, it must be approved by a level-2 or level-3 user.
+XIf you are one, you must approve it your self. To upload, answer all questions
+Xand choose a protocol. A protocol tells how both of your computers communicate.
+XThere is already one -- ascii. This simply shows the file and your computer
+Xis responsible for "capturing" it. You may add more protocols if you are a
+Xlevel-3 user. Choose 'A' from SBBS main and go to the misc directory. Edit
+Xprotocols.up. (Note: Download protocols take there own seperate file. Every
+Xthing you learned about setting upload protocols may be applied to download
+Xprotocols. Remember that download protocols are used when downloading a
+Xfile. It takes its protocol from protocols.down)
+XAgain, it has three fields seperated by a comma. And again the first field is
+Xthe number the user chooses to use that protocol. Again the second field is
+Xthe name the user sees. The third field is the program that runs the protocol.
+XOne is there already. Its the ascii one. Please note that C variable eval need
+Xnot be set to evaluate metacharacters as it will automaticly evaluate the line.
+X
+X    Examples:
+X
+X    1:Ascii:echo Transmit. Enter A CTRL-D when finished. ; cat >>
+X    (That line already in file)
+X    2:Xmodem:/u/local/umodem -rt
+X    3:Kermit:/u/local/kermie -rt
+X
+X    Remember to also edit protocols.down for adding the simmular protocols.
+X
+X    1:Ascii:echo Prepare to receive. ; cat
+X    (already in there)
+X    2:Xmodem:/u/local/umodem -st
+X    3:Kermit:/u/local/kermie -st
+X
+X    See the little but important differences between the two files?
+X
+X    Approving files
+X
+X    Finally, a file uploaded must be approved. Choose 'N' from UDL main. If
+Xthey're no uploads it will send you back with a "No uploads." message. Other-
+Xwise it will cycle through all the uploaded files. Remember where they're
+Xstored? The udl/new directory. It will print information on the file (like
+Xwho uploaded it and what DataBase) and ask you what to do with it. Make a
+Xdecision and go on. Once you're through, it will do what you told it to and
+Xexit. The commands are:
+X
+X    a - Abort. Go back to UDL main and leave all files in tact..
+X    v - View first and last ten lines of a file.
+X    d - Delete that file and don't move it to a DataBase.
+X    m - Move the file to that DataBase -- approve it.
+X
+X
+X    This concludes are administration documentation. Direct questions to
+Xrobertd@ncoast.UUCP
+X...uunet!amdahl!sun!mandrill!ncoast!robertd
+SHAR_EOF
+sed 's/^X//' << 'SHAR_EOF' > config.tbl
+X    The following is a list of valid
+Xvariables for config. NOTE: All
+Xvariables are in the form "variable=v".
+XThere are NO spaces between the "="
+Xsign. Even if there is no value needed
+Xto suply to the variable, there must
+Xbe an "=" sign after the variable.
+X
+X    Example:
+X
+X      cycle=4
+X      elite=
+X
+X    Not:
+X
+X      cycle = 4
+X      elite
+X
+X    Default numeric values will appear
+Xin parentheses. Anything in {}'s should
+Xbe substituted with its real value and
+Xbe a PART of the variable name on the
+Xleft side of the "=".
+X
+X[ Variable ]   [ Meaning ]
+X------------ / ------------------------
+Xname=name      The name of your BBS is
+X               "name".Example:name=UNIX
+Xversion=vs     The version of your SBBS
+X               BBS is "vs".
+Xcycle=cycle(3) Number of times SBBS
+X               will prompt a user to
+X               re-enter illegal ID or
+X               password before exiting.
+Xcls=cls_cmd    This tells SBBS what
+X               program to run when it
+X               needs to clear the
+X               screen. DEFAULT: echo ^L
+Xeval=          Set eval flag. This
+X               evaluates commands found
+X               in ~/misc/prlib,
+X               ~/misc/protocols.up, and
+X               ~/misc/protocols.down.
+X               This allows commands to
+X               be called up with
+X               arguments, environment
+X               variables, etc.
+Xelite=         Set elite flag. This
+X               will disallow new users
+X               from registering.
+Xnewuser=file   What file to show when
+X               a new user registers.
+Xshell=shl_prg  Shell to run when the
+X               administrator runs the
+X               "A" option. Default:
+X               /bin/sh.
+Xlog=lognoms(10)How many log names to
+X               keep in the userlog
+X               before clearing it and
+X               starting again.
+Xmbm{b}=mbm     The user with the ID of
+X               "mbm" will have control
+X               of message base "b".
+X               This can be set by the
+X               administrator or MBM of
+X               the base WITH IN SBBS by
+X               the "Z" option in the
+X               Message Base.
+Xb{b}=r:d       Message Base "b" is to
+X               have a restriction type
+X               of "r". ("restrict" or
+X               "access") And allow only
+X               people with IDs or
+X               access levels (Depending
+X               on value of "r") to
+X               access that Message Base.
+X
+SHAR_EOF
+sed 's/^X//' << 'SHAR_EOF' > setup.doc
+X.ll 70
+X.in 5
+X.nf
+X.ce 4
+XSBBS: The Sigma Bulletin Board System
+XSetup Guide(*)
+X
+XSBBS is copyright (C) 1987 by Rob DeMarco.
+X
+X
+X
+X.fi
+X.ce 1
+XIntroduction
+X
+XSBBS runs as a login shell and takes a bit of work to install properly.
+XThis document will help you do so and explain a few things about the way
+XSBBS operates.
+X
+XIncluded with the SBBS package are four documentation files. They are:
+X
+X.in +5
+X.nf
+XREADME    - an explanatory note
+Xsetup.doc - how to set up and configure an SBBS system
+Xadmin.doc - SBBS administration functions
+Xconfig.tbl- valid configuration variables
+X.in -5
+X.fi
+X
+X
+X.ce 1
+XInstalling SBBS
+X
+XThe most efficient way to run SBBS is to create a seperate login account for
+Xthe SBBS program. As SBBS maintains its own list of BBS users (and their
+Xpasswords), this allows users to simply type "su sbbs" to enter the program.
+XAlternately, if your version of UNIX ignores the default login shell when a
+X"su" command is executed, users can use "exec login sbbs". With a bit of
+Ximagination and a knowledge of shell programming techniques, any number of
+Xalternate methods can be devised.
+X
+XAll SBBS programs and files reside in one directory. The software is normally
+Xconfigured to be based in the directory /u/sbbs, although this can be changed
+Xto suit your particular needs. If you wish to place SBBS elsewhere, edit the
+Xfile login-sig and change the line
+X
+X.in +5
+Xdir=/u/sbbs
+X.in -5
+X
+Xreflect the desired location.
+X
+XAfter you have decided on SBBS's home, make sure that directory is created and
+Xthen create a subdirectory called programs. All files from the shell
+Xarchives should be kept in this directory, usually called /u/sbbs/programs.
+X
+XFrom this point on, the directory you have chosen for SBBS to reside in will
+Xbe referred to as ~sbbs.
+X
+XAfter insuring that a copy of every file from the shell archives exists in
+X~sbbs/programs, run the "install" program. This will automatically create the
+Xnecessary SBBS data files.
+X
+XFinally, add an appropriate line to your /etc/passwd file to allow users to
+Xaccess SBBS. A typical example follows.
+X
+X.in +5
+Xsbbs::1000:1000:SBBS user:/u/sbbs:/u/sbbs/programs/initial
+X.in -5
+X
+X
+X.ce 1
+XSupport
+X
+XIf you wish to become a registered owner of SBBS, contact robertd@ncoast.UUCP.
+XSupport will include periodic updates and possibly an SBBS newsletter.
+X---------------------
+X* Writen By Rob DeMarco (robertd@ncoast)
+XRevised and edited by Bill Wisner (billw@killer)
+XUpdated by Rob DeMarco
+SHAR_EOF
+exit
+
+

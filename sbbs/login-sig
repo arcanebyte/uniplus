@@ -1,0 +1,164 @@
+#!/bin/sh
+#
+# %Z% %M% %I% %D% %Q%
+# %P%
+# 
+# SBBS version 1.0
+
+trap "" 2 3   # trapping
+stty intr '^C'
+
+dir=/u/robertd/lib/sbbs   # Change to your system
+export dir
+logins=$dir/admin/profile/logins
+bbs="`grep \"^name=\" $dir/misc/config | cut -c6-`"
+version="`grep \"^version=\" $dir/misc/config | cut -c9-`"
+export version bbs
+echo ""
+echo ">> Welcome to $bbs (SBBS version $version)"
+echo '>> Copyright (C) 1987, Rob DeMarco'
+
+cycle=`grep "^cycle=" $dir/misc/config`
+cycle=`echo $cycle | cut -c7-`
+if [ -z "$cycle" ] ;then 
+ cycle=3
+fi
+cycle=`echo $cycle`
+cyclep=1
+elite=`grep "^elite=\$" $dir/misc/config`
+if [ ! -z "$elite" ] ; then
+  elite=1
+else
+  elite=0
+  echo ">> If you are a new user, use NEW for your ID."
+fi
+echo ">> Enter OFF to leave system."
+echo ""
+
+while [ $cyclep -le $cycle ] ; do
+     echo ">> Your ID? \c"
+     bbs_name="`line | tr \"[A-Z]\" \"[a-z]\"`"
+     bbs_name=`echo $bbs_name | tr -d "!"`
+     if [ "$bbs_name" = '' ] ; then
+       continue
+     fi
+
+     if [ "$bbs_name" = off ] ; then
+        exit
+     fi
+
+     if [ "$bbs_name" = new -a $elite -eq 0 ] ; then
+       ni=`grep "^newuser=" $dir/misc/config | cut -c9-`
+       if [ ! -z "$ni" ] ; then
+         cat $ni
+         echo ">> Press RETURN to continue.\c"
+         read junk
+       fi
+         
+       echo ""
+       echo "Please enter your REAL name. "
+       echo ""
+       echo ">> Name: \c"
+       read rname
+       rname=`echo "$rname"| tr -d "!"`
+       rname=`echo "$rname"| tr -d ":" `
+       rname=`echo "$rname"| tr -s " "`
+       rname=`echo "$rname"| tr "[a-z]" "[A-Z]"`
+       name=`cat $dir/admin/profile/members | wc -l`
+       name=`expr $name + 1`
+       echo ""
+       echo "Write your user ID down and don't lose it."
+       echo "You will need it to login again."
+       echo ""
+       echo ">> Your user ID is: $name"
+       echo ""
+       echo "Now choose a password. It must be at least four characters."
+       while : ; do
+       echo ""
+       echo ">> Password: \c"
+       stty -echo
+       read pass
+       stty echo ; echo "\n\c"
+       pc=`echo "$pass" | wc -c`
+       if [ $pc -lt 5 ] ; then
+         echo ""
+         echo "Make it at least four characters."
+         continue 
+       else 
+         pass="`echo \"$pass\" | tr \"[A-Z]\" \"[a-z]\"`"
+         break
+       fi
+       done
+       echo ""
+       while : ; do
+       echo "Enter your phone number. Format is XXX-XXX-XXXX."
+       echo ""
+       echo ">> Phone: \c"
+       read num
+       num="`echo \"$num\" | tr -d \":\"`"
+       if [ `echo $num | wc -c` -ne 13 ] ; then
+         echo ""
+         echo "Try again."
+         continue
+       fi
+       break
+       done
+       echo ">> Modem Phone (if any): \c"
+       read data
+       echo ">> Address: \c"
+       read add
+       add=`echo $add | tr -d ":"`
+       echo ">> City: \c"
+       read city
+       city=`echo $city | tr -d ":"`
+       echo ">> State: \c"
+       read state
+       state=`echo $state | tr -d ":"`
+       echo ">> Zip Code (five digits): \c"
+       read zip
+       zip=`echo $zip | tr -d ":"`
+       echo "$name:$rname:$pass:$num:$data:$city:$state:$add" >> $dir/admin/profile/newusers 
+       $dir/programs/mkusr $name "$pass" "$rname" 0 "$add" "$city" "$state" $zip "$num"
+       echo ""
+       echo "New account has been created. "
+       echo ">> ID: $name"
+       echo ">> Password: $pass"
+       echo ""
+       echo "Now finish logging in normally."
+       echo ""
+       continue
+     fi
+     echo ">> Password: \c"
+     stty -echo
+     bbs_passwordc="`line | tr \"[A-Z]\" \"[a-z]\"`"
+     echo "\n"
+     stty echo
+     pid=$$
+     echo "$bbs_passwordc" > /tmp/sbbs.buf.$pid
+     bbs_password=`crypt "$bbs_passwordc" < /tmp/sbbs.buf.$pid`
+     dataset="$bbs_name $bbs_password"
+     datatest=`fgrep -x "$dataset" $logins`
+
+     if [ -z "$datatest" ];then
+      echo
+      echo "Either the ID or the password is wrong; try again."
+      rm /tmp/sbbs.buf.$pid
+      cyclep=`expr $cyclep + 1`
+      continue
+     fi
+     export bbs_name bbs_password
+     rm /tmp/sbbs.buf.$pid
+     fullname=`grep "^$bbs_name:" $dir/admin/profile/members | awk -F: '{print $3 }'` ; export fullname
+     access=`grep "^$bbs_name:" $dir/admin/profile/members | awk -F: '{print $2}'`
+     export access
+     cat $dir/misc/openmes
+     $dir/programs/news
+     bn=`echo "$bbs_name" | cut -c-7`
+     login_time=`date | cut -c9-19`
+     export bn login_time
+     exec $dir/programs/sbbs
+done
+echo ""
+echo "Call back when you can remember your password
+echo "or finally decide to login as NEW."
+exit

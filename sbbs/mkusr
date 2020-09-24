@@ -1,0 +1,22 @@
+#! /bin/sh
+# mkusr - make user.
+
+name="$1:"
+password=$2
+fname=$3
+access=$4
+if [ "$access" = "" ] ; then
+  access=1
+fi
+
+tfile=/tmp/sig.data.$$
+echo $password > $tfile
+cryp=`crypt "$password" < $tfile`
+
+echo "$1 $cryp" >> $dir/admin/profile/logins
+
+name="$1:$4:$3:$5:$6:$7:$8:$9"
+echo "$name" >> $dir/admin/profile/members
+rm $tfile
+
+mkdir $dir/mail/"$1"

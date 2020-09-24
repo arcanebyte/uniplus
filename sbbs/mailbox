@@ -1,0 +1,90 @@
+#! /bin/sh
+# Read private messages.
+#
+
+aapath=$dir/mail
+
+a=`ls $aapath/"$bbs_name" | wc -l`
+b=`echo $a`
+a=1
+
+if [ $b -eq 0 ] ; then
+  echo "No mail"
+  exit
+fi
+
+while [ $a -le $b ] ; do
+ts=""
+     echo "..........................."
+     cat $aapath/"$bbs_name"/$a
+     echo "..........................."
+
+     while [ "$ts" != "pass" ] ; do
+          echo "[N]ext message [R]eply [A] Read again:\c"
+          read cmd
+          cmd=`echo "$cmd"|tr -d "!"`
+          if [ "$cmd" = "" ] ; then
+            continue
+          fi
+
+          if [ $cmd = A -o $cmd = a -o $cmd = r -o $cmd = R -o $cmd = N -o $cmd = n ] ; then
+            ts=pass
+            continue
+          fi
+     done
+
+     if [ $cmd = N -o $cmd = n ] ; then
+       rm $dir/mail/"$bbs_name"/$a
+       a=`expr $a + 1`
+       continue
+     fi
+
+     if [ $cmd = A -o $cmd = a ] ; then
+       continue
+     fi
+
+
+     to=`sed -n 1p $aapath/"$bbs_name"/$a`
+     to=`echo "$to" | cut -c8-`
+     to=`echo "$to" | awk '{print $1}'`
+     if [ $to -eq $bbs_name ] ; then
+       echo "Attempting to reply to yourself - abort"
+       continue
+     fi
+     file=sbbs.mle.$$
+
+     echo "From: #$bbs_name ($fullname)"> /tmp/$file
+     echo "Date: `date`" >> /tmp/$file
+     echo "Message to: #$to (you)\n\n" >> /tmp/$file
+     echo "Include message in reply?(n)\c"
+     read yn
+     if [ "$yn" = Y -o "$yn" = y ];then
+       echo "In your message you wrote to me...." >> /tmp/$file
+       sed -n '6,$s/^/> /
+               6,$p' $aapath/$bbs_name/$a >> /tmp/$file
+       echo "You may use the editor to trim the "
+       echo "quoted message down to what you need."
+     fi
+     echo "Enter your message now."
+     echo "Type a CTRL-D for editor."
+     while : ; do
+       cat >> /tmp/$file
+       $dir/programs/edit /tmp/$file
+       status=$?
+       if [ $status = 1 ] ; then
+         continue
+       fi
+       if [ $status = 2 ] ; then
+         continue 2
+       fi
+       if [ $status = 3 ] ; then
+         nol=`ls $aapath/"$to" | wc -l`
+         nol=`echo $nol`
+         nol=`expr $nol + 1`
+         cat /tmp/$file > $aapath/"$to"/$nol
+         rm /tmp/$file
+         echo "Message Saved."
+         break
+       fi 
+    done
+done

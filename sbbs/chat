@@ -1,0 +1,33 @@
+#! /bin/sh
+# Shell script for chat
+
+echo "ID\tName"
+echo "--\t----"
+awk -F: '{print $1 "\t" $2}' $dir/misc/usr
+echo "Enter user id to chat with: \c"
+read y
+y=`echo $y | tr -d "!"`
+a=`grep "^$y:" $dir/misc/usr`
+
+if [ "$a" = "" ] ; then
+  echo "No such user on."
+  exit 1
+fi 
+y=`echo $a | awk -F: '{print $3}'`
+echo "Message from UID #$bbs_name on tty\n$tty.Choose option T from $bbs main." > $y
+if [ $? != 0 ] ; then
+  echo "Permision to chat is denied."
+  exit
+fi
+
+echo "Enter message - line by line. Press"
+echo "CTRL-D when finshed."
+
+while : ; do
+ echo ":\c"
+ read msg || break
+ echo "$msg" > $y
+done
+
+echo "Message/chat terminated."
+echo "    [ END OF MESSAGE ]" > $y

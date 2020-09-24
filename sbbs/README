@@ -1,0 +1,30 @@
+
+SBBS Copyright(C) 1987 Rob DeMarco
+All rights reserved. 
+
+SBBS may be modified only at your site.
+It may be redistributed but NOT
+modified in any way and all files must
+stay intact.
+It may not be sold.
+
+    The following files are programs that SBBS use or documentations. Move
+all the programs to a specific place and move the documentations were best
+put. Read setup.doc before installing SBBS.
+
+    This archive(s) contain four documentations (including this one),
+    two C programs - initial.c and lock.c(*).
+    ~28 shell script files writen in Bourne Shell.
+
+----
+* initial.c is a fake "shell" that is called up when a person logs in as a
+SBBS user or su's to it. It contains a simple function; execl(). This runs
+a shell script login-sig as the LOWEST level shell. If your system doesn't
+suport execl(), look for a simular function.
+
+lock.c shouldn't give you much trouble. It works on a system III and can
+be easily modified to work on any system.
+
+Do neccessary changes to these files BEFORE you run "install".
+
+

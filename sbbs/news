@@ -1,0 +1,42 @@
+#! /bin/sh
+# news : A bulletin update system
+
+p=$dir/misc/newnews
+c=$dir/bulletins
+g="`grep \"^$bbs_name:\" $p`"
+
+if [ "$g" != "" ] ; then
+  rec="`grep \"^$bbs_name:\" $p `"
+  rec="`echo \"$rec\" | awk -F: '{print $2}'`"
+ else
+  rec=1
+  echo "$bbs_name:1" >> $p
+fi
+
+b=`ls $c | wc -l`
+
+if [ $rec -gt $b ] ; then
+  sleep 5
+  exit
+fi
+
+echo "===========[System News]==========="
+
+while [ $rec -le $b ] ; do
+  cat $c/$rec
+  f=/tmp/sbbs.tpb.$$
+  $dir/programs/lock /tmp/sbbs.lock
+  grep -v "^$bbs_name:" $p > $f
+  cat $f > $p
+  rm $f
+  rc=`expr $rec + 1`
+  echo "$bbs_name:$rc" >> $p
+  rm /tmp/sbbs.lock
+  echo "Continue or Quit) C\b\c"
+  read default
+  default=`echo $default | cut -c1`
+  if [ "$default" = Q -o "$default" = q ] ; then
+    exit
+  fi
+  rec=`expr $rec + 1`
+done

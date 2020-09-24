@@ -1,0 +1,34 @@
+#! /bin/sh
+# Display Bulletin (db)
+
+
+nob=`ls $dir/bulletins | wc -l`
+
+if [ $nob = 0 ] ; then
+  exit
+fi
+
+cb=1
+
+while [ $cb -le $nob ] ; do
+  while : ; do
+    echo "Bulletin #$cb - read? \c"
+    read yn
+    yn=`echo $yn | tr -d "!"`
+    yn=`echo $yn | cut -c1`
+
+    if [ "$yn" = N -o "$yn" = n ]; then
+      break
+    fi
+
+    if [ "$yn" = Y -o "$yn" = y ]; then
+      cat $dir/bulletins/$cb
+      echo "Hit <ENTER> to go on: \c"
+      read junk
+      break
+    fi
+    echo "Please enter Yes or No"
+    continue
+  done
+  cb=`expr $cb + 1`
+done
