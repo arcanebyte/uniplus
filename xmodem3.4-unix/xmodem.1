@@ -1,0 +1,207 @@
+.TH XMODEM LOCAL "October 4, 1987"
+.UC 4.2
+.SH NAME
+xmodem \- Christensen protocol file transfer utility
+.SH SYNOPSIS
+.B xmodem
+[\fBst|sb|rt|rb\fR][\fBymkcdlx\fR]
+[file...]
+.br
+.SH DESCRIPTION
+The
+.I xmodem
+program implements the Christensen (XMODEM) file transfer
+protocol for moving files between 4.2/4.3BSD Unix systems and microcomputers.
+The XMODEM/CRC protocol, the MODEM7 batch protocol, the XMODEM-1K
+block protocol and the YMODEM batch protocol are all supported by 
+.IR xmodem .
+For details of the protocols,
+see the document edited by Chuck Forsberg titled
+.I
+XMODEM/YMODEM Protocol Reference.
+.sp
+Option Flags are case insensitive and may be preceded by an optional "-"
+character.
+.PP
+.SH PARAMETERS
+Exactly one of the following must be selected:
+.TP
+.B rb  
+Receive Binary - files are placed on the Unix disk without conversion.
+.I Xmodem
+will silently destroy existing files of the same name.
+.TP
+.B rt  
+Receive Text - files are converted from the CP/M and MS-DOS
+format of CR-LF pairs to the Unix convention of newline 
+characters only between lines.  
+Null bytes are ignored and bit 8 of each character is stripped (which makes 
+Wordstar files much more readable).
+A CTRL-Z character is deemed to indicate the EOF location in the incoming
+file.
+The resulting file
+is acceptable to the Unix editors and compilers, and is usually slightly
+smaller than the original file.
+.I Xmodem
+will silently destroy existing files of the same name.
+.TP
+.B sb  
+Send Binary - files are sent without conversion as they exist on the Unix disk.
+.TP
+.B st  
+Send Text - newline characters in the file are converted to CR-LF pairs
+in accord with the CP/M and MS-DOS conventions for text files.  The file grows
+slightly as this occurs so the estimate of file transmission size and
+time are always optimistically low.
+.PP
+.SH OPTIONS
+.TP
+.B y
+Select the YMODEM batch protocol for sending files; a list of files specified
+on the command line will be sent in sequence.  The YMODEM batch protocol is 
+used automatically for file reception if the sending program requests it.
+.TP
+.B m
+Select the MODEM7 batch protocol for sending files; a list of files specified
+on the command line will be sent in sequence.  The MODEM7 batch protocol is 
+used automatically for file reception if the sending program requests it.
+If this flag is specified for a batch receive, (\fIxmodem rbm\fR, for example),
+the transfer starts in the checksum rather mode rather than the CRC mode.
+.TP
+.B k
+Select the XMODEM-1K file transfer mode for sending files. Use of 1K packets on
+low-error lines increases throughput.  
+However, over direct connections at 9600 bps to a busy host, 1K packets may
+cause data overflows generating excessive retries.
+1K packets are automatically
+used for file reception if the sending program requests it.
+If this flag is specified with the YMODEM flag in a batch receive (\fIxmodem
+rbYK\fR, for example), the program will attempt to use the "KMD/IMP" convention
+to invoke 1K file transfers.
+.TP
+.B c   
+Select the CRC-16 error-checking protocol on receive.  CRC mode is better at catching
+transmission errors that occur than the alternative checksum protocol.  
+CRC mode is automatically selected for file
+transmission if the receiving modem program requests it.
+.TP
+.B t
+Indicates the Unix system is Too Busy and 
+.I xmodem
+should fall back to a simpler I/O strategy than normal.
+.TP
+.B d   
+Delete the 
+.I xmodem.log
+file before file transfer is begun.
+.TP
+.B l   
+Do NOT write to the log file.  If logging is selected, a file
+.I xmodem.log 
+will be created (or appended to), with entries for significant events, errors
+and retries.  This can be useful to see why things went wrong
+when they do.
+.TP
+.B x
+Toggle on debug mode.  If debug mode is selected, copious and possibly
+useful debugging information will be placed in 
+.IR xmodem.log .
+.SH "FILE NAMES"
+Files transmitted using one of the batch modes
+will be stored on the remote machine under a CP/M-ified name (limited
+to eight characters plus a three character extension; ":" characters will
+be turned into "/" characters; all characters will be in monocase).  
+Files received using one of the batch modes
+will be stored under their transmitted names (except that any "/" characters
+in the file name will be converted into ":" characters, all upper-case
+characters will be translated into lower case and trailing dots will be
+expunged).
+.PP
+When a batch receive is requested,
+.I xmodem
+takes a wait and see attitude and can adapt to either batch protocol or even
+a classic XMODEM transfer (note that CRC-16 mode is automatically set under
+these circumstances unless the b flag is specified).
+If a classic, "non-batch" XMODEM file reception takes place, 
+the received file is stored as
+.IR xmodem.in .
+File names present on the command line for a batch receive are ignored.
+.SH NOTES
+While waiting for the beginning of a file transfer, 
+.I xmodem
+treats two CAN (CTRL-X) characters that are received within 3 seconds
+as a request to abort.  CAN characters will not cause an abort if received
+during a file transfer.
+.PP
+If 10 or more errors are detected during the transmission or reception of any
+one packet, the transfer is aborted.
+.PP
+Squeezed, compressed or ARCed files must be transferred in binary mode, even if they
+contain text.
+.PP
+If you use 
+.I xmodem
+over a 
+.I rlogin
+link, you must use the flag
+.IR "rlogin machine -8" .
+.PP
+If an unexpected error occurs before a file is completely received, the
+incomplete file is deleted.
+.PP
+Files received using both binary and text mode in a YMODEM batch transfer 
+will be truncated
+to the file size specified in the YMODEM header (extra CR characters in the
+incoming file are correctly handled).  File sizes are included in
+the YMODEM header when sending binary files, 
+but are zeroed on transmission of text files (since it would be too slow to
+remove CR characters in advance).
+File modification times are set for received files if present in the YMODEM
+header; they are included in the headers for transmitted files.
+.PP
+The "KMD/IMP" record count field in the YMODEM header is both set and read.
+.SH EXAMPLES
+To receive a text file transmitted from a micro (using CRC-16
+error-checking) and store it under the
+name 
+.IR file.name ,
+use the command line
+.RS
+.B "xmodem rtc file.name"
+.RE
+Note that if the transmitting program on the micro uses the 1K packet
+protocol or either batch protocol,
+.I xmodem
+detects this automatically and takes appropriate action.  Further
+note that if one of the batch protocols is used, the received file(s)
+will be stored under their own names and the name on the command line
+(if any) will be ignored.
+.PP
+To send a set of text files to a microcomputer using 1K packets and the
+YMODEM batch protocol, use the command line
+.RS
+.B "xmodem styk *.txt"
+.RE
+.SH FILES
+xmodem.log (if logging is enabled)
+.SH BUGS
+Batch mode could be smarter about bad file-names in the midst of a
+batch transmit/receive.
+.PP
+Batch mode could allow a mixture of binary and text files.
+.PP
+Bare Carriage Return characters (i.e., those not immediately followed by a
+Line Feed character) are mishandled in a received file when using text mode.
+A file with ``overstruck'' lines will thus come out looking funny.
+.PP
+YMODEM header packets are only sent as 128 byte packets.  Thus VERY long file
+names will not be handled properly.
+.SH SEE ALSO
+kermit(1)
+.SH AUTHOR
+Steve Grandi, National Optical Astronomy Observatories.  Based on
+.I xmodem
+by Brian Kantor, University of California at San Diego.
+This, in turn, was based on
+.I umodem
+by Lauren Weinstein, Richard Conn and others.

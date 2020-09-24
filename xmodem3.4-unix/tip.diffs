@@ -1,0 +1,574 @@
+
+*** cmdtab.c.ORIG	Mon May  5 11:01:59 1986
+--- cmdtab.c	Thu Aug 21 10:08:50 1986
+***************
+*** 15,16 ****
+--- 15,17 ----
+  extern	int cu_take(), cu_put(), dollar(), genbrk(), suspend();
++ extern	int rtfile(), stfile(), rbfile(), sbfile();
+  
+***************
+*** 35,36 ****
+--- 36,41 ----
+  	{ '#',	NORM,	"send break",			 genbrk },
++ 	{ '{',	NORM,	"receive xmodem text file", 	 rtfile },
++ 	{ '}',	NORM,	"send xmodem text file", 	 stfile },
++ 	{ '(',	NORM,	"receive xmodem binary file",	 rbfile },
++ 	{ ')',	NORM,	"send xmodem binary file", 	 sbfile },
+  	{ 0, 0, 0 }
+
+
+
+*** cmds.c.ORIG	Mon May  5 11:01:56 1986
+--- cmds.c	Tue Sep 30 10:17:11 1986
+***************
+*** 855,856 ****
+--- 865,1412 ----
+  	return(0);
++ }
++ 
++ 
++ /*  XMODEM stuff; sag sept 1984	- Feb 1985
++  *	Taken from Brian Kantor's (sdccsu3!brian) xmodem version 1.0
++  *	Note that this code will work on version 4.2 ONLY (uses select)
++  */
++ 
++ #include <sys/stat.h>
++ #include <sys/time.h>
++ 
++ /*  ASCII Constants  */
++ #define      SOH  	001 
++ #define	     STX	002
++ #define	     ETX	003
++ #define      EOT	004
++ #define	     ENQ	005
++ #define      ACK  	006
++ #define	     LF		012   /* Unix LF/NL */
++ #define	     CR		015  
++ #define      NAK  	025
++ #define	     SYN	026
++ #define	     CAN	030
++ #define	     ESC	033
++ #define	     CTRLZ	032   /* CP/M EOF for text (usually!) */
++ 
++ /*  XMODEM Constants  */
++ #define      TIMEOUT  	-1
++ #define      ERRORMAX  	10    /* maximum errors tolerated */
++ #define      RETRYMAX  	10    /* maximum retries to be made */
++ #define	     BBUFSIZ	128   /* buffer size -- do not change! */
++ #define      DEBUG	0     /* 1 for debugging output */
++ #define      GETERR	-10   /* error code for getbyte routine */
++ 
++ char buff[BBUFSIZ];
++ 
++ int nbchr;	/* number of chars read so far for buffered read */
++ 
++ /* Receive a text file */
++ rtfile(c)
++ char c;
++ {
++ 	putchar (c);
++ 	rfile ('t');
++ }
++ 
++ /* Receive a binary file */
++ rbfile(c)
++ char c;
++ {
++ 	putchar (c);
++ 	rfile ('b');
++ }
++ 
++ /* Send a text file */
++ stfile(c)
++ char c;
++ {
++ 	putchar (c);
++ 	sfile ('t');
++ }
++ 
++ /* Send a binary file */
++ sbfile(c)
++ char c;
++ {
++ 	putchar (c);
++ 	sfile ('b');
++ }
++ 
++ /* print error message and cleanup for exit */
++ error(msg)
++ char *msg;
++ 	{
++ 	printf("\r\nXMODEM:  %s\n", msg);
++ 	ioctl (0, TIOCSETC, &tchars);
++ 	write (fildes[1], (char *)&ccc, 1);
++ 	signal (SIGINT, SIG_DFL);
++ 	}
++ 
++ /*
++  *
++  *	Get a byte from the specified file.  Buffer the read so we don't
++  *	have to use a system call for each character.
++  *
++  */
++ getbyte(fildes, ch)				/* Buffered disk read */
++ int fildes;
++ char *ch;
++ 
++ 	{
++ 	static char buf[BUFSIZ];	/* Remember buffer */
++ 	static char *bufp = buf;	/* Remember where we are in buffer */
++ 	
++ 	if (nbchr == 0)			/* Buffer exausted; read some more */
++ 		{
++ 		if ((nbchr = read(fildes, buf, BUFSIZ)) < 0)
++ 			{
++ 			error("File Read Error");
++ 			return (GETERR);
++ 		 	}
++ 		bufp = buf;		/* Set pointer to start of array */
++ 		}
++ 	if (--nbchr >= 0)
++ 		{
++ 		*ch = *bufp++;
++ 		return(0);
++ 		}
++ 	else
++ 		return(EOF);
++ 	}
++ 
++ /**  receive a file  **/
++ rfile(mode)
++ char mode;
++ 	{
++ 	register int bufctr, checksum;
++ 	register int c;
++ 	int j, firstchar, sectnum, sectcurr, tmode;
++ 	int sectcomp, errors, errorflag, recfin;
++ 	int fatalerror, inchecksum;
++ 	long recvsectcnt;
++ 
++ 	int (*f) ();
++ 	char *cp, *expand();
++ 	time_t start;
++ 
++ 	if (prompt (" Receive local file name? ", copyname))
++ 		return;
++ 	cp = expand (copyname);
++ 	if ((sfd = creat (cp, 0666)) < 0)
++ 		{
++ 		printf ("\r\n%s: Cannot creat\r\n", copyname);
++ 		return;
++ 		}
++ 
++ 	kill (pid, SIGIOT);
++ 	read (repdes[0], (char *)&ccc, 1); /* wait until read process stops */
++ 	ioctl (0, TIOCSETC, &defchars);	   /* set tty modes */
++ 	f = signal (SIGINT, intcopy);	   /* intercept control-c */
++ 
++ 	start = time(0);
++ 	quit = 0;
++ 	(void) setjmp(intbuf);		   /* set control-c catcher */
++ 
++ 	if (quit)
++ 		{
++ 		error("Control-C; Reception canceled");
++ 		close (sfd);
++ 		return;
++ 		}
++ 
++ 	printf("XMODEM:  Ready to RECEIVE File %s", cp);
++ 	puts("\r\nControl-C to cancel.\n");
++ 
++ 	recfin = FALSE;
++ 	sectnum = errors = 0;
++ 	fatalerror = FALSE;  /* NO fatal errors */
++ 	recvsectcnt = 0;  /* number of received sectors */
++ 
++ 	if (mode == 't')
++ 		tmode = TRUE;
++ 	else
++ 		tmode = FALSE;
++ 
++ 	sendbyte(NAK);  /* Start up the sender's first block */
++ 
++         do
++         	{   
++ 		errorflag = FALSE;
++             	do 
++ 			{
++                   	firstchar = readbyte(6);
++             		} 
++ 			while ((firstchar != SOH) 
++ 				&& (firstchar != EOT) 
++ 				&& (firstchar != TIMEOUT) 
++ 				&& ((firstchar & 0x7f) != CAN));
++ 
++             	if (firstchar == TIMEOUT)
++ 	    		{  
++ 			printf("\r\nTimeout on Sector %d\n", sectnum+1);
++                		errorflag = TRUE;
++ 	    		}
++ 
++             	if ((firstchar & 0x7f) == CAN)
++ 	    		{  
++ 			error("Reception canceled at user's request");
++ 			close (sfd);
++ 			return;
++ 	    		}
++ 
++             	if (firstchar == SOH)
++ 	   		{
++                		sectcurr = readbyte(3);	   /* get sector numbers */
++                		sectcomp = readbyte(3);
++                		if ((sectcurr + sectcomp) == 0xff)
++                			{  
++ 				if (sectcurr == ((sectnum+1) & 0xff))
++ 		 			{  
++ 					checksum = 0;
++ 		     			for (j = bufctr = 0; j < BBUFSIZ; j++)
++ 	      	     				{  
++ 						buff[bufctr] = c = readbyte(3);
++ 		        			checksum = ((checksum+c) & 0xff);
++ 						if (!tmode)  /* binary mode */
++ 							{  
++ 							bufctr++;
++ 		           				continue;
++ 		        				}
++ 						if (c == CR)
++ 			   				continue;  /* skip CR's */
++ 						if (c == CTRLZ)  /* CP/M EOF char */
++ 							{  
++ 							recfin = TRUE;  /* flag EOF */
++ 		           				continue;
++ 		        				}
++ 		        			if (!recfin)
++ 			   				bufctr++;
++ 		     				}
++ 		     			inchecksum = readbyte(3);  /* get checksum */
++ 		    			if (checksum == inchecksum)  /* good checksum */
++ 		     				{  
++ 						errors = 0;
++ 						recvsectcnt++;
++ 		        			sectnum = sectcurr; 
++ 						if (DEBUG) printf ("\n");
++ 						printf ("\rreceived sector %-4d", recvsectcnt);
++ 						if (write(sfd, buff, bufctr) < 0) 
++ 							{
++ 							sendbyte(CAN);
++ 			   				error("File Write Error");
++ 							close (sfd);
++ 							return;
++ 							}
++ 		        			else 
++ 			   				sendbyte(ACK);
++ 
++ 		     				}
++ 		     			else
++ 		     				{  
++ 						printf("\r\nChecksum Error on Sector %d\n", sectnum+1);
++ 		        			errorflag = TRUE;
++ 		     				}
++                   			}
++                   		else
++                   			{ 
++ 					if (sectcurr == sectnum)
++                     				{  
++ 						while(readbyte(3) != TIMEOUT)
++ 							;
++             	       				sendbyte(ACK);
++                     				}
++                     			else
++ 		    				{  
++ 						printf("\r\nPhase Error - Received Sector is ");
++ 			  			printf("%d while Expected Sector is %d\n",
++ 			   				sectcurr, ((sectnum+1) & 0xff));
++ 						errorflag = TRUE;
++ 						fatalerror = TRUE;
++ 						sendbyte(CAN);
++ 		    				}
++ 	          			}
++            			}
++ 			else
++ 	   			{  
++ 				printf("\r\nHeader Sector Number Error on Sector %d\n",
++ 		   			sectnum+1);
++                			errorflag = TRUE;
++ 	   			}
++         		}
++ 	
++         	if (errorflag)
++         		{  
++ 			errors++;
++ 	   		while (readbyte(3) != TIMEOUT)
++ 				;
++ 			sendbyte(NAK);
++         		}
++   		}
++   		while ((firstchar != EOT) && (errors < ERRORMAX) && !fatalerror);
++ 
++   	if ((firstchar == EOT) && (errors < ERRORMAX) && !fatalerror)
++   		{
++      		close(sfd);
++ 		sendbyte(ACK);
++ 		printf("\n\rReceive Complete");
++ 		printf("\n\r%ld CP/M Records ", recvsectcnt);
++ 		prtime(" transferred in ", time(0)-start);
++ 
++ 		ioctl (0, TIOCSETC, &tchars);		/* reset ttys */
++ 		write (fildes[1], (char *)&ccc, 1);	/* wakeup tip */
++ 		signal (SIGINT, SIG_DFL);		/* reset control-c catcher */
++   		}
++   	else
++   		{ 
++ 		sendbyte(CAN);
++      		error("\r\nABORTED -- Too Many Errors");
++ 		close (sfd);
++ 		return;
++   		}
++ 	}
++ 
++ /**  send a file  **/
++ sfile(mode)
++ char mode;
++ 	{
++ 	register int bufctr, checksum, sectnum;
++ 	char blockbuf[134];
++ 	int fd, attempts;
++ 	int nlflag, sendfin, tmode;
++ 	int bbufcnt;
++ 	int firstchar;
++ 	int getretrn;
++ 	char c;
++ 	int sendresp;  /* response char to sent block */
++ 
++ 	int (*f) ();
++ 	char *cp, *expand();
++ 	time_t start;
++ 
++ 	if (prompt (" Send local file name? ", copyname))
++ 		return;
++ 	cp = expand (copyname);
++ 	if ((fd = open(cp, 0)) < 0)
++ 		{  
++      	   	printf("Can't open file for send\n");
++ 		return;
++ 		}
++ 
++ 	kill (pid, SIGIOT);
++ 	read (repdes[0], (char *)&ccc, 1); /* wait until read process stops */
++ 	ioctl (0, TIOCSETC, &defchars);    /* setup tty */
++ 	f = signal (SIGINT, intcopy);	   /* prepare to catch control-c */
++ 	start = time(0);
++ 	quit = 0;
++ 	(void) setjmp(intbuf);		   /* setup control-c catcher */
++ 
++ 	nbchr = 0;  /* clear buffered read char count */
++ 		
++ 	if (quit)
++ 		{
++ 		sendbyte(CAN);
++ 		error("Control-C; Send canceled");
++ 		close (fd);
++ 		return;
++ 		}
++ 
++ 	printf("XMODEM:  File %s Ready to SEND", cp);
++ 	prfilestat(cp);  /* print file size statistics */
++ 	puts("\r\nControl-C to cancel.\n");
++ 
++ 	if (mode == 't')
++ 	   tmode = TRUE;
++ 	else
++ 	   tmode = FALSE;
++ 
++         sendfin = nlflag = FALSE;
++   	attempts = 0;
++ 
++ 	while (((firstchar=readbyte(30)) != NAK) && (firstchar != CAN))
++ 		{
++ 		if (++attempts > RETRYMAX) {
++ 			error("Remote System Not Responding");
++ 			close (fd);
++ 			return;
++ 		}
++ 		}
++ 
++ 	if ((firstchar & 0x7f) == CAN)
++ 		{
++ 		error("Send cancelled at user's request.");
++ 		close (fd);
++ 		return;
++ 		}
++ 
++ 	sectnum = 1;  /* first sector number */
++ 	attempts = 0;
++ 
++         do 
++ 		{   
++ 		for (bufctr=0; bufctr < BBUFSIZ;)
++ 	    		{
++ 			if (nlflag)
++ 	        		{  
++ 				buff[bufctr++] = LF;  /* leftover newline */
++ 	           		nlflag = FALSE;
++ 	        		}
++ 			getretrn = getbyte(fd, &c);
++ 			if (getretrn == GETERR)
++ 				{
++ 				sendbyte(CAN);
++ 				error ("Read error on local file");
++ 				close (fd);
++ 				return;
++ 				}
++ 			if (getretrn == EOF)
++ 				{ 
++ 				sendfin = TRUE;  /* this is the last sector */
++ 		   		if (!bufctr)  /* if EOF on sector boundary */
++ 		      			break;  /* avoid sending extra sector */
++ 		   		if (tmode)
++ 		      			buff[bufctr++] = CTRLZ;  /* Control-Z for CP/M EOF */
++ 	           		else
++ 		      			bufctr++;
++ 		   		continue;
++ 		      		}
++ 
++ 			if (tmode && c == LF)  /* text mode & Unix newline? */
++ 	    			{
++ 				buff[bufctr++] = CR;  /* insert carriage return */
++ 		     		if (bufctr < BBUFSIZ)
++ 	                		buff[bufctr++] = LF;  /* insert LF */
++ 	 	      		else
++ 		        		nlflag = TRUE;  /* insert on next sector */
++ 	   			}	
++ 			else
++ 				buff[bufctr++] = c;  /* copy the char without change */
++ 	    		}
++ 
++             	attempts = 0;
++ 	
++ 	    	if (!bufctr)  /* if EOF on sector boundary */
++    	       		break;  /* avoid sending empty sector */
++ 
++             	do
++             		{
++ 			bbufcnt = 0;		/* start building block to be sent */
++ 			blockbuf[bbufcnt++] = SOH;	    /* start of packet char */
++ 			blockbuf[bbufcnt++] = sectnum;	    /* current sector # */
++ 			blockbuf[bbufcnt++] = -sectnum-1;   /* and its complement */
++ 
++                 	checksum = 0;  /* init checksum */
++                 	for (bufctr=0; bufctr < BBUFSIZ; bufctr++)
++                			{
++ 				blockbuf[bbufcnt++] = buff[bufctr];
++                  		checksum = ((checksum+buff[bufctr]) & 0xff);
++ 	         		}
++ 
++ 			blockbuf[bbufcnt++] = checksum;
++ 			write(FD, blockbuf, 132);  /* write the block */
++ 			ioctl(FD,TIOCFLUSH,0);
++ 
++                 	attempts++;
++ 			sendresp = readbyte(10);  /* get response */
++ 			if (sendresp != ACK)
++ 		   		{
++ 		   		printf("\r\nNon-ACK Received on Sector %d\n",sectnum);
++ 		   		if (sendresp == TIMEOUT)
++ 					printf("\r\nThis Non-ACK was a TIMEOUT\n");
++ 		   		}
++             		}
++ 			while((sendresp != ACK) && (attempts < RETRYMAX));
++ 
++        		sectnum++;  /* increment to next sector number */
++ 		if (DEBUG) printf ("\n");
++ 		printf ("\rsent sector %-4d", sectnum-1);
++     		}
++ 		while (!sendfin && (attempts < RETRYMAX));
++ 
++     	if (attempts >= RETRYMAX) 
++ 		{
++ 		error("Remote System Not Responding");
++ 		close (fd);
++ 		return;
++ 		}
++ 
++     	attempts = 0;
++     	sendbyte(EOT);  /* send 1st EOT */
++ 	
++     	while ((readbyte(15) != ACK) && (attempts++ < RETRYMAX))
++ 	   	sendbyte(EOT);
++ 
++     	if (attempts >= RETRYMAX)
++ 	   	error("Remote System Not Responding on Completion");
++ 
++     	close(fd);
++     	printf("\r\nSend Complete\r\n");
++ 	prtime("Data transferred in ", time(0)-start);
++ 
++ 	ioctl (0, TIOCSETC, &tchars);		/* restore tty */
++ 	write (fildes[1], (char *)&ccc, 1);	/* wakeup tip */
++ 	signal (SIGINT, SIG_DFL);		/* reset control-c catcher */
++     	sleep(5);  /* give other side time to return to terminal mode */
++ 
++ 	}
++ 
++ /*  print file size status information  */
++ prfilestat(name)
++ char *name;
++ 	{
++ 	struct stat filestatbuf; /* file status info */
++ 
++ 	stat(name, &filestatbuf);  /* get file status bytes */
++ 	printf("\r\nEstimated File Size %ldK, %ld Records, %ld Bytes",
++ 	  	(filestatbuf.st_size/1024)+1, (filestatbuf.st_size/128)+1,
++ 	  	filestatbuf.st_size);
++ 		return;
++ 	}
++ 
++ /* get a byte from data stream -- timeout if "seconds" elapses */
++ int readbyte(seconds)
++ int seconds;
++ 	{
++ 	int i, readfd;
++ 	char c;
++ 	struct timeval tmout;
++ 
++ 	tmout.tv_sec = seconds;
++ 	tmout.tv_usec = 0;
++ 
++ 	readfd = 1 << FD;
++ 
++ 	if ((i=select(FD+1, &readfd, 0, 0, &tmout)) == 0)
++ 		{
++ 		return(TIMEOUT);
++ 		}
++ 
++ 	read(FD, &c, 1);
++ 
++ 	return(c & 0xff);  /* return the char */
++ 	}
++ 
++ /* send a byte to data stream */
++ sendbyte(data)
++ char data;
++ 	{
++ 	write(FD, &data, 1);  	/* write the byte */
++ 	ioctl(FD,TIOCFLUSH,0);	/* flush so it really happens now! */
++ 	return;
++ 	}
++ 
++ /*
++  * "nap" for specified time
++  */
++ nap (milliseconds)
++ int	milliseconds;
++ {
++ 	struct	timeval	timeout;
++ 
++ 	if (milliseconds == 0)
++ 		return;
++ 	timeout.tv_sec = 0;
++ 	timeout.tv_usec = milliseconds * 1000;
++ 
++ 	(void) select(1, 0, 0, 0, &timeout);
+  }

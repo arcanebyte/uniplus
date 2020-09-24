@@ -1,0 +1,84 @@
+This is version 3.4 (finished 10/87) of the xmodem program, a full-featured
+XMODEM implementation for 4.2/4/3BSD.  Since the previous release (version
+3.2, see volume 7 of the archives), substantial improvements have been
+made. See the file update.doc for details.  Also, some attempt has been
+made to support SysV Unix systems; see below.
+
+As far as I am concerned, this program has reached the end of its evolution.
+Newer protocols (such as ZMODEM) will not be incorporated into xmodem.  Check
+out Chuck Forsberg's rz/sz programs if you are interested in ZMODEM.
+
+To answer one oft-asked question: No, I don't know how to tie the
+full-featured xmodem program into tip or cu for file transfers when calling
+out from a 4.2/4.3BSD system.  4.3BSD tip does have some undocumented hooks
+for tying into other programs through redirecting file descriptors, but my
+minimal attempts to utilize these hooks have failed.  However, several
+years back, I built a VERY early version of xmodem (lacking XMODEM/CRC,
+XMODEM-1K, MODEM7 batch or YMODEM) directly into 4.2BSD tip.  The changes
+worked unmodified in 4.3BSD; the diff files are contained in the file
+tip.diffs.
+
+--------------------------------------------------------------------------------
+
+The xmodem program implements the Christensen (XMODEM) file transfer
+protocol for moving files between 4.2/4.3BSD Unix systems and microcomputers.
+The XMODEM/CRC protocol, the MODEM7 batch protocol, the XMODEM-1K
+block protocol and the YMODEM batch protocol are all supported by xmodem.
+For details of the protocols, see the document edited by Chuck Forsberg titled
+XMODEM/YMODEM Protocol Reference (the latest version is dated 8-4-87).
+
+This program runs on 4.2/4.3BSD systems ONLY.  It has been tested on VAXes
+and Suns against the MEX-PC program from Niteowl Software and the ZCOMM and
+DSZ programs from Omen Technology.
+
+I have tried to keep the 4.2isms (select system call, 4.2BSD/v7 tty structures,
+gettimeofday system call, etc.) confined to the source file getput.c; but I 
+make no guarantees.  Also, I have made no attempt to keep variable names 
+under 7 characters.  A version of getput.c that MAY work on Sys V Unix
+systems is included.
+
+--------------------------------------------------------------------------------
+
+Thanks to Emmet Gray (ihnp4!uiucuxc!fthood!egray) and John Rupley 
+(arizona!rupley!root) for the following notes about converting xmodem to Sys V.
+Since I don't have a Sys V system to test a Sys V version, I won't even try.
+
+1) Change the includes in xmodem.h from <sys/time.h> to <time.h>
+   and from <sgtty.h> to <termio.h>
+
+2) Convert the occurrences of rindex to strrchr in batch.c
+
+3) Substitute getput.sysv.c for getput.c
+
+--------------------------------------------------------------------------------
+
+Program history:
+
+Descended from UMODEM 3.5 by Lauren Weinstein, Richard Conn, and others.
+
+Based on XMODEM Version 1.0 by Brian Kantor, UCSD (3/84)  (Don't blame him 
+for what follows....)
+
+Version 2.0 (CRC-16 and Modem7 batch file transfer) (5/85)
+
+Version 2.1 (1K packets) (7/85)
+
+Version 2.2 (general clean-ups and multi-character read speed-ups) (9/85)
+
+Version 2.3 (nap while reading packets; split into several source files) (1/86)
+
+Version 3.0 (Ymodem batch receive; associated changes) (2/86)
+
+Version 3.1 (Ymodem batch send; associated changes) (8/86)
+
+Version 3.2 (general cleanups) (9/86) (Released to the world 1/87)
+
+Version 3.3 (see update.doc) (5/87)
+
+Version 3.4 (see update.doc) (10/87)
+
+--------------------------------------------------------------------------------
+
+Please send bug fixes, additions and comments to:
+Steve Grandi, National Optical Astronomy Observatories (Tucson, Arizona)
+	{ihnp4,hao,arizona,...}!noao!grandi  grandi@noao.arizona.edu

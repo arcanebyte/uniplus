@@ -1,0 +1,101 @@
+Changes leading to version 3.3
+
+1) "Better" handshaking for MODEM7 batch transfers (5/19/87).
+
+2) If reception of a file is aborted due to errors, delete incomplete file
+(5/19/87).
+
+3) If an "impossible" tty speed is detected, assume 1200 bps (5/19/87).
+
+4) Disallow CAN-CAN abort during file send or receive except at beginning of
+file transfer (during batch transfers, CAN-CAN abort is allowed at beginning
+of each file transfer) (5/19/87).
+
+5) Uncouple total allowed errors during the reception of a single packet 
+(ERRORMAX, now made 10) and errors allowed when starting transfer (STERRORMAX, 
+set to 10) (5/19/87).
+
+6) Fix some bugs when receiving an empty file and when a phase error occurs
+during a file reception (5/19/87).
+
+7) Portability fix in prtime and projtime; they also handle pathological
+cases better (5/19/87).
+
+8) During file reception an EOT is not believed unless it is sent again in
+response to a NAK (5/25/87).
+
+9) Modified cpm_unix and unixify so a filename without an extension will not
+have a trailing dot in its filename after being received in a MODEM7 or
+YMODEM batch transfer (5/25/87).
+
+10) Allowable errors during transmission of a single packet now set to
+ERRORMAX (5/27/87).
+
+11) When transferring a binary file, the YMODEM file length field is filled
+in on transmit and (if present) used to truncate the file on reception.
+A new truncate function (truncfile) added to getput.c to do the deed (5/28/87).
+The file mode field is also set but is ignored on file reception.
+
+12) In a batch receive (xmodem -rt), program can be forced into checksum mode
+by specifying the "M" flag indicating a MODEM7 transfer (5/30/87).
+
+13) Changed the "B" option to "M" to indicate MODEM7 batch.  Made all option
+flags case insensitive.  Command line is now recorded in the log file
+(5/30/87).
+
+14) The "KND/IMP" convention of using "CK" to invoke 1K packets during YMODEM
+batch transfers was installed.  This code will be sent during a batch recieve 
+if "K" is included on the command line unless "M" is also present.  This code
+will be recognized when sending under all circumstances (5/30/87).
+
+------------------------------------------------------------------------------
+
+Changes leading to version 3.4
+
+1) Fix usage message (10/2/87).
+
+2) Sender will now try up to 10 times (EOTMAX) to send an EOT to terminate a
+transmission.  Used to be 5 times, but Chuck Forsberg's "official" minimum
+requirements for YMODEM mandate 10 (10/2/87).
+
+3) Handle YMODEM file modification times if present in header on reception of
+both binary and text files (10/2/87).  Retracted when can't seem to get
+proper times whn playing with dsz (10/3/87).  Found bug and reinstalled
+feature (10/16/87).  Found REAL bug (10/21/87).
+
+4) Null bytes are now stripped out of files when received as text files (MEX
+doesn't seem to want to put in the terminating control-Z) (10/3/87).
+
+5) Slightly modified terminal parameter setting to explicitly turn of CRMOD
+and to flush read queue; ideas stolen from Kermit.  Will it fly on Pyramid?
+(10/3/87).
+
+6) Decreased time between "startup" characters sent when starting a file
+receive operation.  This should increase perceived response.  Now waits 
+WAITFIRST seconds (set to 1) instead of 6 (waits for 5 seconds for 
+subsequent packets.  STERRORMAX now 60, CRCSWMAX now 30.  
+Timeouts on 1st sector no longer reported in log (10/5/87).
+
+7) Once again played with kernel sleeps in readbuf() (packet reading
+routine).  On busy system could cause real problems.  Now supply flag (t) to
+suppress sleeping on Too Busy systems.  No longer suppress sleep when speeds are
+over 4800 bps.  Sleep kludge DOES help: on an empty 750 running 4.3BSD, a
+file reception at 2400 bps used 6% of the CPU with the sleep kludge and 24%
+without it (data transfer rates were the the same) (10/5/87).
+
+8) Actually count characters as they are being read for a file reception.
+When YMODEM file length is set, stop writing characters when reach length.
+This will allow YMODEM file lengths to work for text files and the
+elimination of truncfile() in getput.c (which was impossible for SYS V)
+(10/5/87).
+
+9) Another attempt at tty modes.  Now do nothing but set speeds, set mode to
+raw, and turn off echoing and tandem (10/6/87).
+
+------------------------------------------------------------------------------
+
+Thanks to Keith Peterson (w8sdz@simtel20.arpa), John Rupley
+(arizona!rupley!root), Emmet Gray (ihnp4!uiucuxc!fthood!egray), Bob Bickford
+(lll-crg!well!rab), Doug Moore (moore@svax.cs.cornell.edu), David Brown
+(jdb@ncsc.arpa) and Chuck Forsberg's documents and his ZCOMM/DSZ programs 
+for ideas, suggestions and comments.
