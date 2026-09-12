@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ $SHELL = /bin/sh ]
+then
+	export TERM
+	TERM=vtl
+	eval `tset -s -S vtl `
+else
+	tset -s vtl >$$
+	source $$
+	rm $$
+fi

@@ -1,0 +1,54 @@
+
+Password file
+
+Each user of Unix requires a "userid". The table of userids is the file
+/etc/passwd. Users can all use the same userid (even at the same time!)
+but it is usually preferable for each user to have his own entry in the
+/etc/passwd file.
+
+It is very easy to add entries to the passwd file. Simply use the system
+editor (ed, vi, etc.) and add a line for each userid you want.
+
+The format of the line is:
+	
+	There are 7 fields, which are colon delimited. The fields are -
+
+		userid - put the userid at the beginning of the line,
+			and then a colon.
+		password - LEAVE THIS EMPTY FOR NOW -- thus put another
+			colon.
+		numeric user id -  this is a unique number for
+			this userid.
+		numeric group id - this is a number  which is shared amongst
+			the members of a "group". Group membership
+			influences read-write-execute permissions to files.
+			(See the permissions file in /usr/unix.info)
+			The file /etc/group has the "mapping" between
+			the numeric group number and the name of the group
+		user's name - the name of the user
+		user's home directory - the directory that the user is in
+			immediately after logging in. It is also the
+			directory that the user is sent to if he issues
+			the "cd" command with no arguments.
+		shell - the name of the program to use as the user's shell.
+			This is typically /bin/sh or /bin/csh
+
+Here is an example of an entry for a user named Joe Jones. We will give him
+the user number 123, and assign him to the  "users" group - 100 . (Look
+at /etc/group to confirm this.) We will assign /usr/joe as his
+home directory, and Joe will use the regular shell.
+
+joe::123:100:Joe Jones:/usr/joe:/bin/sh
+
+There are 2 more steps to establish a new userid:
+
+1	You MUST make the directory that you have indicated as the
+	user's home directory. In the previous example this would be
+		mkdir /usr/joe
+
+2	You MAY optionally assign a passwd to the userid. (Or the user
+	may do it himself.) To assign a password you must login as the
+	user and then run the "passwd" program. You will be prompted
+	for the password, which must be 6 or more characters in length.
+
+

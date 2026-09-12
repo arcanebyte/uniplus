@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ $SHELL = /bin/sh ]
+then
+	export TERM
+	TERM=vtlrev
+	eval `tset -s -S vtlrev `
+else
+	tset -s vtlrev >$$
+	source $$
+	rm $$
+fi

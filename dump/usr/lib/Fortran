@@ -1,0 +1,7 @@
+set -e
+/usr/lib/fortran $1.for
+/usr/lib/code $1.i
+/usr/lib/Fulinker -l $1.o $1.obj /usr/lib/ftnlib.obj /usr/lib/Fpaslib.obj
+cc $1.o
+mv a.out $1
+rm $1.obj $1.o

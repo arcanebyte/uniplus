@@ -1,0 +1,7 @@
+set -e
+/usr/lib/pascal $1.pas
+/usr/lib/Pcode $1.i
+/usr/lib/ulinker -l $1.o $1.obj /usr/lib/paslib.obj
+cc $1.o
+mv a.out $1
+rm $1.obj $1.o

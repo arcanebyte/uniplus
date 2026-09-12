@@ -1,0 +1,50 @@
+Communication between Unix computers
+
+The cu program is used to communicate between Unix computers.
+There is some setup required:
+
+The port to be used must NOT be a login port -- that is why we have
+not enabled /dev/tty0 (serial a) as a login port. Use "serial a" for cu.
+
+The speed of transmission MUST be entered into the file /usr/lib/uucp/L-devices.
+As we supply the system, that file has:
+
+		DIR	tty0	tty0	9600
+
+This means that cu can occur only on /dev/tty0 (serial a) at a speed
+of 9600. To change the speed, just put in the correct speed. You may
+have more than one line in this file, as in:
+
+		DIR	tty0	tty0	9600
+		DIR	tty1	tty1	1200
+
+In the above example, /dev/tty0 runs at 9600,
+and /dev/tty1 runs at 1200 baud. Remember that cu
+will only run on a non-login port!
+
+To run cu, enter:
+
+cu -s1200 -l /dev/tty1 dir
+
+	Note that the -s flag which controls the speed requires the
+	speed indicator to be right next to the "-s", as seen
+	above.
+
+	The "-l" flag controls the port to be used. (You must have
+	a space between the "-l" and the port.)
+
+You should then get a "Connected" message. If you get an error message,
+first look at /usr/spool/uucp/LCK*. If any such files exist, remove them.
+(This would mean that a cu session terminated abnormally.)
+
+You MAY need a modem eliminator (depending upon your cables.)
+
+To initiate communication after the "Connected" message, type
+whatever is needed to run a command on the remote machine, as in
+ATDT8005551212 to start a Hayes modem.
+
+To copy a file from the remote computer onto the Lisa, use the
+~%take command after cu is running. To copy a file from the Lisa
+onto the remote computer, run the ~%put command.
+
+CU IS VERY POWERFUL AND COMPLEX: PLEASE READ THE MANUAL PAGES IN SECTION 1.

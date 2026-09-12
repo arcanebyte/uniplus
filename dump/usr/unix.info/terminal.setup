@@ -1,0 +1,13 @@
+
+Terminal setup
+
+We have placed .profile files into /usr/guest and /.
+These automatically are run by /bin/sh when you login.
+
+.cshrc files have been placed in /usr/guest2 and /.
+We also have placed .login files there.
+These automatically are run by /bin/csh when you login.
+
+We have set backspace and line-kill.
+
+You may use these as models for other ids.

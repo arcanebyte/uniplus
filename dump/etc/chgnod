@@ -1,0 +1,26 @@
+# adds new uucpname to kernel
+if ($#argv < 1) then
+	echo usage: $0 uucpname '[unix]'
+	exit 1
+endif
+
+if ($#argv > 1) then
+	set kernel=$2
+else
+	set kernel='/unix'
+endif
+
+if(! -w $kernel) then
+	echo chgnod: cannot write $kernel
+	exit 1
+endif
+
+set V=`echo -n \&$1 | od -x | sed -e '2,$d' -e 's/0000000 //' -e 's/26//'`
+set V=`echo $V | awk '{for(i=1;i<6;i++)if($i)print $i;else print "0000"}'`
+set V=`echo $V | sed -e 's/..$/00/'`
+
+adb -k -w $kernel << F | sed -n -e '4s/_utsname+0x9/old name/p' -e '$s/_utsname+0x9/new name/p' 
+utsname+9?s
+utsname+8?w $V
+utsname+9?s
+F

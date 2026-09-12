@@ -1,0 +1,7 @@
+
+# The blank line above is left blank on purpose (for sh)! Don't remove it.
+#	@(#)dirname.sh	1.2
+expr \
+  ${1-.}'/' : '\(/\)[^/]*/$' \
+  \| ${1-.}'/' : '\(.*[^/]\)//*[^/][^/]*//*$' \
+  \| .

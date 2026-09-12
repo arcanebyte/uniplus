@@ -1,0 +1,9 @@
+# this script sends appropriate commands for printing
+# to a "diablo-style" printer -- a plain vanilla printer.
+# It presumes /dev/tty0, which is Serial port A.
+# the 1200 means 1200 baud. Simply  make changes as needed.
+#
+sleep 100000 >/dev/tty0 &
+stty 1200 -nl -raw </dev/tty0
+# next line echos a CTRL l  (a form feed)
+echo "">/dev/tty0

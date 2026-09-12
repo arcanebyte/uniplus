@@ -1,0 +1,8 @@
+# Alias for mailer daemon
+MAILER-DAEMON:root
+#
+# Aliases to handle mail to msgs and news
+msgs: "|/usr/ucb/msgs -s"
+#
+# An alias for a person
+unisoft:unisoft@unisoft
