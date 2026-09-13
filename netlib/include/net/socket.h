@@ -82,3 +82,13 @@ struct sockaddr {
 extern int	socket(), accept(), connect(), receive(), send();
 extern int	socketaddr(), select(), gethostname(), sethostname();
 extern int	netreset();
+
+/*
+ * Socket ioctls, ioctl(s, cmd, arg).  Values from UniSoft's net/misc.h
+ * (Torch UniPlus+ headers); the kernel handles them in soioctl()
+ * (sys/socket.c).
+ */
+#define	FIONBIO		(('f'<<8)|126)	/* [K] int *: non-blocking I/O on/off */
+#define	SIOCGIADDR	(('s'<<8)|14)	/* [K] long *: get the Internet address */
+					/*     compiled into conf.c (ubdinit flags) */
+#define	SIOCCIADDR	(('s'<<8)|13)	/* [K] long *: change it (root only) */
