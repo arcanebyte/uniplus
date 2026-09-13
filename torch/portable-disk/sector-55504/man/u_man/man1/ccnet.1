@@ -1,0 +1,66 @@
+.TH CC 1 "Root Computers Propriety"
+.SH NAME
+ccnet \- C compiler offload
+.SH SYNOPSIS
+.B ccnet
+machine [ options ] \-c ... file ...
+.SH DESCRIPTION
+.I Ccnet\^
+is a way of offloading the main part of a C compilation
+onto another machine on the LAN.
+It can only offload the compilation and optimisation stages,
+preprocessing and assembling being done locally.
+.PP
+There are serveral arguments to
+.I ccnet,\^
+these being the same as to
+.I cc(1),\^
+however, one of either \-c, or \-S must be given.
+.PP
+.I Machine\^
+is the remote machine upon which the compilation should occur.
+If the pseudo machine name
+.I any\^
+is given,
+.I ccnet\^
+looks in
+.I /etc/hosts.work\^
+to see the list of currently known machines.
+This file is just a list of machine hostnames,
+separated by new-lines.
+Comment lines should start with a
+.I #.\^
+.I Ccnet\^
+then decides which of these machines is loaded the lightest,
+and uses that machine.
+.PP
+The
+.B \-v
+option reports which machine is used,
+if
+.I any
+has been specified.
+.SH EXAMPLE
+.IP
+ccnet any -c -v fred.c && cc -o fred fred.o
+.SH FILES
+.br
+/lib/cpp	preprocessor
+.br
+/bin/as		assembler
+.br
+/etc/hosts.work	list of usable machines
+.DT
+.SH "SEE ALSO"
+cc(1), ld(1)
+.SH DIAGNOSTICS
+The diagnostics produced by C itself are intended to be
+self-explanatory.
+Occasional messages may be produced by the assembler.
+.SH BUGS
+If the compilation occurs remotely,
+and an compilation error occurs,
+ccnet doesn't receive an error exit status;
+this is worked around by passing a deliberate error to the assembler,
+which can lead to strange assembler error messages.
+The user needs to have a login name on the remote machine.

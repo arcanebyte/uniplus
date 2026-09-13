@@ -1,0 +1,39 @@
+                      VIDEO  -- NORMAL AND REVERSE
+
+
+As we supply the Apple Lisa Unix System V, the screen background is black
+and the characters are white. You can change this easily, since we have
+provided you with 2 command scripts, vidnor (for black background) and
+vidrev (for white background).
+
+There are a few peculiarities of which you must be aware:
+
+1	Running vidnor and vidrev WILL change the screen. However,
+	it is also necessary to "inform" Unix that you have made the change.
+	This is done by entering:
+		TERM=newterm   (where newterm is either vtl or vtlrev)
+		export TERM
+	from the keyboard. Unfortunately, these TERM commands do not
+	have any effect when issued from within a script.
+
+b	vidnor and vidrev do not work properly when you are running
+	under the cshell (csh).
+
+Here is an example of going from normal to reverse video.
+
+vidrev
+TERM=vtlrev
+export TERM
+ .
+ .
+ .
+
+To go back to normal video
+
+vidnor
+TERM=vtl
+export TERM
+ .
+ .
+ .
+

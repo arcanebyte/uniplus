@@ -1,0 +1,98 @@
+.TH HOSTS 7N UniSoft
+.SH NAME
+/etc/hosts -- host table for bnet
+.SH DESCRIPTION
+.PP
+The 
+.SM BNET
+host table is organized as follows:
+.PP
+.RS .3i
+# This is a comment line. It must begin with "#"
+.br
+# Other lines are of the form:
+.br
+<inet-addr>\|<delim>\|<host-name>\|[\|<delim>\|<host-nicname>\|]
+.br
+.RE
+where
+.TP .3i
+.RI < inet-addr\^ >
+is a 32 bit type-a internet address, composed of one byte of "network number"
+followed by 3 bytes of local network address.  Each byte is delimited by
+a period.  For example,
+.RS .6i
+0x27.0.1.1
+.RE
+.IP "" .3i
+refers to local-address 0x11 on network 0x27.  Fields can be specified in
+decimal or hexadecimal notation.  Normally, an installation will choose
+one network number for all hosts on the bnet (ethernet).  Official type-a
+network numbers are assigned by the 
+.SM US DOD\*S.
+Any network number less than
+127 may
+be actually chosen if a particular installation is not planning to
+connect to the 
+.SM DCN
+network in the near future.  Future releases of 
+.SM BNET
+will support type-b (16-bit) and type-c (24-bit) network numbers.  See
+.SM DCN/NIC 
+.SM RFC-\*S790
+for discussion of network numbers.
+Local-addresses
+are the low-order three bytes of the ethernet board address.  The current 
+release assumes a 3com ethernet controller is installed, so the upper
+three bytes of the ethernet address is determined.  This restriction will
+be removed in the next release of 
+.SM BNET\*S.
+.TP .3i
+.RI < delim\^ >
+is a 
+.SM SINGLE 
+.SM SPACE\*S. 
+(!).
+.TP
+.RI < host-name\^ >
+is the official name of the host.  For the local host, this field should
+be exactly the same as the contents of 
+.BR /usr/lib/uucp/\s-1SYSTEMNAME\s+1 ,
+though no checks are made anywhere for this equivelance at this time.  
+Since 
+.I uucp\^ 
+limits the length of hostnames to seven characters, so does 
+.SM BNET\*S,
+but this restriction
+will dissapear in the next release of 
+.SM BNET\*S.
+.TP
+.RI < host-nicname\^ >
+is a nicname or alias for the officially named host.  Hosts can have several
+nicnames.
+.SH LOCAL HOST
+.PP
+The local host, i.e., the loopback driver, 
+has a distinguished entry in the host table:
+.RS .3i
+127.0.0.1 myself
+.RE
+.PP
+That is, network number 127, host number 1.  
+.bp
+.SH EXAMPLE
+.PP
+The  following is a short host table for a network with two hosts.
+.IP
+# Commnet line...
+.br
+39.0.1.14 jeff j
+.br
+127.0.0.1 bill b
+.PP
+The local host is named "bill" or "b".  The remote host is named "jeff" or "j",
+and is on net #39. 
+If the remote host has a 3com ethernet controller, then it would have
+ethernet number 0x02608C00010D.  The 0x02608C is 3com's
+manufacturer's ethernet number.
+.\"	@(#)hosts.7n	5.2 of 7/26/84

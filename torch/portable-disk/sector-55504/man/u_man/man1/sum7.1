@@ -1,0 +1,24 @@
+.TH SUM7 1 UniSoft
+.SH NAME
+sum7 \- sum and count blocks in a file
+.SH SYNOPSIS
+.B sum7
+file
+.SH DESCRIPTION
+.I Sum7\^
+calculates and prints a 16-bit checksum for the named file,
+and also prints the number of blocks in the file, to the nearest whole block.
+It is typically used to look for bad spots, or
+to validate a file communicated over
+some transmission line.
+.SH EXAMPLE
+.IP
+sum7 sum7.1
+.PP
+produces the checksum and the block count of this
+manual section, namely:
+.IP
+21009    1
+.SH "SEE ALSO"
+wc(1).
+.\"	@(#)sum7.1	5.1 of 11/16/83

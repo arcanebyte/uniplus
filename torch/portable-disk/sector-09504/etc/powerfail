@@ -1,0 +1,31 @@
+# POWERFAIL file.
+# This file is executed by init whenever the touch switch is pressed.
+# It may also be called  by the desktop manager when menu option selected.
+# Desktop must be super-user to switch off !.
+#
+if [ `whoami` = "root" ]
+then :
+else
+	yawn "POWERDOWN" "Not Super-User. Please use touch switch."
+	exit
+fi
+nusers=`who|wc -l`
+nprocs=`ps -u deskuser|wc -l`
+nprocs=`expr $nprocs - 3`
+if [ $nusers -gt 1 ]
+then 
+	mesg="There are $nusers users and $nprocs user processes using the system."
+else
+	
+	if [ $nprocs -gt 1 ]
+	then
+		mesg="There are $nprocs user processes running."
+	else
+		mesg=""
+	fi
+fi
+if yawn POWERDOWN "$mesg" "Please confirm that you wish to switch off ?" 
+then
+	# tell init to change to shutdown run level
+	telinit 6 >/dev/null 2>&1
+fi

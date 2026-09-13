@@ -1,0 +1,8 @@
+aliases.7n aliases: aliases file for delivermail.
+err.7 err: error-logging interface.
+hosts.7n /etc/hosts: host table for bnet.
+intro.7 intro: introduction to special files.
+mem.7 mem, kmem: core memory.
+null.7 null: the null file.
+termio.7 termio: general terminal interface.
+tty.7 tty: controlling terminal interface.

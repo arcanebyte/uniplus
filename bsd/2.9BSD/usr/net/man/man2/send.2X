@@ -1,0 +1,55 @@
+.TH SEND 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+send \- send message from a socket
+.SH SYNOPSIS
+.ft B
+#include <sys/socket.h>
+.sp
+send(s, to, msg, len)
+.br
+int cc, s;
+.br
+struct sockaddr *to;
+.br
+char *msg;
+.br
+int len;
+.ft R
+.SH DESCRIPTION
+.I Send
+is used to transmit a message to another socket from
+a SOCK_DGRAM or SOCK_RAW socket.
+The address of the target is given by
+.I to.
+The length of the message is given by
+.I len.
+If the message is too long to pass atomically through the
+underlying protocol, then the error EMSGSIZE is returned, and
+the message is not transmitted.
+.PP
+No indication of failure to deliver is implicit in
+.I send.
+Some locally detected errors may be reported to the user
+through the return value from send being \-1 with the errors
+being stored in the external variable
+.B errno.
+.PP
+If no messages space is are available at the socket to hold
+the message to be transmitted, then
+.I send
+normally blocks, unless the socket is SO_NONBLOCKING
+in which case a
+.I cc
+of \-1 is returned with the external variable errno set to EWOULDBLOCK.
+The
+.IR select (2x)
+call may be used to determine when it is possible to send more data.
+.SH SEE ALSO
+send(2x), socket(2x)
+.SH BUGS
+An option to provide a SIGIO signal when data is available
+to be received is planned, but not yet implemented.
+.PP
+This call is provisional, and will exist in a slightly different form
+in 4.2bsd.

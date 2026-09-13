@@ -1,0 +1,86 @@
+.TH UDP 5N UniSoft
+.SH NAME
+udp \- Internet User Datagram Protocol
+.SH SYNOPSIS
+.nf
+.sp 1
+.B "struct sockproto proto = { PF_INET, IPPROTO_UDP };
+.B socket(SOCK_DGRAM, &proto, address, options);
+.B struct sockaddr_in \(**address; int options;
+.fi
+.SH DESCRIPTION
+.SM 
+.I UDP\^ 
+is a simple, unreliable datagram protocol which is used
+to support the 
+.SM SOCK_DGRAM 
+abstraction for the Internet
+protocol family.  
+.SM
+.I UDP\^
+sockets are connectionless, and are
+normally used with the
+.IR send\^ (2)
+and
+.IR receive\^ (2N)
+calls, though the
+.IR connect\^ (2N)
+call may also be used to fix the destination for future
+packets (in which case the 
+.IR read\^ (2)
+and 
+.IR write\^ (2)
+system calls may be used).
+.PP
+.SM
+.I UDP\^
+address formats are identical to those used by
+.SM
+.IR TCP . 
+In particular 
+.SM
+.I UDP\^
+provides a port identifier in addition
+to the normal Internet address format.  Note that the 
+.SM
+.I UDP\^
+port space is separate from the 
+.SM
+.I TCP\^
+port space (i.e., a 
+.SM
+.I UDP\^ 
+port may not be "connected" to a 
+.SM
+.I TCP\^ 
+port).  In addition broadcast
+packets may be sent (assuming the underlying network supports
+this) by using a reserved "broadcast address"; this address
+is network interface dependent.
+.SH DIAGNOSTICS
+.SM EISCONN
+when trying to establish a connection on a socket which
+already has one, or when trying to send a datagram with the destination
+address specified and the socket is already connected;
+.PP
+.SM ENOTCONN
+when trying to send a datagram, but
+no destination address is specified, and the socket hasn't been
+connected;
+.PP
+.SM ENOBUFS
+when the system runs out of memory for
+an internal data structure;
+.PP
+.SM EADDRINUSE
+when an attempt
+is made to create a socket with a port which has already been
+allocated;
+.PP
+.SM EADDRNOTAVAIL
+when an attempt is made to create a 
+socket with a network address for which no network interface
+exists.
+.SH SEE ALSO
+inet(5N), net(5N). 
+.\"N	 @(#)udp.5N	 5.2 of 7/12/84

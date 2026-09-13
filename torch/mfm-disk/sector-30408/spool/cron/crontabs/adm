@@ -1,0 +1,4 @@
+#0 4 * * 1-6 /usr/lib/acct/runacct 2> /usr/adm/acct/nite/fd2log
+#0 2 * * 4 /usr/lib/acct/dodisk
+#5 * * * * /usr/lib/acct/ckpacct
+#15 5 1 * * /usr/lib/acct/monacct

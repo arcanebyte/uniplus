@@ -1,0 +1,13 @@
+# disc parameter file for the Mitsubishi MR522 20Mbyte drive
+# 612 cylinders, 4 heads, no reduced write current
+# cylinder 256 for write precompensation, 12us step rate
+# landing cylinder is 665, imbedded servo present.
+# February 1986
+MR522
+612
+4
+0
+256
+665
+12
+1

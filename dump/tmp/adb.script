@@ -1,0 +1,5 @@
+rootdev?w 0
+pipedev?w 0
+dumpdev?w 0
+swapdev?w 1
+nswap?W 960

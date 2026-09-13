@@ -1,0 +1,14 @@
+# disc parameters file for the Rodime 200E
+# 640 cylinders, 4 heads, 6 step rate
+# reduced write current handled by the drive
+# write precompensation on all cylinders
+# head landing zone is cylinder 640, no imbedded servo
+# Feb 1986
+RO 200E
+640
+4
+0
+0
+640
+6
+0

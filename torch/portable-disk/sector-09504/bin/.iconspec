@@ -1,0 +1,34 @@
+icon: type=e; fn=vi; showbits=utilities:textedit; showname = Edit; +
+      laction=n,$0; daction=n,$0 $*,p* = dw;
+
+icon: type=e; fn=installfloppy; showbits=utilities:install; showname=install; +
+      laction=n,su root $0; raction=b,/etc/listfloppy.sh;
+
+icon: type=e; fn=cc; showname = "Cc";
+
+icon: type=e; fn=csh; showbits=utilities:systemV; showname="C Shell"; +
+      maxuse=16; laction=n,$0;
+
+icon: type=e; fn=rsh; showbits=utilities:systemV; showname="R Shell"; +
+      maxuse=16; laction=n,$0;
+
+icon: type=e; fn=sh; showbits=utilities:systemV; showname="Shell"; maxuse=16; +
+      laction=n,$0;
+
+icon: type=e; fn=ie; showbits=gadgets:iconedit; showname=IconEdit; +
+      laction=x,$0 /icons/games; daction=x,$0 $1;
+
+icon: type=e; fn=calc; showbits=gadgets:calc; showname=Calc; +
+      laction=x,$0;
+
+icon: type=e; fn=clock; showbits=gadgets:clock; showname=Clock; +
+      laction=x,$0;
+
+icon: type=e; fn=prepflop; showbits=utilities:fmfloppy; showname=Format; +
+	laction=b,$0; raction=b,$0 -v;
+
+icon: type=e; fn=pal; showbits=gadgets:paledit;showname=Palette; +
+	laction=x,$0; raction=x, $0 -f;
+
+icon: type=e; fn=controlpanel; showbits=gadgets:ctrlpanel; showname=Panel; +
+	laction=x,$0; raction=; daction=; 

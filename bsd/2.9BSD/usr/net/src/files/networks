@@ -1,0 +1,59 @@
+#
+# Internet networks (reordered for local efficiency)
+#
+ucb-ether	46		ucbether localnet ethernet
+arpanet		10		arpa
+purdue-localnet	128.10		purdue-net
+ub-net		99		ungermann-bass-network
+3com-net	98		3com-network
+interlan-net	97		interlan-network
+cad-net		96		cad-network
+ucb-ether2	192.46.0	ucbether2 ether2
+cc-net		89		cc-network comp-center-net
+loopback-net	127		software-loopback-net
+bbn-net		3		bbnnet bbn-rcc
+dcn-comsat	128.4
+bbn-pr		1
+sf-pr-1		2		sf-bay-area-pr-1
+satnet		4		atlantic-satellite atlantic-satelite
+sill-pr		5		washington-dc-pr
+sf-pr-2		6		sf-bay-area-pr-2
+chaos		7
+clarknet	8		bbn-satnet
+bragg-pr	9		fort-bragg-pr
+uclnet		11		uc-london
+cyclades	12
+nplnet		13		national-physical-lab
+telenet		14
+epss		15
+datapac		16
+transpac	17
+lcsnet		18		lcs
+tymnet		19
+dc-pr		20		fort-sill-pr
+edn		21		dcec-edn edn-dcec
+dialnet		22		dial
+mitre		23
+bbn-local	24		fibrenet
+rsre-ppsn	25
+autodin-ii	26
+nosc-lccn	27
+wideband	28
+dcn-ucl		30
+bbn-sat-test	31
+ucl-cr1		32
+ucl-cr2		33
+accat		34		akkat
+rsre-null	35
+su-net		36
+decnet		37
+decnet-test	38
+srinet		39
+cislnet		40
+bbn-ln-test	41
+matnet		42		s1net
+null		43		intelpost
+amprnet		44
+decnet		45
+sac-pr		47
+ndre-ring	48

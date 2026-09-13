@@ -1,0 +1,21 @@
+request to leave one space:.sp{ }{1}
+make sure there are at least 3 lines left on the page:.ne{ }3
+center the next line:.ce{ }{1}
+indent 5 spaces:.in{ }5
+stop filling lines:.nf
+start filling lines:.fi
+start adding spaces between words so that right margin is even:.ad
+stop adding spaces between words to make right margin even:.na
+define page heading test for all pages:.he{ }{''''}
+define page heading for even numbered pages:.eh{ }{''''}
+define page footing request:.fo{ }{''''}
+temporary indent 12 spaces to the right:.ti{ }+12
+underline next three input lines:.ul{ }3
+make 2 blank pages (except for headers and footers):.sk{ }2
+force the beginning of the next page:.pa
+set the current page number to 20:.pn{ }20
+execute `roff' command for the document file named `abc':roff abc
+execute `roff' of file `letter' but print only from page 3 on:roff +3 letter
+what symbol stands for the page number in headers and footers:%
+how would you translate `;' to `-':.tr{ };-
+temporarily indent 4 spaces left:.ti{ }-4

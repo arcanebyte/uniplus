@@ -1,0 +1,159 @@
+.TH PUT 1C UniSoft
+.SH NAME
+put \- puts a file onto a remote machine.
+.SH SYNOPSIS
+.B put
+[
+.B \-p
+.I port
+] [
+.BR \-s SPEED
+] [
+.B \-i
+[ ID ] ]
+.I fromfile
+[
+.I tofile
+]
+.br
+.B put
+[
+.B \-p
+.I port
+] [
+.BR \-s SPEED
+]
+.B \-c
+.I command
+[
+.I args
+] ...
+.SH DESCRIPTION
+.I Put\^
+is part of system of programs useful for transferring files between 
+.SM UNIX
+systems.  It is the "uploader" designed to transmit files from a local
+machine to a remote machine.  For a brief discussion of the take/put
+system and installation instructions, see the companion document:
+\fIInstallation and Overview of the UniSoft Take/Put File Transfer System\fR.
+.PP
+The default
+port is 
+.BR /dev/tty0 ;
+the 
+.B \-p
+option can be used to specify an alternate output port.
+The default speed is determined by the system; the
+.B \-s
+option can be used to specify a speed.
+If
+.I tofile\^
+is unspecified, then it is assumed to be the same as
+.IR fromfile .
+If
+.I fromfile\^
+is a directory,
+.I tofile\^
+must be a directory on the remote machine (or if nonexistent, the
+last existent directory specified in the pathname must be writable).
+.PP
+The 
+.BR \-i [ \s-1ID\s+1 ]
+option specifies a system 
+.SM ID
+and is the
+mechanism for remapping pathnames on the remote machine.
+The system 
+.SM ID
+is passed to the remote machine where
+it is used to generate pathname prefixes (using the
+.B /etc/take_oem
+file) which are appended to the
+.I tofile\^
+pathname supplied by
+.IR put .
+If an 
+.SM ID
+is specified when using the
+.B \-i
+option, it is used on the
+remote machine. 
+If no 
+.SM ID
+is specified, the default 
+.SM ID
+is 
+read from the
+.B /etc/sys_id
+file if it exists; if the 
+.B /etc/sys_id
+does not exist, the system 
+.SM ID
+is considered to be the user name of
+the invoker of
+.I put7\^
+(i.e., the user who logged in over the port used).
+.PP
+The
+.B \-c
+option is useful for executing an arbitrary command on the remote machine.
+All arguments following the
+.B \-c
+flag are collected, transmitted to the remote machine and executed as a single
+command.  The standard input to the
+.I put\^
+program is sent to the remote machine to become the standard input to the
+command specified.  The standard error of the remote command becomes the
+standard error of
+.IR put .
+The standard output of the remote command is not returned.
+The exit status of the remote command is returned as the exit status of
+.IR put .
+.PP
+In order to perform its function,
+.IR put\^ (1C)
+interfaces with the program 
+.B /usr/bin/put7 
+on the remote machine.
+.SH EXAMPLE
+.IP
+put /a/b/c
+.PP
+puts the contents of the directory (or file) "/a/b/c" 
+on the local machine
+into a similarly named directory (or file) on the
+remote machine; if "/a/b/c"
+did not previously exist on the remote
+machine, it is created; otherwise it is overwritten.
+.IP
+put file.c /x/y/z
+.PP
+puts the contents of "file.c" on the local machine 
+into "/x/y/z/file.c" on the remote machine.  Note that
+"file.c" is created on the remote machine if "z"
+is a directory; if "z"
+is a file rather than a directory, its 
+contents are overwritten but its name remains "z"
+rather
+than becoming "file.c".
+.SH FILES
+.TP "\w'fromfile\ \ \ \ 'u"
+fromfile
+The local file name.  When using the
+.B \-i
+option, this file should be specified as a pathname 
+starting at the root of the local machine.
+.ns
+.TP
+tofile
+The remote file name; if 
+.I tofile\^
+is null, 
+.I tofile\^ 
+is defaulted to 
+.IR fromfile .
+.SH "SEE ALSO"
+cu(1C), take(1C)
+.br
+.I "Installation and Overview of the UniSoft Take/Put File Transfer System"
+.\"	@(#)put.1c	5.1 of 11/16/83

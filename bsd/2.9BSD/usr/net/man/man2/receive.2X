@@ -1,0 +1,48 @@
+.TH RECEIVE 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+receive \- receive message from a socket
+.SH SYNOPSIS
+.ft B
+#include <sys/socket.h>
+.sp
+cc = receive(s, from, buf, len);
+.br
+int cc, s;
+.br
+struct sockaddr *from;
+.br
+char *buf;
+.br
+int len;
+.ft R
+.SH DESCRIPTION
+.I Receive
+is used to receive a message from a SOCK_DGRAM or SOCK_RAW socket.
+The source address of the message is placed in
+.I from.
+The length of the message is returned in
+.I cc.
+If the message is too long to fit in the supplied buffer,
+then excess characters are discarded.
+.PP
+If no messages are available at the socket, the
+.I receive
+waits for a message to arrive, unless the socket is nonblocking
+(see
+.IR ioctlnew (2x))
+in which case a
+.I cc
+of \-1 is returned with the external variable errno set to EWOULDBLOCK.
+.PP
+The
+.IR select (2x)
+call may be used to determine when more data arrives.
+.SH SEE ALSO
+send(2x), socket(2x)
+.SH BUGS
+An option to provide a SIGIO signal when data is available
+to be received is planned, but not yet implemented.
+.PP
+This call is provisional, and will exist in a slightly different form
+in 4.2bsd.

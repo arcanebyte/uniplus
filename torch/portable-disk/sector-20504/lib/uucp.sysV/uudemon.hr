@@ -1,0 +1,5 @@
+: ' perform every hour on the half-hour'
+cd /usr/lib/uucp
+/usr/lib/uucp/uucico -r1 -sroot44
+/usr/bin/uulog
+/bin/sync

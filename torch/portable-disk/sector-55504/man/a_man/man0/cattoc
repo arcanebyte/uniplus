@@ -1,0 +1,73 @@
+accept.1m accept, reject: allow/prevent LP requests.
+acct.1m acctdisk, acctdusg, accton, acctwtmp: overview of accounting and miscellaneous accounting commands.
+acctcms.1m acctcms: command summary from per-process accounting records.
+acctcon.1m acctcon1, acctcon2: connect-time accounting.
+acctmerg.1m acctmerg: merge or add total accounting files.
+acctprc.1m acctprc1, acctprc2: process accounting.
+acctsh.1m chargefee, ckpacct, dodisk, lastlogin, monacct, nulladm, prctmp, prdaily, prtacct, runacct, shutacct, startup, turnacct: shell procedures for accounting.
+badblk.1m badblk: program to set or update bad block information.
+bcopy.1m bcopy: interactive block copy.
+brc.1m brc, bcheckrc, rc, powerfail: system initialization shell scripts.
+chroot.1m chroot: change root directory for a command.
+clri.1m clri: clear i-node.
+cron.1m cron: clock daemon.
+dcopy.1m dcopy: copy file systems for optimal access time.
+devnm.1m devnm: device name.
+df.1m df: report number of free disk blocks.
+diskformat.1m diskformat - format a disk.
+disktune.1m disktune - tune floppy disk settling time parameters.
+errdead.1m errdead: extract error records from dump.
+errdemon.1m errdemon: error-logging daemon.
+errpt.1m errpt: process a report of logged errors.
+errstop.1m errstop: terminate the error-logging daemon.
+ff.1m f\&f: list file names and statistics for a file system.
+filesave.1m filesave, tapesave: daily/weekly UNIX file system backup.
+finc.1m finc: fast incremental backup.
+frec.1m frec: recover files from a backup tape.
+fsck.1m fsck, dfsck: file system consistency check and interactive repair.
+fsdb.1m fsdb: file system debugger.
+fuser.1m fuser: identify processes using a file or file structure.
+fwtmp.1m fwtmp, wtmpfix: manipulate connect accounting records.
+getty.1m getty: set terminal type, modes, speed, and line discipline.
+init.1m init, telinit: process control initialization.
+install.1m install: install commands.
+intro.1m intro: introduction to system maintenance commands and application programs.
+killall.1m killall: kill all active processes.
+link.1m link, unlink: exercise link and unlink system calls.
+lpadmin.1m lpadmin: configure the LP spooling system.
+lpsched.1m lpsched, lpshut, lpmove: start/stop the LP request scheduler and move requests.
+mkfs.1m mkfs: construct a file system.
+mkfs1b.1m mkfs1b: construct a file system.
+mklost+fnd.1m mklost+found: make a lost+found directory for fsck.
+mknod.1m mknod: build special file.
+mount.1m mount, umount: mount and dismount file system.
+mvdir.1m mvdir: move a directory.
+ncheck.1m ncheck: generate names from i-numbers.
+profiler.1m prfld, prfstat, prfdc, prfsnap, prfpr: operating system profiler.
+pstat.1m pstat: print system facts.
+pwck.1m pwck, grpck: password/group file checkers.
+runacct.1m runacct: run daily accounting.
+sar.1m sa1, sa2, sadc: system activity report package.
+setmnt.1m setmnt: establish mount table.
+shutdown.1m shutdown: terminate all processing.
+updater.1m updater: update files between two machines.
+uuclean.1m uuclean: uucp spool directory clean-up.
+uusub.1m uusub: monitor uucp network.
+vchk.1m vchk: version checkup.
+volcopy.1m volcopy, labelit: copy file systems with label checking.
+wall.1m wall: write to all users.
+whodo.1m whodo: who is doing what.
+aliases.7n aliases: aliases file for delivermail.
+err.7 err: error-logging interface.
+hosts.7n /etc/hosts: host table for bnet.
+intro.7 intro: introduction to special files.
+mem.7 mem, kmem: core memory.
+null.7 null: the null file.
+termio.7 termio: general terminal interface.
+tty.7 tty: controlling terminal interface.
+boot.8 boot: startup procedures.
+crash.8 crash: what to do when the system crashes.
+delivermail.8n delivermail: deliver mail to arbitrary people.
+intro.8 intro: introduction to system maintenance procedures.
+netmail.8n netmail: the bnet network mail system.
+netmailer.8n netmailer: deliver mail to.

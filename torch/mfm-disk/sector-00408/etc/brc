@@ -1,0 +1,7 @@
+
+#	@(#)brc.sh	UniPlus V.2.1.2	(Motorola 2.1)
+
+# ***** This command file's function under NFS is to empty mtab
+
+>/etc/mtab
+

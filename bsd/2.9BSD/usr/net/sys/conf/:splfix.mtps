@@ -1,0 +1,18 @@
+0a
+mfps	= 106700^tst
+mtps	= 106400^tst
+.
+g/jsr	pc,__spl0/s//mtps $0/
+g/jsr	pc,__spl1/s//mtps $40/
+g/jsr	pc,__spl4/s//mtps $200/
+g/jsr	pc,__spl5/s//mtps $240/
+g/jsr	pc,__spl6/s//mtps $300/
+g/jsr	pc,__spl7/s//mtps $340/
+g/jsr	pc,_spl0/s//mfps r0;mtps $0/
+g/jsr	pc,_spl1/s//mfps r0;mtps $40/
+g/jsr	pc,_spl4/s//mfps r0;mtps $200/
+g/jsr	pc,_spl5/s//mfps r0;mtps $240/
+g/jsr	pc,_spl6/s//mfps r0;mtps $300/
+g/jsr	pc,_spl7/s//mfps r0;mtps $340/
+w
+q

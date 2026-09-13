@@ -1,0 +1,44 @@
+ROFIX	= ./ROFIX
+CPP	= /lib/cpp
+CC	= cc
+AS	= as
+LD	= ld
+AR	= ar
+NM	= nm
+LIBC	= /lib/libc.a
+SIZE	= size -d
+
+.c.o:
+	$(CC) $(CFLAGS) -S $<
+	$(ROFIX) $*.s
+	$(AS) $*.s
+	rm -f $*.s
+
+all:	ROOTshare libc.a
+
+# the order here is *very* important
+OFILES	= shmtable.o ctype.o errlst.o nofunc.o version.o
+
+ROOTshare:	$(OFILES) fixedlib.a ROOTshare.ld
+	$(LD) -o ROOTshare ROOTshare.ld $(OFILES) fixedlib.a -lc
+	@echo "must not have any data or bss"
+	@$(SIZE) ROOTshare
+
+crt0.o:	crt0.s
+	$(CPP) -DSHMADDR=0x200000 crt0.s > TEMP.s
+	$(AS) -o crt0.o TEMP.s
+	rm -f TEMP.s
+
+libc.a:	/lib/libc.a shmtable.s ROOTshare
+	AS=$(AS) AR=$(AR) NM=$(NM) LIBC=$(LIBC) ./tab_to_lib
+
+clean:
+	rm -f ROOTshare crt0.o fixedlib.a libc.a nofunc.o
+	rm -f shmtable.o
+	rm -f ctype.o errlst.o version.o
+	rm -f INSHM OUTSHM
+	cd crt; make clean
+	cd sys; make clean
+	cd gen; make clean
+	cd stdio; make clean
+	cd print; make clean

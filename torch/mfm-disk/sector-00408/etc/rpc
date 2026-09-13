@@ -1,0 +1,18 @@
+#
+#	rpc   1.2   86/01/07
+#
+rstatd		100001	rstat rup perfmeter
+rusersd		100002	rusers
+nfs		100003	nfsprog
+ypserv		100004	ypprog
+mountd		100005	mount showmount
+ypbind		100007
+walld		100008	rwall shutdown
+yppasswdd	100009	yppasswd
+etherstatd	100010	etherstat
+rquotad		100011	rquotaprog quota rquota
+sprayd		100012	spray
+selection_svc	100015	selnsvc
+dbsessionmgr	100016	unify netdbms dbms
+rexd		100017	rex remote_exec
+office_auto	100018	alice

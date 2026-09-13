@@ -1,0 +1,17 @@
+.TH GETHOSTNAME 2N UniSoft
+.SH NAME
+gethostname \- get name of current host
+.SH SYNOPSIS
+.B char hostname[32];
+.sp
+.B gethostname(hostname, sizeof (hostname));
+.SH DESCRIPTION
+.I Gethostname\^
+returns the standard host name for the current processor, as set by
+.IR sethostname\^ (2)
+and defined in
+.IR rhost\^ (3).
+The name is null-terminated.
+.SH SEE ALSO
+sethostname(2N), rhost(3N).
+.\"N	 @(#)gethostname.2N	 5.2 of 7/12/84

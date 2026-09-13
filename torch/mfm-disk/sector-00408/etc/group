@@ -1,0 +1,11 @@
+root::0:
+daemon::1:
+bin::2:
+sys::3:
+adm::4:
+uucp::5:
+mail::6:
+lp::7:
+news::10:
+users::100:
+deskuser::150:

@@ -1,0 +1,47 @@
+.TH ACCEPT 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+accept \- accept a connection on a socket
+.SH SYNOPSIS
+.ft B
+#include <sys/socket.h>
+.sp
+accept(s, from)
+.br
+int s;
+.br
+struct sockaddr *from;
+.ft R
+.SH DESCRIPTION
+This call is used to
+.I accept
+a connection on socket
+.I s;
+.I from
+is a result value indicating the address of the entity which
+connected, as known to the communications layer.
+This call
+is used with connection-based socket types, currently with SOCK_STREAM.
+.PP
+If the underlying communications layer has already made a connection
+on the socket, then the call returns immediately.
+If no connection has yet been made, and the socket is nonblocking (see
+.IR ioctl (2)),
+then a \-1 is returned and the global variable errno is set to
+EWOULDBLOCK.
+It is possible to
+.IR select (2x)
+a socket for the purposes of doing an
+.I accept
+by selecting it for read, since no data may be read
+until the connection completes.
+.SH SEE ALSO
+connect(2x), select(2x), socket(2x)
+.SH DIAGNOSTICS
+Zero is returned if a connection is accepted; \-1 is returned 
+in the error cases.  Some important error returned in errno are EOPNOTSUPP if
+the socket is not of a type supporting this operation, and EISCONN
+if the socket is already connected.
+.SH BUGS
+This call is provisional, and will exist in a slightly different form in
+4.2bsd.

@@ -1,0 +1,72 @@
+.TH SELECT 2N UniSoft
+.SH NAME
+select \- synchronous i/o multiplexing
+.SH SYNOPSIS
+.B nfd = select(nfds, readfds, writefds, milli);
+.br
+.B int nfds;
+.br
+.B int *readfds, *writefds;
+.br
+.B int milli;
+.SH DESCRIPTION
+.I Select\^
+examines the i/o descriptors specified by the bit masks
+.I readfds\^
+and
+.I writefds\^
+to see if they are ready for reading and/or writing respectively
+and returns, in place, a mask of those descriptors which are ready.
+The total number of ready descriptors is returned in
+.IR nfd .
+.PP
+.I Milli\^
+is the maximum number of milliseconds to wait before giving
+up if no descriptors come active.
+If no maximum wait is desired a very large integer can be given.
+.PP
+A
+.I milli\^
+of 0 specifies a poll; the
+.I select\^
+returns whatever information is available without blocking.
+Either
+.I readfds\^
+or
+.I writefds\^
+may be given as 0 if no descriptors are interesting.
+.PP
+For the present, since 
+.SM UNIX 
+allows only 20 file descriptors
+it suffices for
+.I nfd\^
+to be 20, and for
+.I readfds\^
+and
+.I writefds\^
+to be pointers to integer variables.
+File descriptor \fIf\^\fR is represented by the bit "1<<f" in
+the mask.
+.SH SEE ALSO
+accept(2N), 
+connect(2N),
+ioctl(2), 
+read(2), 
+receive(2N), 
+send(2), 
+write(2). 
+.SH BUGS
+The system currently rounds \fImilli\^\fP to integral seconds, with a 
+resolution of +/\- 1 second.
+.PP
+Currently 
+.I select\^
+only works correctly on sockets and psuedo-teletypes.
+Other file-descriptors always 
+.I select\^ 
+as ready.
+.PP
+This call is provisional and will exist in a slightly different form 
+in future releases.
+.\"N	 @(#)select.2N	 5.2 of 7/12/84

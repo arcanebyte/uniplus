@@ -1,0 +1,84 @@
+.UC
+.TH CHSIZE 1M "HO Local"
+.deTH
+.PD
+.nrIN \\n()Mu
+.ift .ds ]H \\$1\^(\^\\$2\^)
+.ifn .ds ]H \\$1(\\$2)
+.if\\n()s .ds ]D
+.if\\n()t .ds ]D UNIX System V
+.ifn .ds ]D UNIX System V
+.ds]L
+.if!\\$3 .ds ]L (\^\\$3\^)
+.if!\\$4 .ds ]D \\$4
+.wh0 }H
+.wh-\\n(:mu }F
+.em}M
+.if\\n(nl .bp
+.nr)I \\n()Mu
+.nr)R 0
+.}E
+.DT
+.ifn \{.na
+.nh\}
+.ift \{.bd S 3 3
+.hy14 \}
+..
+.tr ~"
+.if t .ds i \(fm\(fm
+.if n .ds i ""
+.UC
+.SH NAME
+chsize \- change size of file system
+.SH SYNOPSIS
+.B chsize
+[
+.B \-f
+] /dev/rdsknnn new-size
+.SH DESCRIPTION
+The
+.I chsize
+utility allows super-users to change the number of blocks allocated
+to a file system.
+.P
+The command line must contain the file system's character (a.k.a. "raw")
+i/o device name.
+.P
+The argument
+.B new-size
+must also be present.  It is the number of 512-byte blocks to be allocated
+to the file system.  
+.P
+If the 
+.B new-size
+argument is less than the current size, the
+.B \-f
+(force change) option must be present.
+.P
+To affect the change in the file system size, 
+.I fsck
+must be invoked to rebuild the free list.
+.SH EXAMPLE
+The file system "/dev/rdsk005" currently has 24500 blocks.  The user wishes
+to add another 500 blocks.
+.ti +.5i
+chsize /dev/rdsk005 25000
+fsck -f -s -y /dev/rdsk005
+.P
+The file system "/dev/rdsk999" currently has 30000 blocks.  The user wishes
+to reduce its size by 15000 blocks.
+.ti +.5i
+chsize /dev/rdsk999 15000
+fsck -f -s -y /dev/rdsk999
+.SH "SEE ALSO"
+fsck( 1m)
+.SH "DON'T BOTHER"
+dcopy( 1m), volcopy( 1m)
+.SH AUTHOR
+C.J. Shedd of the HOCC UNIX Support Staff came up with this facility.
+He can
+be contacted at HO 3D-219, extension 3856, or through electronic mail to
+houxm!cliff. 
+.SH SUPPORT
+The author is the sole source of support for this facility.
+

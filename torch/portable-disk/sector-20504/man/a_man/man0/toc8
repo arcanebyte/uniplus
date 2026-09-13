@@ -1,0 +1,6 @@
+.xx "intro" "introduction to system maintenance procedures"
+.xx "boot" "startup procedures"
+.xx "crash" "what to do when the system crashes"
+.xx "delivermail" "deliver mail to arbitrary people"
+.xx "netmail" "the bnet network mail system"
+.xx "netmailer" "deliver mail to"

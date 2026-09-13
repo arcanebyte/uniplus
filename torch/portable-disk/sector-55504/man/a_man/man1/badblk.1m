@@ -1,0 +1,68 @@
+.TH BADBLK 1M UniSoft
+.SH NAME
+badblk \- program to set or update bad block information
+.SH SYNOPSIS
+.B badblk
+[
+.B \-w
+] [
+.B \-m
+N] /dev/rXYZ [ 
+.B \#S
+]
+.SH DESCRIPTION
+.I Badblk
+sets or updates bad block information for those disk drives that
+support soft sector bad block remapping.
+.PP
+If invoked with the
+.B \-w
+option, write/verify is performed to determine if there is a bad block;
+otherwise only read is done.
+.PP
+If invoked with the
+.BR \-m N
+option, the number of alternate blocks will be set to N.
+.I Badblk
+returns an error if N > NICALT (currently 50).
+.RS .3i
+.TP "\w'/dev/rXYZ\ \ \ 'u"
+.B /dev/rXYZ
+is the device name.
+.TP
+.B #S
+is one or more block numbers separated by blanks.
+.RE
+.PP
+If invoked with no specific block numbers and no bad block verification
+has been done before, then each block on the disk is checked
+(either read or write/verify) and bad block information
+in block 0 is set up from scratch.
+.PP
+If invoked with no specific block numbers, but block 0 already contains
+bad block information set up earlier, then a verification on the whole
+disk is performed; any new bad blocks not already on the block 0
+table will be added.
+.PP
+If invoked with the device name plus block numbers, then only the
+indicated blocks are updated in block 0.
+.PP
+After alternate blocks are assigned, block 0 is updated and the 
+updated blocks are verified to make sure alternate blocks are good.
+If alternate blocks are not good, new alternate block numbers
+are assigned.
+.PP
+The raw device that accesses the entire disk and allows for writing
+block zero should be specified.
+.SH EXAMPLE
+.IP
+badblk -w /dev/rw1hw0
+.PP
+does a full write/verify on winchester 1 and updates the header block.
+The rw1hw0 specifies raw (r) winchester 1 (w1), the full disk (h),
+with the capability of writing block 0 (w0).
+.IP
+badblk /dev/rw1hw0 3754 8123
+.PP
+adds blocks 3754 and 8123 to the badblock list.
+.\"	@(#)badblk.1m	5.1 of 10/18/83

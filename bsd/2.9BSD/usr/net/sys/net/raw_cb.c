@@ -1,0 +1,134 @@
+/*	raw_cb.c	4.9	82/06/20	*/
+
+#include "param.h"
+#include <sys/systm.h>
+#include <sys/mbuf.h>
+#include <sys/socket.h>
+#include <sys/socketvar.h>
+#include "../net/in.h"
+#include "../net/in_systm.h"
+#include "../net/if.h"
+#include "../net/raw_cb.h"
+#include "../net/pup.h"
+#include <errno.h>
+
+/*
+ * Routines to manage the raw protocol control blocks. 
+ *
+ * TODO:
+ *	hash lookups by protocol family/protocol + address family
+ *	take care of unique address problems per AF?
+ *	redo address binding to allow wildcards
+ */
+
+/*
+ * Allocate a control block and a nominal amount
+ * of buffer space for the socket.
+ */
+raw_attach(so, addr)
+	register struct socket *so;
+	struct sockaddr *addr;
+{
+	register struct rawcb *rp;
+
+	if (ifnet == 0)
+		return (EADDRNOTAVAIL);
+	/*
+	 * Should we verify address not already in use?
+	 * Some say yes, others no.
+	 */
+	if (addr) switch (addr->sa_family) {
+
+	case AF_IMPLINK:
+	case AF_INET:
+		if (((struct sockaddr_in *)addr)->sin_addr.s_addr &&
+		    if_ifwithaddr(addr) == 0)
+			return (EADDRNOTAVAIL);
+		break;
+
+#ifdef PUP
+	/*
+	 * Curious, we convert PUP address format to internet
+	 * to allow us to verify we're asking for an Ethernet
+	 * interface.  This is wrong, but things are heavily
+	 * oriented towards the internet addressing scheme, and
+	 * converting internet to PUP would be very expensive.
+	 */
+	case AF_PUP: {
+		struct sockaddr_pup *spup = (struct sockaddr_pup *)addr;
+		struct sockaddr_in inpup;
+
+		bzero((caddr_t)&inpup, sizeof(inpup));
+		inpup.sin_family = AF_INET;
+		inpup.sin_addr.s_net = spup->sp_net;
+		inpup.sin_addr.s_impno = spup->sp_host;
+		if (inpup.sin_addr.s_addr &&
+		    if_ifwithaddr((struct sockaddr *)&inpup) == 0)
+			return (EADDRNOTAVAIL);
+		break;
+	}
+#endif
+
+	default:
+		return (EAFNOSUPPORT);
+	}
+	MSGET(rp, struct rawcb, 1);
+	if (rp == 0)
+		return (ENOBUFS);
+	if (sbreserve(&so->so_snd, RAWSNDQ) == 0)
+		goto bad;
+	if (sbreserve(&so->so_rcv, RAWRCVQ) == 0)
+		goto bad2;
+	rp->rcb_socket = so;
+	insque(rp, &rawcb);
+	so->so_pcb = (caddr_t)rp;
+	rp->rcb_pcb = 0;
+	if (addr) {
+		bcopy((caddr_t)addr, (caddr_t)&rp->rcb_laddr, sizeof(*addr));
+		rp->rcb_flags |= RAW_LADDR;
+	}
+	return (0);
+bad2:
+	sbrelease(&so->so_snd);
+bad:
+	MSFREE(rp);
+	return (ENOBUFS);
+}
+
+/*
+ * Detach the raw connection block and discard
+ * socket resources.
+ */
+raw_detach(rp)
+	register struct rawcb *rp;
+{
+	struct socket *so = rp->rcb_socket;
+
+	so->so_pcb = 0;
+	sofree(so);
+	remque(rp);
+	MSFREE(rp);
+}
+
+/*
+ * Disconnect and possibly release resources.
+ */
+raw_disconnect(rp)
+	struct rawcb *rp;
+{
+	rp->rcb_flags &= ~RAW_FADDR;
+	if (rp->rcb_socket->so_state & SS_USERGONE)
+		raw_detach(rp);
+}
+
+/*
+ * Associate a peer's address with a
+ * raw connection block.
+ */
+raw_connaddr(rp, addr)
+	struct rawcb *rp;
+	struct sockaddr *addr;
+{
+	bcopy((caddr_t)addr, (caddr_t)&rp->rcb_faddr, sizeof(*addr));
+	rp->rcb_flags |= RAW_FADDR;
+}

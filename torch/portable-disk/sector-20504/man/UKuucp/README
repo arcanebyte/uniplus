@@ -1,0 +1,7 @@
+This is the documentation for the UKUUCP system.
+
+man_pages	- Directory of manual pages for the uucp programs
+INSTALL_GUIDE	- Latest installation instructions
+Notes.dialers	- Brief note about how to add a new dialer
+implement	- Updated installation document (to be read
+setup.tblms	- Someones ideas about how to setup the net.

@@ -1,0 +1,72 @@
+
+# top line left blank for csh ; don't delete it!
+#	@(#)rc.sh	UniPlus V.2.1.2	(ATT 1.12)
+
+TZ=GMT0BST
+export TZ
+
+set `who -r`
+if [ $7 = 1 ]
+then
+	# need to do a umount -a to remove any mount entries
+	# we may have left on a server if we went down without umounting
+	/etc/umount -a
+
+	# place / in mount table
+	/etc/mount -fv `/etc/devnm /`
+
+	# put mounts here (/usr, etc.)
+	/etc/mount -atv 5.2			# 5.2 systems only
+
+	/usr/lib/ex3.9preserve -
+	rm -f /tmp/*
+	rm -f /usr/spool/uucp/LCK*
+	rm -f /usr/adm/acct/nite/lock*
+	if [ -f /usr/adm/sulog ]
+	then mv /usr/adm/sulog /usr/adm/OLDsulog
+	fi
+	if [ -f /usr/lib/cron/log ]
+	then mv /usr/lib/cron/log /usr/lib/cron/OLDlog
+	fi
+	PS=`ps -e`
+#	if echo $PS |fgrep 'cron' >/dev/null
+#	then
+#		true
+#	else
+#		> /usr/lib/cron/log
+#		/etc/cron
+#		echo cron started
+#	fi
+	: run LP scheduler
+#	rm -f /usr/spool/lp/SCHEDLOCK
+#	(
+#		trap '' 1
+#		: change line below for different baud rate and printer port
+#		BAUD=9600
+#		LPPRINTER=printer
+#		DEVICE=`cat /usr/spool/lp/member/$LPPRINTER`
+#		stty $BAUD < $DEVICE
+#		/usr/lib/lpsched 5< $DEVICE
+#		echo lp scheduler started
+#	)&
+	if [ ! -f /etc/wtmp ]
+	then
+		>/etc/wtmp
+		chmod 644 /etc/wtmp
+		chgrp adm /etc/wtmp
+		chown adm /etc/wtmp
+	fi
+	#/bin/su - adm -c /usr/lib/acct/startup
+	#echo process accounting started
+	if echo $PS|fgrep 'errdemon' >/dev/null
+	then
+		true
+	else
+		/usr/lib/errdemon >/dev/null 2>&1&
+		echo errdemon started
+	fi
+	: make sure default floppy format not changed
+#	rm -f /etc/floppyformat
+	: automatically empty the waste directory
+#	rm -f /waste/*
+fi

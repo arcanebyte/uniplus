@@ -1,0 +1,43 @@
+.TH DUMPDIR 1M 2/14/82
+.UC 4
+.SH NAME
+dumpdir \- print the names of files and directories on a dump tape or disk
+.SH SYNOPSIS
+.B dumpdir
+[
+.B f
+filename ]
+.SH DESCRIPTION
+.I Dumpdir
+is used to read magtapes or disks dumped with the
+.I dump
+command 
+.I Dumpdir
+lists the names and inode numbers
+of all the files and directories on the backup tape or disk.
+.PP
+The
+.B f
+option causes
+.I filename
+as the name of the dump device, whether tape or disk. 
+.SH EXAMPLE
+.IP
+dumpdir f /dev/xxxx
+.PP
+lists on the screen all the files and directories on the device
+/dev/xxxx to which a file system has been dumped by the 
+.IR dump (1M)
+command.
+.SH FILES
+default backup unit varies with installation
+.br
+rst*
+.SH "SEE ALSO"
+dump(1M), restor(1M)
+.SH DIAGNOSTICS
+If the dump extends over more than one tape or disk,
+it will ask you to change tapes or disks.
+Reply with a new-line after the next one has been mounted.
+
+

@@ -1,0 +1,6 @@
+cat /etc/motd
+#tset -s '-e^H' '-k' vtl > $$
+#rm $$
+stty ixon echoe echok -tabs
+#
+stty ixon

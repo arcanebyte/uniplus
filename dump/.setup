@@ -1,0 +1,7 @@
+EXINIT="set ai sm"
+export EXINIT
+tset -s '-e^H' '-k' vtl > $$
+. ./$$
+rm $$
+stty ixon echoe echok -tabs
+exec csh

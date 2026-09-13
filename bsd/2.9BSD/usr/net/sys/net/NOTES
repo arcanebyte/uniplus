@@ -1,0 +1,236 @@
+Porting the UCB VAX network code to the PDP11 involves the following areas:
+
+INSTRUCTION OVERLAYS
+
+Partitioning the instruction space code into a number of 8K byte overlay
+segments.  Currently I am using KLH's overlay scheme, just because it
+doesnt involve compiler mods; for UCB distribution we will want
+to use the UCB overlay scheme.  The partitioning could probably be more
+optimized to avoid overlay switching (even though these are just resident
+overlays).  Currently the overlays are organized along functional
+groupings: interface drivers (if_xxx), ip/routing, tcp, user requests; this
+could perhaps instead be sliced so that the most common (read/write)
+functions plus the high-speed interface (if_il.c) are all in the same
+overlay.
+
+MBUF CLASSES
+
+The VAX network code uses a pool of "mbuf"s for a number of different
+classes of data: (a) dynamically created structures such as sockets, tcp
+state blocks, routing table entries. (b) packet buffers. (c) packet buffers
+with pointers threading thru them.
+
+The PDP11 UNIX kernel does not have enough 16 bit addressable data space to
+hold all of these items.  Typically the 8 memory management segments for
+kernel data space (on an I/D machine) are broken down as follows:  SEG0-4:
+kernel data structures, SEG5: movable pointer to external buffer pool,
+SEG6: movable pointer to "_u" (user) structure of currently active process,
+SEG7:  IO page.
+
+STRUCTURE MBUFS
+
+Mbuf packet buffers can indeed use SEG5 as a mechanism to access a large
+external buffer pool.  However since these buffers are always mapped into
+the same virtual address range (SEG5 = 0120000-0137777), they cannot be
+used for dynamic structures and packets that point to other dynamic
+structures and packets.  Instead a small (4K byte) area is permanently
+resident in kernel D space and dynamically allocated and freed, using an
+"malloc"-like scheme.  This provides enough structure space for
+approximately 20 simultaneously active connections.
+
+Where previously the code allocated an mbuf and setup a structure in it, it
+now calls macros that use the appropriate pool if on the 11:
+
+The old way structures were allocated and freed:
+	struct inpcb *inp;
+	struct mbuf *m;
+	m = m_getclr(M_DONTWAIT);
+	if (m == 0) goto bad;
+	inp = mtod(m, struct inpcb *);
+	...
+	m_free(dtom(inp));
+
+Using the "structure get" and "structure free" macros:
+	struct inpcb *inp;
+	MSGET(inp, struct inpcb, M_CLEAR);
+	if (inp == 0) goto bad;
+	...
+	MSFREE(inp);
+
+PACKET MBUFS
+
+Some of the mbufs are simply used to pass packets between protocol levels;
+such as between tcp_output and ip_output, or in a queue of mbufs handled by
+"ipintr" (the ip_input software interrupt handler).  On the 11, the mbuf
+headers are contained in the permanently mapped area; the mbuf header then
+contains the click (mem management) address for the external buffer data.
+Thus most of the VAX code remains unchanged.  Structures can contain mbuf
+addresses and mbufs can be linked together as normal.  The "mtod" macro for
+the 11 does the same as the VAX macro: it converts an mbuf address into a
+pointer to an arbitrary structure using the m->m_off "offset" field in the
+header.  Of course on the 11, this also involves diddling the mem
+management register for SEG5, and the resulting pointer address is NOT
+unique.  Therefore whereas the inverse operation, "dtom(inp)" (convert a
+data to an mbuf address) is always well defined on the VAX, it is a risky
+operation on the 11.  The 11 can only do this correctly if the
+corresponding "mtod" occured previously and is still in effect.  Thus for
+example "ip_reass(ip, fp)" and "ip_stripoptions(ip,mopt)" work alright
+since the ip header refered to was recently mapped in using "mtod",
+so that the "dtom"s inside ip_reass and ip_stripoptions will perform
+properly.
+
+At some time in the future one may want to go thru the code and
+replace these cases with direct mbuf references (such as
+ip_stripoptions(m,mopt)) to try and reduce or eliminate use of dtom.  At
+least on the 11 this would result in more robust code.
+
+PACKET MBUFS WITH THREADS
+
+This is the hardest case to convert, although usually only a small
+additional amount of code is needed.  For example in ip_reass, instead of
+threading the ip packets together by reusing fields in the direct ip
+header, a copy of the header is made in the permanently mapped area and the
+header augmented to contain an mbuf pointer as well as pointers to other ip
+(copy) headers.  In this region of code a small define was used to increase
+portability of the dtom construct:
+	#if pdp11
+	#define DTOMQ (q->ipf_mbuf)
+	#else
+	#define DTOMQ dtom(q)
+	#endif
+
+MEMORY MANAGEMENT REGISTER CONSIDERATIONS
+
+Most of the loading and restoring of the SEG5 register occurs automatically
+as a result of the conditionalized "mtod" and "dtom" macros.  In certain
+cases it is desired to save an existing map and restore it upon exit.
+"MAPSAVE" and "MAPREST" macros (which are nops on the VAX), were setup for
+this.
+
+Another special case is in copying from one mbuf to another mbuf.  This
+requires "borrowing" another memory management register on the 11.
+Cases such as this were replaced with a general macro that works for VAX
+or 11:  "MBCOPY(from_mbuf, from_offset, to_mbuf, to_offset, count);"
+
+NEW SYSTEM CALL SUPPORT
+
+System calls from 4.1a were added: gethostname, sethostname,
+socket, connect, accept, send, receive, socketaddr, and select.
+Select was the hardest as it required mods in the low level tty drivers
+and a new ttynew.c canonical driver (ttyold.c no longer exists).
+There is also a new pty.c (pseudo terminal) driver.
+
+UNBUFFERED WRITES
+
+Many PDP-11's are still running binaries using the original V7 stdio library
+which defaults to unbuffered system write calls.  This creates an enormous
+load when each byte output causes transmission of a network packet.
+A mechanism from Purdue net was installed which buffers one byte writes
+locally until either a timer expires or a length threshold is exceeded.
+
+LONG VARIABLE AND DEFINE NAMES
+
+The cpp from 4BSD was used which allows arbirary length defines.  Then
+function, structure and variable names which were not 7 character unique
+were remapped so that they were.  This avoids editing the source code and
+allows staying in sync with new VAX versions.
+
+UNSIGNED CHARS AND LONGS, FLOATS
+
+Use of u_char and u_long must be examined on a case by case basis and
+converted to the 11, which does not directly support these types.  A macro
+"UCHAR(x)" was used for comparisons and assignments where the 11 sign
+extension would normally screw up.  The macro is a nop on the VAX.
+
+The exponential backoff algorithm in TCP used floats.  PDP11s sometimes
+lack floating point hardware, and in any event the kernel would need
+modifications to save and restore the floating point status.  Instead the
+calculations were done in scaled integer arithmetic.
+
+BYTE ORDERING AND ALIGNMENT
+
+Long's on the 11 are short reversed to those on the VAX, so several macros
+and functions needed changing.  All "host to net" and "net to host" code
+that was conditionalized only for the vax, applies as well for the 11.
+Also interestingly the struct in_addr union definitions are exactly the
+same on the 11 as on the VAX, but the IN_NETOF and IN_LNAOF defines are
+different, since these are affected by net byte order within a long.
+
+Certain code in option processing assumes longs can lie on arbitrary byte
+boundaries.  These assignments were changed to bcopy's.
+
+PRINTF'S
+
+Some %x's had to be changed to %X.
+
+LONG ARGUMENT AND FUNCTION RETURN DEFAULTS
+
+Argument and function type casts and declarations had to be more specific
+for the 11, where the default is short.
+
+OTHER POSSIBLE ORGANIZATIONS OF MEMORY
+
+Another possibility considered for the organization of memory used by the
+network code, was to move the entire network out into "user space" (but NOT
+a user process).  On an I/D machine this could work quite well.  About 30K
+bytes of I space would be used for instructions, leaving the other 30K
+bytes available for expansion.  No instruction overlays would thus be
+needed.  In D space SEG6 and SEG7 would point to the _u struct and IO page
+(as normal in a kernel context).  This would allow easy argument passing
+and device register access.  The remainder of D space (48K bytes) would
+allow a pool of almost 200 mbufs, each 256 bytes long (twice the VAX mbuf
+size, since the 11 doesnt support "cluster mbufs").  This would be a large
+enough pool to allow the "mtod" and "dtom" constructs to work indentically
+as the VAX, greatly simplifying the work necessary to port the code.
+
+The system call interface routines (ipc.c) would reside in the kernel and
+do "cross-address-space" subroutine calls to the net code in user space.
+Since the stack is shared between the kernel and the net, this would be
+relatively efficient.  There are about a dozen entry points each used by
+the kernel calling the net and the net calling the kernel; these would be
+intercepted to perform the cross-address-space manipulations required of
+the memory management registers and PC.  Examples of kernel to net calls:
+pffasttimeo, soioctl, soselect, net interface interrupts, socreate,
+soaccept, etc.  Examples of net to kernel calls: sleep, psignal, iomove,
+wakeup, selwakeup, printf.  There is also a small amount of socket data
+that ipc.c routines try to access; this can be shared using argument and
+return value exchanges with the net code.  Sleep arguments (net space
+socket addresses) used by the net can be mapped to an unused portion of
+kernel space (such as by ORing in the lower order bit).
+
+Such a scheme however would not work well on a /23 or /34 class machine
+since some elaborate user space SEG0-only trap-based text overlay system
+would need to be developed to get enough space for the buffer pool.  At
+least the chosen method has a possibility of working on a /23, and is
+identical to the I/D method.
+
+UNFINISHED BUSINESS
+
+Routing entries for gateways (rtentry) work fine, but since they come out
+of the permanently mapped area on the 11, there isnt room for too many of
+them (more than 10 would be wasteful).  Therefore some type of special flag
+needs to be added to the table that says: forward anything I dont know
+about to address xxxx.  That way a VAX or some official gateway can worry
+about the table space and update problems.
+
+Pipes on the 11 still use the original scheme; to use the VAX socket pipe
+protocol (pipes in mbufs instead of the block buffer cache) may require
+more buffers than are practical on the 11 (that's one reason buffers are in
+paged virtual memory on the VAX).  There are no user-visible effects
+either way.
+
+The tcp_debug array needs to be moved out of address space (it shrunk from
+100 to 2 elements).
+
+The 4K bytes of in address malloc space for dynamic structures is ok for an
+I/D machine, but may be tight on a /34 or /23.  Not sure yet whether this
+will squeeze in.  Could probably drop this size to 1 or 2K bytes, if light
+activity.  The code also currently assumes a similar software interrupt
+scheme as the VAX.  This can be simulated on a /23 with some small mods to
+the mch.s process switch code.
+
+If Interlan local net hardware is used, and some microcode mods made that
+allow true low overhead scatter/gather IO, then the 11 can be almost as
+efficient as the VAX in the way it performs device driver IO. (The VAX
+plays tricks with the UBA map to make mbuf chains look like they are
+contiguous).

@@ -1,0 +1,23 @@
+: Attempt to move all the files from there old queue to there new locations
+: under subdirectories
+SUBDIRS="D.rootclX D.rootcl D. C. X. TM."
+if test x$2 = x
+then	echo usage: $0 oldq newq
+	echo eg: /usr/spool/uucp.old /usr/spool/uucp
+	exit 1
+fi
+if test -d $1
+then	echo $1 is directory so it should be OK
+else	echo $0: $1 is not a directory! try again
+	exit 1
+fi
+if test -d $2
+then	echo $2 is directory so it should be OK
+else	echo $0: $2 is not a directory! try again
+	exit 1
+fi
+for i in $SUBDIRS
+do
+	echo will try to MOVE all files with names "$i*" from $1 to $2/$i
+	find $1 -type f -a -name "$i*" -a -exec mymv.sh {} $2/$i \;
+done

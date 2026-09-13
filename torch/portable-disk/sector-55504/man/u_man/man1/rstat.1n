@@ -1,0 +1,101 @@
+.TH RSTAT 1N UniSoft
+.SH NAME
+rstat \- network statistics program
+.SH SYNOPSIS
+.B rstat 
+.RB [ \-Amisr\| ] 
+.RB [ \-p protocol\|] 
+.RB [ \-a ] 
+[\|interval\|] 
+[\|system\|] 
+[\|core\|]
+.SH DESCRIPTION
+The
+.I rstat\^ 
+command symbolically displays the contents of various network-related
+data structures.  The options have the following meaning:
+.TP "\w'\fB\-m\fR\ \ 'u
+.B \-a
+show the state of all sockets; this is the default
+.TP
+.B \-i
+show the state of interfaces which have been auto-configured
+.TP
+.B \-m
+show statistics recorded by the memory management routines
+(the network manages a "private share" of memory)
+.TP
+.BI \-p proto
+show the state of sockets utilizing protocol
+.IR proto ;
+the protocol is specified symbolically, e.g., "tcp"
+.TP
+.B \-s
+show per-protocol statistics
+.TP
+.B \-r
+show the routing tables
+.TP
+.B \-A
+give the kernel address of the protocol "state block" associated
+with an active socket (used for debugging)
+.PP
+The arguments, 
+.I system\^
+and
+.I core\^
+allow substitutes for the defaults 
+.B /unix
+and 
+.BR /dev/kmem .
+.PP
+If an 
+.I interval\^
+is specified,
+.I rstat\^
+will continuously display the requested information, pausing
+.I interval\^
+seconds before refreshing the screen.
+.SH DISPLAYS
+There are a number of display formats, depending on the information
+presented.  The default display, for active sockets, shows the local
+and remote addresses, send and receive queue sizes (in bytes), protocol,
+and, optionally, the internal state of the protocol.
+.PP
+Address formats
+vary according to their "address family".  Internet address are
+displayed as "address/port", where port is printed symbolically if
+it is a well-known service (e.g., telnet).  The address portion is
+a hex representation in the "standard network format".  Unspecified,
+or "wildcard", addresses and ports appear as "\(**".  Raw socket
+addresses may appear unspecified (e.g., "unspec") if no address
+was supplied when the socket was created.
+.PP
+Protocols are normally printed symbolically, though they may also
+appear as "protocol-family/protocol".
+.PP
+The interface display provides a table of cumulative
+statistics regarding packets transferred, errors, and collisions.
+The network address (currently Internet specific) of the interface
+and the maximum transmission unit ("mtu") are also displayed.
+.PP
+The routing table display indicates the available routes and
+their status.  Each route consists of a destination host or network
+and a gateway to use in forwarding packets.  The flags field shows
+the state of the route ("U" if "up"), and whether the route
+is a direct route ("D").  Direct routes are created for each
+interface attached to the local host.  The 
+.I refcnt\^
+field gives the
+current number of active uses of the route.  Connection oriented
+protocols normally hold on to a single route for the duration of
+a connection while connectionless protocols obtain a route then
+discard it.  The use field provides a count of the number of packets
+sent using that route.  The interface entry indicates the network
+interface utilized for the route.
+.SH BUGS
+The formats and all need to be redone.  Network address should be
+displayed symbolically (e.g., "ucbmonet", "sri-prmh").  Interval
+statistics are more convenient when watching the net during a
+transfer.  The notion of errors is ill-defined.  
+.\"N	 @(#)rstat.1N	 5.2 of 7/12/84

@@ -1,0 +1,58 @@
+/ Offsets:
+
+U_CUROV	= 664
+U_OVBASE = 666
+V_INTR	= 6
+V_PDMA	= 10
+V_OVLY	= 12
+SE_ADDR	= 2
+SE_DESC	= 0
+
+/ Compilation option settings.
+/ These are here so they will appear in the namelist.
+
+PDP11 = 44.
+NONSEPARATE = 0
+KERN_NONSEP = 0
+UNIBUS_MAP = 1
+MENLO_KOV = 1
+NONFP = 0
+SMALL = 0
+UCB_QUOTAS = 0
+UCB_GRPMAST = 0
+UCB_PGRP = 1
+UCB_LOGIN = 0
+UCB_LOAD = 1
+UCB_METER = 1
+MENLO_OVLY = 1
+OLDTTY = 0
+UCB_NTTY = 1
+MENLO_JCL = 1
+VIRUS_VFORK = 1
+UCB_AUTOBOOT = 1
+UCB_NKB = 1
+UCB_CLIST = 1
+UCB_FRCSWAP = 0
+UCB_FSFIX = 1
+CGL_RTP = 0
+NOKA5 = 0
+UCB_UPRINTF = 1
+UCB_DEVERR = 1
+UCB_VHANGUP = 1
+UNFAST = 1
+ACCT = 0
+INSECURE = 1
+MPX_FILS = 0
+DIAGNOSTIC = 1
+DISPLAY = 0
+
+/ Tunable parameters (other than those in param.c)
+
+MAXMEM = 3200.
+MAXUPRC = 20.
+SSIZE = 20.
+SINCR = 20.
+NOFILE = 20.
+CANBSIZ = 256.
+MSGBUFS = 128.
+NCARGS = 5120.

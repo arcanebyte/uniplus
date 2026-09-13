@@ -1,0 +1,42 @@
+#
+# Network services, Internet style
+#
+echo		7/udp
+discard		9/udp		sink null
+systat		11/tcp
+daytime		13/tcp
+netstat		15/tcp
+ftp		21/tcp
+telnet		23/tcp
+smtp		25/tcp		mail
+time		37/tcp		timserver
+name		42/tcp		nameserver
+whois		43/tcp		nicname
+mtp		57/tcp				# deprecated
+hostnames	101/tcp		hostname	# usually from sri-nic
+#
+# Host specific functions
+#
+tftp		69/udp
+rje		77/tcp
+finger		79/tcp
+link		87/tcp		ttylink
+supdup		95/tcp
+ingreslock	1524/tcp
+#
+# UNIX specific services
+#
+exec		512/tcp
+login		513/tcp
+shell		514/tcp		cmd		# no passwords used
+printer		515/tcp		spooler		# experimental
+efs		520/tcp				# for LucasFilm
+courier		530/tcp		rpc		# experimental
+biff		512/udp		comsat
+who		513/udp		whod
+syslog		514/udp
+talk		517/udp
+route		520/udp		router routed	# 521 also
+new-rwho	550/udp		new-who		# experimental
+rmonitor	560/udp		rmonitord	# experimental
+monitor		561/udp				# experimental

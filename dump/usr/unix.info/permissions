@@ -1,0 +1,15 @@
+
+File permissions
+
+Unix allows 3 kinds of file access - read, write, execute - for
+3 levels of users - the user who owns the file, members of the
+user's "group", and all systems users.
+
+The "chmod" command changes permissions. Only the owner of a file may change
+its permissions. Please read the full explanation of chmod in Section 1 of
+the manual. The most common need is to make a shell script executable:
+This is done by issuing: chmod +x filename.
+
+By the way, the "superuser" (su command) has the same permissions as the
+owner of a file.
+

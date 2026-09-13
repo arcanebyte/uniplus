@@ -1,0 +1,87 @@
+#	This is an extension of Makefile that is used by the "make depend"
+#	command.  This is the list of files for which dependencies
+#	will be generated in the Makefile.  It should not include files
+#	whose dependencies are explicitly listed in the Makefile.
+#	If you need to add drivers or lother local files,
+#	add them to the OPTIONAL line (below) and then "make depend".
+#	There is no need to delete unused drivers from this list.
+
+OPTIONAL=
+
+#  Other files may be included in the OPTIONAL listing; some possiblities
+#  are listed here.  See also the Others subdirectory of ../dev.
+#OPTIONAL= ../sys/enable34.c ../dev/bk.c ../dev/cat.c ../dev/cr.c \
+	   ../dev/dvhp.c ../dev/rf.c
+
+
+CONFFILES = c.c ioconf.c
+
+SYSFILES = ../sys/acct.c ../sys/alloc.c ../sys/clock.c  ../sys/fio.c \
+	../sys/iget.c ../sys/ioctl.c ../sys/machdep.c ../sys/main.c \
+	../sys/malloc.c ../sys/nami.c ../sys/pipe.c ../sys/prf.c \
+	../sys/prim.c ../sys/rdwri.c ../sys/sig.c ../sys/sigjcl.c \
+	../sys/signojcl.c ../sys/slp.c ../sys/subr.c ../sys/sys1.c \
+	../sys/sys2.c ../sys/sys3.c ../sys/sys4.c ../sys/sysent.c \
+	../sys/syslocal.c ../sys/text.c ../sys/trap.c ../sys/ureg.c \
+	../sys/ipc.c ../sys/mbuf.c ../sys/mbuf11.c \
+	../sys/proto.c ../sys/socket.c ../sys/socketsubr.c
+
+DEVFILES = ../dev/bio.c ../dev/dh.c ../dev/dkbad.c \
+	../dev/dkleave.c ../dev/dsort.c ../dev/hk.c \
+	../dev/kl.c ../dev/hp.c \
+	../dev/mem.c ../dev/partab.c ../dev/xp.c \
+	../dev/sys.c ../dev/tm.c ../dev/tty.c \
+	../dev/ttynew.c ../dev/ttyold.c \
+	../dev/pty.c
+
+NETFILES = ../net/af.c ../net/if.c ../net/if_loop.c ../net/if_imp.c \
+	../net/if_imphost.c ../net/if_ether.c \
+	../net/if_il.c ../net/if_sri.c ../net/if_uba.c ../net/in.c \
+	../net/in_pcb.c ../net/ip_icmp.c ../net/ip_input.c \
+	../net/ip_output.c ../net/raw_cb.c ../net/raw_imp.c \
+	../net/raw_ip.c ../net/raw_pup.c ../net/raw_usrreq.c \
+	../net/route.c ../net/tcp_debug.c ../net/tcp_input.c \
+	../net/tcp_output.c ../net/tcp_subr.c ../net/tcp_timer.c \
+	../net/tcp_usrreq.c ../net/udp_usrreq.c
+
+depend:
+	grep '^#include' ${CONFFILES} ${SYSFILES} ${NETFILES} \
+			 ${DEVFILES} ${OPTIONAL} | \
+	sed \
+		-e '/".*"/s|:[^"]*"\([^"]*\)".*|: \1|' \
+		-e '/<.*>/s|:[^<]*<\([^>]*\)>.*|: $${I}/\1|' | \
+	awk -F: '{if ($$1 != cfil) { if (cfil != "") \
+			{ \
+			print rec; \
+			printf "\t$${C} %s\n", cfil; \
+			printf "\t$${E} %s\n", cfil; \
+			printf "\t$${A} %s\n", cfil; \
+			printf "\t-rm %s\n\n", cfil; \
+			} \
+		    printf "%s: %s\n", $$1, $$1; cfil = $$1; rec = $$0; next} \
+		else { if (length(rec $$2) > 80) {print rec; rec = $$0;} \
+			else rec = rec $$2 } } \
+		END { \
+			printf "\t$${C} %s\n", cfil; \
+			printf "\t$${E} %s\n", cfil; \
+			printf "\t$${A} %s\n", cfil; \
+			printf "\t-rm %s\n\n", cfil; \
+		    }' | \
+	sed \
+		-e '/^\.\.\/[^ 	/]*\/\([^. 	/]*\.\)/s//\1/' \
+		-e '/\.c:/s//.o:/' \
+		-e '/^	$${[EA]/s|../[^/]*/||' \
+		-e '/^	$${E/s| \([^/]*\)\.c| \1.s|' \
+		-e '/^	$${A} /s|{A} \([^/]*\)\.c|{A} \1.o \1.s|' \
+		-e '/^	-rm /s|../[^/]*/||' \
+		-e '/^	-rm /s| \([^/]*\)\.c| \1.s|' \
+		>makedep
+	echo '/^# DO NOT DELETE THIS LINE/+2,$$d' >eddep
+	echo '$$r makedep' >>eddep
+	echo 'w' >>eddep
+	cp Makefile Makefile.bak
+	ed - Makefile < eddep
+	rm eddep makedep
+	echo '# DEPENDENCIES MUST END HERE' >> Makefile
+	echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile
+	echo '# see make depend above' >> Makefile

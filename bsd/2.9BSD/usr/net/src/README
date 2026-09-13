@@ -1,0 +1,55 @@
+Sat Oct 16 11:40:03 PDT 1982
+
+This subtree contains new library routines and network
+programs which have been "back ported" to 4.1a from 4.1c.
+The only differences that should be seen (between 4.1a and
+later versions of the system) are the names of the files
+for the library routines and the fact that /usr/lib/hosts
+is called /usr/lib/hosts.new to avoid conflict with the
+old /usr/lib/hosts file. 
+
+The directories present here are:
+
+files
+	Copies of the new data base files.  These were created
+	from the NIC host data base.  The files hosts, networks,
+	protocols, and services normally reside in /usr/lib.
+	The gateways file belongs in /etc and is used by the
+	routing daemon.  The hosts.local file also resides in
+	/etc and is used only by the rwhod program -- it should
+	be eliminated shortly.
+
+net
+	Network data base library routines and related calls.
+	These exist in libc.a in 4.1b+, but have not been added
+	into the 4.1a library at the moment to avoid having to
+	relink user programs that use the phased out rhost routine.
+	Note also that many file names have been bastardized to
+	work with "short" file names present on 4.1a-.  Also,
+	not in gethostent.c that /usr/lib/hosts is called /usr/lib/hosts.new
+	to avoid conflict with the old /usr/lib/hosts file.
+
+netser
+	All network related user programs.  All programs, with the
+	exception of rwhod, no longer use rhost.  All server programs
+	use the getservbyname call to figure out what port they
+	should use.  The telnet server has many bug fixes and handles
+	request for remote echo in the server, rather than the user
+	side.  The ftp server understands binary mode transfer and
+	parses many more commands than before, so foreign installations
+	don't get so upset.  There are still known bugs in this code:
+	I'm in the process of replacing user FTP and upgrading server
+	FTP to be "complete".
+
+	A new program, netstat, replaces rstat.
+
+N.B. Since this code was just "chopped" out of our most current
+systems for use on 4.1a (a system soon to be totally phased out),
+some of the makefiles are tailored to this tree structure and 
+explicitly include libary routines for the network data bases 
+directly from net/netlib. 
+
+Manual pages not been updated.
+
+Sam Leffler
+sam@berkeley

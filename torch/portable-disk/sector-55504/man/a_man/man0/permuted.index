@@ -1,0 +1,462 @@
+
+
+
+
+
+
+
+                              PERMUTED INDEX
+
+                   LP requests.   accept, reject: allow/prevent  accept.1m
+  copy file systems for optimal   access time. dcopy: ........ dcopy.1m
+         acctcon2: connect-time   accounting. acctcon1, ...... acctcon.1m
+    acctprc1, acctprc2: process   accounting. ................ acctprc.1m
+ turnacct: shell procedures for   accounting. /startup, ...... acctsh.1m
+             runacct: run daily   accounting. ................ runacct.1m
+ /accton, acctwtmp: overview of   accounting and miscellaneous/  acct.1m
+   accounting and miscellaneous   accounting commands. /of ... acct.1m
+   acctmerg: merge or add total   accounting files. .......... acctmerg.1m
+       summary from per-process   accounting records. /command  acctcms.1m
+    wtmpfix: manipulate connect   accounting records. fwtmp, . fwtmp.1m
+        per-process accounting/   acctcms: command summary from  acctcms.1m
+       connect-time accounting.   acctcon1, acctcon2: ........ acctcon.1m
+          accounting. acctcon1,   acctcon2: connect-time ..... acctcon.1m
+         acctwtmp: overview of/   acctdisk, acctdusg, accton,  acct.1m
+         overview of/ acctdisk,   acctdusg, accton, acctwtmp:  acct.1m
+              accounting files.   acctmerg: merge or add total  acctmerg.1m
+            acctdisk, acctdusg,   accton, acctwtmp: overview of/  acct.1m
+                    accounting.   acctprc1, acctprc2: process  acctprc.1m
+                      acctprc1,   acctprc2: process accounting.  acctprc.1m
+    acctdisk, acctdusg, accton,   acctwtmp: overview of/ ..... acct.1m
+              killall: kill all   active processes. .......... killall.1m
+         sa1, sa2, sadc: system   activity report package. ... sar.1m
+             acctmerg: merge or   add total accounting files.  acctmerg.1m
+                   delivermail.   aliases: aliases file for .. aliases.7
+                       aliases:   aliases file for delivermail.  aliases.7
+                accept, reject:   allow/prevent LP requests. . accept.1m
+       maintenance commands and   application programs. /system  intro.1m
+   delivermail: deliver mail to   arbitrary people. .......... delivermail.8
+  daily/weekly UNIX file system   backup. filesave, tapesave:  filesave.1m
+         finc: fast incremental   backup. .................... finc.1m
+     frec: recover files from a   backup tape. ............... frec.1m
+      /program to set or update   bad block information. ..... badblk.1m
+  update bad block information.   badblk: program to set or .. badblk.1m
+    system initialization/ brc,   bcheckrc, rc, powerfail: ... brc.1m
+                                  bcopy: interactive block copy.  bcopy.1m
+             bcopy: interactive   block copy. ................ bcopy.1m
+   program to set or update bad   block information. badblk: . badblk.1m
+ df: report number of free disk   blocks. .................... df.1m
+     /etc/hosts: host table for   bnet. ...................... hosts.7
+                   netmail: the   bnet network mail system. .. netmail.8
+                                  boot: startup procedures. .. boot.8
+   system initialization shell/   brc, bcheckrc, rc, powerfail:  brc.1m
+                         mknod:   build special file. ........ mknod.1m
+         link and unlink system   calls. link, unlink: exercise  link.1m
+  lastlogin, monacct, nulladm,/   chargefee, ckpacct, dodisk,  acctsh.1m
+/dfsck: file system consistency   check and interactive repair.  fsck.1m
+     grpck: password/group file   checkers. pwck, ............ pwck.1m
+   copy file systems with label   checking. volcopy, labelit:  volcopy.1m
+                  vchk: version   checkup. ................... vchk.1m
+
+
+
+     UNIX System V                 - 1 -                  January 1983
+
+
+
+
+
+
+     _P_e_r_m_u_t_e_d _I_n_d_e_x
+
+
+
+                 for a command.   chroot: change root directory  chroot.1m
+  monacct, nulladm,/ chargefee,   ckpacct, dodisk, lastlogin,  acctsh.1m
+  uuclean: uucp spool directory   clean-up. .................. uuclean.1m
+                          clri:   clear i-node. .............. clri.1m
+                          cron:   clock daemon. .............. cron.1m
+                                  clri: clear i-node. ........ clri.1m
+    change root directory for a   command. chroot: ........... chroot.1m
+          per-process/ acctcms:   command summary from ....... acctcms.1m
+   and miscellaneous accounting   commands. /of accounting ... acct.1m
+               install: install   commands. .................. install.1m
+         /to system maintenance   commands and application/ .. intro.1m
+               system. lpadmin:   configure the LP spooling .. lpadmin.1m
+     fwtmp, wtmpfix: manipulate   connect accounting records.  fwtmp.1m
+            acctcon1, acctcon2:   connect-time accounting. ... acctcon.1m
+       fsck, dfsck: file system   consistency check and/ ..... fsck.1m
+                        mkfs1b:   construct a file system. ... mkfs1b.1m
+                          mkfs:   construct a file system. ... mkfs.1m
+         init, telinit: process   control initialization. .... init.1m
+                interface. tty:   controlling terminal ....... tty.7
+       bcopy: interactive block   copy. ...................... bcopy.1m
+            access time. dcopy:   copy file systems for optimal  dcopy.1m
+    checking. volcopy, labelit:   copy file systems with label  volcopy.1m
+                     mem, kmem:   core memory. ............... mem.7
+                system crashes.   crash: what to do when the . crash.8
+     what to do when the system   crashes. crash: ............ crash.8
+                                  cron: clock daemon. ........ cron.1m
+                    cron: clock   daemon. .................... cron.1m
+        errdemon: error-logging   daemon. .................... errdemon.1m
+    terminate the error-logging   daemon. errstop: ........... errstop.1m
+                   runacct: run   daily accounting. .......... runacct.1m
+    backup. filesave, tapesave:   daily/weekly UNIX file system  filesave.1m
+           optimal access time.   dcopy: copy file systems for  dcopy.1m
+              fsdb: file system   debugger. .................. fsdb.1m
+                     netmailer:   deliver mail to. ........... netmailer.8
+           people. delivermail:   deliver mail to arbitrary .. delivermail.8
+      aliases: aliases file for   delivermail. ............... aliases.7
+              arbitrary people.   delivermail: deliver mail to  delivermail.8
+                         devnm:   device name. ............... devnm.1m
+                                  devnm: device name. ........ devnm.1m
+                        blocks.   df: report number of free disk  df.1m
+   check and interactive/ fsck,   dfsck: file system consistency  fsck.1m
+                  mvdir: move a   directory. ................. mvdir.1m
+            uuclean: uucp spool   directory clean-up. ........ uuclean.1m
+            chroot: change root   directory for a command. ... chroot.1m
+             /make a lost+found   directory for fsck. ........ mklost+fnd.1m
+   type, modes, speed, and line   discipline. /set terminal .. getty.1m
+          diskformat - format a   disk. ...................... diskformat.1m
+      df: report number of free   disk blocks. ............... df.1m
+         disktune - tune floppy   disk settling time parameters.  disktune.1m
+                                  diskformat - format a disk.  diskformat.1m
+      settling time parameters.   disktune - tune floppy disk  disktune.1m
+       mount, umount: mount and   dismount file system. ...... mount.1m
+
+
+
+     January 1983                  - 2 -                 UNIX System V
+
+
+
+
+
+
+                                                        _P_e_r_m_u_t_e_d _I_n_d_e_x
+
+
+
+  nulladm,/ chargefee, ckpacct,   dodisk, lastlogin, monacct,  acctsh.1m
+                  whodo: who is   doing what. ................ whodo.1m
+     extract error records from   dump. errdead: ............. errdead.1m
+                                  err: error-logging interface.  err.7
+                     from dump.   errdead: extract error records  errdead.1m
+                        daemon.   errdemon: error-logging .... errdemon.1m
+               errdead: extract   error records from dump. ... errdead.1m
+                      errdemon:   error-logging daemon. ...... errdemon.1m
+         errstop: terminate the   error-logging daemon. ...... errstop.1m
+                           err:   error-logging interface. ... err.7
+     process a report of logged   errors. errpt: ............. errpt.1m
+                 logged errors.   errpt: process a report of . errpt.1m
+          error-logging daemon.   errstop: terminate the ..... errstop.1m
+                        setmnt:   establish mount table. ..... setmnt.1m
+                          bnet.   /etc/hosts: host table for . hosts.7
+    system calls. link, unlink:   exercise link and unlink ... link.1m
+                 dump. errdead:   extract error records from . errdead.1m
+                          finc:   fast incremental backup. ... finc.1m
+  statistics for a file system.   ff: list file names and .... ff.1m
+           mknod: build special   file. ...................... mknod.1m
+                 null: the null   file. ...................... null.7
+    pwck, grpck: password/group   file checkers. ............. pwck.1m
+               aliases: aliases   file for delivermail. ...... aliases.7
+        a file system. ff: list   file names and statistics for  ff.1m
+    /identify processes using a   file or file structure. .... fuser.1m
+      processes using a file or   file structure. /identify .. fuser.1m
+     names and statistics for a   file system. ff: list file . ff.1m
+            mkfs1b: construct a   file system. ............... mkfs1b.1m
+              mkfs: construct a   file system. ............... mkfs.1m
+     umount: mount and dismount   file system. mount, ........ mount.1m
+    tapesave: daily/weekly UNIX   file system backup. filesave,  filesave.1m
+  and interactive/ fsck, dfsck:   file system consistency check  fsck.1m
+                          fsdb:   file system debugger. ...... fsdb.1m
+       access time. dcopy: copy   file systems for optimal ... dcopy.1m
+         volcopy, labelit: copy   file systems with label/ ... volcopy.1m
+  merge or add total accounting   files. acctmerg: ........... acctmerg.1m
+ intro: introduction to special   files. ..................... intro.7
+                updater: update   files between two machines.  updater.1m
+                  frec: recover   files from a backup tape. .. frec.1m
+ daily/weekly UNIX file system/   filesave, tapesave: ........ filesave.1m
+                                  finc: fast incremental backup.  finc.1m
+    parameters. disktune - tune   floppy disk settling time .. disktune.1m
+                   diskformat -   format a disk. ............. diskformat.1m
+                   backup tape.   frec: recover files from a . frec.1m
+           df: report number of   free disk blocks. .......... df.1m
+            frec: recover files   from a backup tape. ........ frec.1m
+ errdead: extract error records   from dump. ................. errdead.1m
+         ncheck: generate names   from i-numbers. ............ ncheck.1m
+       acctcms: command summary   from per-process accounting/  acctcms.1m
+     a lost+found directory for   fsck. mklost+found: make ... mklost+fnd.1m
+         consistency check and/   fsck, dfsck: file system ... fsck.1m
+                                  fsdb: file system debugger.  fsdb.1m
+
+
+
+     UNIX System V                 - 3 -                  January 1983
+
+
+
+
+
+
+     _P_e_r_m_u_t_e_d _I_n_d_e_x
+
+
+
+          using a file or file/   fuser: identify processes .. fuser.1m
+    connect accounting records.   fwtmp, wtmpfix: manipulate . fwtmp.1m
+                        ncheck:   generate names from i-numbers.  ncheck.1m
+        modes, speed, and line/   getty: set terminal type, .. getty.1m
+                checkers. pwck,   grpck: password/group file . pwck.1m
+                    /etc/hosts:   host table for bnet. ....... hosts.7
+           file or file/ fuser:   identify processes using a . fuser.1m
+                     finc: fast   incremental backup. ........ finc.1m
+                initialization.   init, telinit: process control  init.1m
+ init, telinit: process control   initialization. ............ init.1m
+         /rc, powerfail: system   initialization shell scripts.  brc.1m
+                    clri: clear   i-node. .................... clri.1m
+                       install:   install commands. .......... install.1m
+                                  install: install commands. . install.1m
+                         bcopy:   interactive block copy. .... bcopy.1m
+   system consistency check and   interactive repair. /file .. fsck.1m
+             err: error-logging   interface. ................. err.7
+       termio: general terminal   interface. ................. termio.7
+      tty: controlling terminal   interface. ................. tty.7
+                         files.   intro: introduction to special  intro.7
+      maintenance commands and/   intro: introduction to system  intro.1m
+        maintenance procedures.   intro: introduction to system  intro.8
+                         intro:   introduction to special files.  intro.7
+   maintenance commands/ intro:   introduction to system ..... intro.1m
+            maintenance/ intro:   introduction to system ..... intro.8
+    ncheck: generate names from   i-numbers. ................. ncheck.1m
+                       killall:   kill all active processes. . killall.1m
+                     processes.   killall: kill all active ... killall.1m
+                           mem,   kmem: core memory. ......... mem.7
+         copy file systems with   label checking. /labelit: .. volcopy.1m
+  with label checking. volcopy,   labelit: copy file systems . volcopy.1m
+    chargefee, ckpacct, dodisk,   lastlogin, monacct, nulladm,/  acctsh.1m
+        type, modes, speed, and   line discipline. /set terminal  getty.1m
+         link, unlink: exercise   link and unlink system calls.  link.1m
+       and unlink system calls.   link, unlink: exercise link  link.1m
+         for a file system. ff:   list file names and statistics  ff.1m
+     errpt: process a report of   logged errors. ............. errpt.1m
+           mklost+found: make a   lost+found directory for fsck.  mklost+fnd.1m
+/lpshut, lpmove: start/stop the   LP request scheduler and move/  lpsched.1m
+  accept, reject: allow/prevent   LP requests. ............... accept.1m
+         lpadmin: configure the   LP spooling system. ........ lpadmin.1m
+               spooling system.   lpadmin: configure the LP .. lpadmin.1m
+      request/ lpsched, lpshut,   lpmove: start/stop the LP .. lpsched.1m
+     start/stop the LP request/   lpsched, lpshut, lpmove: ... lpsched.1m
+ LP request scheduler/ lpsched,   lpshut, lpmove: start/stop the  lpsched.1m
+       update files between two   machines. updater: ......... updater.1m
+      netmail: the bnet network   mail system. ............... netmail.8
+             netmailer: deliver   mail to. ................... netmailer.8
+           delivermail: deliver   mail to arbitrary people. .. delivermail.8
+  intro: introduction to system   maintenance commands and/ .. intro.1m
+  intro: introduction to system   maintenance procedures. .... intro.8
+        for fsck. mklost+found:   make a lost+found directory  mklost+fnd.1m
+
+
+
+     January 1983                  - 4 -                 UNIX System V
+
+
+
+
+
+
+                                                        _P_e_r_m_u_t_e_d _I_n_d_e_x
+
+
+
+       records. fwtmp, wtmpfix:   manipulate connect accounting  fwtmp.1m
+                                  mem, kmem: core memory. .... mem.7
+                mem, kmem: core   memory. .................... mem.7
+               files. acctmerg:   merge or add total accounting  acctmerg.1m
+                                  mkfs: construct a file system.  mkfs.1m
+                        system.   mkfs1b: construct a file ... mkfs1b.1m
+      lost+found directory for/   mklost+found: make a ....... mklost+fnd.1m
+                                  mknod: build special file. . mknod.1m
+      getty: set terminal type,   modes, speed, and line/ .... getty.1m
+   /ckpacct, dodisk, lastlogin,   monacct, nulladm, prctmp,/ . acctsh.1m
+                         uusub:   monitor uucp network. ...... uusub.1m
+         system. mount, umount:   mount and dismount file .... mount.1m
+              setmnt: establish   mount table. ............... setmnt.1m
+          dismount file system.   mount, umount: mount and ... mount.1m
+                         mvdir:   move a directory. .......... mvdir.1m
+   the LP request scheduler and   move requests. /start/stop . lpsched.1m
+                                  mvdir: move a directory. ... mvdir.1m
+                     i-numbers.   ncheck: generate names from  ncheck.1m
+                        system.   netmail: the bnet network mail  netmail.8
+                                  netmailer: deliver mail to.  netmailer.8
+            uusub: monitor uucp   network. ................... uusub.1m
+              netmail: the bnet   network mail system. ....... netmail.8
+                      null: the   null file. ................. null.7
+                                  null: the null file. ....... null.7
+   /dodisk, lastlogin, monacct,   nulladm, prctmp, prdaily,/ . acctsh.1m
+        /prfdc, prfsnap, prfpr:   operating system profiler. . profiler.1m
+   dcopy: copy file systems for   optimal access time. ....... dcopy.1m
+   /acctdusg, accton, acctwtmp:   overview of accounting and/  acct.1m
+   sadc: system activity report   package. sa1, sa2, ......... sar.1m
+ tune floppy disk settling time   parameters. disktune - ..... disktune.1m
+                   pwck, grpck:   password/group file checkers.  pwck.1m
+  acctcms: command summary from   per-process accounting/ .... acctcms.1m
+             brc, bcheckrc, rc,   powerfail: system/ ......... brc.1m
+  /lastlogin, monacct, nulladm,   prctmp, prdaily, prtacct,/ . acctsh.1m
+     /monacct, nulladm, prctmp,   prdaily, prtacct, runacct,/  acctsh.1m
+     operating/ prfld, prfstat,   prfdc, prfsnap, prfpr: ..... profiler.1m
+     prfsnap, prfpr: operating/   prfld, prfstat, prfdc, ..... profiler.1m
+      /prfstat, prfdc, prfsnap,   prfpr: operating system/ ... profiler.1m
+ system/ prfld, prfstat, prfdc,   prfsnap, prfpr: operating .. profiler.1m
+       prfpr: operating/ prfld,   prfstat, prfdc, prfsnap, ... profiler.1m
+                         pstat:   print system facts. ........ pstat.1m
+                 errors. errpt:   process a report of logged . errpt.1m
+            acctprc1, acctprc2:   process accounting. ........ acctprc.1m
+                 init, telinit:   process control/ ........... init.1m
+       killall: kill all active   processes. ................. killall.1m
+     structure. fuser: identify   processes using a file or file  fuser.1m
+        shutdown: terminate all   processing. ................ shutdown.1m
+        prfpr: operating system   profiler. /prfdc, prfsnap, . profiler.1m
+     /nulladm, prctmp, prdaily,   prtacct, runacct, shutacct,/  acctsh.1m
+                                  pstat: print system facts. . pstat.1m
+                 file checkers.   pwck, grpck: password/group  pwck.1m
+ initialization/ brc, bcheckrc,   rc, powerfail: system ...... brc.1m
+
+
+
+     UNIX System V                 - 5 -                  January 1983
+
+
+
+
+
+
+     _P_e_r_m_u_t_e_d _I_n_d_e_x
+
+
+
+    from per-process accounting   records. /command summary .. acctcms.1m
+  manipulate connect accounting   records. fwtmp, wtmpfix: ... fwtmp.1m
+         errdead: extract error   records from dump. ......... errdead.1m
+                    tape. frec:   recover files from a backup  frec.1m
+              requests. accept,   reject: allow/prevent LP ... accept.1m
+          check and interactive   repair. /system consistency  fsck.1m
+                    blocks. df:   report number of free disk . df.1m
+               errpt: process a   report of logged errors. ... errpt.1m
+     sa2, sadc: system activity   report package. sa1, ....... sar.1m
+     /lpmove: start/stop the LP   request scheduler and move/  lpsched.1m
+       reject: allow/prevent LP   requests. accept, .......... accept.1m
+  LP request scheduler and move   requests. /start/stop the .. lpsched.1m
+                 chroot: change   root directory for a command.  chroot.1m
+                       runacct:   run daily accounting. ...... runacct.1m
+                                  runacct: run daily accounting.  runacct.1m
+     /prctmp, prdaily, prtacct,   runacct, shutacct, startup,/  acctsh.1m
+       activity report package.   sa1, sa2, sadc: system ..... sar.1m
+           report package. sa1,   sa2, sadc: system activity . sar.1m
+             package. sa1, sa2,   sadc: system activity report  sar.1m
+     /start/stop the LP request   scheduler and move requests.  lpsched.1m
+    system initialization shell   scripts. /rc, powerfail: ... brc.1m
+                                  setmnt: establish mount table.  setmnt.1m
+    disktune - tune floppy disk   settling time parameters. .. disktune.1m
+   shutacct, startup, turnacct:   shell procedures for/ /runacct,  acctsh.1m
+          system initialization   shell scripts. /rc, powerfail:  brc.1m
+    /prdaily, prtacct, runacct,   shutacct, startup, turnacct:/  acctsh.1m
+                    processing.   shutdown: terminate all .... shutdown.1m
+     /set terminal type, modes,   speed, and line discipline.  getty.1m
+                  uuclean: uucp   spool directory clean-up. .. uuclean.1m
+      lpadmin: configure the LP   spooling system. ........... lpadmin.1m
+       lpsched, lpshut, lpmove:   start/stop the LP request/ . lpsched.1m
+                          boot:   startup procedures. ........ boot.8
+   /prtacct, runacct, shutacct,   startup, turnacct: shell/ .. acctsh.1m
+        ff: list file names and   statistics for a file system.  ff.1m
+ processes using a file or file   structure. fuser: identify . fuser.1m
+   accounting/ acctcms: command   summary from per-process ... acctcms.1m
+        setmnt: establish mount   table. ..................... setmnt.1m
+               /etc/hosts: host   table for bnet. ............ hosts.7
+    recover files from a backup   tape. frec: ................ frec.1m
+  file system backup. filesave,   tapesave: daily/weekly UNIX  filesave.1m
+          initialization. init,   telinit: process control ... init.1m
+                termio: general   terminal interface. ........ termio.7
+               tty: controlling   terminal interface. ........ tty.7
+           and line/ getty: set   terminal type, modes, speed,  getty.1m
+                      shutdown:   terminate all processing. .. shutdown.1m
+               daemon. errstop:   terminate the error-logging  errstop.1m
+                     interface.   termio: general terminal ... termio.7
+     systems for optimal access   time. dcopy: copy file ..... dcopy.1m
+    - tune floppy disk settling   time parameters. disktune .. disktune.1m
+         acctmerg: merge or add   total accounting files. .... acctmerg.1m
+                     interface.   tty: controlling terminal .. tty.7
+         parameters. disktune -   tune floppy disk settling time  disktune.1m
+
+
+
+     January 1983                  - 6 -                 UNIX System V
+
+
+
+
+
+
+                                                        _P_e_r_m_u_t_e_d _I_n_d_e_x
+
+
+
+   /runacct, shutacct, startup,   turnacct: shell procedures for/  acctsh.1m
+            getty: set terminal   type, modes, speed, and line/  getty.1m
+            file system. mount,   umount: mount and dismount . mount.1m
+     unlink system calls. link,   unlink: exercise link and .. link.1m
+      unlink: exercise link and   unlink system calls. link, . link.1m
+      badblk: program to set or   update bad block information.  badblk.1m
+             machines. updater:   update files between two ... updater.1m
+                  two machines.   updater: update files between  updater.1m
+             wall: write to all   users. ..................... wall.1m
+      fuser: identify processes   using a file or file/ ...... fuser.1m
+                      clean-up.   uuclean: uucp spool directory  uuclean.1m
+                 uusub: monitor   uucp network. .............. uusub.1m
+                       uuclean:   uucp spool directory clean-up.  uuclean.1m
+                                  uusub: monitor uucp network.  uusub.1m
+                                  vchk: version checkup. ..... vchk.1m
+                          vchk:   version checkup. ........... vchk.1m
+   systems with label checking.   volcopy, labelit: copy file  volcopy.1m
+                                  wall: write to all users. .. wall.1m
+                crashes. crash:   what to do when the system . crash.8
+                         whodo:   who is doing what. ......... whodo.1m
+                                  whodo: who is doing what. .. whodo.1m
+                          wall:   write to all users. ........ wall.1m
+     accounting records. fwtmp,   wtmpfix: manipulate connect  fwtmp.1m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     UNIX System V                 - 7 -                  January 1983
+
+
+

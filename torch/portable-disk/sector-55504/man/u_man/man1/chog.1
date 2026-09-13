@@ -1,0 +1,29 @@
+.TH CHOG 1
+.SH NAME
+chog \- change owner and group
+.SH SYNOPSIS
+.B chog
+owner file ...
+.PP
+.SH DESCRIPTION
+.I Chog\^
+changes the owner of the
+.I files\^
+to
+.IR owner\^
+, and changes the group
+.SM ID
+of the
+.I files\^
+to the group of which the owner is a member.
+The owner may be either a decimal user \s-1ID\s+1 or
+a login name found in the password file.
+.SH FILES
+/etc/passwd
+.br
+/etc/group
+.SH "SEE ALSO"
+chown(1), group(5),
+passwd(5).
+
+

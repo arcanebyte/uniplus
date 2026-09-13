@@ -1,0 +1,22 @@
+/bin/hostname rochester
+/etc/savecore /usr/crash >/dev/console 2>&1
+echo -n 'local daemons:'					>/dev/console
+if [ -f /dev/impress ]; then
+	rm -f ipd/lock;	/usr/lfl/lib/ipd; echo -n ' impress'	>/dev/console
+fi
+if [ -d /u0/ilm/database ]; then
+	cd /u0/ilm/database
+	./startsibyls
+				echo -n ' ilm_sibyl'		>/dev/console
+fi
+if [ -d /u0/ppd/database ]; then
+	cd /u0/ppd/database
+	./startsibyls
+				echo -n ' ppd_sibyl'		>/dev/console
+fi
+if [ -d /net ]; then
+	/usr/lfl/lib/efsinit rochester ewok bespin dagobah
+	/usr/lfl/lib/efsd
+				echo -n ' efs'			>/dev/console
+fi
+echo '.'							>/dev/console

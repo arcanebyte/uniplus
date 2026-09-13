@@ -1,0 +1,31 @@
+TIME ZONES
+
+
+Unix has a "date" command which displays the date, day of the week, and time
+This command also displays the time zone. As we supply the Unix,
+the messages all display Eastern time. You may alter these messages.
+
+         HOW TO CHANGE TIME ZONES
+
+          The time zone is set in 2 places, and you should
+	 adjust it in both places. The 2 files are:
+
+		/etc/rc
+		/etc/bcheckrc
+
+
+
+	Simply find the TZ= line in these files, which looks like
+		TZ=EST5EDT
+		export TZ
+
+	
+       	There are 3 parts to the time zone, which has the format
+	 XXXNYYY. The XXX represents the time zone to be
+	 displayed for Standard Time, as in EST, CST, etc. The N
+	 is the number of hours difference to Greenwich Mean
+	 Time, and the YYY is the time zone to be displayed for
+	 Daylight Time, as in EDT.
+
+Just change the entry in both places, and everything should be
+fine.

@@ -1,0 +1,35 @@
+#	@(#)bcheckrc.sh	1.3
+
+# ***** This file has those commands necessary to check the file
+# system, date, and anything else that should be done before mounting
+# the file systems.
+
+trap "" 2
+
+TZ=EST5EDT
+export TZ
+
+# **** Check date
+
+while :
+do
+	echo "Is the date `date` correct? (y or n) \c"
+	read reply
+	if
+		[ "$reply" = y ]
+	then
+		break
+	else
+		echo "Enter the correct date in the format"
+		echo "MODAHOMMYY. ex: 0704142584 :   \c"
+		read reply
+		date "$reply"
+	fi
+done
+
+# ***** Auto check filesystems
+
+	echo "Now checking filesystems\n"
+	trap "echo Interrupt" 2
+	/etc/fsck
+	trap "" 2

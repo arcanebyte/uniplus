@@ -1,0 +1,14 @@
+# Vertex V170 50Mbytes
+# 987 cylinders, 7 heads, 3us step rate.
+# reduced write current not used
+# write precompensation not used
+# landing cylinder automatic retraction, imbedded servo not present on data
+# heads
+Vertex V170
+987
+7
+1025
+1025
+0
+3
+0

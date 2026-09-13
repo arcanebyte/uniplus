@@ -1,0 +1,43 @@
+.TH RHOST 3N UniSoft
+.SH NAME
+rhost, raddr \- look up internet hosts by name or address
+.SH SYNOPSIS
+.B iaddr = rhost(aname)
+.br
+.B long iaddr;
+.br
+.B char **aname;
+.sp
+.B name = raddr(iaddr)
+.br
+.B long iaddr;
+.SH DESCRIPTION
+.I Rhost\^
+is given a pointer to a name for an Internet host
+and returns the 32 bit internet address in network byte order
+suitable for direct use in a \fBsockaddr_in\fR internet address as
+\fBsockaddr_in.sin_addr.s_addr\fR.  If the host name is not
+known then
+.I rhost\^
+returns \-1.
+If the host name is known then 
+.B \(**aname 
+is changed to point to
+the standard name of the specified host, which is the first
+name given in its entry in 
+.BR /etc/hosts .
+The return value has been saved with \fImalloc\^\fP and is not destroyed
+on subsequent calls.
+.PP
+.I Raddr\^
+performs a similar function, but takes an Internet address, and
+looks up the name.
+.SH FILES
+/etc/hosts
+.SH SEE ALSO
+remsh(1N), rlogin(1N), socket(2N).
+.SH BUGS
+A more general data base or server is needed.
+.PP
+This interface is provisional and may be changed in future releases.
+.\"N	 @(#)rhost.3N	 5.2 of 7/12/84

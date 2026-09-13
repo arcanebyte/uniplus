@@ -1,0 +1,9 @@
+is:1:initdefault:
+sy::sysinit:/etc/setshmlib 1>/dev/null 2>&1 #initialise ROOTshare
+bl:1:bootwait:/etc/bcheckrc </dev/null 1>/dev/null 2>&1 #bootlog
+bc:1:bootwait:/etc/brc 1>/dev/null 2>&1 #bootrun command
+sl:1:wait:(rm -f /dev/syscon;ln /dev/systty /dev/syscon;) 1>/dev/console 2>&1
+rc:1:wait:/etc/rc </dev/null 1>/dev/null 2>&1 #run com
+pf:1:powerfail:/etc/powerfail </dev/null 1>/dev/null 2>&1 #power fail routines
+co:1:respawn:/etc/getty console console # Normal login shell
+sd:6:once:/etc/shutdown  >/dev/null 2>&1 # Shutdown routines

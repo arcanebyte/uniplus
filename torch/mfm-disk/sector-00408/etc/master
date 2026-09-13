@@ -1,0 +1,168 @@
+* @(#)master	
+*
+* The following devices are those that can be specified in the system
+* description file.  The name specified must agree with the name shown.
+*
+*
+* name	mask	type	prefix	block	char	ml	structs
+*
+BNET	s	-	BNET	0	0	0
+nfs	s	-	nfs	0	0	0
+* wind	ocrwi	sc	tr	0	0	12
+* scc	socrwit	ct	sc	0	6	2
+* If SCC for console use the following line
+scc	socrwit	ct	sc	0	0	2
+*
+service	i	sc	srv	0	5	1
+ssl	socrwit	sct	ssl	0	9	1
+modem	ocrwit	sct	dm	0	7	3
+* pseudo driver allowing direct access to SCSI functions
+pscsi	oci	c	frmt	0	17	1
+*
+disk0	soc	b	d0	0	0	256
+disk1	oc	b	d1	1	0	256
+disk2	oc	b	d2	2	0	256
+disk3	oc	b	d3	3	0	256
+disk4	oc	b	d4	4	0	256
+disk5	oc	b	d5	5	0	256
+disk6	oc	b	d6	6	0	256
+*
+rdisk0	socrw	sc	rd0	0	10	256
+rdisk1	ocrw	sc	rd1	0	11	256
+rdisk2	ocrw	sc	rd2	0	12	256
+rdisk3	ocrw	sc	rd3	0	13	256
+rdisk4	ocrw	sc	rd4	0	14	256
+rdisk5	ocrw	sc	rd5	0	15	256
+rdisk6	ocrw	sc	rd6	0	16	256
+*
+tape	soc	b	strb	7	0	56
+rtape	ocrw	sc	strc	0	19	56
+*
+ramdisc	s	b	rm_	8	0	1
+*
+netdisc soc	b	dn	9	0	10
+rntdisc	ocrw	sc	dnc	0	24	10
+* netreq	oci	c	req	0	22	1
+*
+ptc	ocrwit	c	ptc	0	22	16
+pts	ocrwit	ct	pts	0	23	16	struct pt_ioctl %s_ioctl[%d]
+*
+scsi	s	-	scsi	0	0	1
+dma0	-	-	dm0	0	0	1
+dma1	-	-	dm1	0	0	1
+dma2	-	-	dm2	0	0	1
+dma3	-	-	dm3	0	0	1
+lance	-	-	la	0	0	1
+sc	-	-	sc	0	0	1
+stream	s	S	str	0	0	1
+line	s	S	line	0	0	1
+clone	t	Sc	clone	0	25	1
+*
+* The following devices must not be specified in the system description
+* file.  They are here to supply information to the config program.
+*
+memory	rw	osrc	mm	0	2	1
+tty	orwit	osrc	sy	0	1	1
+errlog	ocr	osrc	err	0	3	1
+sxt	ocrwi	rcf	sxt	0	20	32
+clock	-	rk	clk	0	0	1
+*rtc	rw	osrc	rtc	0	7	1
+*sky	oci	rc	sky	0	9	1
+sysfail	-	rp	sfai	0	0	1
+acfail	-	rp	afai	0	0	1
+flck	s	osr	flck	0	0	1
+$$$
+*
+* The following entries form the alias table.
+*
+$$$
+*
+* The following entries form the tunable parameter table.
+*
+sxt	SXT_0	0
+buffers	NBUF	60
+inodes	NINODE	100
+files	NFILE	60
+mounts	NMOUNT	8
+coremap	CMAPSIZ 150
+swapmap	SMAPSIZ	100
+cxmap	CXMAPSIZ	50
+calls	NCALL	50
+procs	NPROC	50
+texts	NTEXT	20
+svtexts	NSVTEXT		20
+clists	NCLIST	100
+stkgap	STACKGAP	8
+maxmmu	MAXMMU	1
+nmmu	NMMU	MAXMMU*32
+sabufs	NSABUF	0
+power	POWER	0
+maxproc	MAXUP	25
+* hashbuf must be a power of 2
+hashbuf	NHBUF	64
+physbuf	NPBUF	4
+nflock	NFLOCK	100
+x25links	X25LINKS	1
+x25bufs	X25BUFS	256
+x25maps	X25MAPS	30
+x25nexus X25NEXUS 0
+x25bytes	X25BYTES	(16*1024)
+csibnum	CSIBNUM	20
+vpmbsz	VPMBSZ	8192
+vpmnexus VPMNEXUS 0
+mesg	MESG	1
+msgmap	MSGMAP	100
+msgmax	MSGMAX	8192
+msgmnb	MSGMNB	16384
+msgmni	MSGMNI	50
+msgssz	MSGSSZ	8
+msgtql	MSGTQL	40
+msgseg	MSGSEG	1024
+sema	SEMA	1
+semmap	SEMMAP	10
+semmni	SEMMNI	10
+semmns	SEMMNS	60
+semmnu	SEMMNU	30
+semmsl	SEMMSL	25
+semopm	SEMOPM	10
+semume	SEMUME	10
+semvmx	SEMVMX	32767
+semaem	SEMAEM	16384
+shmem	SHMEM	1
+shmmax	SHMMAX	(128*1024)
+shmmin	SHMMIN	1
+shmmni	SHMMNI	100
+shmseg	SHMSEG	6
+shmbrk	SHMBRK	16
+shmall	SHMALL	512
+stihbuf	STIHBUF	(ST_0*4)
+stohbuf	STOHBUF	(ST_0*4)
+stnprnt	STNPRNT	(ST_0>>2)
+stnexus STNEXUS 0
+stibsz	STIBSZ	8192
+stobsz	STOBSZ	8192
+flckfil		FLCKFIL	50
+flckrec		FLCKREC	200
+nmbufs	NMBUFS	0
+npty	NPTY	0
+maxcore	MAXCORE	(128*1024)
+maxheader	MAXHEADER	2048
+nstream	NSTREAM	32
+nqueue	NQUEUE	256
+nblk4096	NBLK4096	0
+nblk2048	NBLK2048	20
+nblk1024	NBLK1024	12
+nblk512	NBLK512	8
+nblk256	NBLK256	16
+nblk128	NBLK128	64
+nblk64	NBLK64	256
+nblk16	NBLK16	128
+nblk4	NBLK4	128
+strmsgsz	STRMSGSZ	1024
+schana	SCHANA	SCC_ASYNC
+schanb	SCHANB	SCC_ASYNC
+putchar PUTCHAR trputchar
+nluns	NLUNS	3
+nremdisk	NREMDISK	0
+ntrans		N_NT_TRANS	0
+ndrbuf	NDRBUF	1

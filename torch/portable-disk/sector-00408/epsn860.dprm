@@ -1,0 +1,13 @@
+# Epson HD860 20Mbytes, very quiet
+# 612 cylinders, 4 heads, 5us step rate.
+# reduced write current on cylinder 200
+# write precompensation on cylinder 128
+# landing cylinder 650, imbedded servo not present
+EPSON HD860
+612
+4
+200
+128
+650
+5
+0

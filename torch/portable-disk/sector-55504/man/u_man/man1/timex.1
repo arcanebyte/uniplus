@@ -1,0 +1,76 @@
+.TH TIMEX 1
+.SH NAME
+timex \- time a command; report process data and system activity
+.SH SYNOPSIS
+.B timex\ 
+[\|options\|] command
+.SH DESCRIPTION
+The given
+.I command\^
+is executed;
+the elapsed time, user time and system time
+spent in execution are reported in seconds.
+Optionally, process accounting data for the
+.I command\^
+and all its children can be listed or summarized,
+and total system activity during the execution interval
+can be reported.
+.PP
+The output of
+.I timex\^
+is written on standard error.
+.PP
+.I Options\^
+are:
+.TP "\w'\fB\-p\fR\ \ \ 'u"
+.B \-p
+List process accounting records for
+.I command\^
+and all its children.
+Suboptions 
+.BR f , 
+.BR h ,
+.BR k ,
+.BR m ,
+.BR r , 
+and
+.B t
+modify the data items reported, as defined in 
+.IR acctcom\^ (1).
+The number of blocks read or written and the number
+of characters transferred are always reported.
+.TP
+.B \-o
+Report the total number of blocks read or written and
+total characters transferred by 
+.I command\^ 
+and all its children.
+.TP
+.B \-s
+Report total system activity (not just that due to 
+.IR command\| )
+that occurred during the execution interval of
+.IR command .
+All the data items listed in 
+.IR sar\^ (1)
+are reported.
+.SH EXAMPLE
+.IP "" 5
+timex ps -el
+.PP
+runs the 
+.I ps\^ 
+command (with the correct options), 
+then produces statistics concerning the command 
+and system activity during the command to the standard error.
+.SH "SEE ALSO"
+acctcom(1), sar(1).
+.SH WARNING
+Process records associated with
+.I command\^
+are selected from the accounting file
+.B /usr/adm/pacct
+by inference, since process genealogy is not available.
+Background processes having the same user-id,
+terminal-id, and execution time window will be spuriously included.
+.\"	@(#)timex.1	5.1 of 11/10/83

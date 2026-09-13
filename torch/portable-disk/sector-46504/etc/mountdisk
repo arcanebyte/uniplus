@@ -1,0 +1,20 @@
+PATH=$PATH:/usr/bin/opentop
+if [ $# -gt 3 ]
+then
+	alert Mount "$0: Too many arguments: $*"
+	exit 1
+fi
+if [ ! -b $1 ] 
+then
+	alert Mount "$1: Not a mountable device"
+	exit 1
+fi
+if [ ! -d $2 ]
+then
+	alert Mount "$2: Not a folder"
+	exit 1
+fi
+if mount $* >/dev/null
+then
+	(sleep 1;doicon $2)&
+fi

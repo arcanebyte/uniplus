@@ -1,0 +1,3 @@
+pdp44 never DIR 9600 unused
+orion Any ttya 9600 unused login:-EOT-login: uucp
+vax Any ttya 9600 8fN ttya \r

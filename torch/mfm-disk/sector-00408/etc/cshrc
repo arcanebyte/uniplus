@@ -1,0 +1,3 @@
+setenv TZ GMT0BST
+cat /etc/motd
+stty ixon

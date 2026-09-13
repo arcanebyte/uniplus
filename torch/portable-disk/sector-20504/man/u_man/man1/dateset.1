@@ -1,0 +1,83 @@
+From root44!csb Mon Jul 16 21:12:55 1984
+Date: Mon, 16 Jul 84 21:12:52 -0100
+From: root44!csb
+Apparently-To: csb
+Status: R
+
+.TH DATESET 1
+.SH NAME
+dateset \- set the date and time interactively
+.SH SYNOPSIS
+.B dateset
+.SH DESCRIPTION
+.I Dateset\^
+allows the current date and time to be set interactively, first
+writing a message on the standard output to specify the format in
+which the date and time should be entered, then reading a line
+from the standard input. The format required is:
+.PP
+.RS
+dd/mm[/yy] hh:mm[:ss]
+.RE
+.PP
+where
+.I dd\^
+is the day number in the month;\fR
+the first
+.I mm\^
+is the month number;\fR
+.I yy\^
+is the last 2 digits of the year number and is optional;\fR
+.I hh\^
+is the hour number (24 hour system);\fR
+the second
+.I mm\^
+is the minute number;\fR
+.I ss\^
+is the seconds number and is optional.
+.PP
+If the date and time entered precedes the current date and time
+a warning message is written to the standard output asking for
+confirmation, and a line is read from the standard input.
+If this begins with
+.B y\^
+the new date and time is accepted, if it begins with
+.B n\^
+they are ignored; a line beginning with any other character
+is ignored.
+.PP
+If the date and time entered is more than 12 hours later than
+the current date and time, an appropriate warning message is
+written to the standard output asking for confirmation, and
+a line is read from the standard input. The line read is
+interpreted as above.
+.PP
+Before resetting is attempted, the date and time entered is
+written to the standard output, along with a message asking
+for the date and time to be confirmed. A line is again read
+from the standard input, which is interpreted as above.
+.SH EXAMPLE
+Entering:
+.PP
+.RS
+17/10 14:21
+.RE
+.PP
+would set the date to Oct 17, 2:21:30 \s-1PM\s+1.
+The current year is the default if no year is mentioned.
+The seconds number defaults to 30 if no seconds number is mentioned.
+.PP
+.SH DIAGNOSTICS
+.TP
+.I "Unable to set time\^"
+if you aren't the super-user and you try to set the date and time;
+.TP
+.I "invalid date format \- try dd/mm or dd/mm/yy"\^
+if the date entered is syntactically incorrect;
+.TP
+.I "invalid time format \- try hh:mm or hh:mm:ss"\^
+if the time entered is syntactically incorrect.
+.SH FILES
+/dev/kmem
+
+

@@ -1,0 +1,16 @@
+trap "" 1 2 3
+export TZ LOGNAME
+readonly LOGNAME
+cat /etc/motd
+case "$0" in
+-sh | -rsh)
+	if [ $LOGNAME != root ]
+	then
+		news -n
+	fi
+	;;
+-su)
+	:
+	;;
+esac
+trap 1 2 3

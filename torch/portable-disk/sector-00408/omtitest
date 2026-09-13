@@ -1,0 +1,16 @@
+date >/tmp/teststart    
+
+while true
+do
+badfind /dev/floppy
+cat /tmp/teststart
+date
+done&
+
+while true
+do
+badfind /dev/disk0b
+cat /tmp/teststart
+date
+done&
+

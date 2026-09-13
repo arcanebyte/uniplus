@@ -1,0 +1,333 @@
+.xx "LP requests." "" "accept, reject: allow/prevent" "" accept.1m
+.xx "" "copy file systems for optimal" "access time." "dcopy:" dcopy.1m
+.xx "" "acctcon2: connect-time" "accounting." "acctcon1," acctcon.1m
+.xx "" "acctprc1, acctprc2: process" "accounting." "" acctprc.1m
+.xx "" "turnacct: shell procedures for" "accounting." "/startup," acctsh.1m
+.xx "" "runacct: run daily" "accounting." "" runacct.1m
+.xx "" "/accton, acctwtmp: overview of" "accounting and miscellaneous/" "" acct.1m
+.xx "" "accounting and miscellaneous" "accounting commands." "/of" acct.1m
+.xx "" "acctmerg: merge or add total" "accounting files." "" acctmerg.1m
+.xx "" "summary from per-process" "accounting records." "/command" acctcms.1m
+.xx "" "wtmpfix: manipulate connect" "accounting records." "fwtmp," fwtmp.1m
+.xx "per-process accounting/" "" "acctcms: command summary from" "" acctcms.1m
+.xx "connect-time accounting." "" "acctcon1, acctcon2:" "" acctcon.1m
+.xx "accounting." "acctcon1," "acctcon2: connect-time" "" acctcon.1m
+.xx "acctwtmp: overview of/" "" "acctdisk, acctdusg, accton," "" acct.1m
+.xx "overview of/" "acctdisk," "acctdusg, accton, acctwtmp:" "" acct.1m
+.xx "accounting files." "" "acctmerg: merge or add total" "" acctmerg.1m
+.xx "" "acctdisk, acctdusg," "accton, acctwtmp: overview of/" "" acct.1m
+.xx "accounting." "" "acctprc1, acctprc2: process" "" acctprc.1m
+.xx "" "acctprc1," "acctprc2: process accounting." "" acctprc.1m
+.xx "" "acctdisk, acctdusg, accton," "acctwtmp: overview of/" "" acct.1m
+.xx "" "killall: kill all" "active processes." "" killall.1m
+.xx "" "sa1, sa2, sadc: system" "activity report package." "" sar.1m
+.xx "" "acctmerg: merge or" "add total accounting files." "" acctmerg.1m
+.xx "delivermail." "" "aliases: aliases file for" "" aliases.7n
+.xx "" "aliases:" "aliases file for delivermail." "" aliases.7n
+.xx "" "accept, reject:" "allow/prevent LP requests." "" accept.1m
+.xx "" "maintenance commands and" "application programs." "/system" intro.1m
+.xx "" "delivermail: deliver mail to" "arbitrary people." "" delivermail.8n
+.xx "" "daily/weekly UNIX file system" "backup." "filesave, tapesave:" filesave.1m
+.xx "" "finc: fast incremental" "backup." "" finc.1m
+.xx "" "frec: recover files from a" "backup tape." "" frec.1m
+.xx "" "/program to set or update" "bad block information." "" badblk.1m
+.xx "update bad block information." "" "badblk: program to set or" "" badblk.1m
+.xx "system initialization/" "brc," "bcheckrc, rc, powerfail:" "" brc.1m
+.xx "" "" "bcopy: interactive block copy." "" bcopy.1m
+.xx "" "bcopy: interactive" "block copy." "" bcopy.1m
+.xx "" "program to set or update bad" "block information." "badblk:" badblk.1m
+.xx "" "df: report number of free disk" "blocks." "" df.1m
+.xx "" "/etc/hosts: host table for" "bnet." "" hosts.7n
+.xx "" "netmail: the" "bnet network mail system." "" netmail.8n
+.xx "" "" "boot: startup procedures." "" boot.8
+.xx "system initialization shell/" "" "brc, bcheckrc, rc, powerfail:" "" brc.1m
+.xx "" "mknod:" "build special file." "" mknod.1m
+.xx "" "link and unlink system" "calls." "link, unlink: exercise" link.1m
+.xx "lastlogin, monacct, nulladm,/" "" "chargefee, ckpacct, dodisk," "" acctsh.1m
+.xx "" "/dfsck: file system consistency" "check and interactive repair." "" fsck.1m
+.xx "" "grpck: password/group file" "checkers." "pwck," pwck.1m
+.xx "" "copy file systems with label" "checking." "volcopy, labelit:" volcopy.1m
+.xx "" "vchk: version" "checkup." "" vchk.1m
+.xx "for a command." "" "chroot: change root directory" "" chroot.1m
+.xx "monacct, nulladm,/" "chargefee," "ckpacct, dodisk, lastlogin," "" acctsh.1m
+.xx "" "uuclean: uucp spool directory" "clean-up." "" uuclean.1m
+.xx "" "clri:" "clear i-node." "" clri.1m
+.xx "" "cron:" "clock daemon." "" cron.1m
+.xx "" "" "clri: clear i-node." "" clri.1m
+.xx "" "change root directory for a" "command." "chroot:" chroot.1m
+.xx "per-process/" "acctcms:" "command summary from" "" acctcms.1m
+.xx "" "and miscellaneous accounting" "commands." "/of accounting" acct.1m
+.xx "" "install: install" "commands." "" install.1m
+.xx "" "/to system maintenance" "commands and application/" "" intro.1m
+.xx "system." "lpadmin:" "configure the LP spooling" "" lpadmin.1m
+.xx "" "fwtmp, wtmpfix: manipulate" "connect accounting records." "" fwtmp.1m
+.xx "" "acctcon1, acctcon2:" "connect-time accounting." "" acctcon.1m
+.xx "" "fsck, dfsck: file system" "consistency check and/" "" fsck.1m
+.xx "" "mkfs1b:" "construct a file system." "" mkfs1b.1m
+.xx "" "mkfs:" "construct a file system." "" mkfs.1m
+.xx "" "init, telinit: process" "control initialization." "" init.1m
+.xx "interface." "tty:" "controlling terminal" "" tty.7
+.xx "" "bcopy: interactive block" "copy." "" bcopy.1m
+.xx "access time." "dcopy:" "copy file systems for optimal" "" dcopy.1m
+.xx "checking." "volcopy, labelit:" "copy file systems with label" "" volcopy.1m
+.xx "" "mem, kmem:" "core memory." "" mem.7
+.xx "system crashes." "" "crash: what to do when the" "" crash.8
+.xx "" "what to do when the system" "crashes." "crash:" crash.8
+.xx "" "" "cron: clock daemon." "" cron.1m
+.xx "" "cron: clock" "daemon." "" cron.1m
+.xx "" "errdemon: error-logging" "daemon." "" errdemon.1m
+.xx "" "terminate the error-logging" "daemon." "errstop:" errstop.1m
+.xx "" "runacct: run" "daily accounting." "" runacct.1m
+.xx "backup." "filesave, tapesave:" "daily/weekly UNIX file system" "" filesave.1m
+.xx "optimal access time." "" "dcopy: copy file systems for" "" dcopy.1m
+.xx "" "fsdb: file system" "debugger." "" fsdb.1m
+.xx "" "netmailer:" "deliver mail to." "" netmailer.8n
+.xx "people." "delivermail:" "deliver mail to arbitrary" "" delivermail.8n
+.xx "" "aliases: aliases file for" "delivermail." "" aliases.7n
+.xx "arbitrary people." "" "delivermail: deliver mail to" "" delivermail.8n
+.xx "" "devnm:" "device name." "" devnm.1m
+.xx "" "" "devnm: device name." "" devnm.1m
+.xx "blocks." "" "df: report number of free disk" "" df.1m
+.xx "check and interactive/" "fsck," "dfsck: file system consistency" "" fsck.1m
+.xx "" "mvdir: move a" "directory." "" mvdir.1m
+.xx "" "uuclean: uucp spool" "directory clean-up." "" uuclean.1m
+.xx "" "chroot: change root" "directory for a command." "" chroot.1m
+.xx "" "/make a lost+found" "directory for fsck." "" mklost+fnd.1m
+.xx "" "type, modes, speed, and line" "discipline." "/set terminal" getty.1m
+.xx "" "diskformat - format a" "disk." "" diskformat.1m
+.xx "" "df: report number of free" "disk blocks." "" df.1m
+.xx "" "disktune - tune floppy" "disk settling time parameters." "" disktune.1m
+.xx "" "" "diskformat - format a disk." "" diskformat.1m
+.xx "settling time parameters." "" "disktune - tune floppy disk" "" disktune.1m
+.xx "" "mount, umount: mount and" "dismount file system." "" mount.1m
+.xx "nulladm,/" "chargefee, ckpacct," "dodisk, lastlogin, monacct," "" acctsh.1m
+.xx "" "whodo: who is" "doing what." "" whodo.1m
+.xx "" "extract error records from" "dump." "errdead:" errdead.1m
+.xx "" "" "err: error-logging interface." "" err.7
+.xx "from dump." "" "errdead: extract error records" "" errdead.1m
+.xx "daemon." "" "errdemon: error-logging" "" errdemon.1m
+.xx "" "errdead: extract" "error records from dump." "" errdead.1m
+.xx "" "errdemon:" "error-logging daemon." "" errdemon.1m
+.xx "" "errstop: terminate the" "error-logging daemon." "" errstop.1m
+.xx "" "err:" "error-logging interface." "" err.7
+.xx "" "process a report of logged" "errors." "errpt:" errpt.1m
+.xx "logged errors." "" "errpt: process a report of" "" errpt.1m
+.xx "error-logging daemon." "" "errstop: terminate the" "" errstop.1m
+.xx "" "setmnt:" "establish mount table." "" setmnt.1m
+.xx "bnet." "" "/etc/hosts: host table for" "" hosts.7n
+.xx "system calls." "link, unlink:" "exercise link and unlink" "" link.1m
+.xx "dump." "errdead:" "extract error records from" "" errdead.1m
+.xx "" "finc:" "fast incremental backup." "" finc.1m
+.xx "statistics for a file system." "" "f\&f: list file names and" "" ff.1m
+.xx "" "mknod: build special" "file." "" mknod.1m
+.xx "" "null: the null" "file." "" null.7
+.xx "" "pwck, grpck: password/group" "file checkers." "" pwck.1m
+.xx "" "aliases: aliases" "file for delivermail." "" aliases.7n
+.xx "a file system." "f\&f: list" "file names and statistics for" "" ff.1m
+.xx "" "/identify processes using a" "file or file structure." "" fuser.1m
+.xx "" "processes using a file or" "file structure." "/identify" fuser.1m
+.xx "" "names and statistics for a" "file system." "f\&f: list file" ff.1m
+.xx "" "mkfs1b: construct a" "file system." "" mkfs1b.1m
+.xx "" "mkfs: construct a" "file system." "" mkfs.1m
+.xx "" "umount: mount and dismount" "file system." "mount," mount.1m
+.xx "" "tapesave: daily/weekly UNIX" "file system backup." "filesave," filesave.1m
+.xx "and interactive/" "fsck, dfsck:" "file system consistency check" "" fsck.1m
+.xx "" "fsdb:" "file system debugger." "" fsdb.1m
+.xx "access time." "dcopy: copy" "file systems for optimal" "" dcopy.1m
+.xx "" "volcopy, labelit: copy" "file systems with label/" "" volcopy.1m
+.xx "" "merge or add total accounting" "files." "acctmerg:" acctmerg.1m
+.xx "" "intro: introduction to special" "files." "" intro.7
+.xx "" "updater: update" "files between two machines." "" updater.1m
+.xx "" "frec: recover" "files from a backup tape." "" frec.1m
+.xx "daily/weekly UNIX file system/" "" "filesave, tapesave:" "" filesave.1m
+.xx "" "" "finc: fast incremental backup." "" finc.1m
+.xx "parameters." "disktune - tune" "floppy disk settling time" "" disktune.1m
+.xx "" "diskformat -" "format a disk." "" diskformat.1m
+.xx "backup tape." "" "frec: recover files from a" "" frec.1m
+.xx "" "df: report number of" "free disk blocks." "" df.1m
+.xx "" "frec: recover files" "from a backup tape." "" frec.1m
+.xx "" "errdead: extract error records" "from dump." "" errdead.1m
+.xx "" "ncheck: generate names" "from i-numbers." "" ncheck.1m
+.xx "" "acctcms: command summary" "from per-process accounting/" "" acctcms.1m
+.xx "" "a lost+found directory for" "fsck." "mklost+found: make" mklost+fnd.1m
+.xx "consistency check and/" "" "fsck, dfsck: file system" "" fsck.1m
+.xx "" "" "fsdb: file system debugger." "" fsdb.1m
+.xx "using a file or file/" "" "fuser: identify processes" "" fuser.1m
+.xx "connect accounting records." "" "fwtmp, wtmpfix: manipulate" "" fwtmp.1m
+.xx "" "ncheck:" "generate names from i-numbers." "" ncheck.1m
+.xx "modes, speed, and line/" "" "getty: set terminal type," "" getty.1m
+.xx "checkers." "pwck," "grpck: password/group file" "" pwck.1m
+.xx "" "/etc/hosts:" "host table for bnet." "" hosts.7n
+.xx "file or file/" "fuser:" "identify processes using a" "" fuser.1m
+.xx "" "finc: fast" "incremental backup." "" finc.1m
+.xx "initialization." "" "init, telinit: process control" "" init.1m
+.xx "" "init, telinit: process control" "initialization." "" init.1m
+.xx "" "/rc, powerfail: system" "initialization shell scripts." "" brc.1m
+.xx "" "clri: clear" "i-node." "" clri.1m
+.xx "" "install:" "install commands." "" install.1m
+.xx "" "" "install: install commands." "" install.1m
+.xx "" "bcopy:" "interactive block copy." "" bcopy.1m
+.xx "" "system consistency check and" "interactive repair." "/file" fsck.1m
+.xx "" "err: error-logging" "interface." "" err.7
+.xx "" "termio: general terminal" "interface." "" termio.7
+.xx "" "tty: controlling terminal" "interface." "" tty.7
+.xx "files." "" "intro: introduction to special" "" intro.7
+.xx "maintenance commands and/" "" "intro: introduction to system" "" intro.1m
+.xx "maintenance procedures." "" "intro: introduction to system" "" intro.8
+.xx "" "intro:" "introduction to special files." "" intro.7
+.xx "maintenance commands/" "intro:" "introduction to system" "" intro.1m
+.xx "maintenance/" "intro:" "introduction to system" "" intro.8
+.xx "" "ncheck: generate names from" "i-numbers." "" ncheck.1m
+.xx "" "killall:" "kill all active processes." "" killall.1m
+.xx "processes." "" "killall: kill all active" "" killall.1m
+.xx "" "mem," "kmem: core memory." "" mem.7
+.xx "" "copy file systems with" "label checking." "/labelit:" volcopy.1m
+.xx "with label checking." "volcopy," "labelit: copy file systems" "" volcopy.1m
+.xx "" "chargefee, ckpacct, dodisk," "lastlogin, monacct, nulladm,/" "" acctsh.1m
+.xx "" "type, modes, speed, and" "line discipline." "/set terminal" getty.1m
+.xx "" "link, unlink: exercise" "link and unlink system calls." "" link.1m
+.xx "and unlink system calls." "" "link, unlink: exercise link" "" link.1m
+.xx "for a file system." "f\&f:" "list file names and statistics" "" ff.1m
+.xx "" "errpt: process a report of" "logged errors." "" errpt.1m
+.xx "" "mklost+found: make a" "lost+found directory for fsck." "" mklost+fnd.1m
+.xx "" "/lpshut, lpmove: start/stop the" "LP request scheduler and move/" "" lpsched.1m
+.xx "" "accept, reject: allow/prevent" "LP requests." "" accept.1m
+.xx "" "lpadmin: configure the" "LP spooling system." "" lpadmin.1m
+.xx "spooling system." "" "lpadmin: configure the LP" "" lpadmin.1m
+.xx "request/" "lpsched, lpshut," "lpmove: start/stop the LP" "" lpsched.1m
+.xx "start/stop the LP request/" "" "lpsched, lpshut, lpmove:" "" lpsched.1m
+.xx "LP request scheduler/" "lpsched," "lpshut, lpmove: start/stop the" "" lpsched.1m
+.xx "" "update files between two" "machines." "updater:" updater.1m
+.xx "" "netmail: the bnet network" "mail system." "" netmail.8n
+.xx "" "netmailer: deliver" "mail to." "" netmailer.8n
+.xx "" "delivermail: deliver" "mail to arbitrary people." "" delivermail.8n
+.xx "" "intro: introduction to system" "maintenance commands and/" "" intro.1m
+.xx "" "intro: introduction to system" "maintenance procedures." "" intro.8
+.xx "for fsck." "mklost+found:" "make a lost+found directory" "" mklost+fnd.1m
+.xx "records." "fwtmp, wtmpfix:" "manipulate connect accounting" "" fwtmp.1m
+.xx "" "" "mem, kmem: core memory." "" mem.7
+.xx "" "mem, kmem: core" "memory." "" mem.7
+.xx "files." "acctmerg:" "merge or add total accounting" "" acctmerg.1m
+.xx "" "" "mkfs: construct a file system." "" mkfs.1m
+.xx "system." "" "mkfs1b: construct a file" "" mkfs1b.1m
+.xx "lost+found directory for/" "" "mklost+found: make a" "" mklost+fnd.1m
+.xx "" "" "mknod: build special file." "" mknod.1m
+.xx "" "getty: set terminal type," "modes, speed, and line/" "" getty.1m
+.xx "" "/ckpacct, dodisk, lastlogin," "monacct, nulladm, prctmp,/" "" acctsh.1m
+.xx "" "uusub:" "monitor uucp network." "" uusub.1m
+.xx "system." "mount, umount:" "mount and dismount file" "" mount.1m
+.xx "" "setmnt: establish" "mount table." "" setmnt.1m
+.xx "dismount file system." "" "mount, umount: mount and" "" mount.1m
+.xx "" "mvdir:" "move a directory." "" mvdir.1m
+.xx "" "the LP request scheduler and" "move requests." "/start/stop" lpsched.1m
+.xx "" "" "mvdir: move a directory." "" mvdir.1m
+.xx "i-numbers." "" "ncheck: generate names from" "" ncheck.1m
+.xx "system." "" "netmail: the bnet network mail" "" netmail.8n
+.xx "" "" "netmailer: deliver mail to." "" netmailer.8n
+.xx "" "uusub: monitor uucp" "network." "" uusub.1m
+.xx "" "netmail: the bnet" "network mail system." "" netmail.8n
+.xx "" "null: the" "null file." "" null.7
+.xx "" "" "null: the null file." "" null.7
+.xx "" "/dodisk, lastlogin, monacct," "nulladm, prctmp, prdaily,/" "" acctsh.1m
+.xx "" "/prfdc, prfsnap, prfpr:" "operating system profiler." "" profiler.1m
+.xx "" "dcopy: copy file systems for" "optimal access time." "" dcopy.1m
+.xx "" "/acctdusg, accton, acctwtmp:" "overview of accounting and/" "" acct.1m
+.xx "" "sadc: system activity report" "package." "sa1, sa2," sar.1m
+.xx "" "tune floppy disk settling time" "parameters." "disktune -" disktune.1m
+.xx "" "pwck, grpck:" "password/group file checkers." "" pwck.1m
+.xx "" "acctcms: command summary from" "per-process accounting/" "" acctcms.1m
+.xx "" "brc, bcheckrc, rc," "powerfail: system/" "" brc.1m
+.xx "" "/lastlogin, monacct, nulladm," "prctmp, prdaily, prtacct,/" "" acctsh.1m
+.xx "" "/monacct, nulladm, prctmp," "prdaily, prtacct, runacct,/" "" acctsh.1m
+.xx "operating/" "prfld, prfstat," "prfdc, prfsnap, prfpr:" "" profiler.1m
+.xx "prfsnap, prfpr: operating/" "" "prfld, prfstat, prfdc," "" profiler.1m
+.xx "" "/prfstat, prfdc, prfsnap," "prfpr: operating system/" "" profiler.1m
+.xx "system/" "prfld, prfstat, prfdc," "prfsnap, prfpr: operating" "" profiler.1m
+.xx "prfpr: operating/" "prfld," "prfstat, prfdc, prfsnap," "" profiler.1m
+.xx "" "pstat:" "print system facts." "" pstat.1m
+.xx "errors." "errpt:" "process a report of logged" "" errpt.1m
+.xx "" "acctprc1, acctprc2:" "process accounting." "" acctprc.1m
+.xx "" "init, telinit:" "process control/" "" init.1m
+.xx "" "killall: kill all active" "processes." "" killall.1m
+.xx "structure." "fuser: identify" "processes using a file or file" "" fuser.1m
+.xx "" "shutdown: terminate all" "processing." "" shutdown.1m
+.xx "" "prfpr: operating system" "profiler." "/prfdc, prfsnap," profiler.1m
+.xx "" "/nulladm, prctmp, prdaily," "prtacct, runacct, shutacct,/" "" acctsh.1m
+.xx "" "" "pstat: print system facts." "" pstat.1m
+.xx "file checkers." "" "pwck, grpck: password/group" "" pwck.1m
+.xx "initialization/" "brc, bcheckrc," "rc, powerfail: system" "" brc.1m
+.xx "" "from per-process accounting" "records." "/command summary" acctcms.1m
+.xx "" "manipulate connect accounting" "records." "fwtmp, wtmpfix:" fwtmp.1m
+.xx "" "errdead: extract error" "records from dump." "" errdead.1m
+.xx "tape." "frec:" "recover files from a backup" "" frec.1m
+.xx "requests." "accept," "reject: allow/prevent LP" "" accept.1m
+.xx "" "check and interactive" "repair." "/system consistency" fsck.1m
+.xx "blocks." "df:" "report number of free disk" "" df.1m
+.xx "" "errpt: process a" "report of logged errors." "" errpt.1m
+.xx "" "sa2, sadc: system activity" "report package." "sa1," sar.1m
+.xx "" "/lpmove: start/stop the LP" "request scheduler and move/" "" lpsched.1m
+.xx "" "reject: allow/prevent LP" "requests." "accept," accept.1m
+.xx "" "LP request scheduler and move" "requests." "/start/stop the" lpsched.1m
+.xx "" "chroot: change" "root directory for a command." "" chroot.1m
+.xx "" "runacct:" "run daily accounting." "" runacct.1m
+.xx "" "" "runacct: run daily accounting." "" runacct.1m
+.xx "" "/prctmp, prdaily, prtacct," "runacct, shutacct, startup,/" "" acctsh.1m
+.xx "activity report package." "" "sa1, sa2, sadc: system" "" sar.1m
+.xx "report package." "sa1," "sa2, sadc: system activity" "" sar.1m
+.xx "package." "sa1, sa2," "sadc: system activity report" "" sar.1m
+.xx "" "/start/stop the LP request" "scheduler and move requests." "" lpsched.1m
+.xx "" "system initialization shell" "scripts." "/rc, powerfail:" brc.1m
+.xx "" "" "setmnt: establish mount table." "" setmnt.1m
+.xx "" "disktune - tune floppy disk" "settling time parameters." "" disktune.1m
+.xx "" "shutacct, startup, turnacct:" "shell procedures for/" "/runacct," acctsh.1m
+.xx "" "system initialization" "shell scripts." "/rc, powerfail:" brc.1m
+.xx "" "/prdaily, prtacct, runacct," "shutacct, startup, turnacct:/" "" acctsh.1m
+.xx "processing." "" "shutdown: terminate all" "" shutdown.1m
+.xx "" "/set terminal type, modes," "speed, and line discipline." "" getty.1m
+.xx "" "uuclean: uucp" "spool directory clean-up." "" uuclean.1m
+.xx "" "lpadmin: configure the LP" "spooling system." "" lpadmin.1m
+.xx "" "lpsched, lpshut, lpmove:" "start/stop the LP request/" "" lpsched.1m
+.xx "" "boot:" "startup procedures." "" boot.8
+.xx "" "/prtacct, runacct, shutacct," "startup, turnacct: shell/" "" acctsh.1m
+.xx "" "f\&f: list file names and" "statistics for a file system." "" ff.1m
+.xx "" "processes using a file or file" "structure." "fuser: identify" fuser.1m
+.xx "accounting/" "acctcms: command" "summary from per-process" "" acctcms.1m
+.xx "" "setmnt: establish mount" "table." "" setmnt.1m
+.xx "" "/etc/hosts: host" "table for bnet." "" hosts.7n
+.xx "" "recover files from a backup" "tape." "frec:" frec.1m
+.xx "file system backup." "filesave," "tapesave: daily/weekly UNIX" "" filesave.1m
+.xx "initialization." "init," "telinit: process control" "" init.1m
+.xx "" "termio: general" "terminal interface." "" termio.7
+.xx "" "tty: controlling" "terminal interface." "" tty.7
+.xx "and line/" "getty: set" "terminal type, modes, speed," "" getty.1m
+.xx "" "shutdown:" "terminate all processing." "" shutdown.1m
+.xx "daemon." "errstop:" "terminate the error-logging" "" errstop.1m
+.xx "interface." "" "termio: general terminal" "" termio.7
+.xx "" "systems for optimal access" "time." "dcopy: copy file" dcopy.1m
+.xx "" "- tune floppy disk settling" "time parameters." "disktune" disktune.1m
+.xx "" "acctmerg: merge or add" "total accounting files." "" acctmerg.1m
+.xx "interface." "" "tty: controlling terminal" "" tty.7
+.xx "parameters." "disktune -" "tune floppy disk settling time" "" disktune.1m
+.xx "" "/runacct, shutacct, startup," "turnacct: shell procedures for/" "" acctsh.1m
+.xx "" "getty: set terminal" "type, modes, speed, and line/" "" getty.1m
+.xx "file system." "mount," "umount: mount and dismount" "" mount.1m
+.xx "unlink system calls." "link," "unlink: exercise link and" "" link.1m
+.xx "" "unlink: exercise link and" "unlink system calls." "link," link.1m
+.xx "" "badblk: program to set or" "update bad block information." "" badblk.1m
+.xx "machines." "updater:" "update files between two" "" updater.1m
+.xx "two machines." "" "updater: update files between" "" updater.1m
+.xx "" "wall: write to all" "users." "" wall.1m
+.xx "" "fuser: identify processes" "using a file or file/" "" fuser.1m
+.xx "clean-up." "" "uuclean: uucp spool directory" "" uuclean.1m
+.xx "" "uusub: monitor" "uucp network." "" uusub.1m
+.xx "" "uuclean:" "uucp spool directory clean-up." "" uuclean.1m
+.xx "" "" "uusub: monitor uucp network." "" uusub.1m
+.xx "" "" "vchk: version checkup." "" vchk.1m
+.xx "" "vchk:" "version checkup." "" vchk.1m
+.xx "systems with label checking." "" "volcopy, labelit: copy file" "" volcopy.1m
+.xx "" "" "wall: write to all users." "" wall.1m
+.xx "crashes." "crash:" "what to do when the system" "" crash.8
+.xx "" "whodo:" "who is doing what." "" whodo.1m
+.xx "" "" "whodo: who is doing what." "" whodo.1m
+.xx "" "wall:" "write to all users." "" wall.1m
+.xx "accounting records." "fwtmp," "wtmpfix: manipulate connect" "" fwtmp.1m

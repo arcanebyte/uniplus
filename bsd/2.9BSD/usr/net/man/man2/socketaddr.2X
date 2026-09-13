@@ -1,0 +1,28 @@
+.TH SOCKETADDR 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+socketaddr \- return address associated with a socket
+.SH SYNOPSIS
+.ft B
+#include <sys/socket.h>
+.sp
+socketaddr(s, addr)
+.br
+int s;
+.br
+struct sockaddr *addr;
+.ft R
+.SH DESCRIPTION
+The address associated with the socket
+.I s
+is returned in
+.I addr.
+If
+.I s
+is not a socket, \-1 is returned and an appropriate errno is
+returned.
+.SH SEE ALSO
+socket (2x)
+.SH BUGS
+This call is provisional, and will exist in a slightly different
+form in 4.2bsd.

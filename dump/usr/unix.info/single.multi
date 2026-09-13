@@ -1,0 +1,31 @@
+
+Single versus multi user
+
+Unix "comes up" in single-user mode when it
+is booted. To enter multi-user mode, simply enter
+"init 2" and hit return. Ultimately you will see the "login:" prompt.
+
+Certain ports are "enabled" as login ports when the system commences
+multi-user mode. This is governed by the /etc/inittab file. The relevant lines
+in that file are:
+
+co::respawn:/etc/getty console co_9600
+t0::off:/etc/getty tty0 co_9600
+t1::respawn:/etc/getty tty1 co_9600
+
+This means that login is enabled for the console (the builtin Lisa terminal) -
+which is the "co" entry, and for the "t1" entry" which is known to
+Unix as /dev/tty1 - the "serial b" port on the back of the Lisa.
+
+As we supply the Lisa Unix System V to you, /dev/tty0, which is
+labelled Serial A on the Lisa is NOT a login port.
+
+To change the entries, use the editor and adjust the "respawn" and "off"
+items as needed. You then must reboot the Lisa for the
+changes to take affect.
+
+By the way, it is possible to have the Lisa come up in multi-user mode.
+To do so, change the "s" entry in the "initdefault" line to "2".
+
+PLEASE READ AND UNDERSTAND THE MATERIAL ON /ETC/INITTAB IN SECTION 4
+OF THE MANUAL BEFORE ALTERING THIS FILE.

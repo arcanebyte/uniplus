@@ -1,0 +1,242 @@
+.\" THIS WAS TAKEN OUT OF THE SYSTEM V MANUAL 7/19/84 maf
+.\" Use the -manpn macros. PKR 12-Dec-83.
+.ds pn 1062-03
+.TH FORTRAN 1 17-Dec-83
+.SH NAME
+fortran \- SVS FORTRAN compiler
+.SH SYNOPSIS
+.B fortran 
+[
+.B \-o
+ofile ] [
+.B \-i
+] [
+.B \-c
+] [
+.B \-u
+] [
+.B \-v
+] [
+.B \-f
+] [
+.B \-d
+] [
+.B \-m
+] file ... 
+.SH DESCRIPTION
+.I Fortran\^ ,
+the FORTRAN compiler, accepts a list of FORTRAN source files
+and various intermediate texts contained in the list of files specified by
+.I file\^
+and puts the resulting executable object module in
+.I a.out\^
+(but see the
+.B \-o
+option, described below).
+.PP
+In order to understand the use of
+.I fortran\^ ,
+the reader should be aware of the
+steps through which the compiler goes in order to turn a FORTRAN source
+program into an executable object file.
+.PP
+The FORTRAN compiler generates several intermediate files on the way to
+generating the final executable file.
+The first phase of the compiler generates an intermediate file, of the same
+name as the source file, but with a \fI.i\^\fR suffix.
+This intermediate file is destined for processing by the code generator.
+.PP
+The code generator is the second phase of the process.
+The output of the code generator is a file with the same name as the source
+file, but with a suffix of \fI.obj\^\fR.
+The \(**\fI.obj\^\fR file is the input to the next phase, called 
+\fIulinker\fR.
+.PP
+The \fIulinker\fR phase of the compilation process performs two
+functions:  it links the \fI.obj\^\fR files, resolving external references
+to the FORTRAN-77 run-time library; then it converts the \fI.obj\^\fR
+file format into a \s-1UNIX\s+1-style object file, with a \fI.o\fR suffix.  
+This means that one file in the list of files specified on the
+.I fortran\^
+command line \fImust\fR contain a main program.  This \fI.o\fR file
+can then be processed by the \s-1UNIX\s+1 system loader utility, 
+\fIld\^\fR.
+.PP
+Finally, the \fIld\^\fR utility produces the final executable code file.
+.PP
+When using
+.I fortran\^ ,
+any combination of FORTRAN source files (each having a \fI.for\fR suffix)
+can be combined with
+FORTRAN or Pascal intermediate files (each having
+a \fI.i\^\fR suffix), 
+FORTRAN or Pascal object code files (each having a \fI.obj\^\fR suffix),
+and \s-1UNIX\s+1 object files (each having a \fI.o\fR suffix).
+When the compilation completes successfully, the result of the combination of
+all those files is placed in the file 
+.I a.out\^
+or in the file specified by the
+.B \-o
+option.
+.PP
+The following is a list of options to \fIfortran\^\fR:
+.IP \fB\-o\fR
+The
+.B \-o
+option, if used, specifies that the file 
+.I ofile\^
+(runnable file) whose name follows the option is the file to receive the final
+executable code.  If the
+.B \-o
+option is not specified, the resultant executable
+code is placed in the file
+.I a.out\^ .
+.IP \fB\-i\fR
+If the
+.B \-i
+option is used, the FORTRAN intermediate code (the result of running
+\fI/usr/lib/fortran\^\fR)
+is placed in a file of the same name as the source file, but with a suffix
+of \fI.i\^\fR appended.  The compilation then terminates.
+.IP \fB\-c\fR
+If the
+.B \-c
+option is used, the FORTRAN unlinked object code (the result of
+running
+\fI/usr/lib/code\^\fR)
+is placed in a file of the same name as the source file, but with a 
+suffix of \fI.obj\fR appended.  The compilation then terminates.
+.IP \fB\-u\fR
+If the
+.B \-u
+option is used, the linked object code (the result of running
+\fI/usr/lib/ulinker\^\fR)
+is placed in a file of the same name as the source file, but with a 
+suffix of \fI.o\fR appended.  The compilation then terminates.
+.IP \fB\-v\fR
+The
+.B \-v
+option (for verbose) makes
+.I fortran\^
+display a running progress report as
+it compiles.
+If the
+.B \-v
+option is specified, the compiler also generates
+a listing file, of the same name as the source file,
+but with a suffix of \fI.lst\^\fR appended.
+.IP \fB\-m\fR
+If the
+.B \-m
+option is specified, the link map information
+from executing
+.I /usr/lib/ulinker\^
+will be saved in a file,
+of the same name as the source file, but with a suffix
+of \fI.map\^\fR appended.
+.IP \fB\-f\fR
+If the
+.B \-f
+option is specified,
+the library
+.I /usr/lib/sky.paslib.o\^
+will be used instead of
+.I /usr/lib/paslib.o\^ .
+This is the ``floating point'' option.
+.IP \fB\-d\fR
+If the
+.B \-d
+option is specified,
+information for the symbolic debugger (see \fIdbg\fR)
+will be output to the object file.
+.PP
+If only one 
+.I file\^
+argument is supplied on the command line, then all the intermediate files
+(\fI.i, .obj, .o\^\fR) are removed at the end of the compilation.
+If multiple 
+.I file\^
+arguments are typed on the command line, any existing intermediate files are not
+removed.
+.PP
+A special archiver,
+.I /usr/bin/library\^ ,
+prompts for FORTRAN object names
+(\fI.obj\fI\^) as input, and creates a FORTRAN library consisting of those objects.
+Libraries created by this archiver are usable only
+for FORTRAN or PASCAL compilations, and not compatible with
+any other \s-1UNIX\s+1 archives.
+.SH EXAMPLE
+.IP
+fortran prog1.for
+.PP
+compiles ``prog1.for''
+and puts the resulting object module
+in 
+``a.out''.
+.IP
+fortran -o frammis prog2.for prog3.obj
+.PP
+compiles the FORTRAN program called 
+``prog2.for''
+and links the result with the object file
+``prog3.obj''.
+The result of the compilation is placed in the output file called
+``frammis''.
+.SH FILES
+.ta \w'/usr/lib/sky.paslib.obj      'u
+.nf
+\(**.for	FORTRAN source
+\(**.i	Intermediate code
+\(**.obj	Compiled but unlinked \fBfortran\fR object-code
+\(**.o	Compiled but unlinked \s-1UNIX\s+1 object-code
+/usr/lib/ftnlib.obj	FORTRAN run-time library
+/usr/lib/paslib.obj	Pascal run-time library (software FP)
+/usr/lib/sky.paslib.obj	Pascal run-time library (hardware FP)
+/usr/lib/fortran	FORTRAN compiler
+/usr/lib/code	Code generator
+/usr/lib/dbg	Symbolic debugger executable
+/usr/lib/ulinker	SVS to \s-1UNIX\s+1 object-file converter
+/usr/lib/ftncterrs	FORTRAN compile-time error message file
+/usr/lib/ftnrterrs	FORTRAN run-time error message file
+/bin/ld	linking loader
+/lib/crt0.o	startup routine
+/usr/bin/library	Interactive FORTRAN/Pascal .obj archiver
+.fi
+.DT
+.SH "SEE ALSO"
+.I "SVS FORTRAN Reference Manual,"
+Silicon Valley Software, Inc (PN: 1019).
+.br
+.I "SVS Debugger Reference Manual,"
+Silicon Valley Software, Inc (PN: 1069).
+.bp
+.SH "SKY FLOATING POINT HARDWARE SUPPORT"
+.PP
+This release of the Fortran
+compiler supports hardware floating point.
+The hardware supported are those boards made by
+SKY Computers.
+.PP
+.nf
+.in +.5i
+SKY Computers, Inc.
+Foot of John Street
+Lowell, Massachusetts  01852
+(617) 454-6200
+.in -.5i
+.fi
+.PP
+Note that UniSoft will provide \s-1UNIX\s+1 kernel support
+for SKY hardware as part of the UniSoft porting services.
+Each customer must have contracted with UniSoft to have the
+required software modifications made to the \s-1UNIX\s+1 kernel
+before attempting to use the SKY support features of the
+SVS compilers.
+The SVS compilers in and of themselves
+will not support the SKY floating point hardware
+without the required UniSoft \s-1UNIX\s+1 modifications.
+.PP
+Some of the SKY Computers floating point hardware boards
+will require ``downloading'' of microcode. This microcode
+is written and provided by SKY Computers.

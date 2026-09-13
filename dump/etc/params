@@ -1,0 +1,12 @@
+# here are default terminal paramaters
+# these only affect the lisa console
+setparams >/dev/null  << /*
+contrast
+150
+repwait
+50
+repdelay
+30
+dimtime
+50000
+/*

@@ -1,0 +1,34 @@
+.TH ALIASES 7N UniSoft
+.SH NAME
+aliases \- aliases file for delivermail
+.SH SYNOPSIS
+.B /usr/lib/aliases
+.SH DESCRIPTION
+This file describes user 
+.SM ID
+aliases that will be used by
+.BR /etc/delivermail .
+It is formatted as a series of lines
+of the form
+.RS
+name:addr1,addr2,...addrn
+.RE
+.PP
+The
+.I name\^
+is the name to alias,
+and the
+.I addri\^
+are the addresses to send the message to.
+Lines beginning with white space
+are continuation lines.
+Lines beginning with `\|#\|'
+are comments.
+.PP
+Aliasing occurs only on local names.
+Loops cannot occur
+since no message will be sent to any person
+more than once.
+.SH SEE ALSO
+delivermail(8N).
+.\"	@(#)aliases.7n	5.2 of 7/26/84

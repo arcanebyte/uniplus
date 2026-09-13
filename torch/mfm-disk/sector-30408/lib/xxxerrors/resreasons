@@ -1,0 +1,20 @@
+#-----------------------------------------------------------------------------#
+#									      #
+# XXX Resource manager reason codes					      #
+#									      #
+# SCCS identification "@(#) resreasons 1.1@(#)"
+#									      #
+#-----------------------------------------------------------------------------#
+
+01	invalid resource file identifier	# ERESRESID
+02	invalid object identifier		# ERESOBJID
+03	malloc failed				# ERESMALLOC
+04	not a resource file			# ERESBADMAGIC
+05	attempt to seek on pipe			# ERESFIFO
+06	bad open mode				# ERESBADMODE
+07	lock attempt timeout			# ERESTIMEOUT
+08	bad object offset			# ERESBADFORMAT
+09	unknown resource type			# ERESNOTYPE
+10	argument out of range			# ERESRANGE
+11	no object of this type found		# ERESNOOBJ
+12	corrupt resource file			# ERESEOF

@@ -1,0 +1,13 @@
+# NEC D5126 20Mbytes
+# 615 cylinders, 4 heads, 5us step rate.
+# reduced write current not used
+# write precompensation on cylinder 128
+# landing cylinder 664, imbedded servo present
+NEC D5126
+615
+4
+0
+128
+664
+5
+1

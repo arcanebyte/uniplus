@@ -1,0 +1,11 @@
+# this script sends appropriate commands for printing
+# to an Apple imagewriter at 9600 baud.
+# It presumes /dev/tty0, which is Serial port A.
+#
+# The imagewriter MUST have DC1/DC3 enabled. This is done by
+# setting switch 3 of the SW2 group CLOSED.
+#
+sleep 100000 >/dev/tty0 &
+stty 9600 ixon ixany -nl -raw </dev/tty0
+# next line echos a CTRL l  (a form feed)
+echo "">/dev/tty0

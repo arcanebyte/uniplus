@@ -1,0 +1,19 @@
+# <subdirectory name> <uuclean expirey hours>
+# REMEMBER these are checked, in the order they occur, for a leading prefix
+# so have the most general prefixes LAST.
+	C.ukc		336
+	C.mcnc		336
+	C.rti-sel	336
+	C.ftl-sel	336
+	C.ncsu		336
+	C.		336
+	D.mcnc		336
+	D.rti-sel	336
+	D.ftl-sel	336
+	D.ncsu		336
+	D.west44	336
+	D.westcsrX	336
+	D.westcsr	336
+	D.		336
+	TM.		72
+	X.		336

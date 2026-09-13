@@ -1,0 +1,7 @@
+(if rm -rf $1
+then
+	if mkdir $1
+	then
+		chmod +w $1
+	fi
+fi) >/dev/null 2>&1

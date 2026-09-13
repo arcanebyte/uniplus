@@ -1,0 +1,49 @@
+.TH ACCEPT 2N UniSoft
+.SH NAME
+accept \- accept a connection on a socket
+.SH SYNOPSIS
+.sp
+.B accept(s, from)
+.br
+.B int s;
+.br
+.B struct sockaddr *from;
+.SH DESCRIPTION
+This call is used to
+.I accept\^
+a connection on socket
+.IR s ;
+.I from\^
+is a result value indicating the address of the entity which
+connected, as known to the communications layer.
+This call
+is used with connection-based socket types, currently with 
+.SM SOCK_STREAM\*S.
+.PP
+If the underlying communications layer has already made a connection
+on the socket, then the call returns immediately.
+If no connection has yet been made and the socket is nonblocking (see
+.IR ioctl\^ (2)),
+then a \-1 is returned and the global variable 
+.I errno\^
+is set to
+.SM EWOULDBLOCK\*S.
+It is possible to
+.IR select\^ (2N)
+a socket for the purposes of doing an
+.I accept\^
+by selecting it for read, since no data may be read
+until the connection completes.
+.SH SEE ALSO
+connect(2N), select(2N), socket(2N).
+.SH DIAGNOSTICS
+Zero is returned if a connection is accepted; \-1 is returned 
+in the error cases.  Some important errors returned in errno are 
+.SM EOPNOTSUPP
+if the socket is not of a type supporting this operation, and 
+.SM EISCONN
+if the socket is already connected.
+.SH BUGS
+This call is provisional and will exist in a slightly different form 
+in future releases.
+.\"N	 @(#)accept.2N	 5.2 of 7/12/84

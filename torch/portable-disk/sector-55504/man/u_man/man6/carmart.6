@@ -1,0 +1,136 @@
+.de S
+.br
+.B \\$1
+..
+.TH CARMART 6 "Root Computers Propriety"
+.SH NAME
+carmart \- Big Business Car Selling
+.SH SYNOPSIS
+.B "/usr/games/carmart"
+.br
+.B "/usr/games/idle"
+.SH DESCRIPTION
+.I Carmart
+is a
+.B Unix
+implementation of that well known
+.B Mosaics
+game `carmart'.
+For full details of the rules see
+Carmart \- Alan Fairbourn 17/4/75,
+although a summary appears below.
+All commands are two characters, and should be fairly obvious from the rules.
+.I Idle
+should be run on all of the slave terminals,
+a return to the shell is via an interrupt (^C) after the finish of the game.
+Terminal names are the full pathnames of the teletypes involved,
+and don't forget to include /dev/tty!
+Have fun!
+.SH RULES
+Remember, please,
+that this is a brief summary.
+.PP
+The idea of the game is to sell as many cars as possible.
+The player builds a number of factories,
+ships cars to sites without factories,
+employs salespersons,
+and fixes prices at the sites.
+The number of cars sold at any given site depends on the competition,
+price,
+and number of sales persons there.
+At the end of each month a new status print is printed.
+When a user's overdraft is more than $2,000,000 the bank refuses more credit,
+ust the player can still play.
+Interest is payable on overdrafts.
+.PP
+All commands consist of two characters.
+All site names also consist of two characters.
+They are,
+respectively:
+(all outputs are per month)
+.sp 1
+.S fa
+<site> <maximum output> <initial output> \- build a factory
+.S po
+<site> <new output> \- set new monthly output rate
+.S cl
+<site> \- close a factory
+.S fs
+\- list factory status
+.S pr
+<site> <amount> \- change price
+.S pr
+a <amount> \- change price for all sites
+.S mc
+<site> <site> <amount> \- move cars each month
+.S mo
+<site> <site> <amount> \- move cars once only
+.S ml
+\- list cars shipped each month
+.S em
+<site> <amount> \- employ salespersons
+.S me
+\- print total number of sales persons
+.S di
+<site> <amount> \- dismiss salespersons
+.S mm
+<site> <site> <amount> \- move salepersons
+.S mp
+\- monthly status print
+.S he
+\- display help
+.PP
+The sites,
+and their initial monthly sales forecast,
+are:
+.S in
+\- Inverness (20)
+.S gl
+\- Glasgow (120)
+.S ed
+\- Edinburgh (90)
+.S ne
+\- Newcastle (100)
+.S le
+\- Leeds (110)
+.S ma
+\- Manchester (130)
+.S bi
+\- Birmingham (150)
+.S no
+\- Norwich (40)
+.S ca
+\- Cardiff (80)
+.S lo
+\- London (170)
+.S so
+\- Southampton (65)
+.S ex
+\- Exeter (35)
+.PP
+Please refer to the full rules for lists of costs of transactions,
+and approximate sales forecasts for sites.
+.SH FILES
+.B /usr/games/child
+\- child process for each terminal
+.SH AUTHOR
+.B Nigel Horne
+\- Westfield College/Root Computers Ltd.
+.SH BUGS
+The sharing out algorithm may not be perfect.
+.br
+Spying is not implemented.
+.br
+If there are more than 4 players,
+then on exit the attached terminals will have the `exclusive-use' bit set.
+.br
+Distances between sites are only relatively close to real life.
+.br
+There is no
+.I A
+command.
+There is no
+.I survey
+command, yet.
+.br
+Salespersons are employed straight away, not after a months training.

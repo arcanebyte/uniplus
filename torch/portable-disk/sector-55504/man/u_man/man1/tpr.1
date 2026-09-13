@@ -1,0 +1,230 @@
+.TH TPR 1 4/82
+.SH NAME
+tpr \- text processor
+.SH SYNOPSIS
+.B tpr
+[
+.B options
+]
+.B file ...
+.SH DESCRIPTION
+.B Tpr
+formats text according to control lines embedded
+in the text in the given files or standard input if none
+is specified.
+Input consists of intermixed
+.I text lines,
+which contain information to be formatted, and
+.I request lines,
+which contain instructions about how to format
+it.
+Request lines begin with a distinguished
+.I control character,
+normally a period.
+Output lines may be
+.I filled
+as nearly as possible with words without regard to
+input lineation.
+Line
+.I breaks
+may be caused at specified places by
+certain commands, or by the appearance of an
+empty input line or an input line beginning with a space.
+.PP
+The capabilities of
+.B tpr
+are specified in the attached Request Summary.
+Numerical values are denoted there by n or +n,
+titles by t, and single characters by c.
+Numbers denoted +n may be signed + or \-,
+in which case they signify relative changes to
+a quantity, otherwise they signify
+an absolute resetting.
+Missing n fields are ordinarily taken to be 1,
+missing t fields to be empty, and c fields to shut off
+the appropriate special interpretation.
+.PP
+Running titles usually appear at top and bottom of every
+page.
+They are set by requests like
+.sp
+.in +10
+.if t \&.he \(fmpart1\(fmpart2\(fmpart3\(fm
+.if n \&.he 'part1'part2'part3'
+.in -10
+.sp
+Part1 is left justified, part2 is centered,
+and part3 is right justified on the page.
+Any % sign in a title is replaced by the current
+page number.
+Any nonblank may serve as a quote.
+.PP
+The options currently available are:
+.TP 10
+.B d
+print directives encountered in input on diagnostic output
+(debugging only).
+.TP 10
+.B efile
+divert error messages to \*(lqfile\*(rq.
+.TP 10
+.B i[index]
+open the index file (see .rf directive), default name is \*(lqindex\*(rq.
+.TP 10
+.B nN
+number first page N (default 0).
+.TP 10
+.B sN
+stop after every N pages (default 1)
+and wait for newline from terminal
+iff output is to terminal device.
+There is no initial pause.
+.PP
+In addition, \*(lq-\*(rq in the input file list indicates that
+standard input is to be opened and read.
+.SH DIAGNOSTICS
+Of course!
+.SH "SEE ALSO"
+nroff(1), troff(1)
+.SH AUTHOR
+Many people have worked on the ancestors of
+.B tpr,
+known by names such as runoff, roff, etc.
+Ken Yap (\ University of Sydney\ ) can only
+claim credit for rewriting it in C.
+.SH BUGS
+.B Tpr
+may produce output too rapidly for people used to
+slower formatters.
+.PP
+Although
+.B tpr
+is written in C,
+it will probably be utterly frozen
+because of the archaic convention of
+control lines and text lines
+and paucity of structured directives.
+.bp
+.tc |
+.tr |
+.if t .ta .75i 1.5i 2.25i
+.if n .ta 11 18 26 33
+.in 0
+.na
+.ce
+REQUEST SUMMARY
+.sp
+.ul
+Request	Break	Initial	Meaning
+.if t .in 2.25i
+.if n .in 26
+.ti 0
+\&.ad	yes	yes	Begin adjusting right margins.
+.ti 0
+\&.ar	no	arabic	Arabic page numbers.
+.ti 0
+\&.br	yes	-	Causes a line break \- the filling of
+the current line is stopped.
+.ti 0
+\&.bd|n	no	-	Bold the printable characters in the next n lines.
+.ti 0
+\&.bl|n	yes	-	Insert of n blank lines, on new page if necessary.
+.ti 0
+\&.bp|+n	yes	n=1	Begin new page and number it n; no n means \*(lq+1\*(rq.
+.ti 0
+\&.cc|c	no	c=.	Control character becomes \*(lqc\*(rq.
+.ti 0
+\&.ce|n	yes	-	Center the next n input lines,
+without filling.
+.ti 0
+\&.de|xx	no	-	Define parameterless macro 
+to be invoked by request \*(lq.xx\*(rq
+(definition ends on line beginning \*(lq\fB..\fR\*(rq).
+.ti 0
+\&.ef|t	no	t=\*a\*a\*a\*a	Even foot title becomes t.
+.ti 0
+\&.eg	no	arabic	English page numbers.
+.ti 0
+\&.eh|t	no	t=\*a\*a\*a\*a	Even head title becomes t.
+.ti 0
+\&.fi	yes	yes	Begin filling output lines.
+.ti 0
+\&.fo|t	no	t=\*a\*a\*a\*a	All foot titles are t.
+.ti 0
+\&.he|t	no	t=\*a\*a\*a\*a	All head titles are t.
+.ti 0
+\&.in|+n	yes	-	Indent n spaces from left margin.
+.ti 0
+\&.ix +n	no	-	Same as \*(lq.in\*(rq but without break.
+.ti 0
+\&.li|n	no	-	Literal, treat next n lines as text.
+.ti 0
+\&.ll|+n	no	n=65	Line length including indent is n characters.
+.ti 0
+\&.ls|+n	yes	n=1	Line spacing set to n lines per output line.
+.ti 0
+\&.m1|n	no	n=3	n-1 blank lines put between the top
+of page and head title.
+.ti 0
+\&.m2|n	no	n=1	n blank lines put between head title
+and beginning of text on page.
+.ti 0
+\&.m3|n	no	n=1	n blank lines put between end of
+text and foot title.
+.ti 0
+\&.m4|n	no	n=3	n-1 blank lines put between the foot title
+and the bottom of page.
+.ti 0
+\&.na	yes	no	Stop adjusting the right margin.
+.ti 0
+\&.ne|n	no	-	Begin new page, if n output lines
+cannot fit on present page.
+.ti 0
+\&.nf	yes	no	Stop filling output lines.
+.ti 0
+\&.of|t	no	t=\*a\*a\*a\*a	Odd foot title becomes t.
+.ti 0
+\&.oh|t	no	t=\*a\*a\*a\*a	Odd head title becomes t.
+.ti 0
+\&.pl|+n	no	n=66	Total paper length taken to be n lines.
+.ti 0
+\&.po|+n	no	n=0	Page offset.
+All lines are preceded by n spaces.
+.ti 0
+\&.re|+n	no	-	Restore environment n levels back.
+.ti 0
+\&.rf|+n	no	n=1	Save the next n following lines in the index file with page number.
+.ti 0
+\&.ro	no	arabic	Roman page numbers.
+.ti 0
+\&.rp|n	no	n=1	Output n blank pages at the next page break.
+Page reservations are cumulative.
+.ti 0
+.ne 8
+\&.se	yes	-	Save environment.
+The \*(lqenvironment\*(rq consists of all current settings
+affected by the following directives:
+\&.ad, .ar, .bd, .bl, .cc, .ce, .ef, .eh, .fi, .fo,
+\&.he, .in, .ix, .li, .ll, .ls, .m1, .m2, .m3,
+\&.m4, .na, .ne, .nf, .of, .oh, .pl, .po, .ro, .sk,
+\&.sp, .ta, .tc, .ti, .ub, .ul.
+.ti 0
+\&.sk|n	no	-	Produce n blank pages starting next page.
+.ti 0
+\&.so|file	no	-	Include file \*(lqfile\*(rq.
+.ti 0
+\&.sp|n	yes	-	Insert block of n blank lines,
+except at top of page.
+.ti 0
+\&.ta|n|n..		9,17,..	Pseudotab settings.
+Initial tab settings are columns 9 17 25 ...
+.ti 0
+\&.tc|c	no	space	Tab replacement character becomes \*(lqc\*(rq.
+.ti 0
+\&.ti|+n	yes	-	Temporarily indent next output
+line n spaces.
+.ti 0
+\&.ub|c	no	' '	Unpaddable blank is \*(lqc\*(rq.
+.ti 0
+\&.ul|n	no	-	Underline the letters and numbers
+in the next n input lines.

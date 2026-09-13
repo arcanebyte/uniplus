@@ -1,0 +1,68 @@
+icon: fn=addicon; laction=;
+icon: fn=b; laction=;
+icon: fn=calc; showname=Calc; showbits=gadgets:calc; +
+      laction=x,$0; maxuse=3;
+icon: fn=chwdown; laction=;
+icon: fn=clearwaste; laction=;
+icon: fn=clipboard; showname=Clipboard; showbits=gadgets:clipboard; +
+      laction=x,$0;
+icon: fn=clock; showname=Clock; showbits=gadgets:clock; +
+      laction=x,$0; maxuse=2;
+icon: fn=colours; laction=;
+icon: fn=controlpanel; showname=Panel; showbits=gadgets:ctrlpanel; +
+      laction=x,$0; raction=b,$0 -l; daction=;
+icon: fn=cset; laction=;
+icon: fn=deskicon; showname=Deskicon; +
+      laction=b,$0 `gs -n Deskicon -r 30 1 File to put on desktop\?`;
+icon: fn=doicon; laction=;
+icon: fn=f; laction=;
+icon: fn=gfn; laction=;
+icon: fn=gs; laction=;
+icon: fn=iconinfo; laction=; daction=b,$0 $*;
+icon: fn=iconls; laction=;
+icon: fn=installfloppy; showname=Install; showbits=utilities:install; +
+      laction=n,su root $0; raction=b,/etc/listfloppy.sh;
+icon: type=e; fn=kermit; showbits=utilities:kermit; showname=Kermit;
+icon: fn=key; laction=;
+icon: fn=makedump; laction=;
+icon: fn=pal; showname=Palette; showbits=gadgets:paledit; +
+      laction=x,$0; raction=x,$0 -f;
+icon: fn=prepflop; showname=Format; showbits=utilities:fmfloppy;  +
+      laction=b,$0; raction=b,$0 -v;
+icon: fn=rename; laction=;
+icon: fn=report; showname=Reports; showbits=devices:window; +
+      laction=b,$0; raction=b,$0;
+icon: fn=reread; laction=;
+icon: fn=resed; showname=ResEd; showbits=gadgets:iconedit; + 
+      laction=x,$0; daction=x,$0 $1,npars=1;
+icon: fn=reslist; showname=Reslist; showbits=gadgets:reslist; +
+	laction=; raction=; daction=b,$0 $*;
+icon: fn=resshow; showname=Resshow; showbits=gadgets:resshow; +
+      laction=x,$0; daction=x,$0 $1,npars=1,p1=d; maxuse=16; 
+icon: fn=rmicon; laction=;
+icon: fn=rtoi; laction=;
+icon: fn=scalefont; laction=;
+
+icon: fn=sd; showname=Screen; showbits=utilities:sprint; +
+	laction=b,$0|lp -dprinter -o-ecand; +
+	raction=b,makedump Screen;
+
+icon: fn=shademouse; laction=;
+icon: fn=towaste; laction=;
+icon: fn=usemenus; laction=;
+icon: fn=wdump; showname=Window; showbits=utilities:wprint; +
+	laction=b,$0|lp -dprinter -o-ecand; +
+	raction=b,makedump Window;
+
+icon: fn=whide; laction=;
+
+icon: fn=wsh; showname=Wsh; showbits=utilities:systemV; + 
+      raction=x,wsh -C su root -c "'PATH=/bin:/usr/bin:/etc:/usr/bin/opentop::;export PATH;exec sh'"; +
+      maxuse=16; laction=x,$0; daction=x,$0 $*;
+
+icon: fn=wshow; laction=;
+icon: fn=xcut; laction=;
+icon: fn=xcopy; laction=;
+icon: fn=xpaste; laction=;
+icon: fn=xplot; laction=;
+

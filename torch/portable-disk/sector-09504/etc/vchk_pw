@@ -1,0 +1,12 @@
+11,54
+root:0,1
+daemon:1,1
+bin:2,2
+sys:3,3
+adm:4,4
+uucp:5,5
+lp:7,7
+news:10,10
+games:19,1
+sync:20,1
+guest:21,1

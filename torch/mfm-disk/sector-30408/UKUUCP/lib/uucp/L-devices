@@ -1,0 +1,19 @@
+# The format of the L-devices file is:
+#Caller	Line Useful Class Dialer
+#
+# The following lines are hard-wired
+#
+DIR tty29 unused 2400 pad
+DIR tty30 unused 2400 pad
+DIR tty01 unused 4800 tty01
+DIR tty05 unused 1200 rtiline
+DIR tty06 unused 1200 rtiline
+#
+# The following lines are ACUs
+#
+ACU cul0 cua0 1200 dn11
+ACU cul1 cua1 1200 dn11
+ACU tty49 unused 1200 ventel
+ACU tty49 unused 300 ventel
+ACU tty48 unused V1200 vadic
+ACU tty47 unused 1200 hayes

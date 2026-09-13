@@ -1,0 +1,13 @@
+# this script installs the unix program on the hard disk
+# for the special VPI 10-meg profile systems.
+#
+mount /dev/s0b /t
+cp /t/unix /unix
+chown check /unix
+chgrp check /unix
+cp /t/bin/adb /bin/adb
+echo /unix installation complete
+umount /dev/s0b
+eject
+sync
+sync

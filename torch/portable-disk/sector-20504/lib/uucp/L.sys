@@ -1,0 +1,5 @@
+#	L.sys file for torch XXX
+pdp Any DIR 9600 8fY ttya \
+	\r ?ogin: !\r ?ogin: !\r ?ogin: nuucp\r ?ssword: nuucp\r
+#case Any DIR 9600 8fN tty30 \
+#	\r ?ogin: !\r ?ogin: !\r ?ogin: nuucp\r

@@ -1,0 +1,9 @@
+: Daily uucp sh script
+: Will work wether you run with subdirs or not you really should though
+SPOOL=/usr/spool/uucp
+LIBDIR=/usr/lib/uucp
+
+$LIBDIR/uuclean -pLTMP. -n24	;: Zap these daily
+$LIBDIR/uuclean -A
+
+mv $SPOOL/LOGFILE $SPOOL/LOGFILE.old

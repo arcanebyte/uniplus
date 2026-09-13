@@ -1,0 +1,262 @@
+.TH SOCKET 2N UniSoft
+.SH NAME
+socket \- create an endpoint for communication
+.SH SYNOPSIS
+.B #include <net/socket.h>
+.sp
+.B s = socket(type, pf, addr, options);
+.br
+.B int type;
+.br
+.B struct sockproto *pf;
+.br
+.B struct sockaddr *addr;
+.br
+.B int options;
+.SH DESCRIPTION
+.I Socket\^
+creates a communication endpoint and returns a descriptor,
+much like a file descriptor.  The socket has the specified
+.I type\^
+which defines the semantics of communication.  Currently
+defined types are 
+.SM SOCK_STREAM\*S, 
+for sequenced, reliable,
+two-way connection based streams with an out-of-band mechanism;
+.SM SOCK_DGRAM
+for datagrams, connectionless, unreliable messages of
+a fixed (typically small) maximum length, 
+.SM SOCK_RAW
+providing access to internal network interfaces.
+The type 
+.SM SOCK_RAW\*S,
+which is available only to the super-user,
+is not described here.
+.PP
+The
+.B pf
+supplied causes a specific protocol to be used with the socket;
+since there is currently only one protocol supporting each socket
+type we will not discuss this further.
+.PP
+The
+.B addr
+parameter specifies the address for the socket.  A socket
+address is a discriminated union with a fixed length of 16 bytes.
+The first two bytes indicates the format of the remaining bytes.
+The only currently relevant variant is a \fBsockaddr_in\fR, an
+internet address.  The first three fields of a variable of
+this type are 
+.SM AF_INET
+(indicating that the address is of the
+Address Family Internet, this is defined in 
+.RI < \|net/socket.h\| >),
+a 16 bit socket number to be used (see 
+.RI < \|net/in.h\| >
+for lists of well-known sockets), and a 32 bit host address.
+The socket number and host address are in network byte order.
+.PP
+If no address is specified, then the system will assign
+one at its convenience; currently it does this at connection
+time to simplify the routing decisions required of the connected
+socket.
+If the socket number is omitted,
+a unique socket number will be supplied.
+The socket numbers in the range 0 to 
+.SM IPPORT_RESERVED-1 
+are reserved
+for the super-user.
+.PP
+The procedure
+.IR rhost\^ (3N)
+may be used to determine Internet host numbers,
+while
+.IR raddr\^ (3)
+converts addresses to standard host names.
+.PP
+Sockets of type 
+.SM SOCK_STREAM 
+are full-duplex byte streams, similar
+to two-way pipes.  A typical use of such a stream involves creation
+with
+.I socket\^
+and connection to another socket with a
+.IR connect\^ (2N)
+call,
+followed by a sequence of
+.I read\^
+and
+.I write\^
+calls to exchange data, followed finally by a
+.IR close\^ (2).
+Out-of-band data may also be transmitted as described below.
+.PP
+The protocol used to implement a 
+.SM SOCK_STREAM
+insures that data
+is not lost or duplicated.  If a piece of data for which the
+peer protocol has buffer space cannot be successfully transmitted
+within a reasonable length of time (typically about 1 minute), then
+the connection is considered broken and calls will indicate error with
+\-1 returns with 
+.SM ETIMEDOUT
+as the specific code in the global variable 
+.IR errno .
+The protocols optionally keep sockets "warm" by forcing transmissions
+roughly every minute in the absence of other activity.
+An error is then indicated if no response can be elicited on an otherwise
+idle connection for a extended period (e.g., 5 minutes).
+A 
+.SM SIGPIPE
+signal is raised if a process \fIwrite\^\fPs on a broken
+stream; this causes naive processes, which do not handle the signal,
+to exit.
+.PP
+.SM SOCK_DGRAM
+sockets allow sending of datagrams to correspondents
+named in
+.IR send\^ (2)
+calls.  It is also possible to receive datagrams at such a socket
+with
+.IR receive\^ (2N)
+.PP
+The primitive
+.IR socketaddr\^ (2)
+can be used to determine the address of a socket.
+.PP
+The options available on sockets are ored together in
+.IR options ,
+and are:
+.TP .3i
+.SM SO_DEBUG
+Enable protocol tracing for this socket, to be used in protocol
+debugging.
+.TP
+.SM SO_ACCEPTCONN
+which must be used with 
+.SM SOCK_STREAM
+sockets which are
+to accept connections.  Only sockets which indicate 
+.SM SO_ACCEPTCONN
+as a creation parameter may do
+.IR accept\^ (2N),
+and such sockets may not do
+.IR connect\^ (2N).
+.TP
+.SM SO_DONTLINGER
+which allows
+.IR close\^ (2)
+operations on a socket to complete immediately.  Otherwise
+the system will block a process waiting for data to drain
+(or return 
+.SM EWOULDBLOCK
+if the socket is marked 
+.SM NONBLOCKING\*S)
+when a close is attempted.  
+See also the 
+.SM SIOCSLINGER
+.I ioctl\^
+below.
+.TP
+.SM SO_KEEPALIVE
+which causes keep alive to be used so as to time out dead connections.
+If this option is not specified, then timing out dead connections
+is the responsibility of the user process.
+.PP
+General 
+.I ioctls\^
+which apply to sockets are:
+.TP .3i
+.SM SIOCDONE
+indicating that the user is done receiving (if the integer parameter is 0),
+sending (if the integer parameter is 1) or both (if the parameter is 2)
+on the indicated socket.
+This is normally used to indicate an end-of-file on a 
+.SM SOCK_STREAM
+while continuing to read input.
+.TP
+.SM SIOCSLINGER
+sets the linger time to the number of seconds specified by the integer
+parameter.
+This is currently only partly implemented: linger time is either 0 or infinite
+(if non-zero).
+.TP
+.SM SIOCGLINGER
+returns the current linger time.
+.TP
+.SM FIONBIO
+takes an integer parameter saying whether non-blocking i/o is
+desired on the specified socket.
+Applies to sockets and
+specifies that operations are to return 
+.SM EWOULDBLOCK
+rather than
+blocking.  A
+.IR select\^ (2N)
+operation may be used to determine when i/o is possible without
+busy polling.
+.PP
+The out-of-band data facilities of the stream protocols are currently
+primitive, allowing the user
+to send a single byte of out-of-band data to the correspondent process.
+An 
+.SM SIOCSENDOOB 
+.I ioctl\^ 
+takes as parameter the address of the character
+to be sent as a parameter.
+This causes a 
+.SM SIGURG
+signal, indicating an urgent condition, to be
+raised in the correspondent process, and places a mark in the data
+stream after the last byte written before the out-of-band data was sent.
+.PP
+The 
+.SM SIOCSPGRP
+.I ioctl\^
+can be used to specify a process group to receive
+the 
+.SM SIGURG
+signal when the out-of-band data arrives.  If the
+integer argument to 
+.SM SIOCSPGRP
+is negative, then it is taken to mean
+a single process rather than a process group, given by the absolute
+value of the argument.  The 
+.SM SIOCGPGRP
+.I ioctl\^
+returns the current
+value of a sockets process group.
+.PP
+When a process receives a 
+.SM SIGURG
+signal it can enquire of each of its channels to see which ones
+have out-of-band data, by doing 
+.SM SIOCRCVOOB
+on each channel.
+This will return 
+.SM EINVAL
+if there is no out-of-band data currently
+available on that channel.  If a channel has out-of-band data, a
+course of action might be to read in the input stream to the mark,
+which can be detected by 
+.SM SIOCATMARK
+which returns a 0 or a 1 into
+its integer parameter telling whether the read pointer is now at the
+mark.  The system never returns bytes on both sides of a mark with
+a single read.
+.PP
+Facilities to provide the user with interrupts whenever i/o is
+possible on a specifiable set of channels are planned.
+This will allow interrupt-driven i/o processing similar to the
+out-of-band facilities.
+.SH SEE ALSO
+accept(2N), 
+connect(2N), 
+receive(2N), 
+select(2N), 
+send(2),
+socketaddr(2N).
+.SH BUGS
+This call is provisional and will exist in a slightly different form
+in future releases.
+.\"N	 @(#)socket.2N	 5.2 of 7/12/84

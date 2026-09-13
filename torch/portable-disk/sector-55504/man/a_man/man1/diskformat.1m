@@ -1,0 +1,70 @@
+.TH DISKFORMAT 1M UniSoft
+.SH NAME
+diskformat - format a disk
+.SH SYNOPSIS
+diskformat [-size #] [-dens #] [-cyl f[-t]] \
+[-sec f[-t]] [-i] #] device
+.SH DESCRIPTION
+.I Diskformat
+initializes a hard disk or floppy disk and
+formats it according to your specifications.
+.PP
+The following parameters may be specified ("device" is required):
+.TP "\w'\fB\-head #[\-#]\fR\ \ 'u"
+.B device
+device to be formatted (must be raw device)
+.TP
+.B \-size #
+specify sector size in bytes
+.TP
+.B \-dens #
+specify density
+.TP
+.B \-cyl #[\-#]
+format cylinders
+.I f
+to
+.I t
+(default 
+.I f
+).
+A specification such as
+.B \#-
+means "until the end".
+.TP
+.B \-head #[\-#]
+Format heads
+.I f
+to
+.I t
+(default
+.I f
+).
+A specification such as
+.B \#-
+means "until the end".
+.TP
+.B \-sec #[-#]
+Format sectors
+.I f
+to
+.I t
+(default
+.I f
+).
+A specification such as
+.B \#-
+means "until the end".
+.TP
+.B \-il #
+Interleave factor for the disk.
+.SH EXAMPLE
+.IP
+.nf
+diskformat /dev/rfdc0 -dens 1 -size 128 -il 3
+.fi
+.PP
+will format the floppy disk on drive 0, single density,
+128 bytes per sector with an interleave factor of 3.
+This format is the only truly portable floppy format.
+.\"	@(#)diskformat.1m	5.1 of 10/21/83

@@ -1,0 +1,20 @@
+#-----------------------------------------------------------------------------#
+#									      #
+# XXX MMI errno offsets from MMIERRBASE describing errors for ioctl calls etc.#
+#									      #
+# SCCS identification "@(#) mmierrors 1.1@(#)"
+#									      #
+#-----------------------------------------------------------------------------#
+
+1	window not open			# for ioctl number < 128
+2	invalid handle number		# out of range 0..MAXHANDLES
+3	invalid handle type		#
+4	handle locked			#
+5	handle not locked		#
+6	handle in use			#
+7	no current event		#
+8	not handling events		#
+9	too many menus or items		#
+10	cannot initialise window	#
+11	not implemented			#
+

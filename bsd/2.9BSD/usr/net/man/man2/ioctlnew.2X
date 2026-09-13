@@ -1,0 +1,79 @@
+.TH IOCTLNEW 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+ioctlnew \- description of some new ioctls
+.SH DESCRIPTION
+.TP 5
+FIONBIO
+Takes an integer parameter saying whether non-blocking i/o is
+desired on the specified file.
+Applies to terminals, pipe, pseudo-terminals and sockets and
+specifies that operations are to return EWOULDBLOCK rather than
+blocking.  A
+.IR select (2x)
+operation may be used to determine when i/o is possible without
+busy polling.
+.TP 5
+FIOASYNC
+Takes an integer parameter saying whether interrupt notification
+that i/o is possible using SIGIO is desired for the specified
+descriptor.  (Not yet implemented.)
+.PP
+The following controls are useful in implementing remote terminal
+facilities:
+.TP 5
+TIOCSTOP
+Stops output to a terminal (e.g. like typing ^S).  Takes no parameter.
+.TP 5
+TIOCSTART
+Restarts output (stopped by TIOCSTOP or by typing ^S).  Takes no parameter.
+.TP 5
+TIOCNOTTY
+A mode enabled or disabled with an integer parameter.
+When applied to /dev/tty for a process removes any terminal
+and process group association for that process, returning
+it to the class of process shown only by ``ps x''.
+.TP 5
+TIOCPKT
+A mode enabled or disabled with a parameter (the address of a) 0 or 1.
+When applied to the controlling terminal of a pseudo-terminal
+(e.g. /dev/ptyp?) causes subsequent data to be read preceded by a zero
+byte (symbolically defined as TIOCPKT_DATA.
+The other possibility in packet mode is a single byte reflecting
+control status information.  This byte is an inclusive of zero or
+more of the bits:
+TIOCPKT_FLUSHREAD whenever the read queue for the terminal is flushed,
+TIOCPKT_FLUSHWRITE whenever the write queue for the terminal is flushed,
+TIOCPKT_STOP whenever output to the terminal is stopped ala ^S,
+TIOCPKT_START whenever output is restarted.
+In addition, each control byte contains TIOCPKT_DOSTOP if the
+start and stop characters on the terminal are currently ^S and ^Q,
+and TIOCPKT_NOSTOP if they are not.
+This mode is used by
+.IR rlogin (1c)
+to implement a remote-echoed, locally ^S/^Q flow controlled remote
+login with proper back-flushing of output; it can be used by
+other similar programs.
+.TP 5
+TIOCREMOTE
+A mode for the control terminal of a pseudo-terminal, independent of TIOCPKT.
+This mode causes input to the pty to be flow controlled and not input edited
+(regardless of terminal mode).  Each write to the control terminal produces
+a record boundary for the process reading the terminal.  In normal
+usage, a write of data is like the data typed as a line on the terminal;
+a write of 0 bytes is like typing ^D.  TIOCREMOTE can be used when
+doing remote line editing in a window manager, or whenever flow controlled
+input is required.
+.SH SEE ALSO
+socket(2x), ioctl(2)
+.SH BUGS
+FIONBIO actually applies to the underlying entity (e.g. the terminal)
+rather than an instance (e.g. result of a single open).  This
+is undoubtedly wrong and will be fixed.
+.PP
+These controls are provisional, and may exist in different forms
+in 4.2bsd.  In particular, the modes for the controlling half of
+pseudo-terminals are instances of kernel ``protocol support'' for
+user-assisted implementation of system abstractions.
+More support for this kind of system extensibility will be more provided
+in 4.2.

@@ -1,0 +1,32 @@
+.TH SUMDIR 1 UniSoft
+.SH NAME
+sumdir \- sum and count characters in the files in the given directories
+.SH SYNOPSIS
+.B sumdir
+[directories]
+.SH DESCRIPTION
+.I Sumdir\^
+calculates and prints a 16-bit checksum for the named file,
+and also prints the number of characters in the file. 
+It is typically used to look for bad spots on the file system, or
+to validate a file transmitted over
+some transmission line.
+The output from this program differs from the output from the
+.IR sum\^ (1) 
+program in that 
+.I sumdir\^
+prints the number of characters rather
+than the number of blocks in the file.
+.PP
+.I Sumdir\^
+provides a recursive checksum of all files in the specified directory.
+.SH EXAMPLE
+.IP
+sumdir man1
+.PP
+produces the checksum and the character count of the files in
+the directory 
+.BR man1 .
+.SH "SEE ALSO"
+sum(1).
+.\"	@(#)sumdir.1	5.1 of 11/16/83

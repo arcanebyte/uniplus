@@ -1,0 +1,3 @@
+# fsname	dir		type	opts	freq	passno
+/dev/disk0b	/		5.2	rw	1	1
+/dev/disk0d	/usr		5.2	rw	1	1

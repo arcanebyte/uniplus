@@ -1,0 +1,1367 @@
+##
+##			Vchk Tree 16.8.84
+##		   Root Computers Ltd. London EC1
+##
+##			Modified  20.8.85
+##		   Torch Computers Ltd. Cambridge.
+##
+.define BNET		# Berkely 4.2 Compatible Networking
+.define ROOTSHARE 	# SHARED LIBRARIES & C RUNTIME STARTUP
+.define UKUUCP 		# Root Supplied Version of UUCP for UK systems.
+.define BELLUUCP 	# Default BELL System V version of UUCP
+.define SAP 		# Systems Activity Package - NOT WORKING
+.define LP		# Line Printer Spooler Package
+.define GRAPHICS	# System V Graphics
+.define SPELL		# System V Spelling Package
+.define GAMES		# System V Games
+.define ERRLOG		# Error Logging
+R=.
+B=$R/bin
+D=$R/dev
+E=$R/etc
+I=$R/icons
+L=$R/lib
+S=$R/start
+U=$R/usr
+UB=$R/usr/bin
+UL=$R/usr/lib
+US=$R/usr/src		# Added by Torch for examples
+$R/		root 755		(chown root; chmod 755)	
+$R/dev/		644	sys		(chown sys; chmod 775)
+$R/lib/		bin 775			(chown bin;chmod 775)
+$R/lib/libp/	bin 775			(chown bin;chmod 775)
+$R/icons/		root 644		(chown root;chmod 755)
+$R/bin/		bin 775			(chown bin;chmod 775)
+$R/etc/		sys 775			(chown sys;chmod 775)
+$R/lost+found/	sys 777		(chown sys;chmod 777)
+$R/start/	root 755		(chown root;chmod 755)
+$R/tmp/		sys 777		(chown sys;chmod 777)
+$R/waste/		root 777		(chown root;chmod 777)
+$R/mnt/		sys 775		(chown sys;chmod 755)
+$R/usr/		bin 775		(chown bin;chmod 775)
+$R/.profile	(chown root;chmod 644)
+$R/.cshrc	(chown root;chmod 644)
+$R/.iconspec	(chown root; chmod 644)
+$R/.desktop	(chown root; chmod 644)
+$R/unix		(chown sys; chmod 644)
+
+$U/bin/		bin 775	(chown bin; chmod 775)
+$U/src/		bin 777	(chown bin; chmod 777)
+$U/guest/		guest 755	(chown guest; chmod 755)
+$U/preserve/		bin 777	(chown bin; chmod 777)
+$U/lost+found/	sys 777		(chown sys;chmod 777)
+$(UB)/lost+found/	sys 777		(chown sys;chmod 777)
+# /dev files
+$R/dev/.iconspec	(chown root; chmod 644)
+$R/dev/console		c 0 0		(chmod 666; link to $./{systty,syscon})
+$R/dev/desktop		c 0 99			(chmod 666)
+$R/dev/dialin		c 7 0			(chmod 666)
+$R/dev/dialout		c 8 0			(chmod 666)
+$R/dev/disk0a		b 0 0
+$R/dev/disk0b		b 0 1
+$R/dev/disk0c		b 0 2			(link to $./swap)
+$R/dev/disk0d		b 0 3
+$R/dev/disk0e		b 0 4
+$R/dev/disk0f		b 0 5
+$R/dev/disk10a		b 1 0
+$R/dev/disk10b		b 1 1
+$R/dev/disk10c		b 1 2
+$R/dev/disk10d		b 1 3
+$R/dev/disk10e		b 1 4
+$R/dev/disk10f		b 1 5
+$R/dev/disk1a		b 0 32
+$R/dev/disk1b		b 0 33
+$R/dev/disk1c		b 0 34
+$R/dev/disk1d		b 0 35
+$R/dev/disk1e		b 0 36
+$R/dev/disk1f		b 0 37
+.ifdef ERRLOG
+$R/dev/error		c 3 0			(chmod 600)
+.endif
+$R/dev/floppy		b 0 64
+$R/dev/kmem		c 2 1
+$R/dev/mem		c 2 0
+$R/dev/null		c 2 2			(chmod 666)
+$R/dev/printera		c 6 0			(chown lp; chmod 600)
+$R/dev/printerb		c 6 1			(chown lp; chmod 600)
+$R/dev/printer		c 9 0			(chown lp; chmod 600)
+$R/dev/rdisk0a		c 10 0
+$R/dev/rdisk0b		c 10 1
+$R/dev/rdisk0c		c 10 2
+$R/dev/rdisk0d		c 10 3
+$R/dev/rdisk0e		c 10 4
+$R/dev/rdisk0f		c 10 5
+$R/dev/rdisk10a		c 11 0
+$R/dev/rdisk10b		c 11 1
+$R/dev/rdisk10c		c 11 2
+$R/dev/rdisk10d		c 11 3
+$R/dev/rdisk10e		c 11 4
+$R/dev/rdisk10f		c 11 5
+$R/dev/rfloppy		c 10 64
+$R/dev/scsi		c 17 0			(chmod 600)
+$R/dev/service		c 5 0			(chmod 600)
+$R/dev/tty		c 1 0			(chmod 666)
+$R/dev/ttya		c 6 0			(chmod 666)
+$R/dev/ttyb		c 6 1			(chmod 666)
+$R/dev/ttyc		c 9 0			(chmod 666) 
+$R/dev/w0		c 0 0			(chmod 666)
+$R/dev/w1		c 0 1			(chmod 666)
+$R/dev/w2		c 0 2			(chmod 666)
+$R/dev/w3		c 0 3			(chmod 666)
+$R/dev/w4		c 0 4			(chmod 666)
+$R/dev/w5		c 0 5			(chmod 666)
+$R/dev/w6		c 0 6			(chmod 666)
+$R/dev/w7		c 0 7			(chmod 666)
+$R/dev/w8		c 0 8			(chmod 666)
+$R/dev/w9		c 0 9			(chmod 666)
+$R/dev/wa		c 0 10			(chmod 666)
+$R/dev/wb		c 0 11			(chmod 666)
+# /usr
+$U/dict/	bin 644		(chown bin; chmod 755)
+$U/dict/words
+$U/spool/	sys 777		(chown sys; chmod 777)
+.ifdef UKUUCP | BELLUUCP
+$U/spool/uucp/	uucp 777	(chown uucp; chmod 777)
+$U/spool/uucppublic/	uucp 777	(chown uucp; chmod 777)
+.endif
+$U/spool/at/	sys 744		(chown sys; chmod 744)
+$U/spool/at/past/	sys 755	(chown sys; chmod 755)
+# LP spooling package
+.ifdef LP
+$U/spool/lp/		lp  777		(chown lp; chmod 777)
+USLP=$U/spool/lp
+$(USLP)/.profile		(chown lp; chmod 644)
+$(USLP)/class/		lp 755	(chown lp; chmod 755)
+$(USLP)/model/		lp 755	(chown lp; chmod 755)
+$(USLP)/interface/	lp 755	(chown lp; chmod 755)
+$(USLP)/member/		lp 644	(chown lp; chmod 755)
+$(USLP)/request/	lp 755	(chown lp; chmod 755)
+$(USLP)/log		(chmod 644)
+$(USLP)/oldlog		(chmod 644)
+$(USLP)/outputq		(chmod 644)
+$(USLP)/pstatus		(chmod 644)
+$(USLP)/qstatus		(chmod 644)
+$(USLP)/seqfile		(chmod 644)
+$(USLP)/default		(chmod 644)
+
+# THIS INTERFACE SHOULD BE CONFIGURED FOR YOUR PRINTER
+
+$(USLP)/member/printer
+$(USLP)/member/dumper
+
+$(USLP)/model/1640
+$(USLP)/model/dumb
+$(USLP)/model/f450
+$(USLP)/model/hp
+$(USLP)/model/pprx
+$(USLP)/model/prx
+$(USLP)/model/cand
+$(USLP)/model/tpp
+
+$(USLP)/request/printer/	lp 755	(chown lp; chmod 755)
+$(USLP)/request/dumper/	lp 755	(chown lp; chmod 755)
+.endif
+$U/tmp/		sys 777		(chown sys; chmod 777)
+$U/adm/		adm 775		(chmod 775; chown adm)
+$U/adm/sulog			(chmod 644; chown root)
+$U/adm/cronlog			(chmod 644; chown root)
+$U/adm/acct/	adm 755		(chmod 755; chown adm)
+$U/adm/acct/sum/	adm 755		(chmod 755; chown adm)
+$U/adm/acct/nite/	adm 755		(chmod 755; chown adm)
+$U/adm/acct/fiscal/	adm 755		(chmod 755; chown adm)
+$U/lib/		bin 775		(chmod 775; chown bin)
+$U/lib/libp/	bin 775		(chmod 775; chown bin)
+$(UL)/lex/	bin 755		(chown bin; chmod 755)
+$U/mail/	bin 775		(chown bin; chgrp 6; chmod 775)
+$U/man/		bin 775		(chown bin; chmod 775)
+$U/man/{a,u}_man/	bin 755	(chown bin; chmod 775)
+$U/man/u_man/man{1,2,3,4,5,6}/	bin 755	(chown bin; chmod 775)
+$U/man/a_man/man{1,7,8}/	bin 755	(chown bin; chmod 775)
+$U/news/	bin 777		(chown bin; chmod 777)
+$U/pub/		bin 775		(chown bin; chmod 775)
+.ifdef GAMES
+$U/games/	bin 775		(chmod 775; chown bin)
+$U/games/lib/	bin 775		(chmod 775; chown bin)
+$U/games/lib/quiz/	bin 775 (chmod 775; chown bin)
+.endif
+
+# HEADER FILES - /usr/include
+UI=$U/include
+USI=$(UI)/sys
+$U/include/	bin 644		(chmod 755; chown bin)
+$U/include/sys/ bin 644		(chmod 755; chown bin)
+
+$(UI)/handle.h
+$(UI)/mmi.h
+$(UI)/eioctl.h
+$(UI)/zoom.h
+$(UI)/wlib.h
+$(UI)/window.h
+$(UI)/mouse.h
+$(UI)/sema.h
+$(UI)/lilib.h
+$(UI)/menu.h
+$(UI)/kwlib.h
+$(UI)/keyboard.h
+$(UI)/icon.h
+$(UI)/heap.h
+$(UI)/fillblt.h
+$(UI)/event.h
+$(UI)/edit.h
+$(UI)/key.h
+$(UI)/display.h
+$(UI)/a.out.h
+$(UI)/alarm.h
+$(UI)/aouthdr.h
+$(UI)/ar.h
+$(UI)/assert.h
+$(UI)/core.h
+$(UI)/ctype.h
+$(UI)/curses.h
+$(UI)/dial.h
+$(UI)/dumprestor.h
+$(UI)/errno.h
+$(UI)/errno.pas
+$(UI)/execargs.h
+$(UI)/fatal.h
+$(UI)/fcntl.h
+$(UI)/filehdr.h
+$(UI)/ftw.h
+$(UI)/grp.h
+$(UI)/ldfcn.h
+$(UI)/linenum.h
+$(UI)/macros.h
+$(UI)/math.h
+$(UI)/memory.h
+$(UI)/mnttab.h
+$(UI)/mon.h
+$(UI)/nan.h
+.ifdef BNET
+UIN=$(UI)/net
+$(UI)/net/	bin 644		(chown bin; chmod 755)
+$(UIN)/af.h
+$(UIN)/if.h
+$(UIN)/if.h.old
+$(UIN)/if_ec.h
+$(UIN)/if_ether.h
+$(UIN)/if_imphost.h
+$(UIN)/if_uba.h
+$(UIN)/imp.h
+$(UIN)/in.h
+$(UIN)/in_pcb.h
+$(UIN)/in_systm.h
+$(UIN)/ip.h
+$(UIN)/ip_icmp.h
+$(UIN)/ip_var.h
+$(UIN)/mbuf.h
+$(UIN)/misc.h
+$(UIN)/netdb.h
+$(UIN)/netisr.h
+$(UIN)/protosw.h
+$(UIN)/pty.h
+$(UIN)/pty.h.old
+$(UIN)/pup.h
+$(UIN)/raw_cb.h
+$(UIN)/route.h
+$(UIN)/socket.h
+$(UIN)/socketvar.h
+$(UIN)/tcp.h
+$(UIN)/tcp_debug.h
+$(UIN)/tcp_fsm.h
+$(UIN)/tcp_seq.h
+$(UIN)/tcp_timer.h
+$(UIN)/tcp_var.h
+$(UIN)/tcpip.h
+$(UIN)/ubavar.h
+$(UIN)/udp.h
+$(UIN)/udp_var.h
+.endif
+$(UI)/pwd.h
+$(UI)/regexp.h
+$(UI)/reloc.h
+$(UI)/rje.h
+$(UI)/scnhdr.h
+$(UI)/search.h
+$(UI)/setjmp.h
+$(UI)/sgtty.h
+$(UI)/signal.h
+$(UI)/sky_ioctl.h
+$(UI)/stand.h
+$(UI)/stdio.h
+$(UI)/storclass.h
+$(UI)/string.h
+$(UI)/string.pas
+$(UI)/symbol.h
+$(UI)/syms.h
+$(UI)/sys.s
+$(UI)/termio.h
+$(UI)/time.h
+$(UI)/time.pas
+$(UI)/tp_defs.h
+$(UI)/ustat.h
+$(UI)/utmp.h
+$(UI)/values.h
+$(UI)/varargs.h
+$(UI)/x25lib.h
+
+# /usr/include/sys/
+$(USI)/acct.h
+$(USI)/altblk.h
+$(USI)/buf.h
+$(USI)/buserr.h
+$(USI)/callo.h
+$(USI)/channel.h
+$(USI)/clock.h
+$(USI)/conf.h
+$(USI)/config.h
+$(USI)/context.h
+$(USI)/cpuid.h
+$(USI)/crtctl.h
+$(USI)/csikmc.h
+$(USI)/dir.h
+$(USI)/dp.h
+$(USI)/elog.h
+$(USI)/erec.h
+$(USI)/err.h
+$(USI)/errno.h
+$(USI)/fblk.h
+$(USI)/fd1797.h
+$(USI)/fdev.h
+$(USI)/file.h
+$(USI)/filsys.h
+$(USI)/init.h
+$(USI)/ino.h
+$(USI)/inode.h
+$(USI)/io.h
+$(USI)/iobuf.h
+$(USI)/ioctl.h
+$(USI)/ipc.h
+$(USI)/lock.h
+$(USI)/locking.h
+$(USI)/lprio.h
+$(USI)/map.h
+$(USI)/mfp.h
+$(USI)/mmu.h
+$(USI)/mount.h
+$(USI)/msg.h
+$(USI)/opt.h
+$(USI)/param.h
+$(USI)/param.pas
+$(USI)/pcl.h
+$(USI)/proc.h
+$(USI)/psl.h
+$(USI)/reg.h
+$(USI)/rtc.h
+$(USI)/scat.h
+$(USI)/seg.h
+$(USI)/sem.h
+$(USI)/shm.h
+$(USI)/signal.h
+$(USI)/space.h
+$(USI)/st.h
+$(USI)/stat.h
+$(USI)/stat.pas
+$(USI)/stermio.h
+$(USI)/sumit
+$(USI)/sysfail.h
+$(USI)/sysinfo.h
+$(USI)/sysmacros.h
+$(USI)/systm.h
+$(USI)/termio.h
+$(USI)/text.h
+$(USI)/times.h
+$(USI)/trace.h
+$(USI)/trap.h
+$(USI)/ttold.h
+$(USI)/tty.h
+$(USI)/types.h
+$(USI)/types.pas
+$(USI)/uioctl.h
+$(USI)/user.h
+$(USI)/utsname.h
+$(USI)/var.h
+$(USI)/vp.h
+$(USI)/x25macro.h
+$(USI)/x25packet.h
+$(USI)/x25rpt.h
+$(USI)/x25u.h
+$(USI)/x25user.h
+
+$(UL)/acct/	adm 775		(chmod 775;chown adm;chgrp 2)
+$(UL)/cref/	bin 775		(chown bin; chmod 775)
+$(UL)/font/	bin 775		(chown bin; chmod 775)
+$(UL)/graf/	bin 775		(chown bin; chmod 775)
+$(UL)/graf/ttoc.d/	bin 775	(chown bin; chmod 775)
+$(UL)/graf/whatis/	bin 775	(chown bin; chmod 775)
+$(UL)/help/	bin 755		(chown bin; chmod 755)
+$(UL)/macros/	bin 775		(chmod 775)
+$(UL)/sa/	bin 755		(chown bin; chmod 755)
+.ifdef SPELL
+$(UL)/spell/	bin 775		(chmod 775)
+ULSP=$(UL)/spell
+$(ULSP)/american			(chmod 644)
+$(ULSP)/british			(chmod 644)
+$(ULSP)/extra			(chmod 644)
+$(ULSP)/hashcheck
+$(ULSP)/hashmake
+$(ULSP)/list			(chmod 644)
+$(ULSP)/stop			(chmod 644)
+.endif
+$(UL)/tabset/
+$(UL)/term/	bin 775		(chown bin; chmod 775)
+$(UL)/tmac/	bin 644
+
+.ifdef LP
+$(UL)/accept			(chown lp; chmod 755)
+$(UL)/lpadmin			(chown root; chmod 700)
+$(UL)/lpmove			(chown lp; chmod 755)
+$(UL)/lpsched			(chown root; chmod 700)
+$(UL)/lpshut			(chown lp; chmod 755)
+$(UL)/reject			(chown lp; chmod 755)
+.endif
+# UUCP Directories
+.ifdef BELLUUCP
+# BELL version in uucp.sysV
+# sysV version installed default
+$(UL)/uucp/		uucp 755	(chown uucp; chmod 755;)
+$(UL)/uucp.sysV/	uucp 755	(chown uucp; chmod 755; )
+ULUV=$(UL)/uucp.sysV
+.endif
+.ifdef UKUUCP
+# UK version in uucp.UK
+$(UL)/uucp.UK/		uucp 755	(chown uucp; chmod 755)
+ULUK=$(UL)/uucp.UK
+.endif
+# /lib
+.ifdef	twopassc	# C compiler
+$L/c0			[part of C compiler]
+$L/c1			[part of C compiler]
+.else
+$L/c			[part of C compiler]
+.endif
+$L/c2			[part of C compiler]
+$L/cpp
+$L/crt0.o	(chmod 644)
+$L/mcrt0.o	(chmod 644)
+$L/crt0sky.o	(chmod 644)
+$L/mcrt0sky.o	(chmod 644)
+$L/libc.a	(chmod 644)
+$L/libp/libc.a	(chmod 644)
+$L/libPW.a	(chmod 644)
+$L/libp/libPW.a	(chmod 644)
+$L/libm.a	(chmod 644)
+$L/libw.a	(chmod 644)	# Torch window library
+$L/libg.a	(chmod 644)	# Torch graphics library
+$L/libp/libm.a	(chmod 644)
+.ifdef ROOTSHARE
+$L/shmlib.o	(chmod 644)
+$L/shmcrt0.o	(chmod 644)
+$L/shmc.a	(chmod 644)
+.endif
+$U/pub/ascii
+$U/pub/greek
+$U/pub/tabs
+$(UL)/crontab			# Added
+$(UL)/lib300.a	(chmod 644)
+$(UL)/lib300s.a (chmod 644;link to $./lib300S.a)
+$(UL)/lib4014.a (chmod 644)
+$(UL)/lib450.a	(chmod 644)
+$(UL)/libvt0.a	(chmod 644)
+$(UL)/libl.a	(chmod 644)
+$(UL)/libnet.a	(chmod 644)		# Added
+$(UL)/libplot.a (chmod 644)
+$(UL)/libtermcap.a	(chmod 644)
+$(UL)/libp/libtermcap.a	(chmod 644)
+$(UL)/libcurses.a	(chmod 644)
+$(UL)/libp/libcurses.a	(chmod 644)
+$(UL)/liby.a	(chmod 644)
+$(UL)/libp/liby.a	(chmod 644)
+$(UL)/units	(chmod 644;link to $./unittab)
+$(UL)/font/ftB
+$(UL)/font/ftBC
+$(UL)/font/ftC
+$(UL)/font/ftCE
+$(UL)/font/ftCI		(link to $./ftCK)
+$(UL)/font/ftCS
+$(UL)/font/ftCW
+$(UL)/font/ftFD		(link to $./ftUD)
+$(UL)/font/ftG		(link to $./ftH)
+$(UL)/font/ftGI		(link to $./ftHI)
+$(UL)/font/ftGM		(link to $./ftHM)
+$(UL)/font/ftGR
+$(UL)/font/ftI
+$(UL)/font/ftL
+$(UL)/font/ftLI
+$(UL)/font/ftPA
+$(UL)/font/ftPB
+$(UL)/font/ftPI
+$(UL)/font/ftR
+$(UL)/font/ftS
+$(UL)/font/ftSB
+$(UL)/font/ftSI
+$(UL)/font/ftSM
+$(UL)/font/ftXM
+$(UL)/tabset/3101
+$(UL)/tabset/beehive
+$(UL)/tabset/diablo
+$(UL)/tabset/std
+$(UL)/tabset/teleray
+$(UL)/tabset/vt100
+$(UL)/tabset/xerox1720
+$(UL)/term/tab2631
+$(UL)/term/tab2631-c
+$(UL)/term/tab2631-e
+$(UL)/term/tab300
+$(UL)/term/tab300-12
+$(UL)/term/tab300s		(link to $./tab300S)
+$(UL)/term/tab300s-12		(link to $./tab300S-12)
+$(UL)/term/tab37
+$(UL)/term/tab382
+$(UL)/term/tab4000a		(link to $./tab4000A)
+$(UL)/term/tab450
+$(UL)/term/tab450-12
+$(UL)/term/tab832
+$(UL)/term/tabX
+$(UL)/term/taba1
+$(UL)/term/tablp
+$(UL)/term/tabtn300
+$(UL)/tmac/tmac.an
+$(UL)/tmac/tmac.an6
+$(UL)/tmac/tmac.m
+$(UL)/tmac/tmac.osd
+$(UL)/tmac/tmac.ptx
+$(UL)/tmac/tmac.v
+$(UL)/macros/an
+$(UL)/macros/an6
+$(UL)/macros/cmp.n.d.an	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/cmp.n.d.m	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/cmp.n.t.an	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/cmp.n.t.m	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/cmp.t.d.an	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/cmp.t.d.m	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/cmp.t.t.an	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/cmp.t.t.m	(chmod 644; chown bin; chgrp 2)
+$(UL)/macros/mmn
+$(UL)/macros/mmt
+$(UL)/macros/osdd
+$(UL)/macros/ptx
+$(UL)/macros/ucmp.n.an
+$(UL)/macros/ucmp.n.m
+$(UL)/macros/ucmp.t.an
+$(UL)/macros/ucmp.t.m
+$(UL)/macros/vmca
+.ifdef GAMES
+UGL=$U/games/lib
+$(UGL)/backrules
+$(UGL)/bogdict		(chown bin; chgrp 2; chmod 644)
+$(UGL)/boggle.instr	(chown bin; chgrp 2; chmod 644)
+$(UGL)/crib.instr
+$(UGL)/fortunes		(chown bin; chgrp 2; chmod 644)
+UGL=$U/games/lib/quiz
+$(UGL)/africa
+$(UGL)/airport
+$(UGL)/america
+$(UGL)/areas
+$(UGL)/arith
+$(UGL)/asia
+$(UGL)/babies
+$(UGL)/bard
+$(UGL)/chinese
+$(UGL)/collectives
+$(UGL)/dept
+$(UGL)/editor
+$(UGL)/elements
+$(UGL)/europe
+$(UGL)/greeklang
+$(UGL)/inca
+$(UGL)/index
+$(UGL)/latin
+$(UGL)/locomotive
+$(UGL)/midearth
+$(UGL)/misspell
+$(UGL)/mmacros		<empty>
+$(UGL)/morse
+$(UGL)/mult
+$(UGL)/multitude
+$(UGL)/murders
+$(UGL)/poetry
+$(UGL)/posneg
+$(UGL)/pres
+$(UGL)/province
+$(UGL)/roffreq
+$(UGL)/seq-easy
+$(UGL)/seq-hard
+$(UGL)/sexes
+$(UGL)/sov
+$(UGL)/spelling
+$(UGL)/state
+$(UGL)/trek
+$(UGL)/ucc
+.endif
+
+# /bin files
+$B/.iconspec		(chmod 664)
+$B/adb
+$B/ar
+$B/as
+$B/asa
+$B/basename
+$B/cat
+$B/calc		# Added by Torch
+$B/cc
+.ifdef BNET
+$B/ccnet	# Unsupported (??)
+.endif
+$B/chgrp
+$B/chmod
+$B/chog
+$B/chown		(chown bin; chmod 775; link to $E/chown) # for UK uucp
+$B/chwdown		(chown root; chmod 4755)
+$B/clock		# Added by Torch
+$B/cmp
+$B/cp		(link to $./ln)
+$B/cpio
+$B/crypt
+$B/csh
+$B/date
+$B/dd
+$B/df			(chown root; chmod 4755)
+$B/diff
+$B/dirname
+$B/dm
+$B/du
+$B/echo
+$B/ed		(link to $./red)
+$B/env
+$B/ex		(link to $./{e,edit,vi,view})
+$B/ex.big	# for vi with more buffers (link to $./{ex,e,edit,vi,view})
+$B/expr
+$B/false		(link to $./{pdp11,vax,u370,z8000})
+$B/file
+$B/find
+$B/format	(chown root; chmod 4755) # Torch [floppy disk format program]
+$B/fsetup	(chown root; chmod 4755) # Torch [format parameters program ]
+$B/fsplit
+$B/getbbtime	(chown bin; chmod 775)		# Torch Supported
+$B/grep
+$B/kill
+$B/ie
+$B/installfloppy	# Added by Torch
+$B/ipcs
+$B/ipcrm
+$B/key
+$B/lav		# Unsupported (??)
+$B/ld
+$B/line
+$B/login	(chown root; chmod 744)
+$B/ls
+$B/mail		(chmod 2755; chgrp 6; link to $./rmail)
+$B/make
+$B/mesg
+$B/mkdir		(chown root; chmod 4755)
+$B/mv			(chown root; chmod 4755)
+$B/newform
+$B/newgrp		(chown root; chmod 4755)
+$B/newpal
+$B/nice
+$B/nohup
+$B/nm
+$B/od
+$B/passwd		(chown root; chmod 6755)
+$B/pr
+$B/prepflop		# Added by Torch
+$B/ps			(chmod 2755;chgrp 3)
+$B/put			# Added
+$B/pwd
+$B/rm
+$B/rmdir		(chown root; chmod 4755)
+$B/sh		(link to $./rsh)
+$B/sd		( chmod 755;  link to $./wdump)
+$B/sed
+$B/setpal
+$B/size
+$B/sleep
+$B/sort
+$B/strip
+$B/stty		(link to $./STTY)
+$B/su			(chown root; chmod 4755; chgrp 2)
+$B/sum
+$B/sync
+$B/tail
+$B/take			# Added by Unisoft
+$B/tar
+$B/tee
+$B/time
+$B/touch
+$B/tr
+$B/true		(link to $./m68000)
+$B/tset			# Added
+$B/tty
+$B/uname
+$B/wc
+$B/wdsh		(link to $./wd)
+$B/who
+$B/write
+$B/yawn			# Added by Torch
+
+# /etc files
+$E/.conficonspec	(chown root; chmod 644)
+$E/.confdesktop	(chown root; chmod 644)
+$E/adbunix	# Added by Torch
+$E/apinstall	# Added by Torch
+$E/apreport	# Added by Torch
+$E/badblk	(chmod 755; chown bin)
+$E/bbnos	(chmod 775; chown bin)
+$E/bcheckrc	(chmod 755; chown bin)
+$E/bcopy	(chmod 755; chown bin)
+$E/brc		(chmod 755; chown bin)
+$E/checklist	[checklist of file systems]
+$E/chgnod	(chmod 775; chown bin)
+$E/chroot	(chmod 775; chown bin)
+$E/chsize	(chown root; chmod 764; chgrp 2) # unsupported
+$E/clri		(chmod 775; chown bin)
+$E/cron		(chown root; chmod 744)
+$E/dateset	(chown bin; chmod 755)
+$E/dcopy	(chown bin; chmod 755)
+$E/dcopy512	(chown bin; chmod 755)
+$E/devnm	(chown bin; chmod 755)
+$E/dfsck	(chown bin; chmod 755)
+$E/disktune	(chown bin; chmod 755)
+$E/dofsck	(chown root; chgrp 0; chmod 666)
+$E/dtype	# Added by Torch
+$E/eproto	(chown sys; chmod 644)
+.ifdef ERRLOG
+$E/errdead	(chown sys; chmod 755)
+$E/errstop	(chown sys;chmod 644)
+.endif
+$E/ff		(chown bin; chmod 755)
+$E/filesave.u	(chown bin; chmod 755)
+$E/finc		(chown bin; chmod 755)
+$E/frec		(chown bin; chmod 755)
+$E/fsba		(chown bin; chmod 755)
+$E/fsck  	(chown bin; chmod 755)
+$E/fsck512	(chown bin; chmod 755)
+.ifdef ROOTSHARE
+$E/fscr  	(chown root; chmod 700)
+$E/fscr512	(chown root; chmod 700)
+.endif
+$E/fsdb		(chown bin; chmod 755)
+$E/fsdb512	(chown bin; chmod 755)
+$E/fuser	(chown bin; chmod 755)
+$E/getty	(chown bin; chmod 744)
+$E/gettydefs	(chown bin; chgrp 2; chmod 644)
+$E/group	(chown sys; chgrp 3; chmod 444)
+$E/grpck	(chown bin; chmod 755)
+$E/init		(chown bin; chmod 754; chgrp 2; link to $./telinit)
+$E/inittab.mud	(chown sys; chgrp 3; chmod 644;) 
+$E/inittab.sul	(chown sys; chgrp 3; chmod 644;) 
+$E/inittab.mul	(chown sys; chgrp 3; chmod 644;) 
+$E/inittab.sud	(chown sys; chgrp 3; chmod 644; link to $./inittab) 
+$E/install	(chown bin; chmod 755)
+$E/ioctl.syscon	(chown sys; chgrp 3; chmod 644;)
+$E/killall	(chown root; chmod 744)
+$E/labelit	(chown bin; chmod 775)
+$E/link		(chown bin; chmod 755)
+$E/lister.sh	# Added by Torch
+$E/loader.sh	# Added by Torch
+$E/loadfloppy.sh	# Added by Torch
+$E/listfloppy.sh	# Added by Torch
+$E/magic	(chown bin; chmod 644)
+$E/master	(chown bin; chmod 755)
+$E/mkfs		(chown bin; chmod 775)
+$E/mkfs512	(chown bin; chmod 775)
+$E/mklost+found (chown bin; chmod 775)
+$E/mknod	(chown bin; chmod 775)
+$E/mnttab	(chown root; chgrp 0; chmod 644)
+$E/motd		<empty>
+$E/mount	(chown bin; chmod 775)
+$E/movewin	# Added by Torch
+$E/mvdir	(chown bin; chmod 755)
+$E/ncheck	(chown bin; chmod 755)
+$E/nmimode	(chown root; chmod 700)
+$E/partsize	(chown bin; chmod 755)
+$E/passwd	(chown sys; chgrp 3; chmod 644)
+$E/powerdown	(chown root; chmod 700)
+$E/powerfail	(chown sys; chgrp 3; chmod 774; link to $./shutdown)
+$E/profile	(chmod 755)
+$E/pwck		(chown bin; chmod 755)
+$E/rc		(chmod 755)
+$E/reboot	(chown root; chmod 700)
+$E/setbbtime	(chown root; chmod 700)		# Torch Supported
+$E/setmnt	(chown bin; chmod 775)
+.ifdef ROOTSHARE
+$E/setshmlib	(chown root; chmod 700)
+.endif
+$E/shutd	(chown bin; chmod 755)
+$E/tapesave.u	(chown bin; chmod 775)
+$E/termcap	(chown bin; chmod 775)
+$E/ttytype	(chown sys; chmod 644)
+$E/ucntl	(chown bin; chmod 755)
+$E/umount	(chown bin; chmod 755)
+$E/unlink	(chown bin; chmod 755)
+$E/update	(chown bin; chmod 755)
+$E/utmp		(chown sys; chmod 666)
+$E/vchk_tree		# Added
+$E/vchk_pw	(chmod 644)	# Added
+$E/volcopy	(chown bin; chmod 755)
+$E/wall		(chown bin; chmod 755)
+$E/whodo	(chown bin; chmod 755)
+$E/wtmp		(chown adm; chmod 664)
+$E/zero		(chown bin; chmod 755)
+# /usr/bin
+$(UB)/.iconspec	# Added by Torch
+$(UB)/300
+$(UB)/300s		(link to $./300S)
+$(UB)/4014
+$(UB)/450
+$(UB)/arcv
+$(UB)/at	(chmod 4755; chown root)
+$(UB)/awk
+$(UB)/banner
+$(UB)/banner7
+$(UB)/bc
+$(UB)/bfs
+$(UB)/bs
+$(UB)/cal
+$(UB)/calendar
+$(UB)/cb
+$(UB)/checkcw
+$(UB)/checkeq
+$(UB)/chsh	(chmod 4755; chown root)
+$(UB)/clash	(chmod 755; chown bin; chgrp 2)	# unsupported
+$(UB)/clear
+$(UB)/col
+$(UB)/colours	# Added by Torch
+$(UB)/con	# Added by Root - Unsupported
+$(UB)/comm
+$(UB)/cref
+$(UB)/cset	# Added by Torch
+$(UB)/csplit
+$(UB)/ct
+$(UB)/ctags
+$(UB)/cut
+$(UB)/cw
+$(UB)/cxref
+$(UB)/dc
+$(UB)/del	# Added by Root - Unsuported
+$(UB)/deroff
+$(UB)/diff3
+$(UB)/diffdir
+$(UB)/diffmk
+$(UB)/dircmp
+$(UB)/efl
+$(UB)/egrep
+.ifdef ERRLOG
+$(UB)/errpt
+$(UB)/exterr
+.endif
+$(UB)/es
+$(UB)/f		(link to $./b)	# Added by Torch
+$(UB)/factor
+$(UB)/fgrep
+$(UB)/freq
+$(UB)/getopt
+$(UB)/gpasswd	(chown root; chmod 4755)
+$(UB)/graf/	bin 775		(chown bin; chmod 775)
+$(UB)/graph
+$(UB)/head
+$(UB)/hex
+$(UB)/hp
+$(UB)/hyphen
+$(UB)/id
+$(UB)/ie	# Added by Torch
+$(UB)/index		# Added - unsupported
+$(UB)/ins		# Added - unsupported
+$(UB)/join
+$(UB)/key	# Torch Supported
+$(UB)/last
+$(UB)/leave
+$(UB)/left	# Added
+$(UB)/len		# Added - unsupported
+$(UB)/lex
+$(UB)/lint
+$(UB)/logname
+$(UB)/longest
+$(UB)/look
+$(UB)/lorder
+.ifdef	LP
+$(UB)/cancel	(chown lp; chmod 755)
+$(UB)/disable	(chown lp; chmod 755)
+$(UB)/enable	(chown lp; chmod 755)
+$(UB)/lp	(chown lp; chmod 4755)
+$(UB)/lpstat	(chown lp; chmod 4755)
+.endif
+$(UB)/ls7	(link to $./{lf,lx,ll})
+$(UB)/m4
+$(UB)/mid
+$(UB)/mkstr
+$(UB)/more
+$(UB)/news
+$(UB)/nl
+$(UB)/num
+$(UB)/pack
+$(UB)/paste
+$(UB)/path		# unsupported
+$(UB)/pcat
+$(UB)/printenv
+$(UB)/prof
+$(UB)/pstat		(chown bin; chgrp 3; chmod 2755)
+$(UB)/ptx
+$(UB)/put7		# Added Unisoft
+$(UB)/ratfor
+$(UB)/rcvhex
+$(UB)/reform
+$(UB)/regcmp
+$(UB)/reset
+$(UB)/rev		# Added - unsupported
+$(UB)/right		# Added - unsupported
+$(UB)/rindex		# Added - unsupported
+$(UB)/sdiff
+$(UB)/see
+$(UB)/script
+$(UB)/shar		(chown bin; chgrp 2; chmod 755)	# unsupported
+$(UB)/sno
+.ifdef SPELL
+$(UB)/spell
+.endif
+
+$(UB)/spline
+$(UB)/split
+$(UB)/ssp
+$(UB)/strings
+$(UB)/sum7
+$(UB)/sumdir
+$(UB)/tabs
+$(UB)/take7		# Added by Unisoft
+$(UB)/tar
+$(UB)/tc
+$(UB)/tp
+$(UB)/tplot
+$(UB)/xplot		# Torch Supported 
+$(UB)/tpr		(chown bin; chgrp 2; chmod 755)	# unsupported
+$(UB)/tra
+$(UB)/tsort
+$(UB)/tset
+$(UB)/typo
+$(UB)/ul
+$(UB)/uniq
+$(UB)/units
+$(UB)/unpack
+$(UB)/updater
+# /usr/bin/uucp for BELL version held in uucp.sysV directory
+.ifdef BELLUUCP
+$(UB)/uucp.sysV/	uucp 755 (chown uucp; chmod 755)
+UBUV=$(UB)/uucp.sysV
+
+$(UBUV)/cu		(link to $(UB)/cu)
+$(UBUV)/uucp		(chown uucp;chmod 4111; link to $(UB)/uucp)
+$(UBUV)/uulog		(chown uucp;chmod 4111; link to $(UB)/uulog)
+$(UBUV)/uuname		(chown uucp;chmod 4111; link to $(UB)/uuname)
+$(UBUV)/uupick		(link to $(UB)/uupick)
+$(UBUV)/uustat		(chown uucp;chmod 4111; link to $(UB)/uustat)
+$(UBUV)/uuto		(link to $(UB)/uuto)
+$(UBUV)/uux		(chown uucp;chmod 4111; link to $(UB)/uux)
+.endif
+
+.ifdef UKUUCP
+# /usr/bin/uucp for UK version held in uucp.UK directory
+$(UB)/uucp.UK/		uucp 755 (chown uucp; chmod 755)
+UBUK=$(UB)/uucp.UK
+
+$(UBUK)/ruusend		
+$(UBUK)/ucu		(chown uucp;chmod 4111)
+$(UBUK)/uuacct		
+$(UBUK)/uudecode
+$(UBUK)/uuencode
+$(UBUK)/uusend	
+$(UBUK)/uusnap
+$(UBUK)/uucp		(chown uucp;chmod 4111)
+$(UBUK)/uulog		(chown uucp;chmod 4111)
+$(UBUK)/uuname		(chown uucp;chmod 4111)
+$(UBUK)/uupick
+$(UBUK)/uustat		(chown uucp;chmod 4111)
+$(UBUK)/uuto
+$(UBUK)/uux		(chown uucp;chmod 4111)
+.endif
+$(UB)/vchk
+$(UB)/version
+$(UB)/whereis
+$(UB)/whoami
+$(UB)/xargs
+$(UB)/xref
+$(UB)/xstr
+$(UB)/yacc
+
+# /usr/lib
+$(UL)/atrun		(chmod 775)
+$(UL)/calprog
+$(UL)/cref/aign
+$(UL)/cref/atab
+$(UL)/cref/cign
+$(UL)/cref/crpost	(chmod 775)
+$(UL)/cref/ctab
+$(UL)/cref/eign
+$(UL)/cref/etab
+$(UL)/cref/upost	(chmod 775)
+$(UL)/diff3prog
+$(UL)/diffh
+.ifdef ERRLOG
+$(UL)/errdemon
+.endif
+$(UL)/ex3.7preserve	# [part of ex]
+$(UL)/ex3.7recover	# [part of ex]
+$(UL)/ex3.7strings	# [part of ex]
+$(UL)/graf/ttoc.d/ed.notoc
+$(UL)/graf/ttoc.d/ed.toc
+$(UL)/graf/ttoc.d/ed.ttoc.t
+$(UL)/lex/ncform	[part of lex]
+$(UL)/lex/nrform	[part of lex]
+$(UL)/lib.b	(chmod 644)
+$(UL)/lint1		[part of lint]
+$(UL)/lint2		[part of lint]
+$(UL)/llib-lc		[part of lint]
+$(UL)/llib-lc.ln	[part of lint]
+$(UL)/llib-lm		[part of lint]
+$(UL)/llib-lm.ln	[part of lint]
+$(UL)/llib-port		[part of lint]
+$(UL)/llib-port.ln	[part of lint]
+$(UL)/makekey
+$(UL)/manprog
+# Systems Activity Package - NOT WORKING YET
+.ifdef SAP
+# $(UL)/sa/
+$(UL)/sa/sa1
+$(UL)/sa/sa2
+$(UL)/sa/sadc		(chown bin; chgrp 3; chmod 2775)
+$(UL)/sa/sadd
+$(UB)/sadp		(chown bin; chgrp 3; chmod 2775)
+$(UB)/sag
+$(UB)/sar
+$(UB)/timex
+.endif
+$(UL)/salt		(chmod 644)
+.ifdef SPELL
+$(UL)/spell/compress
+$(UL)/spell/hlista		(chmod 644)
+$(UL)/spell/hlistb		(chmod 644)
+$(UL)/spell/hstop		(chmod 644)
+$(UL)/spell/local		(chmod 644)
+$(UL)/spell/revise
+$(UL)/spell/spellhist	(chmod 666)
+$(UL)/spell/spellin
+$(UL)/spell/spellout
+$(UL)/spell/spellprog
+.endif
+$(UL)/sq2006	(chmod 644)
+$(UL)/t300
+$(UL)/t300s
+$(UL)/t4014
+$(UL)/t450
+$(UL)/typoprog
+.ifdef BELLUUCP
+$(UL)/uucp/.OLD/	uucp 644	(chown uucp; chmod 755)
+$(UL)/uucp/.XQTDIR/	uucp 644	(chown uucp; chmod 755)
+$(ULUV)/L.cmds		(chmod 444; link to $(UL)/uucp/L.cmds)
+$(ULUV)/L.disconnect		(chmod 444; link to $(UL)/uucp/L.disconnect)
+$(ULUV)/L.info		(chmod 444; link to $(UL)/uucp/L.info)
+$(ULUV)/L.dirs		(chmod 444; link to $(UL)/uucp/L.dirs)
+$(ULUV)/L-devices		(chmod 444; link to $(UL)/uucp/L-devices)
+$(ULUV)/L-dialcodes		(chmod 444; link to $(UL)/uucp/L-dialcodes)
+$(ULUV)/L.sys		(chmod 400; link to $(UL)/uucp/L.sys)
+$(ULUV)/L_stat		(chmod 644;link to $(UL)/uucp/L_stat) # Added by Root
+$(ULUV)/L_sub		(chmod 644;link to $(UL)/uucp/L_sub) # Added by Root
+$(ULUV)/R_stat		(chmod 644;link to $(UL)/uucp/R_stat) # Added by Root
+$(ULUV)/USERFILE		(chmod 400; link to $(UL)/uucp/USERFILE)
+$(ULUV)/uucico		(chmod 4111; link to $(UL)/uucp/uucico)
+$(ULUV)/uuclean		(chmod 4111; link to $(UL)/uucp/uuclean)
+$(ULUV)/uudemon.day		(chmod 755; link to $(UL)/uucp/uudemon.day)
+$(ULUV)/uudemon.hr		(chmod 755; link to $(UL)/uucp/uudemon.hr)
+$(ULUV)/uudemon.wk		(chmod 755; link to $(UL)/uucp/uudemon.wk)
+$(ULUV)/uusub		(chmod 4100; link to $(UL)/uucp/uusub)
+$(ULUV)/uuxqt		(chmod 4111; link to $(UL)/uucp/uuxqt)
+$(ULUV)/.OLD/	uucp 644	(chown uucp; chmod 755)
+$(ULUV)/.XQTDIR/	uucp 644	(chown uucp; chmod 755)
+.endif
+.ifdef UKUUCP
+$(ULUK)/L.cmds		(chmod 444)
+$(ULUK)/L.dirs		(chmod 444)
+$(ULUK)/L-devices		(chmod 444)
+$(ULUK)/L-dialcodes		(chmod 444)
+$(ULUK)/L.sys		(chmod 400)
+$(ULUK)/L_stat		(chmod 600)
+$(ULUK)/L_sub		(chmod 644)	# Added by Root
+$(ULUK)/R_stat		(chmod 600)
+$(ULUK)/USERFILE		(chmod 400)
+$(ULUK)/addpref
+$(ULUK)/asuucp
+$(ULUK)/cleanlog
+$(ULUK)/mymv.sh
+$(ULUK)/stclear
+$(ULUK)/uucico		(chmod 4111; link to $./{uucico.4,uucico.6,uucico.7})
+$(ULUK)/uuclean		(chmod 4111)
+$(ULUK)/uupoll
+$(ULUK)/uurate
+$(ULUK)/uustat		# Added for UK uucp by Root
+$(ULUK)/uutbl		# Added for UK uucp by Root
+$(ULUK)/uuusage		# Added for UK uucp by Root
+$(ULUK)/uuxqt		(chmod 4111)
+$(ULUK)/.OLD/	uucp 644	(chown uucp; chmod 755)
+$(ULUK)/.XQTDIR/	uucp 644	(chown uucp; chmod 755)
+.endif
+$(UL)/vplot
+$(UL)/w2006		(chmod 644)
+$(UL)/xcpp		[part of xref]
+$(UL)/xpass		[part of xref]
+$(UL)/xrefa		[part of xref]
+$(UL)/xrefb		[part of xref]
+$(UL)/yaccpar		[part of yacc]
+$(UB)/eqn
+$U/pub/eqnchar
+$(UB)/greek
+$(UB)/man
+$(UB)/mancvt
+$(UB)/mm
+$(UB)/checkmm	(link to $./mmchek)
+$(UB)/mmt	(link to $./mvt)
+$(UB)/neqn
+$(UB)/nroff
+$(UB)/osdd
+$(UB)/tbl
+$(UB)/troff
+$(UL)/suftab	(chmod 644)
+ULA=$U/lib/acct
+$B/acctcom
+$(ULA)/acctcms
+$(ULA)/acctcon1
+$(ULA)/acctcon2
+$(ULA)/acctdisk
+$(ULA)/acctdusg
+$(ULA)/acctmerg
+$(ULA)/accton		(chown root;chgrp 4;chmod 4750)
+$(ULA)/acctprc1
+$(ULA)/acctprc2
+$(ULA)/acctwtmp
+$(ULA)/chargefee
+$(ULA)/ckpacct
+$(ULA)/dodisk
+$(ULA)/fwtmp
+$(ULA)/holidays		(chown adm;chmod 644)
+$(ULA)/lastlogin
+$(ULA)/monacct
+$(ULA)/nulladm
+$(ULA)/prctmp
+$(ULA)/prdaily
+$(ULA)/prtacct
+$(ULA)/remove
+$(ULA)/runacct
+$(ULA)/sdisk
+$(ULA)/shutacct
+$(ULA)/startup
+$(ULA)/turnacct
+$(ULA)/wtmpfix
+.ifdef BNET
+$(B)/rcp		(chown root; chmod 4755; chgrp 2)
+$(B)/remsh		(chmod 4755; chgrp 2; chown root)
+$(B)/ttcp		(chown bin; chgrp 2)
+$(E)/rlogind		(chown bin; chgrp 2)
+$(E)/remshd		(chown bin; chgrp 2)
+$(E)/rwhod		(chown bin; chgrp 2)
+$(UB)/rlogin		(chmod 4755; chown root; chgrp 2)
+$(UB)/rwho		(chown bin; chgrp 2)
+$(UB)/ruptime		(chown bin; chgrp 2)
+$(UB)/hostname		(chown bin; chgrp 2)
+$(UB)/rstat		(chown sys; chgrp 3; chmod 2755)
+$E/delivermail		(chown bin; chgrp 2)
+$E/netmailer		(chown bin; chgrp 2)
+$E/bnetmaild		(chown bin; chgrp 2)
+$E/ftpd			(chown root; chgrp 2; chmod 755)
+$E/telnetd		(chown root; chgrp 2; chmod 755)
+$B/ftp			(chown root; chgrp 2; chmod 755)
+$B/telnet		(chown root; chgrp 2; chmod 755)
+.endif
+$(UB)/admin
+$(UB)/bdiff
+$(UB)/cdc	(link to $./{rmchg,rmdel})
+$(UB)/comb
+$(UB)/delta
+$(UB)/get
+$(UB)/help
+$(UB)/prs
+$(UB)/sact	(link to $./unget)
+$(UB)/sccsdiff
+$(UB)/val
+$(UB)/vc
+$(UB)/what
+$(UL)/help/ad
+$(UL)/help/bd
+$(UL)/help/cb
+$(UL)/help/cm
+$(UL)/help/cmds
+$(UL)/help/co
+$(UL)/help/de
+$(UL)/help/default
+$(UL)/help/ge
+$(UL)/help/he
+$(UL)/help/prs
+$(UL)/help/rc
+$(UL)/help/term
+$(UL)/help/text
+$(UL)/help/un
+$(UL)/help/ut
+$(UL)/help/vc
+UG=$R/usr/games
+$(UG)/alienslog
+$(UG)/arithmetic
+$(UG)/back
+$(UG)/balls	# Added by Torch
+$(UG)/bcd
+$(UG)/carmart
+$(UG)/child
+$(UG)/chuffer	# Added by Torch
+$(UG)/craps
+$(UG)/fish
+$(UG)/fortune
+$(UG)/idle
+$(UG)/moo
+$(UG)/maze
+$(UG)/number
+$(UG)/quiz
+$(UG)/ttt
+$(UG)/wump
+$(UG)/bj
+$(UG)/hangman
+$(UG)/aliens
+$(UG)/rain
+$(UG)/random
+$(UG)/worms
+$(UG)/autorobots
+$(UG)/chase
+$(UG)/life
+$(UG)/robots
+$(UG)/twinkle
+$(UG)/worm
+$(UG)/adventure
+$(UG)/boggle
+$(UG)/cribbage
+$(UG)/glorkz	(chmod 664;chown bin)
+$(UG)/mastermind
+$(UG)/trk
+$(UG)/ogre	(chmod 755; chown bin; chgrp 2)	#	unsupported
+$(UB)/graphics
+# System V Graphics
+.ifdef GRAPHICS
+$(UB)/graf/abs
+$(UB)/graf/af
+$(UB)/graf/bar
+$(UB)/graf/bel
+$(UB)/graf/bucket
+$(UB)/graf/ceil
+$(UB)/graf/cor
+$(UB)/graf/cusum
+$(UB)/graf/cvrtopt
+$(UB)/graf/dtoc
+$(UB)/graf/erase
+$(UB)/graf/exp
+$(UB)/graf/floor
+$(UB)/graf/gamma
+$(UB)/graf/gas
+$(UB)/graf/gd
+$(UB)/graf/ged
+$(UB)/graf/gtop
+$(UB)/graf/hardcopy
+$(UB)/graf/hilo
+$(UB)/graf/hist
+$(UB)/graf/hpd
+$(UB)/graf/label
+$(UB)/graf/list
+$(UB)/graf/log
+$(UB)/graf/lreg
+$(UB)/graf/mean
+$(UB)/graf/mod
+$(UB)/graf/pair
+$(UB)/graf/pd
+$(UB)/graf/pie
+$(UB)/graf/plot
+$(UB)/graf/point
+$(UB)/graf/power
+$(UB)/graf/prime
+$(UB)/graf/prod
+$(UB)/graf/ptog
+$(UB)/graf/qsort
+$(UB)/graf/quit
+$(UB)/graf/rand
+$(UB)/graf/rank
+$(UB)/graf/remcom
+$(UB)/graf/root
+$(UB)/graf/round
+$(UB)/graf/siline
+$(UB)/graf/sin
+$(UB)/graf/subset
+$(UB)/graf/td
+$(UB)/graf/xd			# Torch Supported
+$(UB)/graf/tekset
+$(UB)/graf/title
+$(UB)/graf/total
+$(UB)/graf/ttoc
+$(UB)/graf/var
+$(UB)/graf/vtoc
+$(UB)/graf/whatis
+$(UB)/graf/yoo
+$(UL)/graf/whatis/abs
+$(UL)/graf/whatis/af
+$(UL)/graf/whatis/bar
+$(UL)/graf/whatis/bel
+$(UL)/graf/whatis/bucket
+$(UL)/graf/whatis/ceil
+$(UL)/graf/whatis/cor
+$(UL)/graf/whatis/cusum
+$(UL)/graf/whatis/cvrtopt
+$(UL)/graf/whatis/dtoc
+$(UL)/graf/whatis/erase
+$(UL)/graf/whatis/exp
+$(UL)/graf/whatis/floor
+$(UL)/graf/whatis/gamma
+$(UL)/graf/whatis/gas
+$(UL)/graf/whatis/gd
+$(UL)/graf/whatis/ged
+$(UL)/graf/whatis/gtop
+$(UL)/graf/whatis/hardcopy
+$(UL)/graf/whatis/hilo
+$(UL)/graf/whatis/hist
+$(UL)/graf/whatis/hpd
+$(UL)/graf/whatis/label
+$(UL)/graf/whatis/list
+$(UL)/graf/whatis/log
+$(UL)/graf/whatis/lreg
+$(UL)/graf/whatis/mean
+$(UL)/graf/whatis/mod
+$(UL)/graf/whatis/pair
+$(UL)/graf/whatis/pd
+$(UL)/graf/whatis/pie
+$(UL)/graf/whatis/plot
+$(UL)/graf/whatis/point
+$(UL)/graf/whatis/power
+$(UL)/graf/whatis/prime
+$(UL)/graf/whatis/prod
+$(UL)/graf/whatis/ptog
+$(UL)/graf/whatis/qsort
+$(UL)/graf/whatis/quit
+$(UL)/graf/whatis/rand
+$(UL)/graf/whatis/rank
+$(UL)/graf/whatis/remcom
+$(UL)/graf/whatis/root
+$(UL)/graf/whatis/round
+$(UL)/graf/whatis/siline
+$(UL)/graf/whatis/sin
+$(UL)/graf/whatis/subset
+$(UL)/graf/whatis/td
+$(UL)/graf/whatis/xd		# Torch supplied
+$(UL)/graf/whatis/tekset
+$(UL)/graf/whatis/title
+$(UL)/graf/whatis/total
+$(UL)/graf/whatis/ttoc
+$(UL)/graf/whatis/var
+$(UL)/graf/whatis/vtoc
+$(UL)/graf/whatis/whatis
+$(UL)/graf/whatis/yoo
+.endif

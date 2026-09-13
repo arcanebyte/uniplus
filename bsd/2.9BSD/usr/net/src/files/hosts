@@ -1,0 +1,220 @@
+#
+# Berkeley Host Database
+#
+127.0		localhost
+#
+# Berkeley Local Net 46 -- 3Mb/s Ethernet
+#
+46.4		ucbarpa arpa
+46.5		ucbcad cad coke ucbcoke
+46.6		ucbernie ernie
+46.7		ucbmonet monet
+46.9		ucbesvax esvax
+46.10		ucbvax vax
+46.11		ucbkim kim
+46.12		ucbcalder calder
+46.13		ucbdali dali
+46.14		ucbmatisse matisse
+46.15		ucbmedea medea
+46.19		ucbingres ingres
+46.20		ucboz oz
+46.21		ucbear ear
+46.22		ucbdegas degas
+46.23		ucbturner turner
+46.24		ucbmiro miro
+46.25		ucbjade jade
+46.26		ucbstatvax statvax
+46.27		ucbic ic
+#
+# Berkeley Local Net 99 -- Ungermann-Bass
+#
+99.2.0.93	ucbmatisse-un matisse-un
+99.2.0.86	ucbdali-un dali-un
+#
+# Berkeley Local Net 98 -- 3Com 10Mb/s Ethernet
+#
+98.0.2.80	ucbmatisse-ec matisse-ec
+98.0.2.67	ucbmonet-ec monet-ec
+#
+# Berkeley Local Net 97 -- Interlan 10Mb/s Ethernet
+#
+97.128.1.69	ucbmonet-il monet-il
+97.128.1.65	ucbmatisse-il matisse-il
+#
+# Berkeley Local Net 96 -- CAD 10Mb/s Ethernet
+#
+96.5.0.128	ucbic ic tab ucbtab
+96.5.0.129	ucbicw icw sprite ucbsprite
+96.5.0.130	ucbcad-ec cad-ec coke-ec ucbcoke-ec
+#
+# Berkeley Class C Local Net 1 -- 3Mb/s Ethernet
+#
+192.46.0.1		ucbmatisse-en2 matisse-en2
+192.46.0.2		ucbcalder-en2 calder-en2
+192.46.0.3		ucbmonet-en2 monet-en2
+#
+# Berkeley Local Net 89 -- Computer Center 10Mb/s Ethernet
+#
+89.4.0.153	ucbruby ruby ucbruby-ec ruby-ec
+89.6.0.33	ucbjade-ec jade-ec
+#
+# Off Campus Hosts and Networks (from SRI-NIC hostname server)
+#
+10.0.0.12	 dti-vms
+10.0.0.20	 cctc
+10.0.0.23	 usc-eclb eclb
+10.0.0.27	 usc-isid isid
+10.0.0.43	 office-1 of1
+10.0.0.46	 collins-pr
+10.0.0.49	 bbnb bbn-tenexb
+3.0.0.49	 bbnb bbn-tenexb
+10.0.0.5	 bbnf bbn-tenexf
+3.0.0.5	 bbnf bbn-tenexf
+192.1.2.66	 bbnf bbn-tenexf
+10.0.0.51	 darcom-ka sri-tenex sri-ka
+10.0.0.54	 cit-20 cal-tech
+10.0.0.6	 mit-multics multics
+10.0.0.63	 bbn-rsm bbnr
+10.0.0.73	 sri-nic nic
+10.0.0.78	 ucb-arpa
+10.0.0.83	 bbn-tac
+10.1.0.1	 ucla-ccn ccn
+10.1.0.22	 usc-isi usc-isia isia isi
+10.1.0.23	 usc-eclc eclc
+10.1.0.27	 isi-png11
+10.1.27.27	 isi-png11
+10.1.0.31	 cca-vms
+10.1.0.38	 bragg-sta1
+10.1.0.43	 office-2 of2 office off
+10.1.0.5	 bbng bbn-tenexg
+3.1.0.5	 bbng bbn-tenexg
+192.1.2.67	 bbng bbn-tenexg
+10.1.0.52	 usc-isie isie
+10.1.0.54	 cit-vax cit-11
+10.1.0.65	 afsc-sd-tac sd-tip
+10.1.0.67	 afsc-hq-tac hqafsc-tac
+10.1.0.69	 usgs2-tac
+10.1.0.70	 usgs3-tac
+10.1.0.82	 bbn-vax bbnv
+3.1.0.8	 bbn-vax bbnv
+10.1.0.96	 udel-tcp
+10.1.4.51	 srijoyce joyce
+39.0.0.16	 srijoyce joyce
+10.2.0.11	 su-tac
+10.2.0.13	 gunter-tac gunt
+10.2.0.14	 cmu-gateway
+10.2.0.17	 mitre-tac
+10.2.0.19	 nbs-tac
+10.2.0.22	 usc-isic isic
+10.2.0.23	 usc-tac
+10.2.0.27	 isi-vaxa
+10.1.33.27	 isi-vaxa
+10.2.0.29	 brl-tac
+10.2.0.31	 cca-tac
+10.2.0.37	 csnet-purdue purdue-rvax rvax
+128.10.0.2	 csnet-purdue purdue-rvax rvax
+10.2.0.38	 bragg-tac
+10.2.0.4	 utah-tac
+10.2.0.40	 ncc-tac
+10.3.0.40	 bbn-gateway
+10.2.0.42	 london-tac
+10.2.0.43	 office-3 of3 almsa
+10.2.0.50	 darcom-tac
+10.2.0.52	 usc-isif isif
+10.2.0.61	 stla-tac stl-tip
+10.2.0.64	 wralc-tac
+10.2.0.65	 aerospace
+10.2.0.66	 afgl-tac
+10.2.0.71	 bbn-clxx clxx
+10.2.0.75	 yuma-tac
+10.2.0.78	 ucb-monet ucb-ingres ucb-vax ucb-ingvax
+10.2.0.80	 sac-tac
+10.2.0.81	 david-tac
+10.2.0.84	 nswc-tac
+10.2.0.85	 nwc-tac
+10.2.0.91	 washington-tac
+10.2.0.96	 udel-ee
+10.3.0.20	 edn-unix
+10.3.0.23	 usc-ecl ecl usc-ecla ecla
+10.3.0.28	 arpa-png11 arpa-xgp11
+10.3.0.31	 mit-devmultics devmultics cisl
+10.3.0.4	 utah-20
+10.3.0.43	 office-7 of7 cecom
+10.3.0.49	 bbnc bbn bbn-tenex
+3.3.0.49	 bbnc bbn bbn-tenex
+10.3.0.5	 bbna bbn-tenexa
+3.3.0.5	 bbna bbn-tenexa
+192.1.2.68	 bbna bbn-tenexa
+10.3.2.51	 sri-prmh
+10.3.0.52	 usc-isib isib
+10.3.0.91	 uw-vlsi udub-vlsi
+10.44.3.10	 ll-iptcp
+11.3.1.42	 ucl-ucl1
+11.3.2.42	 ucl-ucl2
+11.3.3.42	 ucl-ucl3
+11.3.4.42	 ucl-ucl4
+11.3.5.42	 ucl-ucl5
+11.3.6.42	 ucl-ucl6
+11.3.7.42	 ucl-ucl7
+128.10.0.1	 purdue-tcp purdue-pvax pvax
+10.3.0.17	 dcn1 linkabit
+128.4.0.1	 dcn1 linkabit
+128.4.0.2	 dcn2 dcn-vax
+128.4.0.3	 dcn3 dcn-11a
+128.4.0.4	 dcn4 dcn-11b
+128.4.0.5	 dcn5 dcn-11c
+128.4.0.6	 dcn6 backroom
+128.4.0.7	 dcn7
+128.4.0.8	 dcn8
+128.4.0.9	 dcn9
+128.5.0.1	 ford1 ford
+128.5.0.2	 ford2
+128.5.0.3	 ford3
+128.5.0.4	 ford4
+128.5.0.5	 ford5
+128.5.0.6	 ford6
+128.5.0.7	 ford7 facc
+128.5.0.8	 ford8
+128.5.0.9	 ford9
+128.5.32.1	 ford-aerospace
+128.7.0.1	 dfvlr1 dfvlr oberpfaffenhofen
+128.7.0.2	 dfvlr2
+128.7.0.3	 dfvlr3
+128.7.0.7	 dfvlr7 aroe stuttgart
+128.8.0.1	 umd1 umd
+128.8.0.2	 umd2
+128.8.0.3	 umd3
+128.8.0.4	 umd4
+128.8.0.5	 umd5
+128.8.0.6	 umd6
+128.8.0.7	 umd7
+14.0.0.0	 purdue-tn
+14.0.0.1	 uwisc-tn
+14.0.0.2	 udel-tn
+21.0.0.2	 edn-host3
+3.1.0.50	 alta-coma
+3.3.0.7	 bbn-div6-tac bbnt
+4.0.0.0	 satnet
+4.0.0.1	 etam-expak
+4.0.0.2	 goonhilly-expak
+4.0.0.3	 tanum-expak
+4.0.0.37	 satnet-sink
+4.0.0.40	 satnet-echo
+4.0.0.41	 etam-monitor
+4.0.0.42	 goonhilly-monitor
+4.0.0.43	 tanum-monitor
+4.0.0.62	 etam-echo
+4.0.0.63	 goonhilly-echo
+4.0.0.64	 tanum-echo
+4.0.0.72	 raisting
+4.0.0.77	 raisting-echo
+4.0.0.78	 raisting-monitor
+4.0.0.79	 raisting-expak
+4.0.0.88	 fucino
+4.0.0.93	 fucino-echo
+4.0.0.94	 fucino-monitor
+4.0.0.95	 fucino-expak
+48.3.1.41	 ndre1 ndre
+8.0.0.4	 clarksburg-expak
+8.0.0.44	 clarksburg-monitor
+8.0.0.65	 clarksburg-echo

@@ -1,0 +1,97 @@
+.TH FSCR 1M "Root Computers Proprietry"
+.SH NAME
+fscr - file system compaction routine
+.SH SYNOPSIS
+.B fscr
+-sn:m -ttempdir -v -adays -x -r -bblocks -ddensity -llength filesystem temp
+.PP
+.B fscr512
+-sn:m -ttempdir -v -adays -x -r -bblocks -ddensity -llength filesystem temp
+.SH DESCRIPTION
+.I fscr \^
+takes the (unmounted) filesystem specified and reorders the blocks of the
+files in the following manner:-
+.RS 10
+inodes
+.PP
+directories
+.PP
+current executables
+.PP
+current regular files
+.PP
+free blocks
+.PP
+aged regular files
+.PP
+aged executables
+.RE
+The definition of current is dependant on the number of days specified with the
+.B -a \^
+flag. If the
+.B -a \^
+flag is omitted a default ageing period of 7 days is assumed.
+If no ageing is required,
+.B -a0 \^
+should be specified.
+.PP
+Executable files are stored in contiguous blocks on the disk to allow for fast
+loading for execution. If the
+.B -x \^
+flag is given the executable files will be
+interleaved instead of being contiguous.
+
+Regular files are interleaved according to the specified separation factor.
+
+The freelist is rebuilt using the specified separation factor.
+
+Using the user supplied definitions of number of blocks, or of density and length
+an estimate of the number of volumes will be supplied before output commences.
+The user will need to confirm that an adequate number of volumes are available.
+
+The meanings of the available options are:-
+.TP 10
+.B a{days}
+definition of current in number of days
+.TP 10
+.B x
+interleave executable files
+.TP 10
+.B -s{n:m}
+modify cylinder size (n) amd stepsize (m) to these values.
+.TP 10
+.B -r
+retain directory order. The default is for directory
+entries to be sorted into time of last access sequence.
+.TP 10
+.B -v
+verbose. Print statistical information as to success
+of the compaction process.
+.TP 10
+.B -t{tempdir}
+use tempdir as the directory for the temporary files
+instead of /tmp.
+(Note: this option must be used if /tmp is on the filesystem
+being modified)
+.TP 10
+.B -b
+the number of 1k blocks that the media can contain. This is used for
+exchangeable disks. This entry causes any -l and -d flags to be ignored.
+.TP 10
+.B -l
+the length (in feet) of the magnetic media to be used. Default is 2300 feet.
+.TP 10
+.B -d
+the density of the magnetic media to be used. Default is 1600 bits per inch.
+.SH EXAMPLES
+.SH FILES
+.SH SEE ALSO
+.SH DIAGNOSTICS
+.SH WARNINGS
+The lost+found directory needs to be remade after fscr has been run as empty
+entries are removed from directories.
+The file system must be clean (i.e. free from fsck errors) before fscr is run.
+If this is not the case, results are unpredictable.
+
+.SH BUGS
+.\"     @(#)fscr.1m    5.1 of 5/18/82

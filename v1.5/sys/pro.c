@@ -50,7 +50,7 @@ struct prlmap {
 /* b */	{101,	PRNSWAP},	/* swap area (2400 blocks) */
 /* c */	{PRNSWAP+101,	7227},	/* root filesystem on 5 Meg. disk */
 /* d */	{9728,	9728},		/* 2nd filesystem on 10 Meg. disk */
-/* e */	{0,	0},		/* unused */
+/* e */	{19456,	19456},		/* 2nd half of a 20 Meg. disk (2026 Lisa build, was unused) */
 /* f */	{0,	7168},		/* old root filesystem (old a) */
 /* g */	{7168,	2496},		/* old swap (old b) */
 /* h */	{101,	19355},		/* f.s. using entire 10 Meg. disk */

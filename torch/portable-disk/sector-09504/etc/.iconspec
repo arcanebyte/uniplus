@@ -1,0 +1,7 @@
+icon: type=e; fn=dateset; showbits=gadgets:clock; showname = "Set Clock"; +
+      laction=n,$0; daction=n,$0;
+
+icon: type=e; fn=setbbtime; showbits=gadgets:clock; showname = "Set BB Clock"; +
+      laction=b,$0; daction=b,$0;
+
+icon: type=d; fn=.confdesktop; showbits=devices:desktop; laction=;

@@ -1,0 +1,436 @@
+INSTALLATION GUIDE
+UKUUCP README	2.0	
+Sun Mar  3 23:37:27 GMT 1985
+
+Lee McLoughlin  ukc!lmcl  01-435-7141 X 636
+
+This is the standard version of uucp for use by sites in the UK
+it is inuse by most of the sites on the UKnet and by many
+others.  There have been tons of bug fixes and enhancements
+from people on the usenet (thank you).  Speed is substantially
+improved.  This version fixes essentially all of the McGeady's bug list.
+
+Enhancements:
+
+Security		Only sites listed in the L.sys file can call in.
+			All other sites are rejected.
+
+Networks		Can now be used to transfer over networks that don't
+			provide full 8-bit communication, PSS and terminal
+			connections onto JANET for example.
+
+Grade Changes		By default uux commands will be queued at priority
+			'o'.  uucp commands at 'n'. So user file transfers
+			will beat commands.
+			 uucico can also be told to do work for JUST a single
+			grade (see 12 below).
+
+Dialers			Lots of dialers included.
+
+Subdirectories		/usr/spool/uucp can now be split into 7, or
+			more, subdirectories. This is a huge help on
+			busy systems.
+/usr/lib/uucp/L.dirs	List of existing subdir's used.
+
+/usr/lib/uucp/L.cmds	List of commands permitted for remote execution.
+			A line of form 'PATH=...' sets the search path.
+
+Accounting & multi-machine sites
+/usr/lib/uucp/L.info	a somewhat more powerfull accounting/authorisation
+			system is now installed (warning accounts gatherer
+			not yet implemented).  L.cmds can specify wether a
+			user is allowed to export the command and L.info
+			can be used to specify the level of accounting and
+			wether a machine is local or remote.  For remote
+			sites an arbitrary site name (not necessarily the
+			same as the current machine name) may be given. This
+			allows several machine at a site to appear as one 
+			machine to the outside world.
+
+expect-send sequence	
+			Re-written to be able to cope with networks.
+			:string		send string (won't add a \r)
+			?string		expect string. If found ignore all
+					fields till next :string.
+			!string		send only if previous ?string failed.
+			Escape characters now permitted: \r, \n.
+			\d	pause 1 second (\d\d pauses 2 seconds)
+			P_EVEN  send even parity (default).
+			P_ZERO  P_ODD, P_ONE other parity modes.
+			\05	Send a control-E
+
+binary-only		with a modicum of care uucp will now run binary only
+			since it can now read all its configuration information
+			from files (including the sitename if necessary).
+
+uusnap			Displays spooled files, and pending uuxqts.
+
+
+This version runs on all VAXen and PDPs under UNIX-V7, 2.8-2.9 Bsd,
+4.1bsd-4.2BSD, System 3-5.2 USG.
+It also runs on Gould/SEL Concept series machines (e.g. 32/8750), 
+DUAL 68000 unisoft.
+
+UUCP installers should read the two papers (by Dave Nowitz)
+in Vol 2B of version 7 manuals (a revised version of the
+implement paper is in DOCS/implement) and DOCS/setup.tblms (which is
+slightly out of date but still usefull).
+Understand each step below before executing.
+Some steps will vary slightly from system to system.
+
+A NOTE ON SUBDIRECTORIES:
+The mutliple subdirectories are implemented by mapping the original filenames
+into pathnames by matching a prefix on the filename against the name of a 
+subdirectory of SPOOL.  For example the name D.dukeX5678 would be mapped into
+/usr/spool/uucp/D.dukeX/D.dukeX5678.  Because it is just matching on a prefix
+it is important to have the prefixes ordered correctly, the most specific ones
+come first.  So a prefix of just "D." would have to come after "D.dukeX". 
+Otherwise "D." would also match "D.dukeX5678" so the D.dukeX directory would
+never be used.
+  The advantage of subdirectories is in the reduced directory scanning time.
+with, for example, 10 sites each with 200 queued files under the old system
+of a single SPOOL directory it would mean scanning the 2000 C. files AND the
+2000 D. files in order to find the first LLEN C. files to obey, a total of 4000
+files.  By giving each site its own D. and C. directories uucico has to scan
+only the 200 C. files for the site its talking to.
+
+**** INSTALLATION *******
+
+
+1. Editing Makefile and uucp.h
+	if you are using SCCS run 'make sources'
+
+	Often used defaults are given in brackets.
+	Options marked with an asterisk must either be the same in both uucp.h
+	and the Makefile or require similar options to be selected in both.
+	NOTE: There are (very) many other defines in both the Makefile and
+	uucp.h.  Changing those not listed here should only be done if you
+	are sure of what you're doing, and bear in mind that full pathnames
+	are often used throughout the system so changing just the prefix in
+	one place is often not enough.
+Makefile->
+DESTDIR=The entire uucp system (including lib) is installed below here.
+	(I cannot think of a good reason why any site should need this but
+	 the original authors must have. LMCL).
+SRCDIR= the location of these sources.  Just used to avoid relative pathnames
+	(eg: /usr/src/cmd/UKUUCP/uucp).
+OWNER=	the owner the uucp system will run in. (uucp)
+GROUP=  the group the uucp system will run in. (uucp)
+CHOWN=	the path name of the chown program, to be used by root. (/etc/chown)
+CHGRP=	the path name of the chown program, to be used by root. (/etc/chgrp)
+RANLIB= the path name of the ranlib program, "echo" if unavailable. (ranlib)
+INST=	a program used to install software. (/usr/bin/install)
+MYNAME= the name of the local site, used to create the initial directories.
+	(*) Must be the same as the MYNAME #define in uucp.h.
+LIBDEPS=, LIBNDIR=, LLIBS= 
+	(*) In uucp.h #define LIBNDIR if using the first set of Makefile
+	   definitions.  If the directory accessing routine are part of the
+	   standard library then use the second set of Makefile definitions
+	   and #define BSD42 in uucp.h.  If the routines have been installed
+	   as /usr/lib/libndir.a and in /usr/include/ndir.h then define NDIR
+	   in uucp.h and use the third set of Makefile definitions.
+UUCPDIR=  (*)the parent for uucp/ and uucppublic/, usually /usr/spool but quite
+	often changed to be whichever filestore has the most free space. E.g:
+	west44 uses /f1, ic-cs uses /users.  NOTE no trailing " on define.
+LOCN = 	(*)Location. Used to select the sccs id's that are to be used.
+	NOSCCS will cause them to be ommited, best if on a small machine.
+	ORIGSCCS will use the (now totally out of date) original sccsid
+	UKC & MASTER are used by the backbone site ukc.
+	anything else will use the UKUUCP sccsid, which is recommended.
+	Defining UKC will also effect where logs will be kept, see LOGFILE
+	in uucp.h.
+FIO =	Defining FIO will allow the use of the 'f' protocol by Piet Beertema.
+	This protocol will only work on connections which have flow-control
+	working correctly.  JNT-PAD's seem to fail.  (DATAWIDTH MUST also
+	be defined so FIO can be disabled on all lines on which it is not
+	wanted.  This is done line by appending 'fN' to the
+	end of the width entry, without this uucico will fail to connect.) 
+	With FIO defined you should also add
+		-Dvoid=int
+	for systems without the void cast. (Check first to see if none of
+	the include file in your system have a similar #define or
+	typedef already.)   On Vaxen also add
+		-Dvax
+	if not already present,  this is to get the correct version of the
+	checksum routines.
+BIGLDFLAGS= give which ever flags are suitable for large programs.
+install: If you are using a PDP or another small machine then it may be usefull
+	to make these program "sticky-bitted".  Remove the comment marks 
+	on the chmod line in the install option to have this done.
+
+uucp.h->
+	Select the method appropriate to your system for finding the sitename.
+MYNAME	(*) the same as in Makefile, used in case the above method fails.
+ZAP	Avoid unnecessary resends.  Relies on working fseek.  To test fseek
+	cc tseek.c;a.out   and see what it advises if it seems to be OK then
+	define ZAP.  If not comment it out.  Without it some degree of
+	unnecessary resending may occur but the system will still work.
+ACCT	define for mcvax style accounting (charge for overheads)
+KICKINIT  define if you have a program which can close down getty for dialout
+	only if you have a working acu/kickint program see SUPPORT directory.
+WS	define when KICKINIT'ing by using Bill Sebok's acu program
+DATAWIDTH  define for narrow datapaths, This allows uucp to work over
+	X3/X25 networks like JANET and PSS.
+FOURBIT SIXBIT SEVENBIT  various versions of narrow channels. FOURBIT
+	effectively sends has hex-pairs.  SEVENBIT is designed work over
+	reasonably intelligent nextworks.  SIXBIT is a variant of SEVENBIT.
+LIBNDIR/NDIR/BSD42 (*) See LIBDEPS under Makefile.
+If you have it include <sysexits.h> to use exit codes otherwise use the defines.
+Go down through the various devices and comment in the ones you are going to
+use.
+SYSIII	define if you are on a sys3 compatiable system.
+SYS5	define if you are on a sys5 compatiable system.
+BAD_PRINTF  on some systems a printf format of "%02d" doesn't print out
+	the argument in two characters with leading zeros (cc prtest.c;a.out  to
+	find out if you're machine is one) in this case define BAD_PRINTF to
+	have it use the "%0.2d" format instead.
+OLDTOUCH  define chmod changes the ctime.
+WFMASK used for umask call for all uucp work files
+LOGMASK	- for LOGFILE, SYSLOG, ERRLOG
+BASEMODE final mode given to files at the remote site. Remember if they cannot
+	be read by programs at the remote site rnews/rmail (and everyone else)
+	will get pretty annoyed.
+PRIV_UIDS users with getuid() <= PRIV_UIDS are 'privileged' (100) (Not
+	used if SYSINFO defined, which it should be, since the uids are
+	read from the L.info file.)
+UUCPPEOPLE people entitled to run privileged but who are not in PRIV_UIDS
+	(Not used if SYSINFO defined, which it should be, since the uids are
+	read from the L.info file.)
+	NOTE: For the SUPPORT utility  asuucp (which runs the cron scripts)
+	to run correctly the uid that cron runs under must be included in the
+	range of either PRIV_UIDS or UUCPPEOPLE
+UUCPDIR (*) see UUCPDIR for Makefile.
+LOCKDIR This is the directory where lock files will be created.  It must
+        be writeably by uucp.  Normally this is UUCPDIR/uucp but many sites
+        prefer to change it to be "/tmp so that it will be automatically
+	cleaned on system restart.  If the ucu program is to be used then
+	"/tmp is a better choice since ordinary users will not have to be
+	given write permission on the main uucp directory.
+SLCKTIME  system/device timeout (LCK.. files) if you call up sites very often
+	then you may wish to reduce this. It is generally not recommended.
+LOGFILE ERRLOG	(*) (see also LOCN under Makefile) if UKC is defined
+	then the logs are kept in file in /usr/adm/log.  Normally they
+	will be kept in the SPOOL directory.
+MAIL	you may wish to redefine this if you are running sendmail/mmdf.
+
+Once these have been done you should not have to edit any of the other
+makefiles or shell scripts since the 'make depend' option will do that for
+you.
+
+2. Make the new commands.
+	Firstly if you wish to run with the KICKINIT code then look at the
+	two version of acu (v7acu.c and BSD42acu.c) in the SUPPORT directory.
+	Whichever version you are going to run rename as acu.c.  If you are
+	not going to use KICKINIT then use noacu.c
+
+	Now run:
+	rebuild.sh
+	(or rebuild.sh -n if chicken).
+	On some sites you may get compilation errors if your include files
+	expect an ordering different from that supplied.  For example some
+	sites insist that the file <sys/types.h> is included in both pk1.c and
+	pk0.c even though most systems insist is shouldn't be there.  If 
+	errors occur in this area you may have to change the source to match
+	your system.
+
+3. WAIT UNTIL THE UUCP SYSTEM IS IDLE!! Single-user is best.
+	su root  (it is important that chmod, chown and chgrp work below)
+
+4. If you are currently running uucp, save the old programs!:
+	cd /usr/bin
+	# remember to save any other uucp programs here
+	for i in uu*	     (csh: foreach i (uu*) )
+	do
+		mv  $i $i.old
+	done					(csh: end )
+	cd /usr/lib
+	mv uucp uucp.old
+	cd /usr/spool
+	mv uucp uucp.old
+
+5. Make new subdirectories:
+	For safety:  cd /usr/spool/uucp.old; tar c .   (save Qed files on tape)
+	make mkdirs
+		If your system is duke, then the subdirectories created are
+		named C., D., D.duke, D.dukeX, TM., XTMP and X..
+	This will also create and fill in the L.dirs file, which you may
+	wish to update by running addpref.sh.
+
+6. Install the new commands:
+	make install
+	(If you are chicken, type 'make -n install' first).
+
+7. Edit and install the control files:
+	THESE FILES MUST BE OWNED BY THE SAME OWNER AND GROUP AS
+	THE UUCP COMMANDS AND UUCP SPOOL FILES!!! (probably uucp, uucp).
+
+	The L.dirs file will have been created by step 5, you may wish to
+	remove this (if you are not running with the UUDIR/SUBCS code), or
+	you may wish to extend it by adding directories for particular sites.
+	If you add directories become superuser and run the addpref.sh command
+	which will prompt you at each stage. It is best to do this after step 8.
+
+	Most of the L.sys changes (if you had one in the
+	old format) can be made automatically. 
+	In SUPPORT:
+	cc convLsys.c ../uulib.a
+	and run
+	a.out < /usr/lib/uucp.old/L.sys > /usr/lib/uucp/L.sys
+	chown, chgrp and chmod the new L.sys.
+	Then go in and check it by hand to make sure that it is all correct.
+	The width field selects which version of the datawidth code to use
+	if you are attempting to connect over PSS/JANET then set this field to
+	7fN and make sure that the login name you use on the remote system
+	calls uucico.7
+	For any line connection which you do not want the FIO protocol on
+	add the string "fN" to the end of the width entry, without this
+	the uucico will fail to talk to the remote end.
+
+	The format for dialers is slightly different so that any dialer
+	can be handled.  Each entry in L-devices is:
+		Caller Line Useful Class Dialer
+	for example
+		# The following lines are hard-wired
+		#
+		DIR tty03 unused 2400 pad
+		DIR tty04 unused 2400 pad
+		#
+		ACU tty00 unused 300 hayes
+	A DIR line is tried if the Dialer field from L-devices matches
+	the phone-num field from L.sys and the speeds match too.
+		eg: an L.sys line of:
+		twit Any DIR 2400 8fN pad \r\r
+	would first match the DIR entry for tty03 if that was busy then
+	tty04 would be tried.
+	An ACU line is tried if the speeds match.
+
+	To have a line kicked (shutdown/startup getty on a line) it must
+	have an entry in the /usr/lib/uucp/kickthese file.  Entries are
+	one per line fixed format: ttyXY. If the Y char is a '.' it is
+	treated as null for names like "tty6" (tty6.) .
+
+	Finally there is the recently added L.info file which allows some
+	degree of tailoring of the uucp system.  A minimal file will just
+	say
+		debuggers 0-20
+		acct off
+	which will allow users whose id's are in the range 0-20 to
+	run uucico with the debugging flag turned on and also
+	(acct off) will disable accounting.  You can also specify wether
+	an individual host should be accounted for, wether mail details should
+	be kept and if non-local what hostname should be given to the remote
+	site.
+		# Name to give to non-local sites.
+		exthost kcl-cs
+		#
+		# a local machine no general (or mail accounting).
+		west44 local
+		#
+		# a remote machine with full accounting on
+		ukc accton acmail
+	A number of other facilites
+	can also be tailored see the example file in USR.LIB and the description
+	in "implement".
+	
+	Look in USR.LIB for examples of these files.
+	You should really have copies of all these files in your lib
+	tailored to your site (with the sole exception of kickthese).
+	
+8. Move old Qed files:
+	If you have spooled files, they must be moved into the subdirectories.
+	try:
+	mvq.sh /usr/spool/uucp.old /usr/spool/uucp
+	NOTE: If you are not running with subdirectories then just move across
+	all the old Qed files and DO NOT run mvq.sh.
+	This uses find to scan the old Q for files with the D.dukeX (following
+	the above example) prefix and cp them to the new Q (and subdirectory)
+	then rm's the old file.
+
+9. Test the new system
+	Test by mailing a letter somewhere and back.
+	If it works, the new system is probably fine.
+	Otherwise, figure out what is wrong.
+	Start by examining LOGFILE.  Try /usr/lib/uucp/uucico -r1 -sname -x7
+	If things are no-go, you can back out the changes by restoring the
+	old uu programs from their old directories and the spooled files
+	from tape.
+	NOTE: The subdirectories foul up a non-subdir version,
+	so be sure that subdirectories exist/do not exist as appropriate.
+
+10. Install handy SUPPORT / CRON
+	Look in SUPPORT and CRON for handy other stuff.
+	In particular, CRON/uu.* are
+	shell scripts that can be run via cron hourly, daily, and weekly
+	to keep uucp trim.  
+	THEY MOST LIKELY NEED TO BE MODIFIED TO USE THEM ON YOUR OWN SYSTEM!
+
+	uu.hourly		Makes sure sites are polled.
+	uu.daily		Runs uuclean to clean up /usr/spool/uucp.
+				**IT HANDLES SUBDIRECTORIES!!
+				Renames LOGFILE to LOGFILE.old.
+	uu.weekly		Renames SYSLOG to SYSLOG.old.
+	The above scripts should be run via cron.
+
+	Its also necessary to add a line to the system startup file to
+	remove locks that have been left lying around on system crashing.
+	Without such a line the locks would have to timeout before the
+	devices/site they would become available again.
+
+	uuusage, uuusage.1, uutbl
+		Summarizes SYSLOG.  Very handy.  (Alan S. Watt).
+		Works best if you use uucp.daily.  Slow if SYSLOG is big.
+
+	uurate
+		More detailed summary of SYSLOG.  Useful for checking
+		throughput.  Modified from program provided by ittvax!swatt.
+		Slow if SYSLOG is big.
+
+	uucp.daily
+		Daily shell script run at ittvax.  Manages SYSLOG files in
+		a convenient form for uuusage.  Not integrated in time
+		for this distribution.
+	
+	uukill	(Nigel Horne, Root Computers)
+		A recently added utility designed to kill off all existing
+		uucico's when run (via crontab) this can be used by sites
+		with cheap rate night lines who don't want large bills.
+		(It can also be used to kill off news feeding at a specific
+		time, like when the users come in!)
+		
+	NOTE: ucu (the new cu program) is EXTREMELY untested and probably
+		will not work.  If it does it is by chance.  In particular
+		the SYS3/5 version is highly dubious.  Also in order
+		to work correctly there must be public write permission on
+		the spool directory for it to create locks.
+
+11. Check uucp login names
+You should have the following login names now
+uucp, uucp4, uucp7  which call /usr/lib/uucp/uucico, uucico.4 and uucico.7
+they should all have the same login directory of /usr/spool/uucppublic (or
+whatever you have as the public directory for the uucp system).  (You may
+also want to add uucp6, uucpf if necessary).
+Its also a good idea to have a login name (appearing before the rest) of
+UUCP that way all transfers will get stamped with this capitalised version
+and a uucpman login name for maintanence.
+
+12. Alter mail command.
+If possible alter the mail command so when it calls uux it gives both the
+'-gA' and '-OA' arguments.  The first forces the grade to be 'A' the second
+will tell any uucico that is spawned on on behalf of the uux to only transfer
+for grade 'A'.  The default for uux is to use grade 'o' and to allow all
+grade in any spawned uucico.  Many sites will not process work not in grade
+'A' during working hours.
+
+
+
+
+Comments, bug reports, *and improved code* are welcome, please send to
+	ukc!lmcl.
+Please remember that any code MUST work on a wide range of Unixes and hardware
+so check first (if you can) to see if it is portable.  If in doubt ask me.
+
+PLEASE NOTE:
+	None of this is in any way guarenteed to work.  It does work at
+	west44 (a PDP11/44 running V7), westcsr (an HLH Orion running 4.1),
+	ukc (a VAX 11/780 running 4.2), root44 (a PDP 11/44 running System 3)
+	rootis (a M68000 system running System 5).

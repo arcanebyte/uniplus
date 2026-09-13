@@ -54,7 +54,9 @@ NODE    =alm
 REL     =5.1
 VER     =rl
 MACH    =m68000
-DEFS    =-DNONSCATLOAD -DKERNEL -Uvax -Dmc68000 -DUCB_NET
+# -Dm68000: net/ip.h and net/ip_var.h (from the Torch UniPlus+ headers) test
+# m68000, but the Lisa cpp only predefines mc68000.
+DEFS    =-DNONSCATLOAD -DKERNEL -Uvax -Dmc68000 -Dm68000 -DUCB_NET
 OOPT    =BPS
 V       =-v
 CFLAGS  =$(DEFS) $(INCLUDE) -O$(OOPT) $(V)
@@ -108,7 +110,7 @@ KERNEL= mch.o cxureg.o \
 	machdep.o main.o malloc.o mem.o msg.o nami.o partab.o \
 	pipe.o prf.o rdwri.o sem.o shm.o sig.o slp.o subr.o \
 	sys.o sys1.o sys2.o sys3.o sys4.o sysent.o \
-	text.o trap.o tt$(TTY).o tty.o utssys.o
+	text.o trap.o tt$(TTY).o tty.o utssys.o cxstub.o
 
 SKERNEL=mch.o cxureg.o \
 	acct.o alloc.o bio.o clist.o clock.o dsort.o \
@@ -116,7 +118,7 @@ SKERNEL=mch.o cxureg.o \
 	machdep.o main.o malloc.o mem.o msg.o nami.o partab.o \
 	pipe.o prf.o rdwri.o sem.o shm.o sig.o s_slp.o subr.o \
 	sys.o sys1.o sys2.o sys3.o sys4.o sysent.o \
-	text.o trap.o tt$(TTY).o tty.o utssys.o
+	text.o trap.o tt$(TTY).o tty.o utssys.o cxstub.o
 
 # Normal configuration files.
 CONFIG= conf.o config.o linesw.o ivec.o \
@@ -176,6 +178,15 @@ unix.nonet:     unix.o $(FNETOBJS) $(CONFIG)
 	$(FIX) unix.nonet
 	$(SYNC)
 	echo "^G^G^G^G"
+
+# DIAGNOSTIC (2026): unix.nonet with 316 bytes of padding (kpad.s) after
+# unix.o, so later objects link at the same addresses as the UniPlus 1.4 /unix.
+unix.pad:       unix.o kpad.o $(FNETOBJS) $(CONFIG)
+	$(LD) -o unix.pad $(LFLAGS) unix.o kpad.o $(FNETOBJS) $(CONFIG) $(LIB)
+	$(FIX) unix.pad
+
+kpad.o: kpad.s
+	$(AS) -o kpad.o kpad.s
 
 # Startup unix.
 sunix:  sunix.o $(FNETOBJS) $(CONFIGS)

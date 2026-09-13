@@ -1,0 +1,73 @@
+.TH RLOGIN 1N UniSoft
+.SH NAME
+rlogin \- remote login
+.SH SYNOPSIS
+.B rlogin
+rhost [
+\fB\-e\fI\|c\fR
+] [
+.B \-l
+username ]
+.br
+rhost [
+.B \-l
+username ]
+.SH DESCRIPTION
+.I Rlogin\^
+connects your terminal on the current local host system
+.I lhost\^
+to the remote host system
+.IR rhost .
+.PP
+Each host has a file
+.B /etc/hosts.equiv
+which contains a list of \fIrhosts\^\fR with which it shares account names.
+(The host names must be the standard names as described in
+.IR remsh\^ (1)
+and printed by
+.IR login\^ (1).)
+When you
+.I rlogin\^
+as the same user on an equivalent host, you don't need
+to give a password.
+Each user may also have a private equivalence list in a file "\&.rhosts"
+in his login directory.  Each line in this file should contain a 
+.I rhost\^
+and a \fIusername\^\fP separated by a space, giving additional cases
+where logins without passwords are to be permitted.
+If the originating user is not equivalent to the remote user, then
+a login and password will be prompted for on the remote machine as in
+.IR login\^ (1).
+.PP
+All echoing takes place at the remote site, so that (except for
+delays) the 
+.I rlogin\^
+is transparent.  Flow control via control-S (^S) and control-Q (^Q)
+is handled properly.
+A line of the form "~." disconnects from the remote host, where
+"~" is the escape character.  A different escape character may
+be specified by the
+.B \-e
+option.
+Other
+.IR cu\^ (1C)
+"~" options available; see 
+.IR cu\^ (1C)
+documentation for details.
+.SH SEE ALSO
+cu(1C), 
+remsh(1N).
+.SH FILES
+.ta \w'/usr/hosts/*\ \ \ 'u
+/usr/hosts/*	for \fIrhost\fP version of the command
+.DT
+.SH BUGS
+The "~%put" 
+.I cu\^ 
+function should be made to work.
+.PP
+More terminal characteristics should be propagated.
+.PP
+This command is provisional and may be revised and/or renamed 
+in future releases.
+.\"N	 @(#)rlogin.1N	 5.2 of 7/12/84

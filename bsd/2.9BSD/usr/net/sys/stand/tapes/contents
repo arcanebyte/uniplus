@@ -1,0 +1,27 @@
+Contents of this tape:
+
+File 0:
+	2 copies of magtape bootstrap (2 blocks total)
+	The standalone bootstrap
+File 1:
+	A file to console copy program
+File 2:
+	This file
+File 3:
+	The program mkfs
+File 4:
+	The program restor
+File 5:
+	The program icheck
+File 6:
+	A dump of the root file system
+File 7:
+	A tar format dump of the /usr filesystem without source
+	(extract with: cd /usr; tar xpf /dev/rmt0)
+
+
+Contents of tape B:
+
+File 0:
+	A tar format dump of /usr/src and /usr/ingres
+	(extract with: cd /usr; tar xpf /dev/rmt0)

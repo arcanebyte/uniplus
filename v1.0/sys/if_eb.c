@@ -1,0 +1,950 @@
+/* 3com etherbox driver */
+
+
+#include "sys/param.h"
+#include "sys/types.h"
+#include "sys/sysmacros.h"
+#include "sys/var.h"
+#include "errno.h"
+#include "sys/config.h"
+
+#include "net/misc.h"
+#include "net/mbuf.h"
+#include "net/protosw.h"
+#include "net/socket.h"
+#include "net/ubavar.h"
+#include "net/if.h"
+#include "net/route.h"
+#include "net/in.h"
+#include "net/in_systm.h"
+#include "net/ip.h"
+#include "net/ip_var.h"
+#include "net/if_ether.h"
+
+		
+#define	EBPUP_PUPTYPE	0x0400		/* PUP protocol */
+#define	EBPUP_IPTYPE	0x0800		/* IP protocol */
+
+/*
+ * The EBPUP_NTRAILER packet types starting at EBPUP_TRAIL have
+ * (type-EBPUP_TRAIL)*512 bytes of data followed
+ * by a PUP type (as given above) and then the (variable-length) header.
+ */
+#define	EBPUP_TRAIL	0x1000		/* Trailer PUP */
+#define	EBPUP_NTRAILER	16
+
+/*
+ * 3Com Ethernet controller registers.
+ */
+#define EB_ACTADDR0	0	/* actual address byte 0 */
+#define EB_ACTADDR1	1	/* actual address byte 0 */
+#define EB_ACTADDR2	2	/* actual address byte 0 */
+#define EB_ACTADDR3	3	/* actual address byte 0 */
+#define EB_ACTADDR4	4	/* actual address byte 0 */
+#define EB_ACTADDR5	5	/* actual address byte 0 */
+#define EB_RCVCMD	6	/* receive command */
+#define EB_XCSR		7	/* transmit csr */
+#define EB_XBP_HI	8	/* transmit buffer pointer high byte */
+#define EB_XBP_LO	9	/* transmit buffer pointer low byte */
+#define EB_BBPCLEAR	10	/* buffer pointer clear(w) */
+#define EB_PROM		10	/* address prom (r) */
+#define EB_AUXCSR	11	/* auxiliary command/status */
+#define EB_COLLCNTR	12	/* collision counter */
+#define EB_XMTBUF	13	/* transmit buffer */
+#define EB_RCVBUFA	14	/* receive buffer a */
+#define EB_RCVBUFB	15	/* receive buffer b */
+
+/*
+ * Transmit cmd reg bits
+ */
+#define	EB_EIEOF	0x8	/* enable ints on end of frame */
+#define	EB_EI16COLL	4	/* enable ints on 16 collisions */
+#define	EB_EICOLL	2	/* enable ints on collisions */
+#define	EB_EIUNDER	1	/* enable ints on underflow */
+
+/*
+ * Transmit status reg bits
+ */
+#define	EB_XREADY	0x8	/* ready for new frame */
+#define	EB_COLL16	4	/* 16 collisions detected on last xmit */
+#define	EB_COLL		2	/* collision occurred */
+#define	EB_UNDERFLOW	1	/* force underflow */
+
+/*
+ * Receive command reg bits
+ */
+#define	EB_MULTI	0xC	/* match station, multi, broadcast */
+#define	EB_STABROAD	0x80 	/* match station, broadcast */
+#define	EB_PROMIS	0x40	/* match all packets */
+#define	EB_ANYGOOD	0x20	/* enable detection of any good frame */
+#define	EB_ANY		0x10	/* enable detection of any frame */
+#define	EB_SHORT	0x8	/* enable decection of short frames */
+#define	EB_DRIBBLE	4	/* enable dectection of dribble error */
+#define	EB_CRC		2	/* enable dectection of CRC error */
+#define	EB_OVFLO	1	/* enable detection of overflow error */
+#define	EB_RCVNORM	(EB_STABROAD|EB_ANYGOOD|EB_DRIBBLE|EB_CRC|EB_OVFLO|EB_SHORT)
+
+/*
+ * Receive status reg bits
+ */
+#define EB_STALE	0x80	/* invalid packet here */
+#define	EB_SHORTERR	0x40	/* short frame */
+#define	EB_DRIBERR	0x20	/* dribble error */
+#define	EB_CRCERR	0x10	/* crc error */
+#define	EB_OVFLERR	0x8	/* overflow error */
+#define	EB_RCVERR	0xf8	/* error mask */
+#define	EB_RBUF		0x7	/* buffer pointer mask */
+
+/*
+ * Auxiliary command reg bits
+ */
+#define	EB_EDLCRES	0x80	/* reset EDLC chip */
+#define	EB_SYSEI	0x40	/* enable system interrupts */
+#define	EB_RBBSW	0x20	/* talk to receive buffer b */
+#define	EB_RBASW	0x10	/* talk to receive buffer a */
+#define	EB_XBUFSW	0x8	/* talk to transmit buffer */
+#define	EB_XEOFDIS	2	/* create underflow for testing */
+#define	EB_POWINTR	1	/* clear power-on interrupt */
+
+/*
+ * Auxiliary status reg bits
+ */
+#define	EB_XCVRUP	0x80	/* the integral transceiver is enabled */
+#define	EB_BBASW	4	/* receive buf b before a switch */
+#define	EB_IMASK	0x70	/* interesting bits for rcv. int. routine */
+
+#define	EBRDOFF		2	/* packet offset in read buffer */
+#define	EBMAXTDOFF	(2048-512)	/* max packet offset (min size) */
+
+#define NEB 1
+
+/*
+ * 3Com Ethernet Controller interface
+ */
+
+#define	EBMTU	1500
+
+int nulldev(), ebattach(), ebintr(), ebpoll();
+struct	uba_device *ebinfo[NEB];
+
+
+struct	uba_driver ebdriver = {
+	nulldev, ebattach, (u_short * )0, ebinfo
+};
+
+#define	EBUNIT(x)	minor(x)
+
+int	ebinit(),eboutput(),ebwatch();
+struct mbuf *ebget();
+
+int	ebwr_reg(), ebrd_reg();
+
+extern struct ifnet loif;
+
+/*
+ * Ethernet software status per interface.
+ *
+ * Each interface is referenced by a network interface structure,
+ * es_if, which the routing code uses to locate the interface.
+ * This structure contains the output queue for the interface, its address, ...
+ */
+struct	eb_softc {
+	struct	arpcom es_ac;		/* common Ethernet structures */
+#define	es_if	es_ac.ac_if		/* network-visible interface */
+#define	es_enaddr es_ac.ac_enaddr	/* hardware Ethernet address */
+	short	es_oactive;		/* is output active? */
+} eb_softc[NEB];
+
+/* temp receive buffer */
+char ebrbuf[EBMTU];
+
+/* for polling */
+short ebok = 0;
+
+/* set low 3 bytes to, eg, DEC manuf. number for us to pretend to be DEC */
+long eb_masq = 0;
+
+/*
+ * Interface exists: make available by filling in network interface
+ * record.  System will initialize the interface when it is ready
+ * to accept packets.
+ */
+ebattach(md)
+	struct uba_device *md;
+{
+	struct eb_softc *es = &eb_softc[md->ui_unit];
+	register struct ifnet *ifp = &es->es_if;
+	register pport = (int)md->ui_addr;
+	struct sockaddr_in *sin;
+
+	ifp->if_unit = md->ui_unit;
+	ifp->if_name = "eb";
+	ifp->if_mtu = EBMTU;
+	ifp->if_net = md->ui_flags & 0xFF000000;
+
+	if (!appleinit(pport))
+		return;
+	ebreset(pport);
+	/*
+	 * Read the ethernet address from the box.
+	 */
+	ebwr_reg(pport, EB_BBPCLEAR, 0);	/* reset bus-buffer pointer */
+	ebrd_setup(pport, EB_PROM);		/* setup for read from prom */
+	ebrd_data(pport, es->es_enaddr, 6);
+	/* hack to change the manufacturer */
+	if (eb_masq) {
+		char *mp;
+
+		mp =(char *)&eb_masq;
+		mp++;
+		bcopy(mp, es->es_enaddr, 3);
+	}
+	printf("Ethernet address = ");
+	{
+		char * p = &es->es_enaddr[0];
+		int i, j = 0;
+		char buf[14];
+
+		for (i = 0; i < 6; i ++) {
+			buf[j++] = "0123456789ABCDEF"[((*p >> 4)&0xf)];
+			buf[j++] = "0123456789ABCDEF"[((*p++)&0xf)];
+		}
+		buf[j++] = '\n';
+		buf[j] = 0;
+		printf(buf);
+	}
+	sin = (struct sockaddr_in *)&es->es_if.if_addr;
+	sin->sin_family = AF_INET;
+	/*
+	sin->sin_addr = arpmyaddr((struct arpcom *)0);
+	*/
+
+	/* this is a way to set addresses for now (without an ioctl()) */
+	sin->sin_addr.s_addr = (u_long)md->ui_flags;
+	ebsetaddr(ifp, sin);
+
+	ifp->if_init = ebinit;
+	ifp->if_output = eboutput;
+	ifp->if_watchdog = ebwatch;
+	if_attach(ifp);
+
+}
+
+ebwatch()
+{}
+
+/*
+ * Initialization of interface; clear recorded pending
+ * operations.
+ */
+ebinit(unit)
+	int unit;
+{
+	struct eb_softc *es = &eb_softc[unit];
+	register struct ifnet *ifp = &es->es_if;
+	register struct sockaddr_in *sin;
+	register pport;
+	int i, s;
+	char ebuf[6];
+
+	sin = (struct sockaddr_in *)&ifp->if_addr;
+	if (sin->sin_addr.s_addr == 0)		/* address still unknown */
+	    return;
+	if ((es->es_if.if_flags & IFF_RUNNING) == 0) {
+	    pport = (int) ebinfo[unit]->ui_addr;
+	    s = splimp();
+
+	    /* reset EDLC chip by toggeling reset bit */
+	    ebwr_reg(pport, EB_AUXCSR, EB_EDLCRES);
+	    ebwr_reg(pport, EB_AUXCSR, 0);
+
+	    /* Initialize the address RAM */
+	    ebwr_reg(pport, EB_BBPCLEAR, 0);	/* reset bus-buffer pointer */
+	    ebrd_setup(pport, EB_PROM);
+	    ebrd_data(pport, ebuf, 6);
+	    for (i = 0; i < 6; i++)
+		    ebwr_reg(pport, EB_ACTADDR0+i, ebuf[i]);
+
+	    /* Hang receive buffers and start any pending writes.  */
+	    ebwr_reg(pport, EB_RCVCMD, EB_RCVNORM);	/* normal bits */
+	    ebwr_reg(pport, EB_AUXCSR, (EB_RBASW|EB_RBBSW|EB_SYSEI));
+	    es->es_oactive = 0;
+	    es->es_if.if_flags |= IFF_UP|IFF_RUNNING;
+	    if (es->es_if.if_snd.ifq_head)
+		    ebstart(unit);
+	    ebok = pport;
+	    ebpoll(pport);
+	    splx(s);
+	}
+	if_rtinit(&es->es_if, RTF_UP);
+	arpattach(&es->es_ac);
+	arpwhohas(&es->es_ac, &sin->sin_addr);
+}
+
+/*
+ * Start or restart output on interface.
+ * If interface is already active, then this is a retransmit
+ * after a collision, and just restuff registers.
+ * If interface is not already active, get another datagram
+ * to send off of the interface queue, and map it to the interface
+ * before starting the output.
+ */
+ebstart(dev)
+	register dev_t dev;
+{
+        register int unit = EBUNIT(dev);
+	register struct eb_softc *es = &eb_softc[unit];
+	register int pport;
+	register struct mbuf *m;
+	register unsigned char csr;
+	register x = spl6();
+
+	pport = (int)ebinfo[unit]->ui_addr;
+	if (es->es_oactive)
+		goto restart;
+
+	IF_DEQUEUE(&es->es_if.if_snd, m);
+	if (m == 0) {
+		es->es_oactive = 0;
+		splx(x);
+		return;
+	}
+	ebput(pport, m);
+	ebwr_reg(pport, EB_XCSR, (EB_EIEOF|EB_EI16COLL));
+	csr = ebrd_reg(pport, EB_AUXCSR) & EB_IMASK;
+	ebwr_reg(pport, EB_AUXCSR, csr | (EB_SYSEI|EB_XBUFSW));
+
+restart:
+	splx(x);
+	es->es_oactive = 1;
+}
+
+int bbuf;
+int abuf;
+int bbabuf;
+int abbbuf;
+int nopkt;
+/*
+ * Ethernet interface interrupt.  If received packet examine 
+ * packet to determine type.  If can't determine length
+ * from type, then have to drop packet.  Othewise decapsulate
+ * packet based on type and pass to type specific higher-level
+ * input routine.
+ */
+/* ARGSUSED */
+ebintr(pport)
+{
+	register struct eb_softc *es;
+	register int unit;
+	register bits = 0;
+	register unsigned char csr, xcsr;
+	extern short netoff;
+
+	if (netoff)
+		return;
+	for (unit = 0; unit < NEB; unit++) {
+	    es = &eb_softc[unit];
+	    csr = ebrd_reg(pport, EB_AUXCSR);
+again:
+	    switch (csr & (EB_RBASW|EB_RBBSW|EB_BBASW)) {
+	    case EB_RBASW:
+	    case EB_RBASW|EB_BBASW:
+		    /* RBBSW == 0, receive B packet */
+		    bbuf++;
+		    ebread(es, pport, EB_RCVBUFB);
+		    bits |= (EB_RBBSW|EB_SYSEI);
+		    break;
+
+	    case EB_RBBSW:
+	    case EB_RBBSW|EB_BBASW:
+		    /* RBASW == 0, receive A packet */
+		    abuf++;
+		    ebread(es, pport, EB_RCVBUFA);
+		    bits |= (EB_RBASW|EB_SYSEI);
+		    break;
+
+	    case EB_BBASW:
+		    /* RBASW == 0, RBBSW == 0, BBASW, receive B, then A */
+		    bbabuf++;
+		    ebread(es, pport, EB_RCVBUFB);
+		    ebread(es, pport, EB_RCVBUFA);
+		    bits |= (EB_RBBSW|EB_RBASW|EB_SYSEI);
+		    break;
+
+	    case 0:
+		    /* RBASW == 0, RBBSW == 0, BBASW == 0, receive A, then B */
+		    abbbuf++;
+		    ebread(es, pport, EB_RCVBUFA);
+		    ebread(es, pport, EB_RCVBUFB);
+		    bits |= (EB_RBBSW|EB_RBASW|EB_SYSEI);
+		    break;
+
+	    case EB_RBASW|EB_RBBSW:
+	    case EB_RBASW|EB_RBBSW|EB_BBASW:
+		    /* no input packets */
+		    nopkt++;
+		    bits |= (EB_RBBSW|EB_RBASW|EB_SYSEI);
+		    break;
+
+	    default:
+		    panic("ebintr: impossible value");
+		    /* NOT REACHED */
+	    }
+	    xcsr = ebrd_reg(pport, EB_AUXCSR);
+	    if (xcsr != csr) {
+		    csr = xcsr;
+		    goto again;
+	    }
+	    ebwr_reg(pport, EB_AUXCSR, (int)((csr|bits)&EB_IMASK));
+
+	    if (es->es_oactive) {
+		    if ((csr & EB_XBUFSW) == 0) {
+			    es->es_if.if_opackets++;
+			    es->es_oactive = 0;
+			    csr = ebrd_reg(pport, EB_XCSR);
+			    if (csr&0xff == 0xff)
+				    csr = ebrd_reg(pport, EB_XCSR);
+				    if (csr&0xff == 0xff) {
+					printf("eb%d xmit status reg. botch\n",
+					    unit);
+					goto cont;
+				    }
+			    if (csr & EB_COLL)
+				    /* clear counter */
+				    ebwr_reg(pport, EB_COLLCNTR, 0);
+			    if (csr & EB_COLL16) {
+				    printf("eb%d: 16 collisions; resetting...\n"
+				   	, unit);
+				    ebreset(pport);
+				    ebinit(unit);
+			    }
+			    if (es->es_if.if_snd.ifq_head)
+				    ebstart(unit);
+		    }
+	    }
+cont:
+	    ebportreset(pport);		/* clear pport */
+	}
+}
+
+ebread(es, pport, buf)
+	register struct eb_softc *es;
+	register int pport;
+	register int buf;
+{
+	register struct ether_header *eb;
+    	register struct mbuf *m;
+	register int len, off, eboff;
+	register unsigned char byte1, byte2;
+	short resid;
+	register struct ifqueue *inq;
+	short x;
+
+	es->es_if.if_ipackets++;
+	ebwr_reg(pport, EB_BBPCLEAR, 0);	/* clear bus buffer pointer */
+	byte1 = ebrd_reg(pport, buf);		/* first byte of buffer */
+	if (byte1 & EB_RCVERR) {
+		printf("ebrcv error %x\n", byte1&0xff);
+		es->es_if.if_ierrors++;
+		return;
+	}
+	byte2 = ebrd_reg(pport, buf);		/* second byte of buffer */
+	eboff = (((byte1&EB_RBUF)<<8)|byte2) - EBRDOFF;
+
+	/* get data */
+	ebrd_setup(pport, buf);
+	ebrd_data(pport, ebrbuf, eboff);
+
+	/*
+	 * Get input data length.
+	 * Get pointer to ethernet header (in input buffer).
+	 * Deal with trailer protocol: if type is PUP trailer
+	 * get true type from first 16-bit word past data.
+	 * Reebmber that type was trailer by setting off.
+	 */
+	len = eboff - sizeof (struct ether_header);
+	eb = (struct ether_header *)ebrbuf;
+#define	ebdataaddr(eb, off, type)	((type)(((caddr_t)((eb)+1)+(off))))
+
+	if (eb->ether_type >= EBPUP_TRAIL &&
+	    eb->ether_type < EBPUP_TRAIL+EBPUP_NTRAILER) {
+		off = (eb->ether_type - EBPUP_TRAIL) * 512;
+		if (off >= EBMTU)
+			return;		/* sanity */
+		eb->ether_type = *ebdataaddr(eb, off, u_short *);
+		resid = *(ebdataaddr(eb, off+2, u_short *));
+		if (off + resid > len)
+			return;		/* sanity */
+		len = off + resid;
+	} else
+		off = 0;
+	if (len == 0)
+		return;
+
+	/*
+	 * Put packet into mbufs.  Off is nonzero if packet
+	 * has trailing header; ebget will then force this header
+	 * information to be at the front, but we still have to drop
+	 * the type and length which are at the front of any trailer data.
+	 */
+	m = ebget(ebrbuf, len, off);
+	if (m == 0)
+		return;
+	if (off) {
+		m->m_off += 2 * sizeof (u_short);
+		m->m_len -= 2 * sizeof (u_short);
+	}
+	x = spl6();
+	switch (eb->ether_type) {
+
+#ifdef INET
+	case EBPUP_IPTYPE:
+		schednetisr(NETISR_IP);
+		inq = &ipintrq;
+		break;
+
+	case ETHERPUP_ARPTYPE:
+		arpinput(&es->es_ac, m);
+		splx(x);
+		return;
+#endif
+	default:
+		m_freem(m);
+		splx(x);
+		return;
+	}
+
+	if (IF_QFULL(inq)) {
+		IF_DROP(inq);
+		splx(x);
+		m_freem(m);
+		return;
+	}
+	IF_ENQUEUE(inq, m);
+	splx(x);
+}
+
+
+/*
+ * Ethernet output routine.
+ * Encapsulate a packet of type family for the local net.
+ * Use trailer local net encapsulation if enough data in first
+ * packet leaves a multiple of 512 bytes of data in remainder.
+ * If destination is this address or broadcast, send packet to
+ * loop device to kludge around the fact that 3com interfaces can't
+ * talk to themselves.
+ */
+eboutput(ifp, m0, dst)
+	register struct ifnet *ifp;
+	register struct mbuf *m0;
+	register struct sockaddr *dst;
+{
+	int type, s, error;
+	u_char edst[6];
+	struct in_addr idst;
+	register struct eb_softc *es = &eb_softc[ifp->if_unit];
+	register struct mbuf *m = m0;
+	register struct ether_header *eb;
+	register int i;
+	struct mbuf *mcopy = (struct mbuf *) 0;		/* Null */
+
+	s = splnet();
+	switch (dst->sa_family) {
+
+#ifdef INET
+	case AF_INET:
+		idst = ((struct sockaddr_in *)dst)->sin_addr;
+		if (!arpresolve(&es->es_ac, m, &idst, edst))
+			return (0);	/* if not yet resolved */
+		if (in_lnaof(idst) == INADDR_ANY)
+			mcopy = m_copy(m, 0, (int)M_COPYALL);
+		type = EBPUP_IPTYPE;
+		goto gottype;
+#endif
+
+	case AF_UNSPEC:
+		eb = (struct ether_header *)dst->sa_data;
+		bcopy((caddr_t)eb->ether_dhost, (caddr_t)edst, sizeof (edst));
+		type = eb->ether_type;
+		goto gottype;
+
+	default:
+		printf("eb%d: can't handle af%d\n", ifp->if_unit,
+			dst->sa_family);
+		error = EAFNOSUPPORT;
+		goto bad;
+	}
+
+gottype:
+	/*
+	 * Add local net header.  If no space in first mbuf,
+	 * allocate another.
+	 */
+	if (m->m_off > MMAXOFF ||
+	    MMINOFF + sizeof (struct ether_header) > m->m_off) {
+		m = m_get(M_DONTWAIT);
+		if (m == 0) {
+			error = ENOBUFS;
+			goto bad;
+		}
+		m->m_next = m0;
+		m->m_off = MMINOFF;
+		m->m_len = sizeof (struct ether_header);
+	} else {
+		m->m_off -= sizeof (struct ether_header);
+		m->m_len += sizeof (struct ether_header);
+	}
+	eb = mtod(m, struct ether_header *);
+	bcopy((caddr_t)edst, (caddr_t)eb->ether_dhost, sizeof (edst));
+	eb->ether_type = htons((u_short)type);
+	bcopy((caddr_t)es->es_enaddr, (caddr_t)eb->ether_shost, 6);
+
+	/*
+	 * Queue message on interface, and start output if interface
+	 * not yet active.
+	 */
+	s = splimp();
+	if (IF_QFULL(&ifp->if_snd)) {
+		IF_DROP(&ifp->if_snd);
+		error = ENOBUFS;
+		goto qfull;
+	}
+	IF_ENQUEUE(&ifp->if_snd, m);
+	if (es->es_oactive == 0)
+		ebstart(ifp->if_unit);
+	splx(s);
+
+gotlocal:
+	return(mcopy ? looutput(&loif, mcopy, dst) : 0);
+
+qfull:
+	m0 = m;
+bad:
+	m_freem(m0);
+	splx(s);
+	return(error);
+}
+
+/*
+ * Routine to copy from mbuf chain to transmitter
+ * buffer in Multibus ebmory.
+ */
+ebput(pport, m)
+	register int pport;
+	register struct mbuf *m;
+{
+	register struct mbuf *mp;
+	register short off;
+	register flag = 0;
+	register unsigned len;
+	register u_char *p;
+
+	for (off = 2048, mp = m; mp; mp = mp->m_next)
+		off -= mp->m_len;
+	if (off > EBMAXTDOFF)		/* enforce minimum packet size */
+		off = EBMAXTDOFF;
+
+	if (off & 01) {
+		off--;
+		flag++;
+	}
+    
+	/* load xmit buffer pointer */
+	ebwr_reg(pport, EB_XBP_LO, off&0xff);
+	ebwr_reg(pport, EB_XBP_HI, ((off>>8)&7));
+	ebwr_setup(pport, EB_XMTBUF);
+	for (mp = m; mp; mp = mp->m_next) {
+		len = mp->m_len;
+		if (len == 0)
+			continue;
+		p = mtod(mp,u_char*);
+		ebwr_data(pport, p, (short)len);
+	}
+
+	if (flag)
+		ebwr_data(pport, "", 1);
+	/* re-load xmit buffer pointer */
+	ebwr_reg(pport, EB_XBP_LO, off&0xff);
+	ebwr_reg(pport, EB_XBP_HI, ((off>>8)&7));
+
+	m_freem(m);
+}
+
+/*
+ * Routine to copy from memory into mbufs.
+ */
+struct mbuf *
+ebget(ebrbuf, totlen, off0)
+	register u_char *ebrbuf;
+	register int totlen, off0;
+{
+	register struct mbuf *m;
+	struct mbuf *top = 0, **mp = &top;
+	register int off = off0, len;
+	register u_char *cp;
+
+	cp = ebrbuf + sizeof (struct ether_header);
+#ifdef DUMPIN
+	{char *cp = ebrbuf; int i; int j; printf("ebget:\n");for(j=0;j<6;j++){for(i=0;i<16;i++)printf("%x ",(((char *)cp)[i+16*j])&0xff);printf("\n");}for(i=0;i<10000;i++);}
+#endif
+	while (totlen > 0) {
+		u_char *mcp;
+
+		MGET(m, 0);
+		if (m == 0){
+			goto bad;
+		}
+		if (off) {
+			len = totlen - off;
+			cp = ebrbuf + sizeof (struct ether_header) + off;
+		} else
+			len = totlen;
+		m->m_len = len = MIN(MLEN, len);
+		m->m_off = MMINOFF;
+		mcp = mtod(m, u_char *);
+		bcopy(cp, mcp, len);
+		cp += len;
+		*mp = m;
+		mp = &m->m_next;
+		if (off == 0) {
+			totlen -= len;
+			continue;
+		}
+		off += len;
+		if (off == totlen) {
+			cp = ebrbuf + sizeof (struct ether_header);
+			off = 0;
+			totlen = off0;
+		}
+	}
+	return (top);
+bad:
+	m_freem(top);
+	return (0);
+}
+
+#ifdef notdef
+/* ebdelay -- wait about tim secs */
+ebdelay(tim)
+register tim;
+{
+	register i;
+
+	while (tim--){
+		i = 100000;
+		while (i--)
+			;
+	}
+}
+#endif
+
+/* stuff for apple */
+#include <sys/pport.h>
+#include <sys/cops.h>
+#include <sys/d_profile.h>
+#include <sys/profile.h>
+
+#define	RC	0xa8		/* read cmd */
+#define	WC	0xa0		/* write cmd */
+#define	RD	0xb8		/* read data */
+#define WD	0xb0		/* write data */
+#define INPUT	0x00		/* ddra input */
+#define	OUTPUT	0xFF		/* ddra output */
+
+/* sometime, put the parallel port data somewhere besides the in disk driver */
+extern struct device_d *pro_da[];
+
+ebreset(pport)
+register pport;			/* parallel port number */
+{
+	register struct device_d *dp =  pro_da[pport];
+
+#define	THISISMAGIC
+#ifdef	THISISMAGIC
+	/* reset 6522.  */
+	dp->d_ddra = INPUT;
+	dp->d_irb = 0x18;
+	dp->d_ddrb = 0xbc;
+	dp->d_irb = RC;
+	dp->d_pcr = 0xb;
+	dp->d_ier = FIRQ|FCA1;		/* enable interrupts (I guess) */
+#endif	THISISMAGIC
+
+	ebwr_reg(pport, EB_AUXCSR, 1);		/* clear power-on interrupt */
+	ebportreset(pport);
+}
+
+/* setup a register to write to it */
+ebwr_setup(pport, regno)
+int pport, regno;
+{
+	register struct device_d *dp =  pro_da[pport];
+
+	dp->d_irb = WC;
+	dp->d_ddra = OUTPUT;
+	dp->d_ira = regno;
+	dp->d_irb = WD;
+}
+
+/* setup a register to read from it */
+ebrd_setup(pport, regno)
+int pport, regno;
+{
+	register struct device_d *dp =  pro_da[pport];
+
+	dp->d_irb = WC;
+	dp->d_ddra = OUTPUT;
+	dp->d_ira = regno;
+	dp->d_irb = RD;
+	dp->d_ddra = INPUT;
+}
+
+/* write data to box.  must have done a ebwr_setup() first */
+ebwr_data(pport, p, nbytes)
+int pport;
+register short nbytes;
+register char *p;
+{
+	register struct device_d *dp =  pro_da[pport];
+
+	if (nbytes )
+		do {
+			dp->d_ira = *p++;
+		} while (--nbytes);
+}
+
+/* read data from box.  must have done a ebrd_setup() first */
+ebrd_data(pport, p, nbytes)
+int pport;
+register short nbytes;
+register char *p;
+{
+	register struct device_d *dp =  pro_da[pport];
+
+	if (nbytes )
+		do {
+			*p++ = dp->d_ira;
+		} while (--nbytes);
+}
+
+/* write a register */
+ebwr_reg(pport, regno, byte)
+int pport, regno, byte;
+{
+	register struct device_d *dp =  pro_da[pport];
+
+	dp->d_irb = WC;
+	dp->d_ddra = OUTPUT;
+	dp->d_ira = regno;
+	dp->d_irb = WD;
+	dp->d_ira = byte;
+}
+
+/* read a register */
+ebrd_reg(pport, regno)
+int pport, regno;
+{
+	register struct device_d *dp =  pro_da[pport];
+
+	dp->d_irb = WC;
+	dp->d_ddra = OUTPUT;
+	dp->d_ira = regno;
+	dp->d_irb = RD;
+	dp->d_ddra = INPUT;
+	return (dp->d_ira & 0xff);
+}
+
+/* ebportreset - reset port to normal state after xmit command */
+ebportreset(pport)
+int pport;
+{
+	register struct device_d *dp =  pro_da[pport];
+
+	dp->d_irb = RC;
+	dp->d_ddra = INPUT;
+}
+
+appleinit(i)
+{
+	register struct device_d *devp;
+	int ebintr();
+	extern char slot[];
+
+	if (!PPOK(i) || (slot[PPSLOT(i)] != PR0)) {/* check slot # and type */
+		printf("ethernet init: port %d, ", i);
+		if (slot[PPSLOT(i)] == PM3)
+			printf("Priam card\n");
+		else
+			printf("card ID 0x%x\n", slot[PPSLOT(i)]);
+		goto fail;
+	}
+	devp = pro_da[i];
+	if (iocheck(&devp->d_ifr)) {	/* board there ? */
+		{ asm(" nop "); }
+		if (prodata[i].pd_da != devp) {	/* not already setup */
+			if (setppint((prodata[i].pd_da = devp),ebintr))
+				goto fail;
+		}
+		return 1;
+	} else
+fail:
+	printf("Can't find port for etherbox %d\n", i);
+	return 0;
+}
+
+#ifdef doneinppintr
+/* applereset -- reset apple interrupt hware */
+applereset(pport)
+{
+	register struct device_d *dp =  pro_da[pport];
+	dp->d_ifr = dp->d_ifr;		/* reset interrupt trap */
+}
+#endif
+
+/* sigh */
+
+short polleb = 1;
+/* ...as opposed to pollcat... */
+ebpoll(pport)
+{
+	extern time_t lbolt;
+
+	if (polleb) {
+		char ebuf[6];
+		int i;
+
+		/*
+		ebintr(pport);
+		*/
+		ebreset(pport);
+		/* reset EDLC chip by toggeling reset bit */
+		ebwr_reg(pport, EB_AUXCSR, EB_EDLCRES);
+		ebwr_reg(pport, EB_AUXCSR, 0);
+
+		/* Initialize the address RAM */
+		ebwr_reg(pport, EB_BBPCLEAR, 0);	/* reset bus-buffer pointer */
+		ebrd_setup(pport, EB_PROM);
+		ebrd_data(pport, ebuf, 6);
+		for (i = 0; i < 6; i++)
+		    ebwr_reg(pport, EB_ACTADDR0+i, ebuf[i]);
+
+		/* Hang receive buffers and start any pending writes.  */
+		ebwr_reg(pport, EB_RCVCMD, EB_RCVNORM);	/* normal bits */
+		ebwr_reg(pport, EB_AUXCSR, (EB_RBASW|EB_RBBSW|EB_SYSEI));
+		timeout(ebpoll, pport, v.v_hz*10);
+	}
+}
+
+ebsetaddr(ifp, sin)
+	register struct ifnet *ifp;
+	register struct sockaddr_in *sin;
+{
+
+	ifp->if_addr = *(struct sockaddr *)sin;
+	ifp->if_net = in_netof(sin->sin_addr);
+	ifp->if_host[0] = in_lnaof(sin->sin_addr);
+	sin = (struct sockaddr_in *)&ifp->if_broadaddr;
+	sin->sin_family = AF_INET;
+	sin->sin_addr = if_makeaddr(ifp->if_net, INADDR_ANY);
+	ifp->if_flags |= IFF_BROADCAST;
+}

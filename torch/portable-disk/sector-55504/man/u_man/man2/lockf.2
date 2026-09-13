@@ -1,0 +1,109 @@
+.TH LOCKF 2 UniSoft
+.SH NAME
+lockf \- provide exclusive file regions for reading or writing
+.SH SYNOPSIS
+.nf
+.B lockf(fildes, mode, size)
+.B int fildes;
+.B int mode;
+.B int size;
+.fi
+.SH DESCRIPTION
+.I Lockf\^
+will allow a specified number of bytes to be accessed only by the locking
+process. Other processes which attempt to lock, read, or write the locked area
+will sleep until the area becomes unlocked.
+.PP
+.I Fildes\^
+is the word returned from a successful
+.IR open ,
+.IR creat ,
+.IR dup ,
+or
+.I pipe\^
+system call.
+.PP
+.I Mode\^
+is zero to unlock the area.
+.I Mode\^
+is one or two for making the area locked. If the
+.I mode\^
+is one and the area has some other lock on it, then the process
+will sleep until the entire area is available. If the
+.I mode\^
+is two and the area is locked, an error will be returned.
+.PP
+.I Size\^
+is the number of contiguous bytes to be locked or unlocked.
+The area to be locked starts at the current offset in the file.
+If
+.I size\^
+is zero, the area to the end of file is locked.
+.PP
+The potential for a deadlock occurs when a process controlling
+a locked area is put to sleep
+by accessing another process's locked area.
+Thus calls to
+.IR lockf ,
+.IR read ,
+or
+.I write\^
+scan for a deadlock prior to sleeping on a locked area.
+An error return is made if sleeping on the locked area would
+cause a deadlock.
+.PP
+Lock requests may, in whole or part,
+contain or
+be contained by a previously locked area for the same process.
+When this or adjacent areas occur, the areas are combined into a single
+area.
+If the request requires a new lock element with the lock table full,
+an error is returned, and the area is not locked.
+.PP
+Unlock requests may, in whole or part, release one or more locked regions
+controlled by the process.  When regions are not fully released, the remaining
+areas are still locked by the process.
+Release of the center section of a locked area requires an additional
+lock element to hold the cut off section. 
+If the lock table is full, an error is returned, and the requested
+area is not released.
+.PP
+While locks may be applied to special files or pipes,
+read/write operations will not
+be blocked.
+Locks may not be applied to a directory.
+.PP
+Note that
+.IR close (2)
+automatically removes any locks that were
+associated with the closed
+file descriptor.
+.SH "SEE ALSO"
+close(2), creat(2), dup(2), open(2), read(2), write(2). 
+.SH DIAGNOSTICS
+The value \-1 is returned
+if the file does not exist,
+or if a deadlock using file locks would occur.
+.SM EACCES
+will be returned for lock requests in which the area is already
+locked by another process. 
+.SM EDEADLOCK
+will be returned by: read, write, 
+or locking if a deadlock would occur. 
+.SM EDEADLOCK
+will also be returned when the
+locktable overflows.
+.bp
+.SH ASSEMBLER
+.ta \w'\fBmoveq\fR\ \ \ 'u 1.5i
+.nf
+.B moveq	#56,D0
+.B movl	fildes,A0
+.B movl	mode,D1
+.B movl	size,A1
+.B trap	#0
+.fi
+.PP
+Carry bit cleared on success.
+.DT
+.\"	@(#)lockf.2	5.2 of 7/24/84

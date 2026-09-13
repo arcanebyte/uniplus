@@ -1,0 +1,33 @@
+# The next 3 lines should have the #'s removed if process acounting is to be
+# enabled. /usr/lib/acct/startup should also be called in /etc/rc.
+# Also, make sure the lines that truncate acct files in /etc/rc are removed.
+# 0 4 * * 1-6 /bin/su - adm -c "/usr/lib/acct/runacct 2>/usr/adm/acct/nite/fd2log"
+# 0 2 * * 1-6 /usr/lib/acct/sdisk
+# 0 * * * * /bin/su - adm -c "/usr/lib/acct/ckpacct"
+
+# The next line should have the # removed if an error logging report is to be
+# automatically printed out. /usr/lib/errdemon must be run from /etc/rc if
+# errors are to be logged but it is not essential for them to be printed out.
+# 0 5 * * 1 /etc/errstop 2>/dev/console;/bin/mv /usr/adm/errfile /usr/adm/oerrfile;/usr/lib/errdemon 2>/dev/console;/usr/bin/errpt -a /usr/adm/oerrfile|/bin/mail adm
+
+# The next two lines cause system profiling to be performed. Unfortunately sar
+# crashes the machine so it is advisable not to use system profiling until
+# a fixed version of sar is released.
+# 0 * * * * su adm -c "/usr/lib/sa/sa1>/dev/null&"
+# 5 18 * * 1-5 su adm -c "/usr/lib/sa/sar>/dev/null&"
+
+# This line must be present if the at command is to be used.
+ 7,17,27,37,47,57 * * * * /usr/lib/atrun
+
+# If uucp is to be used, the following lines cause regular clean ups.
+# 50 * * * * /bin/su uucp -c "/usr/lib/uucp/uudemon.hr>/dev/null"
+# 1 7 * * * /bin/su uucp -c "/usr/lib/uucp/uudemon.day>/dev/null"
+# 2 2 * * 0 /bin/su uucp -c "/usr/lib/uucp/uudemon.wk>/dev/null"
+
+# The calendar program inspects a calendar file in a users home directory and
+# sends mail if there is a reference to today or tomorrow. Run it every morning
+# if this facility is required.
+# 0 6 * * 1-5 calendar -
+
+# The unix clock is not always accurate and can be improved by this line
+0 * * * * getbbtime -s </dev/null >/dev/null 2>&1

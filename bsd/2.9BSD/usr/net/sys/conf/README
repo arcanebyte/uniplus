@@ -1,0 +1,10 @@
+	This directory contains prototypes of header files
+and control files used in remaking the kernel.  The kernel is not
+compiled or loaded in this directory, but in individual directories
+per machine.  To set up a directory for a new machine, make a configuration
+description file (see PROTONONSEP and PROTOSEP for examples)
+and then run the script "config," giving the name of the machine description
+as an argument.  This will create a directory "../machinename" of the
+same name as the description file.  You will need to tune the header
+files to your liking, setting global or device-specific options,
+but most of the work of configuring a system will be done.

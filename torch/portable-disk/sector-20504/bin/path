@@ -1,0 +1,30 @@
+#!/bin/sh
+# Find where commands are. Exit status true if find all of them
+# Alain Williams, Root Computers, London.
+path=`echo "$PATH" | sed -e 's/^:/::/' -e 's/::/:.:/'`
+IFS=:
+ex=0
+all=0
+if [ "$1" = -a ]
+then	all=1
+	shift
+fi
+for j
+do	gotit=0
+	for i in $path
+	do	for k in $i/$j
+		do	if [ -x $k -a -f $k ]
+			then	echo $k
+				gotit=1
+				if [ "$all" = 0 ]
+				then	continue 3
+				fi
+			fi
+		done
+	done
+	if [ "$gotit" = 0 ]
+	then	echo "$j not found" >&2
+		ex=1
+	fi
+done
+exit $ex

@@ -1,0 +1,9 @@
+
+# %Z%ROOT      %M%     %I%
+# %Z%iAPX286   %M%     1.1
+# %Z%Unisoft   %M%     1.3
+# %Z%AT&T      %M%     1.2
+
+rm -f /usr/adm/acct/sum/wtmp*
+rm -f /usr/adm/acct/sum/pacct*
+rm -f /usr/adm/acct/nite/lock*

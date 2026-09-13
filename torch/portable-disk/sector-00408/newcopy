@@ -1,0 +1,94 @@
+/usr/clear
+echo
+echo "           ********************************************************"
+echo "           * Service Department Disc Copy Program V1.10 4-Sept-87 *"
+echo "           ********************************************************"
+echo
+echo "Please Enter Controller Number \(0-1\).?? \c"
+read controller
+echo "Please Enter Drive Number \(0-1\).?? \c"
+read disc
+type=`partsize /dev/disk$controller$disc\b |cut -c15-20`
+size=`partsize /dev/rdisk$controller$disc\e 2>/dev/null|cut -c15-20`
+size1=`partsize /dev/rdisk$controller$disc\f 2>/dev/null|cut -c15-20`
+if ( test "$type" =  "4500" )
+then system=1.3 drive=0f drive1=0g
+else
+if (test "$type" = "5500" )
+then system=1.2 drive=0d drive1=0e
+else echo \ \ Partition Size Not Known To This Program. Repartition Disc or Contact Service \ \ Department at Torch.
+exit
+fi
+fi
+board=controller\ board\ $controller\ drive\ $disc\.
+if yorn "powerdown" Do You Wish To Powerdown When Copying Is Finished.
+then pow=1
+else pow=0
+fi
+echo
+if [ $size ]
+then
+   echo Remaining partition size e = $size
+else
+   echo "\007"No Partition e
+fi
+echo
+if [ $size1 ]
+then
+   echo Remaining partition size f = $size1
+else
+   echo "\007"No Partition f
+fi
+echo
+if ( test "$size" -eq "0" )
+then size2=20
+else
+if ( test "$size" -eq "18500" )
+then size2=40
+else
+if ( test "$size" -eq "55000" )
+then size2=80
+else size2=??
+fi
+fi
+fi
+if yorn "Continue" Copying $system system on to a $size2 meg drive. On $board
+then
+echo Copying $system System onto Hard Disc.
+dd if=/dev/rdisk$drive of=/dev/rdisk$controller$disc\b bs=190k 2>/dev/null
+dd if=/dev/rdisk$drive1 of=/dev/rdisk$controller$disc\d bs=190k 2>/dev/null
+echo
+fi
+if (test "$size" > "0")
+then
+echo Create Blank Unix File System On Remaining Partitions. 
+echo
+str=continue
+if yorn $str "make unix file system"
+then
+mkfs /dev/rdisk$controller$disc\e $size 2 17 >/dev/null
+mkfs /dev/rdisk$controller$disc\f $size1 2 17 >/dev/null
+fi
+fi
+if (test "$size2" = "80")
+then
+echo Modifying Floppy Device Drivers for Quantom
+mount /dev/disk10b /mnt >/dev/null
+rm /mnt/dev/*floppy
+mknod /mnt/dev/floppy b 1 64 
+mknod /mnt/dev/rfloppy c 11 64 
+chown 3 /mnt/dev/floppy /mnt/dev/rfloppy
+chgrp 150 /mnt/dev/floppy /mnt/dev/rfloppy
+chmod 664 /mnt/dev/*floppy
+echo
+umount /dev/disk10b
+fi
+echo Copying of $system system Onto $size2 meg Hard Disc Complete.
+if ( test "$pow" = "1")
+then
+echo "\007"
+echo "                             *****************"
+echo "                             * powering down *"
+echo "                             *****************"
+telinit 6
+fi

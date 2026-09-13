@@ -1,0 +1,109 @@
+
+  Instructions on Printing under Unix
+
+Unix has a number of commands and options for printing. You can either
+send a file directly to a port with a printer attached, or you can use the
+Unix spooler, called "lpr".
+
+Before explaining the differences between printing directly and via spooler,
+we must have a discussion about "setting up" the printer port.
+
+SETTING UP THE PRINTER PORT
+
+         When you print a report you are actually sending the
+	 characters that make up the report to one of the
+	 computer's "ports." These ports can be used to connect
+	 terminals, printers, modems, or other devices. These devices
+	 can function at a wide range of speeds, ranging from 100 baud
+         for slow "teletypes" to 9600 baud for fast terminals and
+	 printers. Accordingly, we cannot configure a port to handle
+	 your specific printer or device. 
+
+         This means that prior to using your printer may have to  inform
+	 the Unix system about its speed. We have configured both
+	 serial ports A and B to a speed of 9600 baud. In addition,
+	 we have configured port B as the "login" port. (In Unix-ese,
+	 port B is /dev/tty1 and port A is /dev/tty0.) You should
+	 only print to a non-login port. Making ports login or non-login is
+	 explained fully elsewhere in the Unix documentation.
+
+         We have set up the system for printing to occur on Serial port A,
+	 at a speed of 1200 baud, and we have made a "command script",
+	 /usr/bin/setprt, to perform the setup details. You can modify this
+	 script as needed for your own situation. 
+
+	We have another script "/usr/bin/setprt.image" which is
+	intended for use with the Apple Imagewriter. It sends
+	at 9600 baud. Please read /usr/bin/setprt.image to leanr
+	what you must do to the Imagewriter.
+
+	 It is your
+	 responsibility when printing to invoke setprt. You can do this in
+	 2 ways: You can issue the setprt command once each session from
+	 the keyboard, or you can put the setprt "call" into the /etc/rc
+	 file, which is automatically run when you "boot" Unix into
+	 multi-user mode with the "init 2" command. If you want to modify
+	 /etc/rc, we suggest that you add the 2 indicated lines near the
+	 bottom as shown here:
+
+
+	       rm -f /usr/spool/lpd/lock
+	      #	rm -f /usr/spool/vpd/lock
+              #	rm  -f /usr/spool/dpd/lock
+	      #	rm -f /usr/spool/dpd/glock
+	        	/usr/lib/lpd
+	      #	/usr/lib/dpd
+	      # define terminal parameters
+	      /etc/params
+====>	      # set up printer
+====>	      /usr/bin/setprt
+	      fi
+
+PRINTING DIRECTLY AND VIA SPOOLER
+
+         Unix allows the user to print directly or through use of the
+	 "spooler". 
+
+         SPOOLER
+
+         The spooler is a set of programs which stack up print
+	 jobs and send them to the printer as soon as it has completed its
+ 	 previous jobs.  In addition, when spooling, you are given control
+	 over your terminal even while the report is being printed.
+         Assuming that you have a file called "myfile", you
+	 print it with the spooler by simply issuing:
+
+		cat myfile | lpr
+
+         The spooler also places a "burst page" between reports so that
+	 they are easy to identify.
+
+         There is a problem which sometimes crops up with the spooler,
+	 though. Sometimes it gets "stuck" and it needs to be cleaned out.
+	 Files awaiting printing are placed into the /usr/spool/lpd
+	 directory. They lose the name you gave them, though. Unix assigns
+	 them an arbitrary numeric name in that directory. Unix also puts
+	 a "lock" file into the directory when the printer is in use. If
+	 files are not being printed even though the printer is available,
+	 it usually means that there is a bogus lock file. Simply erase it,
+	 as seen here:
+
+		cd /usr/spool/lpd
+		rm lock
+
+         You also can erase the data files there if you need to.
+
+         DIRECTLY
+
+         You can directly print a file by simply sending it to the port
+	 which has the printer, as in:
+
+		cat myfile >/dev/tty0      - or -
+ 		pr myfile >/dev/tty0        Try both of these. pr gives
+						nice headings.
+
+	 The disadvantage of printing directly is that your terminal is
+	 hung up during the time that the report is being printed (which
+	 is not the case when spooling.) Also, you or other users  run
+         the risk of accidentally sending more than 1 file to the 
+         printer at once and making a big mess.

@@ -1,0 +1,6 @@
+set -evx$-
+for i in $*
+do
+mv $i oo/$i
+sed -f fixinc.sed <oo/$i >$i
+done

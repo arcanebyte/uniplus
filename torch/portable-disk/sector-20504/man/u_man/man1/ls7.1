@@ -1,0 +1,262 @@
+.TH LS7 1 UniSoft
+.SH NAME
+ls7 \- list contents of directory (Berkeley version)
+.SH SYNOPSIS
+.B ls7
+[
+.B \-1ACFRabcdfgilmnqrstux
+] name ...
+.SH DESCRIPTION
+For each directory argument,
+.I ls7\^
+lists the contents of the directory;
+for each file argument,
+.I ls7\^
+repeats the file name(s) and any other information
+requested with the
+.I ls7\^
+options.
+The output is sorted alphabetically by default.
+When no argument is given, the current directory is listed.
+When several arguments are given,
+the arguments are first sorted appropriately,
+but file arguments appear
+before directories and their contents.
+.PP
+There are three major listing formats.
+The format chosen depends on whether the output is going
+to a teletype, and may also be controlled by option flags.
+The default format for a teletype is to list the contents of directories
+in multi-column format, with the entries sorted down the columns.
+(Files which are not the contents of a directory being interpreted
+are always sorted across the page rather than down the page in columns.
+This is because the individual file names may be arbitrarily long.)
+Files are listed first, and each directory being listed is labeled
+with its pathname, when two or more directory listings are
+requested.
+If the standard output is not a teletype, the default format is to
+list one entry per line.
+Finally, there is a stream output format in which files are listed
+across the page, separated by "," characters.
+The
+.B \-m
+flag enables this format.
+.PP
+There are numerous options:
+.TP "\w'\fB\-F\fR\|\ \ 'u"
+.B  \-1
+Force one entry per line output format, e.g., to a teletype.
+.TP
+.B \-A
+reverses the default state of the
+.B \-a
+option.
+.TP
+.B  \-C
+Force multi-column output, e.g., to a file or a pipe.
+.TP
+.B  \-F
+Cause directories to be marked with a trailing "/" and executable
+files to be marked with a trailing "\(**";
+this is the default if the last character of the name the program is invoked
+with is a "f" (for example, by linking 
+.B /bin/ls7
+to
+.BR /bin/lf ).
+.TP
+.B  \-R
+Recursively list subdirectories encountered.
+.TP
+.B  \-a
+List all entries; usually
+entries beginning with
+.RB "\^ `.' \^"
+are suppressed,
+except for the super user.
+.RB "\^ `.' \^"
+and
+.RB "\^ `..' \^"
+are always suppressed if the
+.B \-a
+option is not used.
+.TP
+.B  \-b
+Force printing of non-graphic characters to be in the "\eddd"
+notation, in octal.
+.TP
+.B  \-c
+Use time of file creation for sorting
+.RB ( \-t )
+or printing
+.RB ( \-l ).
+.TP
+.B  \-d
+If argument is a directory, list only its name, not
+its contents (mostly used with
+.B \-l
+to get status
+on directory).
+.TP
+.B  \-f
+Force each argument to be interpreted as a directory
+and list the name found in each slot.
+This option turns off
+.BR \-l ,\  \-t ,\  \-s ,
+and
+.BR \-r ,
+and
+turns on
+.BR \-a ;
+the order is the order in which entries
+appear in the directory.
+.TP
+.B  \-g
+Give group 
+.SM ID 
+instead of owner 
+.SM ID
+in long listing.
+.TP
+.B  \-i
+Print i-number in first column
+of the report for each file listed.
+.TP
+.B  \-l
+List in long format, giving mode, number of links, owner,
+size in bytes, and time of last modification
+for each file.
+(See below.)
+If the file is a special file, the size field will instead contain
+the major and minor device numbers.
+.TP
+.B  \-m
+Force stream output format.
+.TP
+.B \-n
+User and group numbers, rather than names, will be printed in long 
+(\f3\-l\f1) listings.
+.TP
+.B  \-q
+Force printing of non-graphic characters in file names as
+the character "?"; this normally happens only if the output device is
+a teletype.
+.TP
+.B  \-r
+Reverse the order of sort to get reverse alphabetic
+or oldest first as appropriate.
+.TP
+.B  \-s
+Give size in blocks,
+including indirect blocks, for each entry.
+.TP
+.B  \-t
+Sort by time modified (latest first) instead of
+by name, as is normal.
+.TP
+.B  \-u
+Use time of last access instead of last
+modification for sorting
+.RB ( \-t )
+or printing
+.RB ( \-l ).
+.TP
+.B  \-x
+Force columnar printing to be sorted across rather than
+down the page;
+this is the default if the last character of the name the program is invoked
+with is an "x" (for example, by linking 
+.B /bin/ls7 
+to 
+.BR /bin/lx ).
+.PP
+The mode printed under the
+.B \-l
+(long) option contains 11 characters
+which are interpreted
+as follows:
+(see also
+.IR chmod\^ (1)).
+The first character is:
+.RS .3i
+.TP "\w'\fBm\fR\|\ \ 'u"
+.B d
+if the entry is a directory;
+.PD 0
+.TP
+.B b
+if the entry is a block-type special file;
+.TP
+.B c
+if the entry is a character-type special file;
+.TP
+.B m
+if the entry is a multiplexor-type character special file;
+.TP
+.B \-
+if the entry is a plain file.
+.PD
+.PP
+The next 9 characters are interpreted
+as three sets of three bits each.
+The first set refers to owner permissions;
+the next to permissions to others in the same user-group;
+and the last to all others.
+Within each set the three characters indicate
+permission respectively to read, to write, or to
+execute the file as a program.
+For a directory, "execute" permission is interpreted
+to mean permission to search the directory
+for a specified file.
+The permissions are indicated as follows:
+.TP "\w'\fBm\fR\|\ \ 'u"
+.B  r
+if the file is readable;
+.PD 0
+.TP
+.B w
+if the file is writable;
+.TP
+.B x
+if the file is executable;
+.TP
+.B \-
+if the indicated permission is not granted.
+.PD
+.PP
+The group-execute permission character is given
+as
+.B s
+if the file has set-group-\s-1ID\s+1 mode;
+likewise the user-execute permission character is given
+as
+.B s
+if the file has set-user-\s-1ID\s+1 mode.
+.PP
+The last character of the mode (normally "x" or "\-") is 
+.B t
+if the 1000 bit of the mode is on.
+See
+.IR chmod\^ (1)
+for the meaning of this mode.
+.RE
+.PP
+When the sizes of the files in a directory
+are listed, a total count of blocks,
+including indirect blocks is printed.
+.SH EXAMPLE
+.IP
+ls7
+.PP
+lists the contents of the current directory in multi-column format.
+.SH FILES
+.TP "\w'/etc/passwd\ \ \ \ \ 'u"
+/etc/passwd
+to get user and group \s-1ID\s+1s given in
+.BR "ls7 \-l" .
+.SH BUGS
+Newline and tab are considered printing characters in file names.
+.PP
+The output device is assumed to be 80 columns wide.
+.PP
+Column widths choices are poor for terminals which can tab.
+.\"	@(#)ls7.1	5.2 of 6/21/84

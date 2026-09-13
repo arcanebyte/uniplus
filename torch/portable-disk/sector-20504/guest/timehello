@@ -1,0 +1,1 @@
+time cc -v -m hello.c

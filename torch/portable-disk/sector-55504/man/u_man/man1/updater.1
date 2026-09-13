@@ -1,0 +1,108 @@
+.TH UPDATER 1 UniSoft
+.SH NAME
+updater \- update files between two machines
+.SH SYNOPSIS
+.B updater
+[
+.B key
+] local remote ...
+.SH DESCRIPTION
+.I Updater\^
+updates files between two machines.  
+.PP
+One of the following key letters must be included:
+.TP "\w'\fBd\fR\|\ \ 'u"
+.B t
+Take files from the remote machine, updating the local machine.
+.TP
+.B p
+Put files from the local machine onto the remote machine, updating the
+remote machine.
+.TP
+.B d
+List the difference between files on the local and remote machines.
+.PP
+The following key letters are optional:
+.TP "\w'\fBd\fR\|\ \ 'u"
+.B u
+Update a file only if it exists on both machines; 
+this is the default condition.
+.TP
+.B  r
+Replace a file if it did not exist on the destination machine.
+.PP
+.I Local\^
+refers to the local directory name.
+.PP
+.I Remote\^
+refers to the remote directory names.
+Only one remote name can be specified if the 
+.B p
+(put) key is specified.
+.SH ALGORITHM
+.PP
+Open 
+.B /dev/tty0
+to the remote machine.
+.PP
+Stty the local port and send a stty command to the remote machine
+to condition both ends of the connection.
+.PP
+Send a "cd remote ; sumdir . \||\| sort +2 > /tmp/rXXXXX" to remote machine
+for each remote system; "cd local ; sumdir . \||\| sort > /tmp/lXXXXX"
+for local machine.
+.PP
+Wait for remote to complete.
+.PP
+Take 
+.BR /tmp/rXXXXX .
+.PP
+Do a comparison between the local and the union of the remotes:
+.PP
+.RS .3i
+exists on remote only:
+.RS .3i
+If both the 
+.B t 
+and
+.B r
+keys are specified, take the file; otherwise list the file.
+.RE
+exists on local only:
+.RS .3i
+If both 
+.B p
+and
+.B r
+keys are specified, put the file; otherwise list the file.
+.RE
+exist on both but different:
+.RS .3i
+If
+.B t
+key is specified, take the file.
+.br
+If 
+.B p
+key is specified, put the file.
+.br
+If 
+.B d
+key is specified, list the file.
+.RE
+same:
+.RS .3i
+nothing
+.RE
+.RE
+.SH EXAMPLE
+.IP
+updater d . .
+.PP
+uses 
+.B /dev/tty0
+to communicate with a remote machine and compares
+directories on the remote and local systems.
+.SH NOTES
+This program is useful primarily to UniSoft.
+.\"	@(#)updater.1	5.1 of 11/16/83

@@ -1,0 +1,17 @@
+if [ "$1" = "-v" ]
+then
+	mode="FORMAT + VERIFY"
+else
+	mode="FORMAT FLOPPY"
+fi
+if yorn "$mode" "Please confirm."
+then
+  if format $1 /dev/rfloppy
+  then
+    (
+    /etc/mkfs /dev/rfloppy 1440 2 9
+    ) >/dev/null 2>&1
+  else
+    echo "Failed to format the floppy disc."
+  fi
+fi

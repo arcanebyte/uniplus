@@ -1,0 +1,15 @@
+icon: type=d; fn=*.c; showbits=:cprog; +
+      laction=n,vi $0; +
+      raction=b,make `basename $0 .c` "CFLAGS=-v" 'LDFLAGS=-m -lw'; +
+      daction=;
+icon: type=d; fn=*.doc; laction=n,more $0; daction=;
+icon: type=d; fn=*.txt; laction=n,vi $0; maxuse=1;+
+      raction=b,nroff $0 | 2700 $0 >`dirname $0`/`basename $0 .txt`.doc; +
+      daction=;
+icon: type=d; fn=*; laction=n,vi $0; daction=;
+icon: type=f; fn=/; showbits=:fcabinet;
+icon: type=f; fn=..; 
+icon: type=f; fn=.; showbits=:dot;
+icon: type=f; fn=*; daction=b,su root -c \"mount $1 $0\",p1=m;
+icon: type=d; fn=.desktop; showbits=devices:desktop; laction=;
+

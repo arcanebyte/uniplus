@@ -1,0 +1,11 @@
+echo
+echo "\t\tTriple X Software Issue Detailer"
+echo "\t\t================================"
+echo
+echo "Triple X System V Release 2.0 Issue 2.11"
+echo
+version /bin/dm
+echo "\nTORCHshared Libraries: \c"
+	what /lib/TORCHshare5.0
+	what /lib/TORCHshare5.2
+sleep 5

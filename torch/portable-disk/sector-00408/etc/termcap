@@ -1,0 +1,10 @@
+#	Termcap source file @(#)termcap	1.1 25/11/82
+# The first part of this file includes Root Extensions for various terminals
+# known to it.
+#
+# Triple X Windows Virtual Screen issue 1.10
+XT|XXX|\
+	:co#80:li#24:bs:am:cm=\E %r%.%.:up=^k:sr=^k:\
+	:cl=\014:nd=\011:do=\012:cd=\017:ce=\016:dc=\031:dl=\032:\
+	:ho=\036:ic=\027:al=\030:us=\023:ue=\E#\200:so=\022:se=\E#\200:\
+	:ku=\013:kd=\037:kr=\035:kl=\010:

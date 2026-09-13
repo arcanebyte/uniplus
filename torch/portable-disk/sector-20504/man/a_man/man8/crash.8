@@ -1,0 +1,218 @@
+.TH CRASH 8
+.SH NAME
+crash \- what to do when the system crashes
+.SH DESCRIPTION
+This entry gives at least a few clues about how to proceed if the
+system crashes.
+It can't pretend to be complete.
+.PP
+In restarting after a crash,
+always bring up the system single-user,
+as specified in
+.IR boot (8)
+as modified for your particular installation.
+Then
+perform an
+.IR fsck (1M)
+on all file systems which could have been in use at the time
+of the crash.
+If any serious file system problems are found, they should be repaired.
+When you are satisfied with the health of your disks,
+check and set the date if necessary,
+then come up multi-user.
+.PP
+To even boot \s-1UNIX\s+1 at all,
+certain files (and the directories leading to them)
+must be intact.
+First,
+the initialization program
+.B /etc/init
+must be present and executable.
+For
+.I init\^
+to work correctly,
+.BR /dev/console ,
+.B /bin/sh
+and
+.B /bin/env
+must be present.
+If one of these does not exist, the symptom is best described as thrashing.
+.I Init\^
+will go into a
+.I fork/exec\^
+loop trying to create a
+Shell with proper standard input and output.
+The file
+.B /etc/rc
+should also be there and be executable;
+the system will come up but
+will not be fully initialized without it.
+.PP
+If you cannot get the system to boot,
+a runnable system must be obtained from
+a backup medium.
+The root file system may then be doctored as
+a mounted file system as described below.
+If there are any problems with the root
+file system,
+it is probably prudent to go to a
+backup system to avoid working on a
+mounted file system.
+.PP
+.IR "Repairing disks" .
+The first rule to keep in mind is that an addled disk
+should be treated gently;
+it shouldn't be mounted unless necessary,
+and if it is very valuable yet
+in quite bad shape, perhaps it should be copied before
+trying surgery on it.
+This is an area where experience and informed courage count for much.
+.PP
+.IR Fsck (1M)
+is adept at diagnosing and repairing file system problems.
+It first identifies all of the files
+that contain bad (out of range) blocks or
+blocks that appear in more than one file.
+Any such files are then identified by
+name and
+.I fsck\^
+requests permission to remove them from the
+file system.
+Files with bad blocks should be removed.
+In the case of duplicate blocks, all of the
+files except the most recently modified
+should be removed. The contents of the survivor
+should be checked after the file system is repaired
+to ensure that it contains the proper data.
+(Note that running
+.I fsck\^
+with the
+.B \-n
+option will cause it to report all problems
+without attempting any repair.)
+.PP
+.I Fsck\^
+will also report on incorrect link counts and
+will request permission to adjust any that are
+erroneous. In addition, it will reconnect any
+files or directories that are allocated but have
+no file system references to a ``lost+found'' directory.
+Finally, if the free list is bad (out of range,
+missing, or duplicate blocks)
+.I fsck\^
+will, with the operators concurrence, construct a new one.
+.PP
+.IR "Why did it crash" ?
+.SM UNIX
+types a message
+on the console typewriter when it voluntarily crashes.
+Here is the current list of such messages,
+with enough information to provide
+a hope at least of the remedy.
+The message has the form ``panic:\ .\|.\|.'',
+possibly accompanied by other information.
+Left unstated in all cases
+is the possibility that hardware or software
+error produced the message in some unexpected way.
+.TP 3
+.B blkdev
+The
+.I getblk\^
+routine was called with a nonexistent major device as argument.
+Definitely hardware or software error.
+.TP
+.B devtab
+Null device table entry for the major device used as argument to
+.IR getblk .
+Definitely hardware or software error.
+.TP
+.B dpfrelse
+The list of processes currently mapped into the memory
+management unit has been lost (68451 only).
+.TP
+.B iinit
+An I/O error reading the super-block for the root file system
+during initialization.
+.TP
+.B interrupt stack overflow
+The kernel ran out of stack space on an interrupt.
+Subroutine depth is too great or too many local variables.
+.TP
+.B kernel memory management error
+Bus error or address error in supervisor mode.
+Can be a software or hardware problem.
+.TP
+.B no fs
+A device has disappeared from the mounted-device table.
+Definitely hardware or software error.
+.TP
+.B no imt
+Like ``no fs'', but produced elsewhere.
+.TP
+.B no clock
+During initialization,
+neither the line nor programmable clock was found to exist.
+.TP
+.B no procs
+Process table has been destroyed.
+.TP
+.B I/O error in swap
+An unrecoverable I/O error during a swap.
+Really shouldn't be a panic,
+but it is hard to fix.
+.TP
+.B oops!!! syscall
+The interrupt vector for system calls is missing.
+.TP
+.B out of swap space
+A program needs to be swapped out, and there is no more swap space.
+It has to be increased.
+This really shouldn't be a panic, but there is no easy fix.
+.TP
+.B timeout table overflow
+The timeout table overflowed.
+The timeout table is not large enough or 
+some routine is starting up too many timeouts.
+.TP
+.B trap          
+An unexpected trap has occurred within the system.
+This is accompanied by the following information:
+.IP 3
+trap type
+.RS .3i
+.nf
+.ta \w'12-255 \ \ 'u
+2	bus error
+3	address error
+4	illegal instruction
+5	divide by zero
+6	\s-1CHK\s0 instruction
+7	\s-1TRAPV\s0 instruction
+8	privilege violation
+9	trace
+10	1010 emulator
+11	1111 emulator
+12-255	unexpected interrupt 
+.sp .5
+virtual address    (for bus/address errors only)
+physical address 
+instruction register 
+function code
+.sp .5
+mmu dump
+.sp .5
+program counter
+status register
+program id
+.sp .5
+registers
+.fi
+.RE
+.PP
+In some of these cases it is possible for 
+hex 1000 to be added into the trap type;
+this indicates that the processor was in 
+user mode when the trap occurred.
+.SH SEE ALSO
+adb(1), fsck(1M), boot(8).
+.\"	@(#)crash.8	5.1 of 10/15/83

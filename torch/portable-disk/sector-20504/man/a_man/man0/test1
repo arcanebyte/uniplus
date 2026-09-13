@@ -1,0 +1,7 @@
+invoked=$0
+set x $*
+. ./.param
+P=65
+
+ptx -r -t -b $TOOLS/break -f -w $P -i $TOOLS/ignore $TMPDIR/cattoc $MANDIR/man0/ptxx
+

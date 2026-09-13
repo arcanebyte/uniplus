@@ -1,0 +1,29 @@
+a.out.4 a.out: assembler and link editor output.
+acct.4 acct: per-process accounting file format.
+altblk.4 altblk: alternate block information for bad block handling.
+ar.4 ar: archive (library) file format.
+checklist.4 checklist: list of file systems processed by fsck.
+core.4 core: format of core image file.
+cpio.4 cpio: format of cpio archive.
+dir.4 dir: format of directories.
+environ.4 environ: user environment.
+errfile.4 errfile: error-log file format.
+fs.4 file system: format of system volume.
+fspec.4 fspec: format specification in text files.
+gettydefs.4 gettydefs: speed and terminal settings used by getty.
+gps.4 gps: graphical primitive string, format of graphical files.
+group.4 group: group file.
+inittab.4 inittab: script for the init process.
+inode.4 inode: format of an inode.
+intro.4 intro: introduction to file formats.
+issue.4 issue: issue identification file.
+master.4 master: master device information table.
+mnttab.4 mnttab: mounted file system table.
+passwd.4 passwd: password file.
+plot.4 plot: graphics interface.
+pnch.4 pnch: file format for card images.
+profile.4 profile: setting up an environment at login time.
+sccsfile.4 sccsfile: format of SCCS file.
+tp.4 tp: magnetic tape format.
+ttytype.4 ttytype: data base of terminal types by port.
+utmp.4 utmp, wtmp: utmp and wtmp entry formats.

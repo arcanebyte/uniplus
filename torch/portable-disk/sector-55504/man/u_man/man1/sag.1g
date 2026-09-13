@@ -1,0 +1,141 @@
+.TH SAG 1G
+.SH NAME
+sag \- system activity graph
+.SH SYNOPSIS
+.B "sag "
+[ options ]
+.SH DESCRIPTION
+.I Sag\^
+graphically displays the system activity data
+stored in a binary data file by a previous
+.IR sar\^ (1)
+run.
+Any of the
+.I sar\^
+data items may be plotted
+singly, or in combination; as cross plots, or versus time.
+Simple arithmetic combinations of data may be specified.
+.I Sag\^
+invokes 
+.I sar\^
+and finds the desired data by string-matching the data column header
+(run 
+.I sar\^
+to see what's available).
+These \fIoptions\^\fP are passed thru to 
+.IR sar :
+.TP "\w'\fB\-T\ \fIterm\fR\ \ 'u"
+\fB\-s \fItime\fR
+Select data later than
+.I time\^
+in the form hh\|[\^:mm\^]\^.
+Default is 08:00.
+.TP
+\fB\-e \fItime\fR
+Select data up to
+.IR time .
+Default is 18:00.
+.TP
+\fB\-i \fIsec\fR
+Select data at intervals as close as possible to 
+.I sec\^
+seconds.
+.TP
+\fB\-f \fIfile\fR
+Use 
+.I file\^
+as the data source for \fIsar\fR.
+Default is the current daily data file \fB/usr/adm/sa/sa\fIdd\fR.
+.PP
+Other \fIoptions\fP:
+.TP "\w'\fB\-T\ \fIterm\fR\ \ 'u"
+\fB\-T \fIterm\fR
+Produce output suitable for terminal \fIterm\fR.
+See
+.IR tplot\^ (1G)
+for known terminals.
+If
+.I term\^
+is
+.BR vpr ,
+output is processed by
+.B vpr \-p
+and queued to a Versatec printer.
+Default for
+.I term\^
+is
+.BR \s-1$TERM\s+1 .
+.TP
+.BI "\-x\0" spec
+x axis specification with
+.I spec\^
+in the form:
+.RS "\w'\fB\-T\ \fIterm\fR\ \ \ \ \ \ 'u"
+"name\|[op \|name]\|.\|.\|.\|[lo \|hi]"
+.RE
+.TP "\w'\fB\-T\ \fIterm\fR\ \ 'u"
+.BI "\-y\0" spec
+y axis specification with
+.I spec\^
+in the same form as above.
+.PP
+\fIName\^\fR 
+is either a string that will match a column header in the 
+.I sar\^
+report, with an optional device name in square brackets,
+e.g., 
+.BR r+w/s\| [ dsk\-1\| ],
+or an integer value.
+.I Op\^
+is +, \-, \(**, or / surrounded by blanks.
+Up to five names may be specified.
+Parentheses are not recognized.
+Contrary to custom, + and \-
+have precedence over \(** and /\|.
+Evaluation is left to right.
+Thus
+A\0/\0A\0+\0B\0\(**\0100
+is evaluated (A/(A+B))\(**100,
+and
+A\0+\0B\0/\0C\0+\0D
+is (A+B)/(C+D).
+.I  Lo\^
+and
+.I hi\^
+are optional numeric scale limits.
+If unspecified, they are deduced from the data.
+.PP
+A single
+.I spec\^
+is permitted for the x axis.
+If unspecified, \fItime\^\fP is used.
+Up to 5
+\fIspec\^\fR's
+separated by
+.B \|;\|
+may be given for
+.BR \-y .
+Enclose the
+.BR "\-x " "and " "\-y"
+arguments in
+\fB"\|"\fR
+if blanks or \fB\\\fR<\s-1CR\s+1> are included.
+The
+.B \-y
+default is:
+.PP
+\fB\-y "%usr 0 100; %usr + %sys 0 100; %usr + %sys + %wio 0 100"
+.SH EXAMPLE
+.IP
+sag
+.PP
+wil show today's
+.SM CPU
+utilization.
+.SH FILES
+.TP "\w'/usr/adm/sa/sa\fIdd\fR\ \ \ 'u"
+/usr/adm/sa/sa\fIdd\fR
+daily data file for day \fIdd\fR.
+.SH SEE ALSO
+sar(1), tplot(1G).
+.\"	@(#)sag.1g	5.1 of 11/18/83

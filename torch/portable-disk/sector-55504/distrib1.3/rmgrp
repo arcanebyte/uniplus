@@ -1,0 +1,22 @@
+cd /usr/distrib1.3
+for i in $*
+do
+if [ -r $i ]
+then
+	name=`basename $i .grp`
+	if [ "$name" = "Basic1" -o "$name" = "DeskTop" ]
+	then
+		alert "REMOVE GROUP" "Sorry, unable to remove the $name group"
+	else
+	if yorn "REMOVE GROUP" "Confirm that you wish to remove the $name group of files"
+	then
+		while read fname
+		do 
+			rm $fname >/dev/null 2>&1
+		done <$i
+	fi
+	fi
+else
+	echo $i does not exist ?
+fi
+done

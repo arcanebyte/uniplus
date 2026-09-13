@@ -1,0 +1,14 @@
+# The format of the L-devices file is:
+#Caller	Line Useful Class Dialer
+#
+# The following lines are hard-wired
+#
+DIR ttya unused 9600 ttya
+DIR ttyb unused 9600 ttyb
+DIR ttyc unused 9600 ttyc
+#
+# The following lines go over the Ethernet
+#
+# The following lines are ACUs
+#
+ACU dialout unused 300 dialout

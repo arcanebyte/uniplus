@@ -1,0 +1,13 @@
+
+Tue May 22 09:52:00 1984
+crontab read
+/bin/su uucp -c "/usr/lib/uucp/uudemon.hr > /dev/null"
+
+Tue May 22 10:00:00 1984
+
+date>/dev/console ; echo " " > /dev/console 
+/bin/su - adm -c "/usr/lib/acct/ckpacct"
+/usr/lib/sa/sa1 1200 3 &
+This is /etc/motd. Watch this space.
+
+/usr/lib/sa/sa1: 91 Killed

@@ -1,0 +1,56 @@
+* @(#)holidays	1.2 of 6/22/82
+* Prime/Nonprime Table for UNIX Accounting System
+*
+* Curr	Prime	Non-Prime
+* Year	Start	Start
+*
+  1986	0830	1700
+*
+* Day of	Calendar	Company
+* Year		Date		Holiday
+*
+* Holidays in England and Wales
+*
+    1		Jan 1		New Year's
+    87		March 28	Good Friday
+    90		March 31	Easter Monday
+    95		May 5		May Day
+    116		May 26		Spring Holiday
+    237		August 25	Late Summer Holiday
+    359		Dec 25		Christmas
+    360		Dec 26		Boxing Day
+*
+* Holidays in Scotland
+*
+*   1		Jan 1		New Year's
+*   2		Jan 2		Bank Holiday
+*   87		March 28	Bank Holiday
+*   95		May 5		Bank Holiday
+*   116		May 26		Bank Holiday
+*   241		August 4	Bank Holiday
+*   359		Dec 25		Christmas
+*   360		Dec 26		Bank Holiday
+*
+* Holidays in Northern Ireland
+*
+*   1		Jan 1		New Year's
+*   78		March 17	Bank Holiday
+*   87		March 28	Good Friday
+*   90		March 31	Easter Monday
+*   95		May 5		May Day
+*   116		May 26		Spring Holiday
+*   193		July 12		Holiday
+*   237		August 25	Late Summer Holiday
+*   359		Dec 25		Christmas
+*   360		Dec 26		Boxing Day
+*
+* Holidays in the Republic of Ireland
+*
+*   1		Jan 1		New Year Holiday
+*   78		March 17	St Patrick's Day
+*   90		March 31	Easter Monday
+*   153		June 2		Holiday
+*   241		August 4	Holiday
+*   300		October 27	Holiday
+*   359		Dec 25		Christmas
+*   360		Dec 26		St Stephen's Day

@@ -1,0 +1,4 @@
+DIR ttya 0 9600 ttya
+DIR ttyb 0 9600 ttyb
+DIR ttyc 0 9600 ttyc
+ACU dialout 0 300  dialout

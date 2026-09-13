@@ -1,0 +1,174 @@
+.TH TCP 5N UniSoft
+.SH NAME
+tcp \- Internet Transmission Control Protocol
+.SH SYNOPSIS
+.nf
+.sp
+.B "struct sockproto proto = { PF_INET, IPPROTO_TCP };
+.B socket(SOCK_STREAM, &proto, address, options);
+.B struct sockaddr_in \(**address; int options;
+.fi
+.SH DESCRIPTION
+The 
+.SM 
+.I TCP\^
+protocol provides reliable, flow-controlled, two-way
+transmission of data.  It is a byte-stream protocol used to
+support the 
+.SM SOCK_STREAM 
+abstraction.  
+.SM 
+.I TCP\^
+uses the standard
+Internet address format and, in addition, provides a per-host
+collection of "port addresses".  Thus, each address is composed
+of an Internet address specifying the host and network, with
+a specific 
+.SM 
+.I TCP\^
+port on the host identifying the peer entity.
+.PP
+Sockets utilizing the 
+.SM 
+.I TCP\^ 
+protocol are either "active" or
+"passive".  Active sockets initiate connections to passive
+sockets.  By default 
+.SM 
+.I TCP\^
+sockets are created active; to create a
+passive socket the 
+.SM SO_ACCEPTCONN
+option must be supplied.  Only
+passive sockets may use the 
+.IR accept\^ (2N)
+call to accept incoming connections.  Only active sockets may
+use the
+.IR connect\^ (2N)
+call to initiate connections.
+.PP
+Passive sockets may "underspecify" their location to match
+incoming connection requests from multiple networks.  This
+technique, termed "wildcard addressing", allows a single
+server to provide service to clients on multiple networks.
+To create a socket which listens on all networks, the Internet
+address
+.SM
+.I INADDR_ANY
+is specified.  The 
+.SM 
+.I TCP\^
+port may still be specified
+at this time; if the port is not specified, the system will assign one.
+Once a connection has been established the socket's address is
+fixed by the peer entity's location.   The address assigned the
+socket is the address associated with the network interface
+through which packets are being transmitted and received.  Normally
+this address corresponds to the peer entity's network.
+.SH OPTIONS
+The 
+.SM 
+.I TCP\^
+implementation supports two non-standard features:
+"keep-alives" and "true out-of-band" data transmission.
+.PP
+Keep-alives are a mechanism used to check if a peer entity
+is still functional.  This is implemented by periodically
+"polling" the remote machine if the connection has been
+idle.  The current implementation transmits keep-alive
+packets on a connection which has been idle for longer than
+1 minute.  If, despite the keep-alive packets, no response
+has been seen within 4 minutes, the connection is aborted.
+This mechanism applies only to connection in an "established"
+state; if a connection is idle for 1 minute but not yet
+established, it is simply aborted.  The keep-alive mechanism
+is enabled by creating a socket with the 
+.SM SO_KEEPALIVE
+option.
+.RB [\| N.B. : 
+.SM 
+.I TCP\^
+implementations which do not closely follow the 
+.SM 
+.I TCP\^
+specification may not respond to keep-alive messages,
+causing connections to be closed without reason; in this case
+keep-alives should not be used\|]
+.PP
+In order to transmit "true" out-of-band data, the 
+.SM SO_TRUEOOB
+option may be specified.  This facility requires cooperation
+by the peer to function properly; this is negotiated through
+.SM 
+.I TCP\^ 
+options at the time a connection is established.  When
+this mechanism is used, one byte of data may be sent as an urgent,
+high-priority message to the peer.  This data utilizes a separate,
+out-of-band data sequence space and is not subject to the normal
+flow control mechanisms imposed by 
+.SM 
+.IR TCP\*S .
+In addition, the data
+stream is also marked
+to indicate the point at which the out-of-band data was sent.
+A process may send out-of-band data with the 
+.SM SIOCSENDOOB
+call,
+.IP
+ioctl(fd, SIOCSENDOOB, &data);
+.PP
+and receive out-of-band data with the 
+.SM SIOCRCVOOB
+call,
+.IP
+ioctl(fd, SIOCRCVOOB, &data);
+.PP
+To find out if the read pointer is at the mark in the data
+stream, the 
+.SM SIOCATMARK
+call may be used,
+.IP
+ioctl(fd, SIOCATMARK, &yesno);
+.PP
+The variable
+.I yesno\^
+will be a 1 if the read pointer currently points at the mark,
+and 0 otherwise.
+.SH DIAGNOSTICS
+.SM EISCONN
+when trying to establish a connection on a socket which
+already has one;
+.PP
+.SM ENOBUFS
+when the system runs out of memory for
+an internal data structure;
+.PP
+.SM ETIMEDOUT
+when a connection was dropped
+due to excessive retransmissions;
+.PP
+.SM ECONNRESET
+when the remote peer
+forces the connection to be closed;
+.PP
+.SM ECONNREFUSED
+when the remote
+peer actively refuses connection establishment (usually because
+no process is listening to the port);
+.PP
+.SM EADDRINUSE
+when an attempt
+is made to create a socket with a port which has already been
+allocated;
+.PP
+.SM EADDRNOTAVAIL
+when an attempt is made to create a 
+socket with a network address for which no network interface
+exists.
+.SH SEE ALSO
+inet(5N), net(5N). 
+.SH BUGS
+Value added "features" such as "keep-alives"
+and "true" out-of-band are experimental and not
+part of the protocol standard.
+.\"N	 @(#)tcp.5N	 5.2 of 7/12/84

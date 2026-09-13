@@ -1,0 +1,26 @@
+#		Device Configuration Table
+#	Clock and console are pre-configured and should not be listed here
+#
+# Dev#	Addr	Vector	Br	Handler(s)	; Comment
+xp ?	176700	254	5	xpio		; SMD disk (RP04/5/6, RM)
+rk ?	177400	220	5	rkio		; RK05
+hk ?	177440	210	5	hkio		; RK06/7
+rl ?    174400  160     5       rlio            ; RL01/02
+rp ?	176700	254	5	rpio		; RP03
+
+ht 0    172440  224     5       htio            ; TM03/TE16, etc.
+tm 0	172520	224	5	tmio		; TM-11
+ts 0	172520	224	5	tsio		; TS-11
+
+dh ?    160020  370     5       dhin    dhou    ; DH11 terminal mux
+dm ?    170500  360     4       dmin            ; DM-11 BB DH Modem Control
+
+# Only one of the two types of dz enties should be used,
+# depending on whether the kernel uses pseudo-DMA (DZ_PDMA).
+dz ?	160110	320	5	dzin	dzdma	; DZ11 terminal mux
+dz ?	160110	320	5	dzin	dzou	; DZ11 if pseudo-DMA not enabled
+dn 0    175200  300     5       dnou            ; DN-11 dialer
+kl 1	176500	300	4	klin	klou	; DL-11
+
+vp ?	177500	174	4	vpio		; Versatec; should be before lp
+lp ?	177514	200	4	lpio		; LP-11 line printer

@@ -1,0 +1,10 @@
+icon: type=e; fn=chuffer; showbits=games:chuffer; showname=Chuffers; +
+      laction=n,$0;
+
+icon: type=e; fn=tiler; showbits=games:tiler; showname=Tiler; +
+      laction=x,$0;
+
+icon: type=e; fn=balls; showbits=games:breakout; showname=Breakout; +
+      laction=x,$0;
+
+

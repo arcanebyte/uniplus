@@ -1,0 +1,63 @@
+: "Add another prefix/directory onto the existing ones in DIRFILE"
+SPOOL=/usr/spool/uucp
+DIRFILE=/usr/lib/uucp/L.dirs
+CHOWN=/etc/chown
+CHGRP=/bin/chgrp
+OWNER=5
+GROUP=5
+MV=/usr/lib/uucp/mymv.sh
+if test ! -r $DIRFILE
+then	echo $0: DIRDFILE does not exist!
+	exit 1
+fi
+echo -n "What is the name of the new directory (eg: C.bozo) ? "
+while	read newdir
+	test x$newdir = x
+do	echo -n "pardon? "
+done
+if test -d $SPOOL/$newdir
+then	echo "$0: $SPOOL/$newdir already exists!"
+	echo " make sure you know what you're doing and try again"
+	exit 1
+fi
+echo -n "After how hours many should uuclean unlink files in $SPOOL/$newdir? "
+while	read hours
+	test x$hours = x
+do	echo -n "pardon? "
+done
+if test $hours -le 0
+then	echo "$0: $hours is a stupid expirey time"
+	exit 1
+fi
+echo -n "before which existing prefix should this one be checked (eg: C.) ? "
+while	read oldpref
+	test x$oldpref = x
+do	echo "pardon? "
+done
+if /bin/grep -s $oldpref $DIRFILE
+then	echo OK that prefix is in the file
+else	echo "$0: $oldpref is unknown"
+	echo "go off and check and recall me when you know what you're doing"
+	exit 1
+fi
+mkdir $SPOOL/$newdir
+$CHOWN $OWNER $SPOOL/$newdir
+$CHGRP $GROUP $SPOOL/$newdir
+: "To prevent ed complaining about write permission"
+ed - $DIRFILE <<STOP
+$
+?$oldpref?i
+	$newdir		$hours
+.
+w
+q
+STOP
+echo "Which directory should I look in for old files with this prefix "
+echo -n " to move into the new directory (eg $SPOOL/C.)? "
+while	read olddir
+	test x$olddir = x
+do	echo "pardon? "
+done
+echo "OK I'll try mymv'ing all files in $olddir with that prefix to $SPOOL/$newdir"
+find $olddir -name "$newdir*" -a -exec $MV {} $SPOOL/$newdir \;
+echo "$newdir has been added"

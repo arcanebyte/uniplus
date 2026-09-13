@@ -1,0 +1,8 @@
+/usr/start G0 3  
+/dev/floppy G0 4  
+/mnt G0 5  
+/usr/bin/opentop/installfloppy G0 6  
+/usr/bin/opentop/prepflop G0 7  
+/ G0 0 S
+/bin/sh G0 2  
+/usr/start/waste G0 1 S

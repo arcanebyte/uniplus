@@ -1,0 +1,24 @@
+# @(#)Makefile	4.4 10/12/82
+OBJS=	inet_addr.o inet_network.o \
+	inet_netof.o inet_lnaof.o \
+	inet_maddr.o
+CFLAGS=	-O
+
+.c.o:
+	${CC} -p -S ${CFLAGS} $*.c
+	sed -f ../asm.sed $*.s | as -o $*.o
+	rm -f $*.s
+	-ld -X -r $*.o
+	mv a.out profiled/$*.o
+	${CC} -S ${CFLAGS} -c $*.c
+	sed -f ../asm.sed $*.s | as -o $*.o
+	rm -f $*.s
+	-ld -x -r $*.o
+	mv a.out $*.o
+
+all:	${OBJS}
+	ar cru ../netlib ${OBJS}
+	cd profiled; ar cru ../../netlib_p ${OBJS}
+
+clean:
+	rm -f ${OBJS} profiled/*.o errs a.out core

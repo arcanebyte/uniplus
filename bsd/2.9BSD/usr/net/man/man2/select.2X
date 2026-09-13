@@ -1,0 +1,59 @@
+.TH SELECT 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+select \- synchronous i/o multiplexing
+.SH SYNOPSIS
+.ft B
+nfd = select(nfds, readfds, writefds, milli);
+.br
+int nfds;
+.br
+int *readfds, *writefds;
+.br
+int milli;
+.ft R
+.SH DESCRIPTION
+.I Select
+examines the i/o descriptors specified by the bit masks
+.I readfds
+and
+.I writefds
+to see if they are ready for reading and/or writing respectively
+and returns, in place, a mask of those descriptors which are ready.
+The total number of ready descriptors is returned in
+.I nfd.
+.PP
+.I Milli
+is the maximum number of milliseconds to wait before giving
+up if no descriptors come active.
+If no maximum wait is desired a very large integer can be given.
+.PP
+A
+.I milli
+of 0 specifies a poll; the
+.I select
+returns whatever information is available without blocking.
+Either
+.I readfds
+or
+.I writefds
+may be given as 0 if no descriptors are interesting.
+.PP
+For the present, since UNIX allows only 20 file descriptors
+it suffices for
+.I nfd
+to be 20, and for
+.I readfds
+and
+.I writefds
+to be pointers to integer variables.
+File descriptor \fIf\fR is represented by the bit ``1<<f'' in
+the mask.
+.SH SEE ALSO
+ioctl(2x), read(2), write(2), send(2x), receive(2x), accept(2x), connect(2x)
+.SH BUGS
+The system currently rounds \fImilli\fP to integral seconds, with a 
+resolution of +/\- 1 second.
+.PP
+This call is provisional, and will exist in a slightly different form in
+4.2bsd.

@@ -1,0 +1,155 @@
+From root44!csb Mon Jul 16 21:14:00 1984
+Date: Mon, 16 Jul 84 21:13:55 -0100
+From: root44!csb
+Apparently-To: csb
+Status: R
+
+.TH RESTOR 1M Obsolescent
+.SH NAME
+restor \- incremental file system restore
+.SH SYNOPSIS
+.I restor\^
+key [ arguments ]
+.SH DESCRIPTION
+.I Restor\^
+is used to read magnetic tapes dumped with the
+.I dump\^
+command.
+The
+.I key\^
+specifies what is to be done.
+.I Key\^
+is one of the characters
+.BR rRxt ,
+optionally combined with
+.BR f .
+.TP
+.B  f
+Use the first
+.I argument\^
+as the name of the tape instead
+of the default.
+.TP
+.BR  r " or " R
+The tape
+is read and loaded into the file system
+specified in
+.IR argument .
+This should not be done lightly (see below).
+If the key is
+.BR R ,
+.I restor\^
+asks which tape of a multi-volume set to start on.
+This allows
+.I restor\^
+to be interrupted and then
+restarted (an
+.I fsck\^
+must be done before the restart).
+.TP
+.B  x
+Each file on the
+tape named by an 
+.I argument\^
+is extracted.
+The file name has all ``mount'' prefixes removed;
+for example, if
+.B /usr
+is a mounted file system,
+.B /usr/bin/lpr
+is named
+.B /bin/lpr
+on the tape.
+The extracted file is placed in a file with a numeric name
+supplied by
+.I restor\^
+(actually the inode number).
+In order to keep the amount of tape read to a minimum,
+the following procedure is recommended:
+.RS
+.TP
+1.
+Mount volume 1 of the set of dump tapes.
+.TP
+2.
+Type the
+.I restor\^
+command.
+.TP
+3.
+.I Restor\^
+will announce whether or not it found the files,
+give the numeric name that it will assign to the file, and rewind the tape.
+.TP
+4.
+It then
+asks you to ``mount the desired tape volume''.
+Type the number of the volume you choose.
+On a
+multi-volume dump the recommended procedure is to mount the
+last through the first volumes, in that order.
+.I Restor\^
+checks to see if any of the requested files are on the
+mounted tape (or a later tape\-thus the reverse order) and doesn't
+read through the tape if no files are.
+If you are working with a single-volume dump or if the number of files
+being restored is large, respond to the query with
+.B 1
+and
+.I restor\^
+will read the tapes in sequential order.
+.RE
+.TP
+.B t
+Print the date the tape was written and the date
+the file system was dumped from.
+.PP
+The
+.B r
+option should only be used to restore
+a complete dump tape onto a clear file system,
+or to restore an incremental dump tape onto
+a file system so created.
+Thus:
+.PP
+	/etc/mkfs\ \|/dev/rp0\ \|40600
+.br
+	restor\ \|r\ \|/dev/rp0
+.PP
+is a typical sequence to restore a complete dump.
+Another
+.I restor\^
+can be done to get an incremental dump
+in on top of this.
+.PP
+A
+.I dump\^
+followed by a
+.I mkfs\^
+and a
+.I restor\^
+is used to
+change the size of a file system.
+.SH FILES
+default tape unit varies with installation
+.br
+rst*
+.SH "SEE ALSO"
+dump(1M), fsck(1M), mkfs(1M).
+.SH DIAGNOSTICS
+There are various diagnostics
+involved with reading the tape and writing the disk.
+There are also diagnostics if the i-list or the free list
+of the file system is not large enough to hold the dump.
+.PP
+If the dump extends over more than one tape,
+it may ask you to change tapes.
+Reply with a new-line when the next tape has been mounted.
+.SH BUGS
+There is redundant information on the tape
+that could be used in case of tape reading problems.
+Unfortunately,
+.I restor\^
+doesn't use it.
+
+

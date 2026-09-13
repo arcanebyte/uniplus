@@ -1,0 +1,17 @@
+# template for a disc parameters file.
+# name
+# number of cylinders
+# number of heads
+# reduced write current cylinder
+# write precompensation cylinder
+# landing zone cylinder
+# step rate in microseconds
+# imbedded servo flag (0 for not present, non-zero for present)
+MiniScribe 6085
+1024
+8
+0
+256
+0
+3
+0

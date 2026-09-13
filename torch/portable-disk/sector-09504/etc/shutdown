@@ -1,0 +1,12 @@
+# Triple X Shutdown script
+# 
+# Add here, any procedures that you wish to occur prior to switch off.
+# If process accounting is in use the a record should be written to
+# /etc/wtmp to indicate a shutdown.
+#	/usr/lib/acct/shutacct shutdown
+# make sure all done including desktop shutdown
+trap "" 15
+/bin/kill -15 -1
+sync
+sync
+/etc/powerdown

@@ -1,0 +1,47 @@
+
+APPLE LISA UNIX -- SYSTEM V
+
+Here is your Unix software. It is Bell Labs Unix System V.
+
+The Unix manuals are very well written and comprehensive: they can
+answer almost all your questions. Be sure to review the 
+"See also" sections mentioned at the bottom of the manual pages, since
+many of the commands refer to other commands.
+
+We have made a directory called /usr/unix.info
+
+In that directory are a number of files which describe Unix features
+of general interest. We have tried to anticipate common user questions
+to make Unix easier for you to use and configure. Please look at those files.
+
+
+NOTE TO USERS WHO HAVE BEEN SHIPPED UNIX ON DISKS LARGER THAN 20-MEG:
+
+	We have placed the "system" onto /dev/c4a, and have made
+	another filesystem, /dev/c4c. You should put your work
+	onto /dev/c4c.
+
+	To access the other filesystem:
+
+		mount /dev/c4c /t
+		cd /t
+		.
+		.
+		.
+
+	Also, you should edit the file /etc/checklist, and
+	add /dev/c4c to the list.
+
+NOTE TO ALL USERS:
+
+UNIX SYSTEMS SHOULD BE "SYNC"ED TWICE PRIOR TO SHUTDOWN.
+ALSO, PLEASE RUN THE FSCK PROGRAM FREQUENTLY.
+
+	ex: fsck /dev/c4a
+
+
+Regards,
+
+
+UniPress Software, Inc.
+201 985-8000

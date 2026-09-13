@@ -1,0 +1,16 @@
+#
+# Internet server configuration database
+#
+login	tcp	/usr/etc/in.rlogind
+shell	tcp	/usr/etc/in.remshd
+exec	tcp	/usr/etc/in.rexecd
+telnet	tcp	/usr/etc/in.telnetd
+ftp	tcp	/usr/etc/in.ftpd
+route	udp	/usr/etc/in.routed
+tftp	udp	/usr/etc/in.tftpd
+talk	udp	/usr/etc/in.talkd
+rpc	udp	/usr/etc/rpc.rstatd	100001	1-2
+rpc	udp	/usr/etc/rpc.rusersd	100002	1
+rpc	udp	/usr/etc/rpc.rwalld	100008	1
+rpc	udp	/usr/etc/rpc.mountd	100005	1
+rpc	udp	/usr/etc/rpc.sprayd	100012	1

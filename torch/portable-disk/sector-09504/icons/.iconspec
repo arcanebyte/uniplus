@@ -1,0 +1,3 @@
+icon: type=e; fn=ie; showbits=gadgets:iconedit; showname=IconEdit; +
+      laction=x,$0 /icons/games; daction=x,$0 $1 >/dev/null 2>&1;
+

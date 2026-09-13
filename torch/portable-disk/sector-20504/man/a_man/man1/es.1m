@@ -1,0 +1,29 @@
+.TH ES 1M "Root Computers Ltd."
+.SH NAME
+es \- print ROOTexec statistics
+.SH SYNOPSIS
+.B es
+.SH DESCRIPTION
+.I es\^
+is a utility provided with the
+.I ROOTexec package to print statistics on
+how well the package is working. It is only available under versions
+1.2 and onwards.
+.I es\^
+prints one line of output containing:
+count \- the number of reads called,
+(one for a normal program, two for a pure executable program),
+saved \- the number of transfers saved,
+holes \- the number of one block "holes" found in the program,
+max \- the number of attempts to exceed MAXCOUNT in param.h,
+size \- the number of attempts to exceed execsize in conf.c,
+cache \- the number of blocks read from the Unix standard cache,
+contig \- the number of contigous portions read
+wait \- the number of waits for execbuf to be freed.
+.PP
+Each number is based since system startup time.
+.SH FILES
+/unix
+/dev/mem
+.SH SEE ALSO
+fscr(1m).

@@ -1,0 +1,141 @@
+.TH ERRFILE 4
+.SH NAME
+errfile \- error-log file format
+.SH DESCRIPTION
+.PP
+When hardware errors are detected by the system,
+an error record is generated and passed to the
+error-logging daemon for recording in the error log for
+later analysis.
+The default error log is
+.BR /usr/adm/errfile .
+.PP
+The format of an error record depends on the
+type of error that was encountered.
+Every record, however, has a header with the
+following format:
+.PP
+.RS .3i
+.nf
+.ta \w'struct\ 'u +\w'struct utsname\ 'u +\w'e_memadd;\ \ \ 'u
+struct	errhdr {
+	short	e_type;	/\(** record type \(**/
+	short	e_len;	/\(** bytes in record (with header) \(**/
+	time_t	e_time;	/\(** time of day \(**/
+};
+.fi
+.RE
+.PP
+The permissible record types are as follows:
+.PP
+.RS .3i
+.nf
+.ta \w'#define \s-1E_STRAY\s+1\ \ 'u +\w'030\ \ \ 'u
+#define \s-1E_GOTS\s+1	010	/\(** Start for \s-1UNIX/TS\s+1 \(**/
+#define \s-1E_GORT\s+1	011	/\(** Start for \s-1UNIX/RT\s+1 \(**/
+#define \s-1E_STOP\s+1	012	/\(** Stop \(**/
+#define \s-1E_TCHG\s+1	013	/\(** Time change \(**/
+#define \s-1E_CCHG\s+1	014	/\(** Configuration change \(**/
+#define \s-1E_BLK\s+1	020	/\(** Block device error \(**/
+#define \s-1E_STRAY\s+1	030	/\(** Stray interrupt \(**/
+#define \s-1E_PRTY\s+1	031	/\(** Memory parity \(**/
+.fi
+.RE
+.PP
+Some records in the error file are of
+an administrative nature.
+These include the startup record that is entered into
+the file when logging is activated,
+the stop record that is written if the daemon is
+terminated ``gracefully'',
+and the time-change record that is used to account for
+changes in the system's time-of-day.
+These records have the following formats:
+.PP
+.RS .3i
+.nf
+.ta \w'struct\ 'u +\w'struct utsname\ 'u +\w'e_memadd;\ \ \ 'u
+struct	estart {
+	struct utsname	e_name;	/\(** system names \(**/
+	unsigned	e_bconf;	/\(** block device configuration \(**/
+};
+.PP
+#define eend errhdr
+.PP
+struct	etimchg {
+	time_t	e_ntime;	/\(** new time \(**/
+};
+.fi
+.RE
+.PP
+Stray interrupts cause a record with the
+following format to be logged in the file:
+.PP
+.RS .3i
+.nf
+.ta \w'struct\ 'u +\w'struct utsname\ 'u +\w'e_memadd;\ \ \ 'u
+struct	estray {
+	physadr 	e_saddr;	/\(** stray loc or device addr \(**/
+ 	unsigned	e_sbacty;	/\(** active block devices \(**/
+};
+.fi
+.RE
+.PP
+Memory parity error record that is logged whenever
+one occurs, hardware permitting:
+.PP
+.RS .3i
+.nf
+.ta \w'struct\ 'u +\w'struct utsname\ 'u +\w'e_memadd;\ \ \ 'u
+struct	eparity {
+	int	e_parreg;	/\(** memory subsystem registers \(**/
+};
+.fi
+.RE
+.PP
+Error records for block devices have the following format:
+.PP
+.RS .3i
+.nf
+.ta \w'struct\ 'u +\w'struct iostat\ 'u +\w'e_memadd;\ \ \ 'u
+struct	eblock {
+	dev_t	e_dev;	/\(** "true" major \s-1+\s+1 minor dev number \(**/
+	unsigned	e_bacty;	/\(** other block I/O activity \(**/
+	struct iostat	e_stats;	/\(** unit I/O statistics \(**/
+	short	e_bflags;	/\(** read/write, error, etc \(**/
+	short	e_nreg;	/\(** number of device registers \(**/
+	daddr_t	e_bnum;	/\(** logical block number \(**/
+	unsigned	e_bytes;	/\(** number of bytes to transfer \(**/
+	paddr_t	e_memadd;	/\(** buffer memory address \(**/
+	ushort	e_rtry;	/\(** number of retries where \(**/
+	struct pos {		/\(** the block device the error occurred \(**/
+			/\(** set invalid fields to -1 \(**/
+.ta \w'struct\ 'u +\w'struct\ 'u 
+		unsigned unit;
+		unsigned cyl;
+		unsigned trk;
+		unsigned sector;
+	} e_pos;
+};
+.fi
+.RE
+.PP
+The following values are used in the
+.I e_bflags\^
+word:
+.PP
+.RS .3i
+.nf
+.ta \w'#define \s-1E_STRAY\s+1\ \ 'u +\w'030\ \ \ 'u
+#define \s-1E_WRITE\s+1	0	/\(** write operation \(**/
+#define \s-1E_READ\s+1	1	/\(** read operation \(**/
+#define \s-1E_NOIO\s+1	02	/\(** no I/O pending \(**/
+#define \s-1E_PHYS\s+1	04	/\(** physical I/O \(**/
+#define \s-1E_MAP\s+1	010	/\(** Unibus map in use \(**/
+#define \s-1E_ERROR\s+1	020	/\(** I/O failed \(**/
+.fi
+.RE
+.DT
+.SH "SEE ALSO"
+errdemon(1M).
+.\"	@(#)errfile.4	5.1 of 11/2/83

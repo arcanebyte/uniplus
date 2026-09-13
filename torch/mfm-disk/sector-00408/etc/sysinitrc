@@ -1,0 +1,8 @@
+:
+HOME=/
+PATH=/etc:/bin:/usr/bin
+LOGDIR=/
+TZ=GMT0BST
+export HOME LOGDIR PATH TZ
+trap "" 2
+/etc/setshmlib

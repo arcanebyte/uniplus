@@ -1,0 +1,5 @@
+/bin/sh G0 7
+/bin/prepflop G0 6
+/dev/floppy G0 5
+/bin/calc G0 4
+/bin/clock G0 3

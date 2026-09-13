@@ -1,0 +1,14 @@
+echo "\n\n\tThis is the Triple X Software Installation Program."
+echo
+echo "Free disc space\n"
+df
+while :
+do
+	if yawn "INSTALL" "List contents of disc first ? Use close box to exit."
+	then
+		/etc/listfloppy.sh
+		/etc/loadfloppy.sh
+	else
+		/etc/loadfloppy.sh
+	fi
+done

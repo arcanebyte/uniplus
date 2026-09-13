@@ -1,0 +1,76 @@
+.TH HEX 1 UniSoft
+.SH NAME
+hex \- translates object files
+.SH SYNOPSIS
+.B hex
+[\^\c
+.B \-f\^\c
+] [\^\c
+.B \-l\^\c
+] [\^\c
+.B \-n#\^\c
+] [\^\c
+.B \-r\^\c
+] [\^\c
+.B \-s0\^\c
+] [\^\c
+.B \-s2\^\c
+] [\^\c
+.B \-ns8\^\c
+] [\^\c
+.B +saddr\^\c
+] ifile
+.SH DESCRIPTION
+.I Hex\^
+translates object files into 
+.SM ASCII 
+formats suitable for Motorola
+S-record downloading.
+The following options determine locations:
+.TP "\w'\fBsaddr\fR\ \ \ 'u"
+.B f
+The file specified is to be shipped as is
+without treating it as an object file.
+.TP
+.B l
+Output "Loading at" message.
+.TP
+.B n#
+Number of characters to output per record.  #\^ is a decimal number.
+.TP
+.B r
+Output a carriage return at the end of each S-record
+(instead of a newline).
+.TP
+.B s0
+Output a leading 
+.B s0 
+record.
+.TP
+.B s2
+.B S2 
+records only (no 
+.B s1 
+records are produced).
+.TP
+.B ns8
+Do not output a trailing 
+.BR s8\  ( s9 ) 
+record.
+.TP
+.B saddr
+Starting load address (in hex).
+.TP
+.B ifile
+File to be downloaded.
+The file's starting address is used if 
+.B saddr
+is not present.
+.SH EXAMPLE
+.IP
+hex objfile
+.PP
+where "objfile" is the object file to be downloaded.
+.SH AUTHOR
+Jeff Schriebman
+.\"	@(#)hex.1	5.2 of 6/21/84

@@ -1,0 +1,1 @@
+env `fgrep TZ= /etc/profile` /usr/lib/uucp/uucico

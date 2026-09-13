@@ -1,0 +1,32 @@
+.TH RUPTIME 1N UniSoft
+.SH NAME
+ruptime \- show host status of local machines
+.SH SYNOPSIS
+.B ruptime
+[
+.B \-a
+]
+.SH DESCRIPTION
+.I Ruptime\^
+gives a status line like
+.I uptime\^
+for each machine on the local network;
+these are formed from packets broadcast by each host
+on the network once a minute.
+.PP
+Machines for which no
+status report has been received for 5 minutes are shown as being down.
+.PP
+Users idle an hour or more are not counted unless the
+.B \-a
+flag is given.
+.SH FILES
+.ta \w'/etc/whod.*\ \ \ \ 'u
+/etc/whod.*	data files
+.DT
+.SH SEE ALSO
+rwho(1N).
+.SH BUGS
+This command is provisional and may change 
+in future releases.
+.\"N	 @(#)ruptime.1N	 5.2 of 7/12/84

@@ -1,0 +1,57 @@
+
+       HOW TO READ AND WRITE DISKETTES
+
+
+We use the 'tar' program to store most data on diskettes. tar is a convenient
+way to put data (including subdirectories) into diskette. The simplest way
+to use tar is:
+
+1	You must format the diskette first, by inserting a diskette,
+	and entering "diskformat /dev/rs0a". This will take a few minutes.
+
+2	Then, to place files onto the diskette, enter:
+
+		tar cvf /dev/rs0a <filelist> 
+
+	where <filelist> is the files you want to put on the diskette.
+	You can say tar cvf /dev/rs0a myfile, - or -
+		    tar cvf /dev/rs0a .  - where "." means the current
+	directory and all its subdirectories - or -
+		    tar cvf /dev/rs0a /usr/company/myfile - where you
+	give a fully-qualified filelist.
+
+	Please read the tar manual pages for a fuller explanation.
+
+	NOTE: The above examples require that all the files fit on 1 diskette,
+		which holds 800 blocks maximum (400Kbytes). If you need to
+		dump more than 1 diskette's worth, you can do this by
+		entering tar cvfB /dev/rs0a 800 <filelist>
+		and tar will eject the diskette after it is full and prompt
+		you for another diskette, etc.
+
+3	To read in a diskette you have made with tar, enter
+		tar xvf /dev/rs0a  - the whole diskette is read.
+
+	To read in a specific file on the tar diskette, enter
+		tar xvf /dev/rs0a myfile - ie, give the name.
+
+4	To get a list of what is on the diskette, enter
+		tar tvf /dev/rs0a.
+
+YOU CAN ONLY READ IN A DISKETTE WITH TAR IF YOU CREATED IT WITH TAR.
+
+The other way to write/read on diskettes is to "mount" them and simply
+write onto them. Here is a brief example. (Again the diskette must be first
+formatted.)
+
+	mount /dev/s0a /t     (notice -- it's /dev/s0a this way.)
+	cp myfile /t/myfile
+	.
+	.
+	.
+	cd /t
+	ls -l
+	.
+	.
+	.
+

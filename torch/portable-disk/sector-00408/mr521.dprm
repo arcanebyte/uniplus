@@ -1,0 +1,13 @@
+# Mitsubishi MR521 10 Mbyte drive
+# 612 cylinders, 2 heads, 12us step rate.
+# no reduced write current
+# write precompensation from cylinder 256
+# landing cylinder 665, imbedded servo present
+MR521
+612
+2
+0
+256
+665
+12
+1

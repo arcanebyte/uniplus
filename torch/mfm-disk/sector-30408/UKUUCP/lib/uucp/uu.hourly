@@ -1,0 +1,10 @@
+: Hourly uucp script
+LIBDIR=/usr/lib/uucp
+
+cd $LIBDIR
+
+: hourly poll of certain sites
+./uucico -r1 -swest44
+
+: attempt to ship remaining files
+./uucico -r1

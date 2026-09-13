@@ -1,0 +1,250 @@
+.TH DELIVERMAIL 8N UniSoft
+.SH NAME
+delivermail \- deliver mail to arbitrary people
+.SH SYNOPSIS
+.B /etc/delivermail
+[
+.BR \- [ fr ]
+.I address
+] [
+.B \-a
+] [
+.BR \-e [ empqw ]
+] [
+.B \-n
+] [
+.B \-m
+] [
+.B \-s
+] [
+.B \-i
+] [
+.B \-h
+.I N
+] address ...
+.SH DESCRIPTION
+.I Delivermail\^
+delivers a letter to one or more people,
+routing the letter over whatever networks
+are necessary.
+.I Delivermail\^
+will do inter-net forwarding as necessary
+to deliver the mail to the correct place.
+.PP
+.I Delivermail\^
+is not intended as a user interface routine;
+it is expected that other programs will provide user-friendly
+front ends,
+and
+.I delivermail\^
+will be used only to deliver pre-formatted messages.
+.PP
+.I Delivermail\^
+reads its standard input
+up to a control-D
+or a single dot
+and sends a copy of the letter found there
+to all of the addresses listed.
+If the
+.B \-i
+flag is given,
+single dots are ignored.
+It determines the network to use
+based on the syntax of the addresses.
+Addresses containing the character "@"
+or the word "at"
+are sent to 
+.SM BNET\*S;
+and addresses containing "!"
+are sent to the
+.SM UUCP
+net.
+Other addresses are assumed to be local.
+.PP
+Local addresses are looked up in the file
+.B /usr/lib/aliases
+and aliased appropriately.
+Aliasing can be prevented by preceding the address
+with a backslash or using the
+.B \-n
+flag.
+Normally the sender is not included in any alias
+expansions, e.g.,
+if "john" sends to "group",
+and "group" includes "john" in the expansion,
+then the letter will not be delivered to "john".
+The
+.B \-m
+flag disables this suppression.
+.PP
+.I Delivermail\^
+computes the person sending the mail
+by looking at your login name.
+The "from" person
+can be explicitly specified by using the
+.B \-f
+flag;
+or, if the
+.B \-a
+flag is given,
+.I delivermail\^
+looks in the body of the message
+for a "From:" or "Sender:"
+field in
+.SM ARPANET
+format.
+The
+.B \-f
+and
+.B \-a
+flags can be used
+only by the special users
+.I root\^
+and
+.IR network ,
+or if the person you are trying to become
+is the same as the person you are.
+The
+.B \-r
+flag is entirely equivalent to the
+.B \-f
+flag; it is provided for ease of interface only.
+.PP
+The
+.BI \-e x\^
+flag controls the disposition of error output,
+as follows:
+.TP "\w'\fBm\fR\ \ \ 'u"
+.B e
+Print errors on the standard output,
+and echo a copy of the message when done.
+It is assumed that a network server will
+return the message back to the user.
+.TP
+.B m
+Mail errors back to the user.
+.TP
+.B p
+Print errors on the standard output.
+.TP
+.B q
+Throw errors away;
+only exit status is returned.
+.TP
+.B w
+Write errors back to the user's terminal,
+but only if the user is still logged in
+and write permission is enabled;
+otherwise errors are mailed back.
+.PP
+If the error is not mailed back,
+and if the mail originated on the machine where the error occurred,
+the letter is appended to the file
+"dead.letter"
+in the sender's home directory.
+.PP
+If the first character of the user name
+is a vertical bar,
+the rest of the user name is used as the name of a program
+to pipe the mail to.
+It may be necessary to quote the name of the user
+to keep
+.I delivermail\^
+from supressing the blanks from between arguments.
+.PP
+The message is normally edited to eliminate "From"
+lines that might confuse other mailers.
+In particular,
+"From" lines in the header are deleted,
+and "From" lines in the body are prepended by "\|>".
+The
+.B \-s
+flag saves "From" lines in the header.
+.PP
+The
+.B \-h
+flag gives a "hop-count", i.e.,
+a measure of how many times this message
+has been processed by
+.I delivermail\^
+(presumably on different machines).
+Each time
+.I delivermail\^
+processes a message,
+it increases the hop-count by one;
+if it exceeds 30
+.I delivermail\^
+assumes that an alias loop has occurred
+and it aborts the message.
+The hop-count defaults to zero.
+.PP
+.I Delivermail\^
+returns an exit status
+describing what it did.
+The codes are defined in
+.IR mailexits.h :
+.PP
+.TP "\w'6\ \ \s-1EX_UNAVAILABLE\s+1\ \ 'u"
+0\ \ \s-1EX_OK\s+1
+Succesful completion on all addresses.
+.TP
+2\ \ \s-1EX_NOUSER\s+1
+User name not recognized.
+.TP
+3\ \ \s-1EX_UNAVAILABLE\s+1
+Catchall meaning necessary resources
+were not available.
+.TP
+4\ \ \s-1EX_SYNTAX\s+1
+Syntax error in address.
+.TP
+5\ \ \s-1EX_SOFTWARE\s+1
+Internal software error,
+including bad arguments.
+.TP
+6\ \ \s-1EX_OSERR\s+1
+Temporary operating system error,
+such as "cannot fork".
+.TP
+7\ \ \s-1EX_NOHOST\s+1
+Host name not recognized.
+.SH FILES
+.ta \w'/usr/lib/aliases\ \ \ 'u
+/usr/lib/aliases	to alias names
+.br
+/bin/mail	to deliver local mail
+.br
+/etc/netmailer	to deliver
+.SM BNET
+mail
+.br
+/bin/mail	to deliver
+.SM UUCP
+mail (/bin/mail knows how...)
+.br
+/tmp/mail\(**	temp file
+.br
+/tmp/xscript\(**	saved transcript
+.br
+/dev/log	to log status (optional)
+.SH SEE ALSO
+mail(1), aliases(7N), netmailer(8N).
+.SH BUGS
+.I Delivermail\^
+sends one copy of the letter
+to each user;
+it should send one copy
+of the letter to each host
+and distribute to multiple users there
+whenever possible.
+.PP
+.I Delivermail\^
+assumes the addresses can be represented as one word.
+This is incorrect according to the
+.SM ARPANET
+mail protocol 
+.SM RFC 733 (
+.SM NIC 
+41952),
+but is consistent with the real world.
+.\"	 @(#)delivermail.8n	 5.2 of 7/26/84

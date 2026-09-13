@@ -1,0 +1,23 @@
+umask 22
+stty intr '^c' erase '^?' kill '^x'
+eval `tset -sQ` 
+if [ $?  != 0 ]
+then  
+	echo "Please set your own terminal type"
+fi
+TZ=GMT0BST
+MAIL=/usr/mail/$LOGNAME
+readonly LOGNAME
+PATH=:/usr/xbin:/usr/bin/opentop:$PATH:/bin/hosts
+export PATH TERM TZ MAIL LOGNAME SHELL TERMCAP PS1
+# If the mail, message of the day or news systems are to be used,
+# the following lines should be uncommented
+#
+# /bin/cat -s /etc/motd
+#if /bin/mail -e
+#then /bin/echo "You have mail."
+#fi
+#if [ -r /usr/bin/news ]
+#then
+#	/usr/bin/news -s
+#fi

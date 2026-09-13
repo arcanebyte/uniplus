@@ -1,0 +1,46 @@
+.TH CONNECT 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+connect \- initiate a connection on a socket
+.SH SYNOPSIS
+.ft B
+#include <sys/socket.h>
+.sp
+connect(s, addr)
+.br
+int s;
+.br
+struct sockaddr *addr;
+.ft R
+.SH DESCRIPTION
+.I Connect
+causes a connection request to be initiated to
+the entity at
+.I addr
+using the underlying protocol of the socket
+.I s.
+When the connection completes, a zero value is returned.
+.PP
+If the socket is non-blocking (see
+.IR ioctlnew (2x))
+but the connection cannot
+be completed immediately, then the call returns \-1 and sets
+the external variable errno to EWOULDBLOCK.
+It is possible to
+.IR select (2x)
+a socket which is connecting by selecting it for writing,
+since writing is not possible before the connection completes.
+.PP
+If the socket is alreay connected, a value of \-1 is returned and
+errno is set to EISCONN.  Failure to connect often
+results in ETIMEDOUT or EREFUSED errors.
+Other errors are also possible.
+.SH SEE ALSO
+accept(2x), select(2x), socket(2x)
+.SH BUGS
+A socket's state is not properly restored if a \fIconnect\fP fails;
+for the time being you can \fIclose\fP the socket and recreate it
+to get around the bug.
+.PP
+This call is provisional and will exist in a slightly different form
+in 4.2bsd.

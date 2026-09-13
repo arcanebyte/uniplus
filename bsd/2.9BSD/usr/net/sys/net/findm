@@ -1,0 +1,3 @@
+# find mbuf refs
+egrep "cltom|mtocl|dtom|mtod|m_|MGET|MCLGET|MFREE|MSIZE|MMINOFF|MMAXOFF|MTAIL|MLEN|NMBCL|NMBPCL|mbuf|mbstat" \
+*.c *.h ../sys/{proto.c,ipc.c,sock*c} ../include/sys/{sock*.h,protosw.h,types.h}

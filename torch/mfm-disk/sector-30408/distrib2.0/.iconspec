@@ -1,0 +1,5 @@
+icon:	type=e; fn=rmgrp; showname=Remove; laction=; +
+	daction=b,$0 $*;
+
+icon:	type=e; fn=listgrp; showname=List; laction=; +
+	daction=b,$0 $*;

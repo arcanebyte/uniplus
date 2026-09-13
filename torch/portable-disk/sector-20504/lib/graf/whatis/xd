@@ -1,0 +1,17 @@
+
+
+
+
+xd [-_o_p_t_i_o_n(s)] [GPS _f_i_l_e_s(s)];  display GPS on a Triple X
+
+Convert GPS format into output codes for a Triple X
+console.
+
+Options:
+
+     e#        expand region # to fill the display.
+	       If # is missing region 13 (the
+	       central region) is displayed.
+
+Example:   td A.g B.g
+displays A.g and B.g.
