@@ -22,7 +22,14 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `looptest.c` | One-shot loopback test: forks an echo server, connects to 127.0.0.1, checks the echo and prints PASS or FAIL (`looptest [port]`) |
 | `udptest.c` | One-shot UDP loopback test: forks a datagram echo server, sends to 127.0.0.1 with `send()`, checks the reply from `receive()` and prints PASS or FAIL (`udptest [port]`) |
 | `netinfo.c` | Shows the host name (`gethostname`) and the Internet address compiled into the kernel (`SIOCGIADDR`) |
-| `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest` and `netinfo` on the Lisa |
+| `ping.c` | ICMP echo on a raw socket: `ping [-d] a.b.c.d [count]`, run as root. `-d` turns on the kernel's ICMP console messages and shows the raw input queue. Needs a kernel with the raw socket fixes (see below). |
+| `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo` and `ping` on the Lisa |
+
+## Raw sockets and ping
+
+A raw ICMP socket needs the fixes in `../v1.5/sys` `proto.c`, `raw_cb.c`, `raw_usrreq.c`, `raw_ip.c` and `ip_icmp.c` (`../RESTORATION.md` section 9). On a kernel without them, `socket()` for raw ICMP calls a null pointer and crashes the system. `ping` therefore reads the running kernel's protocol table through `/unix` and `/dev/kmem` first and refuses to run if the raw ICMP entry is missing. `/unix` must be the kernel that is running.
+
+In a received echo reply the kernel has stripped the IP header and zeroed the ICMP checksum. `icmp_input()` treats the first data byte as the header length of a quoted IP packet and drops replies too short for it, so `ping` sends a 0 there.
 
 ## Status
 
@@ -31,7 +38,8 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
   - The register calling convention matches the stubs in the shipped `/lib/libc.a` (see `../dump`).
   - Network errno values (55–85) are already in the stock `<sys/errno.h>`, and `perror()` knows their text.
 - **Unverified:** constants tagged `[B]` in the headers (`SOCK_STREAM`, `AF_INET`, `SO_*`) are taken from 4.1a/4.1c BSD. The socket ioctls `FIONBIO`, `SIOCGIADDR` and `SIOCCIADDR` come from UniSoft's `net/misc.h` (Torch headers) and match `soioctl()` in the kernel.
-- **Tested on a Lisa (13 September 2026):** on `unix.net`, `tcpconn 127.0.0.1 5000 hello` builds and gets "Connection refused" from the loopback TCP stack, which exercises the headers, `sockcall.s`, `socket()` and `connect()`. `looptest` passes: a full TCP round trip over 127.0.0.1 (fork, listening socket with `SO_ACCEPTCONN`, `accept`, `connect`, `read`/`write` both ways, `close`). `udptest` passes: a datagram sent with `send()` from an ephemeral port (1025) and echoed back with `receive()` returning the sender's address. `netinfo` prints `hostnameunknown` and 89.0.41.8 through `gethostname()` and `SIOCGIADDR`.
+- **Tested on a Lisa (13 September 2026):** on `unix.net`, `tcpconn 127.0.0.1 5000 hello` builds and gets "Connection refused" from the loopback TCP stack, which exercises the headers, `sockcall.s`, `socket()` and `connect()`. `looptest` passes: a full TCP round trip over 127.0.0.1 (fork, listening socket with `SO_ACCEPTCONN`, `accept`, `connect`, `read`/`write` both ways, `close`). `udptest` passes: a datagram sent with `send()` from an ephemeral port (1025) and echoed back with `receive()` returning the sender's address. `netinfo` prints `hostnameunknown` and 89.0.41.8 through `gethostname()` and `SIOCGIADDR` (10.0.2.15 on kernels built with the current `conf.c`).
+- **Tested over Ethernet (LisaEm EtherBox with slirp):** `tcpconn` from the Lisa to a listener on the Mac, `tcpecho` on the Lisa reached from the Mac through a port forward, and `ping` to 127.0.0.1 and 10.0.2.2.
 - **Lisa `cc` limit:** struct tags are unique only to 8 characters, so `in.h` maps `sockaddr_in` to `sock_in`, as the kernel's `net/misc.h` does. Keep new identifiers unique within 8 characters, and external names within 7. `cc` truncates external names to 7 characters plus `_`, but `as` keeps labels whole, so `sockcall.s` spells the long calls as `cc` emits them (`_gethost`, `_sethost`, `_socketa`, `_netrese`).
 
 If `sockcall.s` won't assemble, libc's generic `syscall()` works instead, e.g. `syscall(73, SOCK_STREAM, 0, 0, 0)`.

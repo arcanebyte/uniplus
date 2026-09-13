@@ -117,9 +117,21 @@ icmp_input(m)
 		printf("icmp_input from %x, len %d\n", ip->ip_src, icmplen);
 	if (icmplen < ICMP_MINLEN)
 		goto free;
+	/*
+	 * The ICMP header, and for errors the start of the packet it quotes
+	 * (at most 8 + 60 + 8 bytes, see ICMP_ADVLEN), must be in the first
+	 * mbuf with the IP header.  A packet sent on a raw socket has its IP
+	 * header in an mbuf of its own (rip_output), and without this the
+	 * ICMP fields are read from past the end of that mbuf's data.
+	 */
+	i = hlen + MIN(icmplen, 8 + 60 + 8);
+	if (m->m_len < i) {
+		if ((m = m_pullup(m, i)) == 0)
+			return;
+		ip = mtod(m, struct ip *);
+	}
 	m->m_len -= hlen;
 	m->m_off += hlen;
-	/* need routine to make sure header is in this mbuf here */
 	icp = mtod(m, struct icmp *);
 	i = icp->icmp_cksum;
 	icp->icmp_cksum = 0;
@@ -180,7 +192,7 @@ icmp_input(m)
 		icmpdst.sin_addr = ip->ip_dst;
 		raw_input(dtom(icp), &icmproto, (struct sockaddr *)&icmpsrc,
 		  (struct sockaddr *)&icmpdst);
-		goto free;
+		return;		/* raw_input() owns the mbuf now; freeing it here panics "mfreep" */
 
 	default:
 		goto free;

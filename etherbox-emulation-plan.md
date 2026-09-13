@@ -4,6 +4,24 @@
 
 This document is written for an agent or person starting fresh. Read the context section first.
 
+> **Progress (13 September 2026):** steps 1–5 are done and the goal is met.
+> - **Step 1:** unit 5 is LisaEm's slot 2 upper port (`via[5]`).
+> - **Steps 2–5:** the box model, register trace, pcap dump, responder and libslirp backends are in lisaem PR #57.
+> - **Kernel:** `conf.c` is 10.0.2.15.
+> - **Results:** `tcpconn` from the Lisa reaches the Mac, the Mac reaches `tcpecho` through a port forward, and `netlib/ping` gets replies from 10.0.2.2. Ping needed kernel fixes to raw sockets and ICMP input.
+>
+> Remaining:
+> - step 6: robustness under load;
+> - step 7: a Preferences UI (settings are environment variables for now);
+> - step 8: a `route` tool and telnet/ftp.
+>
+> What was found and changed is in `RESTORATION.md` section 9. Some details below were settled differently during implementation:
+> - the transmit buffer and the bus buffer pointer are shared;
+> - frames are capped at 1500 bytes because of `ebrbuf`;
+> - the box only interrupts once the CPU accepts the slot's interrupt level.
+>
+> The code comments in `etherbox.c` explain each.
+
 ## 1. Context and where things stand (13 September 2026)
 
 **Repos:**

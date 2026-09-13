@@ -92,6 +92,8 @@ make GENnet=/usr/src/sys INCLUDE=-I/usr/src/include unix.net
 
 Other targets: `unix.nonet` (no networking), `unix.su` (single user).
 
+**Rebuilding after changing sources:** run `rm -f net.o unix.net` first. The Lisa's clock can go backwards between LisaEm sessions; objects compiled later then look older than the previous `net.o`, and `make` skips the relink without saying so, leaving the old `unix.net` to be installed. Files written from the Mac carry today's date, so they are always recompiled.
+
 **Do not run `make install`.** It moves `/unix` to `/ounix` and copies the new kernel over `/unix`.
 
 Things likely to need attention, from `include/PROVENANCE.md`:
@@ -121,3 +123,22 @@ LisaEm can't paste into the Lisa, so new or changed source files go onto the dis
 python3 tools/put_profile_files.py uniplus_unix_20mb.image --base 19456 netlib/looptest.c=netlib/looptest.c
 ```
 Then `fsck /dev/rp0e` on the Lisa before mounting.
+
+## 6. Ethernet in LisaEm (EtherBox and slirp)
+
+`unix.net` has one Ethernet driver, `if_eb.c`, for a 3Com EtherBox on a parallel port. A LisaEm build with the EtherBox (lisaem PR #57) emulates it, and with `build.sh --with-slirp` connects it to the Mac through libslirp. See `RESTORATION.md` section 9 and the LisaEm README.
+
+1. **LisaEm setup:** a Dual Parallel card in slot 2, with **EtherBox** on its upper port (unit 5 in `conf.c`). The ProFile stays on the built-in port.
+2. **Kernel address:** `conf.c` gives the interface 10.0.2.15, slirp's default guest address, so rebuild `unix.net` from the current sources. A kernel built for 89.0.41.8 also works if LisaEm is started with `LISAEM_ETHERBOX_SLIRP_NET=89.0.41.0 LISAEM_ETHERBOX_GUEST=89.0.41.8`.
+3. **Start LisaEm from a terminal** so it gets the settings, for example:
+   ```
+   LISAEM_ETHERBOX_BACKEND=slirp LISAEM_ETHERBOX_HOSTFWD=tcp:5555:5000 \
+     LisaEm.app/Contents/MacOS/lisaem.sh
+   ```
+4. **Tests,** in `/usr/src/netlib`:
+   - `./netinfo` shows 10.0.2.15.
+   - `./ping 10.0.2.2` (root) gets replies from slirp's host address.
+   - With `nc -l 7001` on the Mac, `./tcpconn 10.0.2.2 7001 hello` delivers the line.
+   - With `./tcpecho 5000 &` on the Lisa, `nc 127.0.0.1 5555` on the Mac is echoed.
+
+On macOS, avoid host ports 5000 and 7000 (AirPlay Receiver) and connect to `127.0.0.1` rather than `localhost`.
