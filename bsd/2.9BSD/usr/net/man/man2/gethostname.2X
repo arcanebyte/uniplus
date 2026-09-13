@@ -1,0 +1,18 @@
+.TH GETHOSTNAME 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+gethostname \- get name of current host
+.SH SYNOPSIS
+.B "gethostname(hostname, sizeof (hostname))"
+.br
+.B "char hostname[];"
+.SH DESCRIPTION
+.I Gethostname
+returns the standard host name for the current processor, as set by
+.IR sethostname (2x)
+and defined in
+.IR rhost (3x).
+The name is null-terminated.
+.SH SEE ALSO
+sethostname(2x)
+.SH BUGS

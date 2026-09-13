@@ -1,0 +1,3 @@
+net bbn-net gateway bbn-gateway metric 1 passive
+net dcn-comsat gateway linkabit metric 1 passive
+net purdue-net gateway csnet-purdue metric 1 passive

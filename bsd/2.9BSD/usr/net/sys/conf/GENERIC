@@ -1,0 +1,43 @@
+#  Machine configuration file.
+#  Format:
+#	name	value		comments
+#
+#  The value field may not contain blanks;
+#  blank lines are not allowed.
+#
+#  Description file for 2.9BSD distributed kernel binary
+#
+#	General parameters
+pdp11		GENERIC
+ident		UNKNOWN
+maxusers	4
+bootdev		none
+timezone	8			# Pacific
+dst		1
+#
+#	Filesystem configuration
+rootdev		makedev(6,0)		# xp0a
+swapdev		makedev(6,1)		# xp0b
+dumpdev		NODEV
+pipedev		makedev(6,0)		# xp0a
+swplo		0
+nswap		3200
+dumplo		0
+dumproutine	nodev
+#
+#	Device configuration
+NXP		4
+NXP_CONTROLLER 	1
+NHK		8
+NRK		8
+NRL		8
+NRP		4
+NHT		1
+NTM		1
+NTS		1
+NDZ		1		# in units of boards (8 each)
+NDH		1		# in units of boards (16 each)
+NDM		0		# in units of boards (16 each)
+LOWDM		0		# LOWDM is in units of lines
+NKL		4
+NLP		1

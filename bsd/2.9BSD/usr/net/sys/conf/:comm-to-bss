@@ -1,0 +1,22 @@
+/.comm	_remap_a/s/comm	\(.*\),\([0-9]*\)/globl	\1\
+.bss\
+\1:	.=.+\2\
+.data\
+/
+/.comm	_proc/s/comm	\(.*\),\([0-9]*\)/globl	\1\
+.bss\
+\1:	.=.+\2\
+.data\
+/
+/.comm	_text/s/comm	\(.*\),\([0-9]*\)/globl	\1\
+.bss\
+\1:	.=.+\2\
+.data\
+/
+/.comm	_file/s/comm	\(.*\),\([0-9]*\)/globl	\1\
+.bss\
+\1:	.=.+\2\
+.data\
+/
+w
+q

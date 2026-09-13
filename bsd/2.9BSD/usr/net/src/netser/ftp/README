@@ -1,0 +1,50 @@
+These ftp sources are up to date with the ones on ucbcalder (and ucbmonet)
+as of 2 February, 1983 and correspond to the bsd4.1c ftp of that time.
+They have been converted for the 2.81 kernel and 4.1a network interface.
+
+Most of the necessary conversions are done in the include files
+compat.h (for ftp.h), varpat.h (for ftp_var.h), and extra source files
+compat.c, ruserpass.c, fakedir.c, setreuid.s, and setregid.s.
+(Note accept and connect are not what they appear to be.)
+It is also necessary to link <net/in.h> to be <netinet/in.h>.
+#ifdefs appear directly in the code where unavoidable.
+
+The setreuid and setregid system calls are needed in the kernel
+to make ftpd work correctly (because of the protection kludge in
+net/in_pcb.c/in_pcbattach).
+
+To install the setreuid and setregid system calls in the kernel,
+put this in sysent.c:
+
+#ifdef  NCP
+int	sendins();
+int	net_reset();
+int	sgnet();
+#else
+int	setreuid ();
+int	setregid();
+#endif
+
+#ifdef  NCP
+	1, 1, sendins,                  /* 28 = send ins */
+	2, 2, net_reset,                /* 29 = net reset */
+	2, 2, sgnet,                    /* 30 = sgnet */
+#else
+	0, 0, nosys,			/* 28 = x */
+	2, 2, setreuid,			/* 29 = setreuid */
+	2, 2, setregid,			/* 30 = setregid */
+#endif
+
+and put the contents of ./setreuid.c in sys4.c.
+
+You will also want to update <sys.s> to have the lines:
+
+/	setre[gu]id (for TCP ftp server)
+setreuid	= 29.	/ set real and effective uid separately
+setregid	= 30.	/ set real and effective gid separately
+
+System call interface routines are provided as setreuid.s and setregid.s.
+
+The system call numbers used here were chosen to not conflict with anything
+else by reusing some of the NCP system calls.  While 2.9bsd will have
+setreuid and setregid, the system call numbers will probably be different.

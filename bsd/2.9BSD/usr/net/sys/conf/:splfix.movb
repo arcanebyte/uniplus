@@ -1,0 +1,8 @@
+g/jsr	pc,__spl0/s//clrb 177776/
+g/jsr	pc,__spl1/s//movb $40, 177776/
+g/jsr	pc,__spl4/s//movb $200, 177776/
+g/jsr	pc,__spl5/s//movb $240, 177776/
+g/jsr	pc,__spl6/s//movb $300, 177776/
+g/jsr	pc,__spl7/s//movb $340, 177776/
+w
+q

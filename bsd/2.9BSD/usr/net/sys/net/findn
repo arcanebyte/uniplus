@@ -1,0 +1,3 @@
+# find net refs
+egrep "$1" [a-z]*.c [a-z]*.h ../sys/{mbuf.c,proto.c,ipc.c,sock*.c,mbuf11.c,syslocal.c} \
+../include/sys/{socket*.h,protosw.h,types.h,mbuf.h}

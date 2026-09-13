@@ -1,0 +1,46 @@
+Mmain	main.c	/^main(argc, argv)$/
+add_nlist	read_nlist.c	/^struct nlist *add_nlist(name)$/
+addent	read_dtab.c	/^addent(listp, cp)$/
+attach	attach.c	/^attach(dp)$/
+auto_config	do_config.c	/^auto_config()$/
+caryprobe	uprobe2.c	/^caryprobe(addr)$/
+clear_vec	do_config.c	/^clear_vec(dp)$/
+detach	attach.c	/^detach(dp)$/
+dhprobe	uprobe2.c	/^dhprobe(addr)$/
+dmprobe	uprobe2.c	/^dmprobe(addr)$/
+dnprobe	uprobe2.c	/^dnprobe(addr)$/
+do_probe	do_config.c	/^do_probe(dp, a1)$/
+dzprobe	uprobe2.c	/^dzprobe(addr)$/
+expect_intr	do_config.c	/^expect_intr(dp)$/
+find_unit	attach.c	/^find_unit(dp)$/
+getword	read_dtab.c	/^char *getword()$/
+grab	do_config.c	/^grab(where)$/
+have_set	attach.c	/^have_set(vec)$/
+hkprobe	uprobe1.c	/^hkprobe(addr)$/
+hsprobe	uprobe1.c	/^hsprobe(addr)$/
+htprobe	uprobe1.c	/^htprobe(addr)$/
+init_lowcore	do_config.c	/^init_lowcore(val)$/
+inlist	read_dtab.c	/^inlist(list, str)$/
+intval	do_config.c	/^intval()$/
+klprobe	uprobe2.c	/^klprobe(addr)$/
+lpprobe	uprobe2.c	/^lpprobe(addr)$/
+newstr	args.c	/^char *newstr(s)$/
+nextword	read_dtab.c	/^char *nextword()$/
+otoi	read_dtab.c	/^otoi(cp)$/
+parse_args	args.c	/^parse_args(ac, av, bopts, fopts)$/
+prdev	do_config.c	/^prdev(dp)$/
+pry	attach.c	/^pry(dp)$/
+read_dtab	read_dtab.c	/^read_dtab()$/
+read_nlist	read_nlist.c	/^read_nlist()$/
+read_while	read_dtab.c	/^#define read_while(expr) while ((ch = getc(dtab_fp/
+rkprobe	uprobe1.c	/^rkprobe(addr)$/
+rlprobe	uprobe1.c	/^rlprobe(addr)$/
+rpprobe	uprobe1.c	/^rpprobe(addr)$/
+set_unused	do_config.c	/^set_unused()$/
+strsave	main.c	/^char *strsave(cp)$/
+stuff	do_config.c	/^stuff(var, where)$/
+tmprobe	uprobe1.c	/^tmprobe(addr)$/
+tsprobe	uprobe1.c	/^tsprobe(addr)$/
+vpprobe	uprobe2.c	/^vpprobe(addr)$/
+write_vec	attach.c	/^write_vec(addr, value, pri)$/
+xpprobe	uprobe1.c	/^xpprobe(addr)$/

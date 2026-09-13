@@ -1,0 +1,32 @@
+#  Machine configuration file.
+#  Format:
+#	name	value		comments
+#
+#  The value field may not contain blanks;
+#  blank lines are not allowed.
+#
+#  Description file for Virus lab 11/40
+#
+#	General parameters
+pdp11		40
+ident		VIRUS
+maxusers	4
+bootdev		sc11			# Emulex SC11, using boot opcode
+timezone	8			# Pacific
+dst		1
+#
+#	Filesystem configuration
+rootdev		makedev(6,1)		# rm0b
+swapdev		makedev(6,2)		# rm0c
+dumpdev		makedev(6,2)		# rm0c
+pipedev		makedev(6,3)		# rm0d
+swplo		0
+nswap		3200
+dumplo		2500
+dumproutine	rmdump
+#
+#	Device configuration
+NRM		1
+NRK		1
+NTM		1
+NDZ		1

@@ -1,0 +1,33 @@
+.TH SETGRP 2X 3/17/82
+.UC 4.1a Provisional
+.SH NAME
+setgrp \- set/get group access
+.SH SYNOPSIS
+.B "setgrp(newgroups, oldgroups)"
+.br
+.B "int *newgroups, *oldgroups;"
+.SH DESCRIPTION
+.I Setgrp
+sets the group access of the current user process according to the bit array
+pointed to by
+.I newgroups.
+Each bit in the array which is set allows access to the correspondingly
+numbered group; each bit which is clear denies access.
+The array has size NGRPS bits, defined in <sys/param.h>.
+The old value of the groups mask is returned in the bit array
+referenced by
+.I oldgroups.
+Either
+.I newgroups
+or
+.I oldgroups
+may be omitted by specifying 0.
+.PP
+Only the super-user may set new groups.
+.SH SEE ALSO
+inigrp(3x)
+.SH BUGS
+Group ID numbers are allowed to range only from 0 through 255.
+.PP
+This call is provisional, and will exist in a slightly different form
+in 4.2bsd.

@@ -1,0 +1,13 @@
+#
+adb $1 << "EOF" > tmp
+0,-1?ao^i
+$q
+"EOF"
+cp $1 tmp1
+strip tmp1
+adb tmp1 > tmp2 << "EOF1"
+0,-1?ao^i
+$q
+"EOF1"
+pr -w132 -m tmp tmp2 > $1.s
+rm tmp tmp1 tmp2

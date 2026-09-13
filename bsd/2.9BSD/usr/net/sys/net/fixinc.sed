@@ -1,0 +1,14 @@
+s,<sys/param\.h>,"param.h",
+s,"\.\./h/param\.h","param.h",
+/"\.\.\/h\/cons\.h"/d
+/"\.\.\/h\/clock\.h"/d
+/"\.\.\/h\/cmap\.h"/d
+/"\.\.\/h\/cpu\.h"/d
+/"\.\.\/h\/pte\.h"/d
+/"\.\.\/h\/ubareg\.h"/d
+/"\.\.\/h\/vm\.h"/d
+/"\.\.\/h\/map\.h"/d
+/"\.\.\/h\/mtpr\.h"/d
+/"\.\.\/h\/vmmac\.h"/d
+s,"\.\./h/\(.*\)",<sys/\1>,
+s,"\.\./errno.h",<errno.h>,

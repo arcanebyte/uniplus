@@ -1,0 +1,42 @@
+#  Machine configuration file.
+#  Format:
+#	name	value		comments
+#
+#  The value field may not contain blanks;
+#  blank lines are not allowed.
+#
+#  Description file for 2.9BSD distributed kernel binary
+#
+#	General parameters
+pdp11		44
+ident		TSCB
+maxusers	12
+bootdev		hk
+timezone	8			# Pacific
+dst		1			# do daylight savings time
+#
+#	Filesystem configuration
+rootdev		makedev(4,0)		# hk0a
+swapdev		makedev(6,1)		# xp0b -- the SI Eagle
+dumpdev		makedev(6,1)		# xp0b
+pipedev		makedev(4,0)		# hk0a
+swplo		0
+nswap		10000			# 10000 < 10944
+dumplo		2000			# 10000 - 2000 = plenty of room 
+dumproutine	xpdump
+#
+#	Device configuration
+NXP		1
+NXP_CONTROLLER 	1
+NHK		2
+NRK		0
+NRL		0
+NRP		0
+NHT		0
+NTM		1		# Kennedy tape drive
+NTS		0
+NDZ		0		# in units of boards (8 each)
+NDH		1		# in units of boards (16 each)
+NDM		1		# in units of boards (16 each)
+LOWDM		0		# LOWDM is in units of lines
+NLP		0

@@ -1,0 +1,60 @@
+.TH RINSTALL 1 
+.SH NAME
+rinstall \- remotely install programs over the internet
+.SH SYNOPSIS
+.B rinstall
+[
+.B \-bcrv
+] [
+.B \-afile
+] [
+.B \-ssys1,sys2...
+]
+file1 [file2] ...
+.SH DESCRIPTION
+Rinstall will copy files to other systems on the internet and set them
+up to be run by other users. It uses
+.I rcmd
+so
+.I rshd
+needs to be running for this to work. Rinstall won't allow
+anyone to write anywhere they want; normal file permissions are followed
+as if you were logged in on the remote system. The files on the command
+line must be fully qualified (i.e. they must begin with a /).
+.PP
+Rinstall looks for the environment variable called SYSTEM and will use
+the string it gets as the systems to install all files on. If this variable
+doesn't exist, the string following the
+.I -s
+flag will be used.
+Otherwise a default string will be used.
+.PP
+If the
+.I -a
+flag is used, the file following the flag will be appended to the
+file list given on the command line. A - can be used to represent
+standard input. The
+.I -c
+flag will return checksum information (as returned by the
+.I sum
+command) on all files. If
+.I -b
+is specified, a copy of the original file will be created with the
+original name followed by a minus (-). This allows backup copies to be kept.
+The
+.I -r
+flag will remove the files. The
+.I -v
+flag causes verbose output to be put on standard output.
+.PP
+Rinstall causes the remote system to run an install daemon. This daemon
+is responsible for actually copying the file, setting its modes, etc.
+.dt
+.SH FILES
+/etc/installd		install daemon
+.br
+/usr/lib/installd.log	audit trail
+.br
+.SH "SEE ALSO"
+rcmd(3), rsh(1)
+.SH DIAGNOSTICS

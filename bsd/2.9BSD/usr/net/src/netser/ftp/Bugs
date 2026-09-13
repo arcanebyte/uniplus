@@ -1,0 +1,28 @@
+A few bug fixes:
+
+ftpd.c/main
+The code for forking ftpd as a server background process left nothing open
+on fd 2, meaning stderr could be most anything (such as the network stream).
+Fix inside #ifndef never.
+
+ftpd.c/main
+When the child process is forked after accept, SIGCHLD wants to be ignored,
+to keep it from interrupting system calls (connect, usually).  Last time I
+tried using ftp with monet, the same problem appeared with the monet server.
+Fix inside #ifndef never.
+
+ftp.c/sendrequest
+ftp.c/recvrequest
+There was no check for an error on the network fd during or after a transfer.
+Fix inside #ifndef noneterr.
+
+cmds.c/setpeer
+If there is an argv[2], it is supposed to set the port, but the code
+attempted to take the port from argv[1], producing a confusing error message.
+Fix inside #ifndef never.
+
+Some things known not to be fixed:
+
+The ABOR command is not handled correctly.
+
+The 4.1c rename system call is simulated in compat.c with "/bin/mv".
