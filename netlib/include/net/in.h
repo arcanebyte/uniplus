@@ -4,6 +4,7 @@
  * [K]/[B] provenance tags.
  */
 
+#define	sockaddr_in	sock_in		/* [K] cc tags are unique to 8 chars (net/misc.h) */
 #define	IPPROTO_ICMP	1		/* [B] */
 #define	IPPROTO_TCP	6		/* [B] */
 #define	IPPROTO_UDP	17		/* [B] */
