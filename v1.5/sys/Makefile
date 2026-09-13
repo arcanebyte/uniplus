@@ -54,7 +54,9 @@ NODE    =alm
 REL     =5.1
 VER     =rl
 MACH    =m68000
-DEFS    =-DNONSCATLOAD -DKERNEL -Uvax -Dmc68000 -DUCB_NET
+# -Dm68000: net/ip.h and net/ip_var.h (from the Torch UniPlus+ headers) test
+# m68000, but the Lisa cpp only predefines mc68000.
+DEFS    =-DNONSCATLOAD -DKERNEL -Uvax -Dmc68000 -Dm68000 -DUCB_NET
 OOPT    =BPS
 V       =-v
 CFLAGS  =$(DEFS) $(INCLUDE) -O$(OOPT) $(V)
