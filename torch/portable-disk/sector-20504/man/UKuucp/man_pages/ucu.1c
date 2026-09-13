@@ -1,0 +1,258 @@
+.TH UCU 1C 1/6/84
+.UC 4
+.SH NAME
+ucu \- (UUCP) call UNIX
+.SH SYNOPSIS
+.B ucu
+telno
+[
+.B \-s
+speed ]
+[
+.B \-a
+acu ]
+[
+.B \-h
+]
+[
+.B \-o
+]
+[
+.B \-e
+]
+[
+.B \-d
+]
+[
+.B -S
+sysfile
+]
+[
+.B -D
+dialfile
+]
+[
+.B -O
+discofile
+]
+.SH DESCRIPTION
+.I Cu
+calls up another UNIX system,
+a terminal,
+or possibly a non-UNIX system.
+It manages an interactive conversation with possible
+transfers of text files.
+.I Telno
+is the telephone number if the device being used is an 
+.I ACU
+(the default).  In the case of a
+.I DIR
+(direct) line it will specify either which line to use or which group
+of lines may be tried to find a useable one.
+If the last character in the
+.I telno
+is an exclamation mark then the rest of the string is taken as specifying
+a sitename which will be called by obeying the corresponging entry from
+the specified
+.I sysfile .
+.PP
+.I Speed
+gives the transmission speed (110, 134, ... );
+300 is the default value.
+.PP
+The
+.B \-a
+value may be used to
+specify the type of device to be used normally either
+.I ACU
+(the default)
+or
+.I DIR
+.PP
+The
+.B \-h
+flag turns on local echo (currently not implemented).
+.PP
+The
+.B \-e
+flag turns on even parity on output to the line (which is the default).
+.B -o
+turns on odd parity.
+.PP
+The
+.B \-d
+flag turns on debugging (this is very verbose).
+.PP
+The
+.B -m
+flag turns on local modem control (currently not implemented).
+.PP
+The
+.B sysfilename
+is the name of a file in the same format as the uucp
+.I L.sys
+file which describes how to connect to a remote site
+(the default is 
+.I .L.sys
+in the callers home directory).
+.PP
+The
+.B dialfilename
+is an alternative list of devices (the default is
+.I /usr/lib/uucp/L-devices ").
+.PP
+The
+.B
+discofilename
+is the same in format as
+.I /usr/lib/uucp/L.disconnect
+and specifying a name will cause it to be used instead of the default
+which is
+.I .L.disco
+from the callers home directory.
+.PP
+After making the connection,
+.I cu
+runs as two processes:
+the
+.I send
+process reads the standard input and
+passes most of it to the remote system;
+the
+.I receive
+process reads from the remote system and passes
+most data to the standard output.
+Lines beginning with `~' have special meanings.
+.PP
+The
+.I send
+process interprets the following:
+.TP 18
+~\|\fB.\|
+terminate the conversation.
+.br
+.ns
+.TP 18
+~EOT
+terminate the conversation
+.TP 18
+~<file
+send the contents of
+.I file
+to the remote system,
+as though typed at the terminal.
+.TP 18
+\~^D
+suspend the cu process.
+Note that the control-D must be followed by a newline.
+.TP 18
+\~#
+sends a break.
+.TP 18
+~!
+invoke an interactive shell on the local system.
+.TP 18
+~!cmd ...
+run the command on the local system
+(via
+.BR "sh \-c" ")."
+.TP 18
+~$cmd ...
+run the command locally and send its output
+to the remote system.
+.TP 18
+~%take from [to]
+copy file `from' (on the remote system)
+to file `to' on the local system.
+If `to' is omitted,
+the `from' name is used both places.
+.TP 18
+~%put from [to]
+copy file `from' (on local system)
+to file `to' on remote system.
+If `to' is omitted, the `from' name is used both places.
+.TP 18
+~:
+during an output diversion, this toggles whether the operation of
+.I cu
+will be silent, i.e., whether information received from the foreign
+system will be written to the standard output.
+This allows a ``progress report'' during long transfers.
+.TP 18
+~~\fB\|.\|.\|.\fR
+send
+the line `~\|.\|.\|.'.
+.PP
+Both the
+.I send
+and
+.I receive
+processes handles output diversions of the following form:
+.PP
+\&~>[>][:]file
+.br
+zero or more lines to be written to file
+.br
+\&~>
+.PP
+In any case, output is diverted (or appended, if `>>' used) to the file.
+If `:' is used,
+the diversion is
+.I silent,
+i.e., it is written only to the file.
+If `:' is omitted,
+output is written both to the file and to the standard output.
+The trailing `~>' terminates the diversion.
+.PP
+The use of
+.B  ~%put
+requires
+.I stty
+and
+.I cat
+on the remote side.
+It also requires that the
+current erase and kill characters on the remote
+system be identical to the current ones on the local system.
+Backslashes are inserted at appropriate places.
+.PP
+The use of
+.B  ~%take
+requires the existence of
+.I echo
+and
+.I tee
+on the remote system.
+Also,
+.B "stty tabs"
+mode is required on the remote system if
+tabs are to be copied without expansion.
+.PP
+.B  ~%break
+causes a break to be generate on the line.
+.SH FILES
+/usr/lib/uucp/L-devices
+.br
+\$HOME/.L.sys
+.br
+\$HOME/.L.disco
+.br
+/usr/spool/uucp/LCK..<device>
+.SH "SEE ALSO"
+tty(4)
+.SH DIAGNOSTICS
+Exit code is
+zero for normal exit,
+nonzero (various values) otherwise.
+.SH BUGS
+Only
+.IR mail (1)
+uses syntax anything like the syntax of
+.I ucu.
+.PP
+The 
+.I LCK
+files are created in the spool directory of uucp.  This means that users
+have to have write permission on it.
+Currently these LCK's are not touched regularly so that may go out of
+date if the line is held for a long period of time.

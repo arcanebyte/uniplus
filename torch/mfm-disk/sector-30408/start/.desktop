@@ -1,0 +1,8 @@
+/usr/bin/opentop/controlpanel G0 6  
+/usr/bin/opentop/clock G0 5  
+/usr/bin/opentop G0 7  
+/usr/bin/opentop/calc G0 4  
+/usr/start G0 2  
+/bin/sh G0 3  
+/usr/start/waste G0 1 S
+/ G0 0 S

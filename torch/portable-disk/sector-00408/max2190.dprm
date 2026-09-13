@@ -1,0 +1,16 @@
+# Maxtor 2190 150Mbyte drive.
+# 1224 cylinders
+# 15 heads + 1 servo surface
+# reduced write current cylinder ( automatically performed by the drive )
+# write precompensation cylinder ( not needed - impairs performance )
+# landing zone cylinder ( not needed - automatic actuator lock )
+# step rate in microseconds ( allow 3 us )
+# imbedded servo flag (0 for not present, separate servo surface)
+Maxtor XT2190
+1224
+15
+1225
+1225
+0
+3
+0

@@ -1,0 +1,13 @@
+# NEC D5146 40Mbytes
+# 615 cylinders, 8 heads, 5us step rate.
+# reduced write current not used
+# write precompensation on cylinder 128
+# landing cylinder 664, imbedded servo present
+NEC D5146
+615
+8
+0
+128
+664
+5
+1

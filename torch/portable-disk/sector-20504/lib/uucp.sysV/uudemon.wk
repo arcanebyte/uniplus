@@ -1,0 +1,7 @@
+: 'perform once per week, Sunday at 0202 hours'
+cd /usr/spool/uucp
+rm -f o.Log-WEEK* o.SYSLOG*
+mv Log-WEEK o.Log-WEEK
+(date; echo =============================) >> o.Log-WEEK
+mv SYSLOG o.SYSLOG
+pack o.Log-WEEK o.SYSLOG

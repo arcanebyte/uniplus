@@ -1,0 +1,13 @@
+icon: type=e; fn=vi; showbits=utilities:textedit; showname = Edit; +
+      laction=x,wsh -C $0; daction=x,wsh -C $0 $*; raction=; +
+      maxuse=4;
+
+
+
+
+
+
+
+icon: type=e; fn=wash; showbits=mark:wash; showname="WASH"; maxuse=16; +
+      laction=n,$0;
+

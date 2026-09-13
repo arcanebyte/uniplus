@@ -1,0 +1,49 @@
+.TH PRINTENV 1 UniSoft
+.SH NAME
+printenv \- print out the environment
+.SH SYNOPSIS
+.B printenv
+[ argument ]
+.SH DESCRIPTION
+.PP
+.I Printenv\^
+takes an environment variable name as an argument and prints
+only the value of that variable.  If no argument is given,
+it prints the values for the entire environment.
+.LP
+Examples of environment variable names are:
+.TP "\w'TERMCAP\ \ \ \ 'u"
+HOME
+path name of user's home directory.
+.TP
+SHELL
+the shell present at login.
+.TP
+PATH
+search path for binary programs.
+.TP
+TERM
+type of terminal used.
+.TP
+USER
+the login name of the user.
+.TP
+TERMCAP
+terminal capabilities string.
+.TP
+EXINIT
+a startup list of commands read by 
+.IR ex ,
+.I edit
+and
+.IR vi\^ .
+.SH EXAMPLE
+.IP
+printenv HOME
+.PP
+prints the path name of your home directory.
+.SH SEE ALSO
+csh(1),
+sh(1),
+environ(4).
+.\"	@(#)printenv.1	5.2 of 6/21/84

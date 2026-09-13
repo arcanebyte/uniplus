@@ -1,0 +1,25 @@
+#-----------------------------------------------------------------------------#
+#									      #
+# XXX Resource manager error messages					      #
+#									      #
+# SCCS identification "@(#) reserrors 1.1@(#)"
+#									      #
+#-----------------------------------------------------------------------------#
+
+0001	failed to create resource file		# ERESCREATE
+0002	failed to open resource file		# ERESOPEN
+0003	failed to close resource file		# ERESCLOSE
+0004	failed to set timeout			# ERESSETTIME
+0005	failed to read object			# ERESREAD
+0006	failed to write object			# ERESWRITE
+0007	failed to delete object			# ERESFREE
+0008	failed to find object			# ERESSEARCH
+0009	failed to get resource file title	# ERESTITLE
+0010	failed to set resource file title	# ERESRETITLE
+0011	failed to get object type		# ERESTYPE
+0012	failed to get object name		# ERESNAME
+0013	failed to rename object			# ERESRENAME
+0014	failed to get object size		# ERESSIZE
+0015	failed to get object offset		# ERESOFFSET
+0016	failed to set minimum object size	# ERESSETMINSIZE
+

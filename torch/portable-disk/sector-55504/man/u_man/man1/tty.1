@@ -1,0 +1,50 @@
+.TH TTY 1
+.SH NAME
+tty \- get the terminal's name
+.SH SYNOPSIS
+.B tty
+[
+.B \-l
+]
+[
+.B \-s
+]
+.SH DESCRIPTION
+.I Tty\^
+prints the path name of the user's terminal.
+The
+.B \-l
+option prints the synchronous line number to which the user's terminal is
+connected,
+if it is on an active synchronous line.
+The
+.B \-s
+option inhibits printing of the terminal's path name,
+allowing one to test just the exit code.
+.SH EXAMPLE
+.IP "" 5
+tty
+.PP
+produces 
+.B /dev/tty7
+if user is on 
+.BR tty7 .
+.SH EXIT CODES
+.ta \w'2\ \ \ 'u
+2	if invalid options were specified,
+.br
+0	if standard input is a terminal,
+.br
+1	otherwise.
+.DT
+.SH DIAGNOSTICS
+"not on an active synchronous line" if the standard input is not a
+synchronous terminal and
+.B \-l
+is specified.
+.br
+"not a tty" if the standard input is not a terminal
+and
+.B \-s
+is not specified.
+.\"	@(#)tty.1	5.1 of 11/10/83

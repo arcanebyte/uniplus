@@ -1,0 +1,122 @@
+.TH REMSH 1N UniSoft
+.SH NAME
+remsh \- remote shell
+.SH SYNOPSIS
+.B remsh
+host
+[
+.B \-l
+username
+] [
+.B \-n
+] command
+.br
+.B host
+[
+.B \-l
+username
+] [
+.B \-n
+] command
+.SH DESCRIPTION
+.I Remsh\^
+connects to the specified
+.IR host ,
+and executes the specified \fIcommand\fR.
+.I Remsh\^
+copies its standard input to the remote command, the standard
+output of the remote command to its standard output, and the
+standard error of the remote command to its standard error.
+Interrupt, quit and terminate signals are propagated to the remote
+command; \fIremsh\^\fP normally terminates when the remote command does.
+.PP
+The remote 
+.I username\^
+used is the same as your local username,
+unless you specify a different remote name with the
+.B \-l
+option.
+This remote name must be equivalent (in the sense of
+.IR rlogin\^ (1))
+to the originating account; no provision
+is made for specifying a password with a command.
+.PP
+If you omit
+.IR command ,
+then instead of executing a single command, you will be logged in
+on the remote host using
+.IR rlogin\^ (1).
+.PP
+Shell metacharacters which are not quoted are interpreted
+on the local machine, while quoted metacharacters are interpreted on
+the remote machine.
+Thus the command
+.IP
+remsh otherhost cat remotefile \|>>\| localfile
+.PP
+appends the remote file
+"remotefile"
+to the local file
+"localfile",
+while
+.IP
+remsh otherhost cat remotefile \|">>"\| otherremotefile
+.PP
+appends
+"remotefile"
+to
+"otherremotefile".
+.PP
+Host names are given in the file 
+.BR /etc/hosts .
+Each host
+has one standard name (the first name given in the file), which
+is rather long and unambiguous, and optionally one or more nicknames.
+The host names for local machines 
+maybe linked to the 
+.I remsh\^
+command in some convenient place,
+normally in the directory
+.BR /usr/host .
+If this directory is in one's search path, then the 
+.I remsh\^
+can be omitted.
+.SH FILES
+/etc/hosts
+.br
+/usr/hosts/\(**
+.br
+/etc/remsh
+.SH SEE ALSO
+rlogin(1N).
+.SH BUGS
+If you are using
+.IR csh\^ (1)
+and put a
+.IR remsh\^ (1)
+in the background without redirecting its input
+away from the terminal, it will block even if no reads
+are posted by the remote command.  If no input is desired,
+you should redirect the input of
+.I remsh\^
+to 
+.B /dev/null
+using the
+.B \-n
+option.
+.PP
+You cannot run an interactive command
+(like
+.IR vi\^ (1));
+use
+.IR rlogin\^ (1).
+.PP
+Stop signals stop the local 
+.I remsh\^
+process only; this is arguably
+wrong, but currently hard to fix for reasons too complicated to
+explain here.
+.PP
+This command is provisional and may change in 
+future releases.
+.\"N	 @(#)remsh.1N	 5.2 of 7/12/84

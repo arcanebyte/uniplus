@@ -1,0 +1,85 @@
+a64l.3c a64l, l64a: convert between long integer and base-64 ASCII string.
+abort.3c abort: generate an IOT fault.
+abs.3c abs: return integer absolute value.
+assert.3x assert: verify program assertion.
+atof.3c atof: convert ASCII string to floating-point number.
+bessel.3m j0, j1, jn, y0, y1, yn: Bessel functions.
+blt.3 blt, blt512: block transfer data.
+bsearch.3c bsearch: binary search.
+clock.3c clock: report CPU time used.
+conv.3c toupper, tolower, _toupper, _tolower, toascii: translate characters.
+crypt.3c crypt, setkey, encrypt: generate DES encryption.
+ctermid.3s ctermid: generate file name for terminal.
+ctime.3c ctime, localtime, gmtime, asctime, tzset: convert date and time to string.
+ctype.3c isalpha, isupper, islower, isdigit, isxdigit, isalnum, isspace, ispunct, isprint, isgraph, iscntrl, isascii: classify characters.
+cuserid.3s cuserid: get character login name of the user.
+dial.3c dial: establish an out-going terminal line connection.
+drand48.3c drand48, erand48, lrand48, nrand48, mrand48, jrand48, srand48, seed48, lcong48: generate uniformly distributed pseudo-random numbers.
+ecvt.3c ecvt, fcvt, gcvt: convert floating-point number to string.
+end.3c end, etext, edata: last locations in program.
+erf.3m erf, erfc: error function and complementary error function.
+exp.3m exp, log, log10, pow, sqrt: exponential, logarithm, power, square root functions.
+fclose.3s fclose, fflush: close or flush a stream.
+ferror.3s ferror, feof, clearerr, fileno: stream status inquiries.
+floor.3m floor, ceil, fmod, fabs: floor, ceiling, remainder, absolute value functions.
+fopen.3s fopen, freopen, fdopen: open a stream.
+fread.3s fread, fwrite: binary input/output.
+frexp.3c frexp, ldexp, modf: manipulate parts of floating-point numbers.
+fseek.3s fseek, rewind, ftell: reposition a file pointer in a stream.
+ftw.3c ftw: walk a file tree.
+gamma.3m gamma: log gamma function.
+getc.3s getc, getchar, fgetc, getw: get character or word from stream.
+getcwd.3c getcwd: get pathname of current working directory.
+getenv.3c getenv: return value for environment name.
+getgrent.3c getgrent, getgrgid, getgrnam, setgrent, endgrent: get group file entry.
+getlogin.3c getlogin: get login name.
+getopt.3c getopt: get option letter from argument vector.
+getpass.3c getpass: read a password.
+getpw.3c getpw: get name from UID.
+getpwent.3c getpwent, getpwuid, getpwnam, setpwent, endpwent: get password file entry.
+gets.3s gets, fgets: get a string from a stream.
+getut.3c getutent, getutid, getutline, pututline, setutent, endutent, utmpname: access utmp file entry.
+hsearch.3c hsearch, hcreate, hdestroy: manage hash search tables.
+hypot.3m hypot: Euclidean distance function.
+intro.3 intro: introduction to subroutines and libraries.
+l3tol.3c l3tol, ltol3: convert between 3-byte integers and long integers.
+logname.3x logname: return login name of user.
+lsearch.3c lsearch: linear search and update.
+malloc.3c malloc, free, realloc, calloc: main memory allocator.
+matherr.3m matherr: error-handling function.
+memory.3c memccpy, memchr, memcmp, memcpy, memset: memory operations.
+mktemp.3c mktemp: make a unique file name.
+monitor.3c monitor: prepare execution profile.
+nlist.3c nlist: get entries from name list.
+perror.3c perror, errno, sys_errlist, sys_nerr: system error messages.
+plot.3x plot: graphics interface subroutines.
+popen.3s popen, pclose: initiate pipe to/from a process.
+printf.3s printf, fprintf, sprintf: print formatted output.
+putc.3s putc, putchar, fputc, putw: put character or word on a stream.
+putpwent.3c putpwent: write password file entry.
+puts.3s puts, fputs: put a string on a stream.
+qsort.3c qsort: quicker sort.
+rand.3c rand, srand: simple random-number generator.
+regcmp.3x regcmp, regex: compile and execute regular expression.
+rhost.3 rhost, raddr: look up internet hosts by name or address.
+scanf.3s scanf, fscanf, sscanf: convert formatted input.
+setbuf.3s setbuf: assign buffering to a stream.
+setjmp.3c setjmp, long\|jmp: non-local goto.
+sinh.3m sinh, cosh, tanh: hyperbolic functions.
+sleep.3c sleep: suspend execution for interval.
+sputl.3x sputl, sgetl: access long numeric data in a machine independent fashion..
+ssignal.3c ssignal, gsignal: software signals.
+stdio.3s stdio: standard buffered input/output package.
+stdipc.3c stdipc: standard interprocess communication package.
+string.3c strcat, strncat, strcmp, strncmp, strcpy, strncpy, strlen, strchr, strrchr, strpbrk, strspn, strcspn, strtok: string operations.
+strtol.3c strtol, atol, atoi: convert string to integer.
+swab.3c swab: swap bytes.
+system.3s system: issue a shell command.
+termcap.3 tgetent, tgetnum, tgetflag, tgetstr, tgoto, tputs: terminal independent operation routines.
+tmpfile.3s tmpfile: create a temporary file.
+tmpnam.3s tmpnam, tempnam: create a name for a temporary file.
+trig.3m sin, cos, tan, asin, acos, atan, atan2: trigonometric functions.
+tsearch.3c tsearch, tdelete, twalk: manage binary search trees.
+ttyname.3c ttyname, isatty: find name of a terminal.
+ttyslot.3c ttyslot: find the slot in the utmp file of the current user.
+ungetc.3s ungetc: push character back into input stream.

@@ -1,0 +1,205 @@
+#-----------------------------------------------------------------------------#
+#									      #
+# XXX Window Library error messages					      #
+#									      #
+# SCCS identification "@(#) wliberrors 1.4@(#)"
+#									      #
+#-----------------------------------------------------------------------------#
+
+1000	failed to read caret state	# EGCARSTAT	get caret state
+1001	failed to read clipping area	# ERUCLIP	Read user clipping area
+1002	failed to read edit area state	# EGEDSTAT	Get editarea state
+1003	failed to open icon		# EOICON	Open icon
+1004	failed to close icon		# ECICON	Close icon
+1005	failed to read icon id		#*ERIDENT	Read icon identifier
+1006	failed to track vector		# ETVEC		track icon
+1007	failed to cancel vector track	# ECTVEC	cancel icon tracking
+1008	failed to read tracking state	# EGTSTAT	get tracking state
+1009	invalid ioctl call number	# DUMMY9
+1010	failed to open font		# EOTXFONT	open text font
+1011	failed to close font		# ECTXFONT	close text font
+1012	failed to read font struct.	# ERTXFONT	read text font struct
+1013	failed to read font data	# ERFONTD	Read font data
+1014	failed to read string width	# ERSTRW	read string width
+1015	failed to read font state	# EGFONTS	get font state
+1016	invalid ioctl call number	# DUMMY16
+1017	invalid ioctl call number	# DUMMY17
+1018	invalid ioctl call number	# DUMMY18
+1019	invalid ioctl call number	# DUMMY19
+1020	failed to open form		# EOFORM	open form
+1021	failed to close form		# ECFORM	close form
+1022	failed to get pen state		# EGPENS	Get pen state
+1023	failed to read pixel colour	#*ERPIXCOL	rd col of pixel
+1024	failed to write pixel colour	#*EWPIXCOL	wr col of pixel
+1025	failed to read form struct	# ERFORM	Read form structure
+1026	failed to read form data	# ERFORMD	Read form's bitmap
+1027	invalid ioctl call number	# DUMMY27
+1028	invalid ioctl call number	# DUMMY28
+1029	invalid ioctl call number	# DUMMY29
+1030	failed to upfront window	# EPWIND	pull window to front
+1031	failed to find if pnt in window	# EINWIND	point is in window
+1032	failed to change window size	# ECHWIND	change window size
+1033	failed to close window struct	# ECLOSEW	close the window
+1034	failed to find part of window	# EFWIND	which part of window
+1035	failed to track drag		# ETDRAG	track drag
+1036	failed to track grow		# ETGROW	track grow
+1037	failed to do drag		# EDDRAG	perform the drag
+1038	failed to perform grow		# EDGROW	perform the grow
+1039	failed to cancel tracking	# ECTRACK	cancel tracking
+1040	invalid ioctl call number	# DUMMY40
+1041	failed to open halftone		# EOBMAP	open bitmap
+1042	failed to close halftone	# ECBMAP	close bitmap
+1043	failed to read colour state	# EGCOLS	get colour state
+1044	failed to read pattern state	# EGPATS	get pattern state
+1045	failed to read halftone		# ERPAT		pattern read
+1046	failed to convert to globals	# ELTOG		conv pt to global coords
+1047	failed to convert to locals	# EGTOL		conv pt to local coords
+1048	invalid ioctl call number	# DUMMY48
+1049	invalid ioctl call number	# DUMMY49
+1050	failed to open cursor		# EOCUR		open cursor
+1051	failed to close cursor		# ECCUR		close cursor 
+1052	failed to change cursor		# ECHCUR	change cursor to..
+1053	failed to invert close box	# EINVBOX	Invert close box
+1054	failed to set zoom point	# ECHZPNT	Change zoom point
+1055	failed to read window mode	# EGWMODS	Get window mode state
+1057	failed to draw window title	# EDRAWTITLE	Draw the title bar
+1058	failed to read window areas	# EGWAREAS	Get window areas state
+1059	failed to set window areas	# ESWAREAS	Set window areas state
+1060	failed to set signal on event	# ESOE		signal on event
+1061	failed to signal next window	# ESNE		signal next event
+1062	failed to handle event		# EEVNTH	event handled
+1063	failed to detect click		# EDCLICK	detect a click event
+1064	failed to sleep on fine timer	# ETIMER	fine timer
+1065	invalid ioctl call number	# DUMMY65
+1066	invalid ioctl call number	# DUMMY66
+1067	invalid ioctl call number	# DUMMY67
+1068	invalid ioctl call number	# DUMMY68
+1069	invalid ioctl call number	# DUMMY69
+1070	failed to make menu		# ENEWMENU	new menu allocation
+1071	failed to append menu item	# EAPPITEM	append item to menu
+1072	failed to dispose of menu	# EDISMENU	dispose of menu
+1073	failed to insert menu		# EINSMENU	insert menu
+1074	failed to delete menu		# EDELMENU	delete menu
+1075	failed to draw menu bar		# EDRMBAR	draw menu bar
+1076	failed to clear menu bar	# ECLRMBAR	clear menu bar
+1077	failed to enable menu item	# EENITEM	enable an item
+1078	failed to disable menu item	# EDISITEM	disable an item
+1079	invalid ioctl call number	# EMENUSEL	menuselect ev. handler
+1080	failed to init menu select	# EINITMS	menuselect init.
+1081	failed to enable menu item tick	# EENTICK	enable tick item
+1082	failed to disable menu item tick# EDISTICK	disable tick
+1083	failed to alter menu item	# EALTITEM	alter menu item
+1084	invalid ioctl call number	# DUMMY84
+1085	failed to lock handle no.	# ELOCK		lock a handle
+1086	failed to unlock handle no.	# EULOCK	unlock a handle
+1128	failed to set default caret	# ESDCAR	set default caret state
+1129	failed to set default font	# ESDFONT	set default font state
+1130	failed to read handle no. type	# EHENQ		read handle type
+1131	failed to find free window	# EGFREEW	Return free window
+1132	failed to init. window		# EIWIND	initialise window
+1133	failed to read screen mode	# ERSMODE	read screen mode
+1134	failed to write screen mode	# EWSMODE	write screen mode
+1135	failed to read palette		# ERLCPAL	read colour palette 
+1136	failed to write palette		# EWLCPAL	write colour palette
+1137	failed to read palette delay	# ERPALDEL	read palette delay
+1138	failed to write palette delay	# EWPALDEL	write palette delay
+1139	failed to read visible screen	# ERVISSCR	read visible screen #
+1140	failed to write visible screen	# EWVISSCR	write visible screen #
+1141	failed to read working screen	# ERWORSCR	read working screen #
+1142	failed to write working screen	# EWWORSCR	write working screen #
+1143	failed to read screen width	# ERSCRWID	read screen width
+1144	failed to write screen width	#*EWSCRWID	write screen width
+1145	failed to read beep data	# ERBEEP	read beep data
+1146	failed to write beep data	# EWBEEP	write beep data
+1147	failed to read soft key		# ERDEFK	Read soft key definition
+1148	failed to write soft key	# EWDEFK	Write soft key
+1149	failed to read auto-repeat rate	# ERREPK	Read auto-repeat rate
+1150	failed to write auto-repeat rate# EWREPK	Write auto-repeat rate
+1151	failed to read keyboard matrix	# ERKMAT	Read keyboard matrix
+1152	failed to write keyboard matrix	# EWKMAT	Write keyboard matrix
+1153	failed to read pntr. handle no.	# ERCURH	read cursor handle
+1154	failed to hide pointer		# EHPTR		hide pointer
+1155	failed to show pointer		# ESPTR		show pointer
+1156	failed to read pointer posn.	# ERPTR		read pointer position
+1157	failed to write pointer posn.	# EWPTR		write pointer position
+1158	failed to read pntr. structure	# ERPTRS	read pointer structure
+1159	failed to read pointer data	# ERPTRSD	read pointer data
+1160	failed to read click space	# ERSTHRESH	read click space
+1161	failed to write click space	# EWSTHRESH	write click space
+1162	failed to read click time	# ERTTHRESH	read click time
+1163	failed to write click time	# EWTTHRESH	write click time
+1164	failed to find signalled window	# EGSIGDEV	Get device signalled!
+1165	failed to get event		# EGETEVNT	get event
+1166	failed to check event		# ECHEVNT	check event
+1167	failed to flush event		# EFLEVNT	flush event
+1168	failed to post event		# EPEVNT 	post event
+1169	failed to read event mask	# EREMASK	read event mask
+1170	failed to write event mask	# EWEMASK	write event mask
+1171	failed to read default font	# EGDFONT	read deafult font state
+1172	failed to read default caret	# EGDCAR	read default caret state
+1173	failed to find next handle	# EFHENQ	find next handle
+1174	failed to shuffle windows	# ESHUFFLE	Shuffle windows
+1175	failed to find minor dev. no.	# EFRONTDEV	minor dev front window
+
+2000	failed to activate control		# WEM_ACTCTRL
+2001	failed to set control auto draw		# WEM_AUTODRAW
+2002	failed to close control			# WEM_CLCTRL
+2003	failed to cause control event		# WEM_CTRLEVENT
+2004	failed to deactivate control		# WEM_DEACTCTRL
+2005	failed to define control type		# WEM_DEFCTRLTYPE
+2006	failed to disable control		# WEM_DISCTRL
+2007	failed to do drag			# WEM_DODRAG
+2008	failed to draw control			# WEM_DRAWCTRL
+2009	failed to draw scroll bars		# WEM_DRAWSCROLL
+2010	failed to enable control		# WEM_ENCTRL
+2011	failed to frame control			# WEM_FRAMECTRL
+2012	failed to get control act reg.		# WEM_GETCACTR
+2013	failed to get control label		# WEM_GETCLABEL
+2014	failed to get control limit		# WEM_GETCLIMIT
+2015	failed to get control halftones		# WEM_GETCPATS
+2016	failed to get control position		# WEM_GETCPOS
+2017	failed to get control state		# WEM_GETCSTATE
+2018	failed to get ctrl type action fns.	# WEM_GETCTACTFNS
+2019	failed to get ctrl type draw fn.	# WEM_GETCTDRAWFN
+2020	failed to get ctrl type halftones	# WEM_GETCTPATS
+2021	failed to get ctrl type update fns.	# WEM_GETCTUPDATEFNS
+2022	failed to get control value		# WEM_GETCVALUE
+2023	failed to get horizontal proportion	# WEM_GETHSPROP
+2024	failed to reset control auto draw	# WEM_NOAUTODRAW
+2025	failed to get pad			# WEM_GETPAD
+2026	failed to get scroll control id		# WEM_GETSCID
+2027	failed to get WAE flags			# WEM_GETWAEFLAGS
+2028	failed to hide control			# WEM_HIDECTRL
+2029	failed to initialise auto repeat	# WEM_INITAUTO
+2030	failed to unset keyboard block		# WEM_KBOFF
+2031	failed to set keyboard block		# WEM_KBON
+2032	failed to make menu			# WEM_MAKEMENU
+2033	failed to move pad			# WEM_MOVEPAD
+2034	failed to open control			# WEM_OPCTRL
+2035	failed to unset post-processing		# WEM_PPOFF
+2036	failed to set post-processing		# WEM_PPON
+2037	failed to put control active region	# WEM_PUTCACTR
+2038	failed to put control label		# WEM_PUTCLABEL
+2039	failed to put control limit		# WEM_PUTCLIMIT
+2040	failed to put control halftones		# WEM_PUTCPATS
+2041	failed to put control position		# WEM_PUTCPOS
+2042	failed to put control state		# WEM_PUTCSTATE
+2043	failed to put control value		# WEM_PUTCVALUE
+2044	failed to put horizontal proportion	# WEM_PUTHSPROP
+2045	failed to put pad			# WEM_PUTPAD
+2046	failed to put vertical proportion	# WEM_PUTVSPROP
+2047	failed to set WAE flags			# WEM_SETWAEFLAGS
+2048	failed to set current window		# WEM_SETWINDOW
+2049	failed to show control			# WEM_SHOWCTRL
+2050	failed to unframe control		# WEM_UFRAMECTRL
+2051	failed to undefine control type		# WEM_UNDEFCTRLTYPE
+2052	failed to close window			# WEM_WCLOSE
+2053	failed to hide window			# WEM_WHIDE
+2054	failed to open window			# WEM_WOPEN
+2055	failed to show window			# WEM_WSHOW
+2056	failed to do drag			# WEM_DODRAG
+2057	failed to enable events			# WEM_ENEVENTS
+2058	failed to get control form		# WEM_GETCFORM
+2059	failed to put control form		# WEM_PUTCFORM
+2060	failed to get ctrl type flags		# WEM_GETCTFLAGS
+

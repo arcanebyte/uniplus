@@ -1,0 +1,55 @@
+.TH DIFFDIR 1 UniSoft
+.SH NAME
+diffdir \- diff directories
+.SH SYNOPSIS
+.B diffdir
+[
+.B \-h
+] [
+.B \-s
+] dir1 dir2
+.SH DESCRIPTION
+.I Diffdir\^
+compares the differences of
+two directories recursively by sorting the contents of the 
+directories by
+name and then runs a 
+.I diff\^
+on text files which are different.
+Object files which differ and files which appear in only one directory
+are also listed.
+.PP
+The
+.B \-h
+option causes 
+.I diffdir\^
+to paginate its output, and to summarize
+binary differences and files in only one place at the end of the 
+.IR diff .
+Each individual 
+.I diff\^
+is run through an appropriate
+.IR pr .
+.PP
+The
+.B \-s
+option causes files which are the same to be reported;
+normally they are omitted.
+.SH EXAMPLE
+.IP
+diffdir dir1 dir2
+.PP
+compares all the files in two directories
+and reports differences,
+by line number, for similar files.
+Unique files are simply listed.
+.SH FILES
+/usr/bin/cmp		compare two files
+.SH "SEE ALSO"
+diff(1).
+.SH BUGS
+Program should pass flags through to
+.IR diff\^ .
+.SH AUTHOR
+Bill Joy
+.\"	@(#)diffdir.1	5.2 of 7/6/84

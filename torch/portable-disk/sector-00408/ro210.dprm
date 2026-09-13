@@ -1,0 +1,13 @@
+# Rodime 210 10 Mbytes
+# 320 cylinders, 4 heads, 12us step rate.
+# reduced write current on cylinder 132
+# write precompensation not used
+# landing cylinder 320, imbedded servo not present
+RO210
+320
+4
+132
+0
+320
+12
+0

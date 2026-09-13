@@ -1,0 +1,4 @@
+icon: type=f; fn=/; showbits=:fcabinet;
+
+icon: type=e; fn=RemakeUnix; showbits=remakeV:RemakeV; showname = RemakeUnix; +
+      raction=n,/RemakeUnix; laction=n,/RemakeUnix;

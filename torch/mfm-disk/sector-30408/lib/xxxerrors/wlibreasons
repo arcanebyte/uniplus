@@ -1,0 +1,17 @@
+#-----------------------------------------------------------------------------#
+#									      #
+# XXX Window Library internal reasons for failure.
+#									      #
+# SCCS identification "@(#) wlibreasons 1.2@(#)"
+#									      #
+#-----------------------------------------------------------------------------#
+
+0001 corrupt data structures				# WER_CORRUPT
+0002 invalid parameter					# WER_INVALID
+0003 invalid control id					# WER_INVCTRL
+0004 invalid control type id				# WER_INVCTYPE
+0005 no current window					# WER_NOCURWIN
+0006 no current event					# WER_NOEVENT
+0007 no window or pad					# WER_NOPAD
+0008 control type locked or in use			# WER_TYPEINUSE
+0009 events already enabled				# WER_ENEVENTS

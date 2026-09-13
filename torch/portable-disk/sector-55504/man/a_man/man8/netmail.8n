@@ -1,0 +1,81 @@
+.TH NETMAIL 8N UniSoft
+.SH NAME
+netmail \- the bnet network mail system
+.SH DESCRIPTION
+The bnet network mail system 
+consists of the following
+programs:
+.TP .3i
+.B /etc/bnetmaild
+a simple mail daemon run by crontab or by hand.  Looks in the
+.I "mail spool directory\^"
+.RB ( /usr/spool/netmail ) 
+for files to send out onto the network.  Uses
+.I remsh\^
+to send mail to remote hosts.  
+Deletes mail if the mail is apparently successfully sent.  
+Deletes mail found lying around which is more than one week old; apparently
+the destination host in this case is off the net.  
+Accepts no arguments.
+.TP
+.B /etc/delivermail
+.IR exec\^ 'd 
+by 
+.B /bin/mail
+to deliver mail to users or networks depending on the 
+contents of the address of the mail.  
+If the address contains an
+.RS .3i
+.TP .3i
+\fB@\fR
+then deliver to the bnet network, else if the address has a
+.TP
+.B ! 
+then deliver to the uucp network,
+.TP .3i
+.BI " "
+else deliver locally.
+.RE
+.TP .3i
+.B /etc/netmailer
+.IR exec\^ 'd 
+by 
+.B /etc/delivermail
+to "deliver" netmail.  Mail is actually deposited in 
+.B /usr/spool/netmail
+with appropriate network mail headers prepended.  
+.B /etc/bnetmaild
+actually sends the mail to the network.  See
+.IR netmailer\^ (8N)
+for a description of flag arguments.
+.TP
+.B /bin/mail
+has been modified to 
+.I exec\^
+.B /etc/delivermail
+.RI ( delivermail\^ (8N))
+which does aliasing and re-routing of mail destined for the b-network.
+.SH FILES
+.TP .3i
+/usr/spool/netmail
+directory for network mail
+.TP
+/usr/spool/netmail/bnetXXXXXX
+actual mail file(s), XXXXXX = pid.
+.SH SEE ALSO
+mail(1), remsh(1N), delivermail(8N), netmailer(8N).
+.SH BUGS
+.PP
+Many, no doubt; for example, lots of work should be done on 
+.BR /etc/bnetmaild ,
+i.e., if a piece of mail is
+deleted due to its being old or otherwise undeliverable, notification should
+be sent to the originator.  Soon, however, 
+.I bnetmaild 
+will be replaced by 
+.IR sendmail .
+.PP
+A front-end is needed for mail, such as 
+.I Mail 
+(ucb).
+.\"	 @(#)netmail.8n	 5.2 of 7/26/84

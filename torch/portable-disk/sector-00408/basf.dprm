@@ -1,0 +1,13 @@
+# disc parameters file for the BASF 6185
+# 440 cylinders, 6 heads, 12us step rate
+# cylinders 256 and 127 for reduced write current and write precompensation
+# head landing zone is cylinder 440, no imbedded servo
+# Feb 1986
+basf6185
+440
+6
+256
+127
+440
+12
+0

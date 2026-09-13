@@ -1,0 +1,18 @@
+
+
+
+
+td [-_e[s]] [file] ;  display GPS on a Triple X
+
+Input is the output from a GPS translator.
+Output is escape codes for a Triple X. If file is not defined
+then input is taken from the default input.
+
+Options:
+
+     e         Enlarge one region of GPS universe to fill the
+	       Triple X screen. If s is present then region
+	       number s is displayed. The default region is 13.
+
+Example:   td -e A.g
+displays A.g. The viewing window is built to display region 13 only.

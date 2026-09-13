@@ -1,0 +1,10 @@
+
+# %Z%ROOT      %M%     %I%
+# %Z%iAPX286   %M%     1.1
+# %Z%Unisoft   %M%     1.2
+# %Z%AT&T      %M%     1.4
+
+AQQQ=${1-.}
+AQQQ=`expr //$AQQQ : "\(.*\)\/$" \| $AQQQ`
+BQQQ=`expr //$AQQQ : '.*/\(.*\)'`
+expr $BQQQ : "\(.*\)$2$" \| $BQQQ

@@ -1,0 +1,23 @@
+*
+* @(#)ROOT	holidays	1.2
+* @(#)Unisoft	holidays	1.2
+* @(#)AT&T	holidays	1.3
+* 
+* Prime/Nonprime Table for UNIX Accounting System
+*
+* Curr	Prime	Non-Prime
+* Year	Start	Start
+*
+  1987	0830	1800
+*
+* Day of	Calendar	Company
+* Year		Date		Holiday
+*
+    1		Jan 1		New Years day
+  107		Apr 17		Good Friday
+  110		Apr 20		Easter Monday
+  124		May 4		May Day
+  145		May 25		Spring Bank Holiday
+  243		Aug 31		Summer Bank Holiday
+  359		Dec 25		Christmas Day
+  362		Dec 28		Boxing Day Holiday

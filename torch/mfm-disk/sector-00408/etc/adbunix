@@ -1,0 +1,10 @@
+fname="$1"
+shift
+while [ $# -gt 1 ]
+do
+	adb -w -k "$fname" <<!
+$1?w $2
+$q
+!
+shift;shift
+done

@@ -1,0 +1,25 @@
+# toberun file v1.0 created by P. Davis on 29-Nov-88 
+# for System V.2 kernel ID:XS2KRN
+# last update: 29-Nov-88 by P. Davis
+#########################################################
+# Installation shell script for System V.2 kernels v2.1 #
+# (C) TORCH Technology Ltd.                             #
+#########################################################
+
+chown bin /bin/ps
+chgrp sys /bin/ps
+chown root /bin/pstat
+chgrp root /bin/pstat
+chmod 2755 /bin/ps 
+chmod 755 /bin/pstat
+
+mv /unix /unix.old
+
+echo "*** Changing from current kernel to new kernel"
+mv /unix2.n /unix
+
+echo "*** Old kernel left in /unix.old"
+
+echo "*** You will need to reboot the system to use the new kernel."
+
+echo "*** End of special installation"

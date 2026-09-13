@@ -1,0 +1,61 @@
+.TH HYPHEN 1
+.SH NAME
+hyphen \- find hyphenated words
+.SH SYNOPSIS
+.B hyphen
+[ files ]
+.SH DESCRIPTION
+.I Hyphen\^
+finds all the hyphenated words
+ending lines in
+.I files\^
+and prints them on the standard output.
+If no arguments are given, the standard input
+is used;
+thus,
+.I hyphen\^
+may be used as a filter.
+.SH EXAMPLE
+.PP
+If the file "text.hyphen" contains the following text:
+.RS
+.nf
+This is an ex-
+ample of the command hy-
+phen, a com-
+mand which finds all hyphen-
+ated words in files and prints them on stan-
+dard out-
+put.
+.fi
+.RE
+then
+.IP
+hyphen text.hyphen
+.PP
+will return
+.RS
+.nf
+ex-ample
+hy-phen
+com-mand
+hyphen-ated
+stan-dard
+out-put
+.fi
+.RE
+.SH "SEE ALSO"
+mm(1),
+troff(1).
+.SH BUGS
+.I Hyphen\^
+can't cope with hyphenated
+.I italic\^
+(i.e., underlined) words;
+it will often miss them completely, or mangle them.
+.br
+.I Hyphen\^
+occasionally
+gets confused, but with no ill effects other than
+spurious extra output.
+.\"	@(#)hyphen.1	5.2 of 11/8/83

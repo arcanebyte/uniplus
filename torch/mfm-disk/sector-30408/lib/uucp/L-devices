@@ -1,0 +1,4 @@
+DIR	ttyc ttyc 9600 ttyc
+DIR	ttyb ttyb 9600 ttyb
+DIR	ttya ttya 9600 ttya
+ACU	x29out1	x29out1	300 x29out1

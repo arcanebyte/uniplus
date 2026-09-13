@@ -1,0 +1,8 @@
+* %Z%ROOT      %M%     %I%
+* %Z%iAPX286   %M%     1.1
+* %Z%Unisoft   %M%     1.2
+* %Z%AT&T      %M%     6.1
+-26
+"can't open ..."
+The file couldn't be opened for reading.  Either it doesn't exist
+or it isn't readable.

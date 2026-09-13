@@ -1,0 +1,13 @@
+# Micropolis 1304 40 Mbytes
+# 830 cylinders, 6 heads, 12us step rate.
+# reduced write current not used
+# write precompensation on cylinder 400
+# landing cylinder automatic retraction, imbedded servo not present
+mic1304
+830
+6
+0
+400
+0
+12
+0

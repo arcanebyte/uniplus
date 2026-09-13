@@ -1,0 +1,6 @@
+icon: type=e; fn=clock; showbits=gadgets:clock;+
+      laction=x,$0; raction=; daction=;
+
+icon: type=d; fn=makefile; laction=n,vi $0; raction=n,view $0;+
+      daction=b,sh -c \"cd `dirname $0`\;nice -19 make `basename $1`\";
+

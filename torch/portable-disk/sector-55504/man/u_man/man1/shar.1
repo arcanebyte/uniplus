@@ -1,0 +1,73 @@
+.TH SHAR 1net "December 26, 1984"
+.SH NAME
+shar \- create file storage archive for extraction by /bin/sh
+.SH SYNOPSIS
+.B shar
+[-d delim] [-p prefix] [-bcv] files
+.SH DESCRIPTION
+.I shar
+prints its input files with special lines around them
+to be used by the shell,
+.I /bin/sh ,
+to extract them later.
+The output can be filtered through the shell to
+recreate copies of the original files.
+.SS Options
+.TP
+.B -a
+All the options.
+The options:
+.ce
+-v -c -b -p XX
+are implied.
+.TP
+.B -v
+Print verbose feedback messages about what
+.I shar
+is doing to be printed during extraction.
+Sizes of plain files are echoed to allow a simple validity check.
+.TP
+.B -c
+Check file size on extraction by counting characters.
+An error message is reported to the person doing the
+extraction if the sizes don't match.
+.TP
+.B -b
+Extract files into basenames so that files with absolute path names
+are put into the current directory.
+This option has no effect when directories are archived.
+.TP
+.B -d delim
+Use this as the ``end of file'' delimiter instead of the default.
+The only reason to change it is if you suspect an file
+contains the default delimiter:
+.B SHAR_EOF
+.TP
+.B -p prefix
+Use this as the prefix to each line of the archived files.
+This is to make sure that special characters are not
+eaten up by programs like mailers.
+If this option is used,
+the files will be extracted with the stream editor
+.B sed
+rather than
+.B cat
+so it is more efficient and portable to avoid setting the prefix.
+.PP
+.I shar
+allows directories to be named, and
+.I shar
+prints the necessary commands to create new directories and fill them.
+.SH AUTHOR
+Gary Perlman
+(based on a shell version by James Gosling)
+(many additions motivated by Derek Zahn & Michael Thompson)
+(root44!deccra!decvax!wanginst!perlman)
+.SH BUGS
+.I shar
+does not know anything about:
+links between files,
+binary files,
+overwriting existing files,
+or
+protection modes of files.

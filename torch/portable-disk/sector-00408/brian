@@ -1,0 +1,113 @@
+/usr/clear
+echo "         *************************************************************"
+echo "         * Torch Service Department Disc Copy Program V1.51 15-12-87 *"
+echo "         *************************************************************"
+echo " \nPlease Enter Source Controller Number \(0-1\).?? \c"
+read controller
+echo " \nPlease Enter Source Drive Number \(0-1\).?? \c"
+read disc
+echo " \nPlease Enter Destination Controller Number \(0-1\).?? \c"
+read controller1
+echo " \nPlease Enter Destination Drive Number \(0-1\).?? \c"
+read disc1
+if [ "$controller1" = "0" -a "$disc1" = "0" ]
+then
+echo "\007"
+echo Illegal destination.  Cannot over write
+if yorn "Continue" "Power down"
+then telinit 6
+exit
+else
+exit
+fi
+fi
+type=`partsize /dev/disk$controller1$disc1\b|cut -c15-20`
+size=`partsize /dev/rdisk$controller1$disc1\e 2>/dev/null|cut -c15-20`
+size1=`partsize /dev/rdisk$controller1$disc1\f 2>/dev/null|cut -c15-20`
+if [ "$type" = "4500" ]
+then system=1.3 drive=f drive1=g
+else
+if [ "$type" = "5500" ]
+then system=1.2 drive=d drive1=e
+else
+if [ "$type" = "10000" ]
+then system=2.0 drive=b drive1=d
+else
+echo "\007"
+echo Partition Size Not Known. Repartition Disc or Contact Torch Service Department.
+exit
+fi
+fi
+fi
+if [ "$controller" = "0" -a "$disc" = "0" ]
+then
+echo "\nCopy From Master Drive."
+disc=
+else
+echo "\nCopy From Non Master Drive." 
+
+	drive=b
+	drive1=d
+fi
+board=controller\ board\ $controller1\ drive\ $disc1\.
+if yorn "Powerdown" Do You Wish To Powerdown When Copying Is Finished.
+then pow=1
+else pow=0
+fi
+if [ $size ]
+then
+   echo "\nRemaining partition size e" = $size
+else
+   echo "\n\007"No Partition e
+fi
+if [ $size1 ]
+then
+   echo "\nRemaining partition size f" = $size1
+else
+   echo "\n\007"No Partition f
+fi
+if [ "$size" -gt "20000" ]
+then size2=?
+else size2=??
+fi
+if yorn "Continue" Copy Issue $system onto Disc Drive. On $board 
+then
+echo "\nCopying from rdisk$controller$disc$drive onto rdisk$controller1$disc1"\b
+dd if=/dev/rdisk$controller$disc$drive of=/dev/rdisk$controller1$disc1\b bs=190k 2>/dev/null
+echo "\nCopying from rdisk$controller$disc$drive1 onto rdisk$controller1$disc1"\d
+dd if=/dev/rdisk$controller$disc$drive1 of=/dev/rdisk$controller1$disc1\d bs=190k 2>/dev/null
+echo "\nCopying of Issue $system onto Hard Disc complete"
+else
+echo "\nNo change to Issue $system on Hard Disc"
+fi
+if [ "$size" > "0" ]
+then
+   echo "\nCreate Blank Unix File System On Remaining Partitions." 
+   str=Continue
+   if yorn $str "make unix file system"
+   then
+   mkfs /dev/rdisk$controller1$disc1\e $size 2 17 >/dev/null
+   mkfs /dev/rdisk$controller1$disc1\f $size1 2 17 >/dev/null
+   echo "\nFile system created"
+fi
+fi
+if [ "$size2" = "?" ]
+then
+   echo "\nModifying Floppy Device Drivers "
+   mount /dev/disk10b /mnt >/dev/null
+   rm /mnt/dev/*floppy
+   mknod /mnt/dev/floppy b 1 64 
+   mknod /mnt/dev/rfloppy c 11 64 
+   chown 3 /mnt/dev/floppy /mnt/dev/rfloppy
+   chgrp 150 /mnt/dev/floppy /mnt/dev/rfloppy
+   chmod 664 /mnt/dev/*floppy
+   umount /dev/disk10b
+fi
+if [ "$pow" = "1" ]
+then
+   echo "\007"
+   echo "                             *****************"
+   echo "                             * powering down *"
+   echo "                             *****************"
+   telinit 6
+fi

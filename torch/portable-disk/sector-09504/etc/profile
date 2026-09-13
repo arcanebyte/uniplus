@@ -1,0 +1,16 @@
+umask 22
+/bin/cat -s /etc/motd
+stty intr '^c' erase '^h'
+eval `tset -sQ`
+TZ=GMT0BST
+MAIL=/usr/mail/$LOGNAME
+readonly LOGNAME
+PATH=:$PATH:/bin/hosts
+export PATH TERM TZ MAIL LOGNAME SHELL TERMCAP PS1
+if /bin/mail -e
+then /bin/echo "You have mail."
+fi
+if [ -r /usr/bin/news ]
+then
+	/usr/bin/news -s
+fi

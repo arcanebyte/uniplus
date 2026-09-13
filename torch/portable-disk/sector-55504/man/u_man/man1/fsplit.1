@@ -1,0 +1,55 @@
+.TH FSPLIT 1
+.SH NAME
+fsplit \- split fortran, ratfor, or ef\^l files
+.SH SYNOPSIS
+.B fsplit
+options files
+.SH DESCRIPTION
+.I Fsplit\^
+splits the named 
+.IR file\^ ( s )
+into separate files, with one procedure per
+file.
+A procedure includes \fIblockdata\fP, \fIfunction\fP, \fImain\fP, \fIprogram\fP,
+and \fIsubroutine\fP program segments.
+Procedure \fIX\fP is put in file
+.I X\^ 
+.BR .f ,
+.I X\^ 
+.BR .r ,
+or
+.IB X\^ .e
+depending on the language
+option chosen, with the following exceptions: \fImain\^\fP is put in the file
+.IB MAIN .[efr]
+and unnamed \fIblockdata\^\fP segments in the files
+.IB blockdataN .[efr]
+where \fIN\^\fP is a unique integer value for each file.
+.PP
+The following
+.I options\^
+pertain:
+.TP "\w'\fB\-f\fP\ \ \ 'u"
+.B \-f
+(default) Input files are
+.IR fortran .
+.TP
+.B \-r
+Input files are
+.IR ratfor .
+.TP
+.B \-e
+Input files are 
+.IR Ef\^l .
+.TP
+.B \-s
+Strip
+.I fortran\^
+input lines to 72 or fewer characters with trailing blanks
+removed.
+.SH SEE ALSO
+csplit(1),
+ef\^l(1),
+fortran(1),
+split(1).
+.\"	@(#)fsplit.1	5.1 of 11/8/83

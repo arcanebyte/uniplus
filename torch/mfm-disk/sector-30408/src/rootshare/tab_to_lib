@@ -1,0 +1,50 @@
+# build libc.a.$1 from "shmtable.s" and "ROOTshare.$1"
+SUFFIX="${1:?No suffix given}"
+SHMBASE="${2:?No shmbase given}"
+
+# get subroutine entry points
+
+grep '^	jmp' shmtable.s | grep -v nofunc | \
+awk "
+	{
+		printf \"@%s@0x%x\n\", \$2, $SHMBASE + (\$4 * 6)
+	}
+" > DEFNS.$SUFFIX
+
+# get share data addresses
+
+${NM} -x ROOTshare.$SUFFIX | egrep '^(_ctype|sys_nerr|sys_errlist)' | \
+awk "-F|" '
+	{
+		printf "@%s@%s\n", $1, $2
+	}
+' | sed -e 's/[ 	]//g' >> DEFNS.$SUFFIX
+
+# lists of symbols in and not in shared library
+cp /dev/null INSHM
+cp /dev/null OUTSHM
+
+# temp working directory
+mkdir	object.$SUFFIX
+cd	object.$SUFFIX
+${AR}	x ${LIBC}
+rm	-f fakcu.o		# don't need this kludge
+
+for i in *.o
+do
+	S=`${NM} -e $i | grep extern | awk '$6 == "|.text" || $6 == "|.data" { printf "@%s@\n", $1 }'`
+	X=`fgrep "$S" ../DEFNS.$SUFFIX`
+	if [ $? = 0 ]
+	then
+		echo "$X" | awk -F@ '{printf "set %s,%s\nglobal %s\n", $2, $3, $2}' > TEMP.s
+		${AS} -o $i TEMP.s
+		rm -f TEMP.s
+		echo "$S" | sed -e 's/@//g' >> ../INSHM
+	else
+		echo "$S" | sed -e 's/@//g' >> ../OUTSHM
+	fi
+done
+rm -f ../libc.a.$SUFFIX
+${AR} q ../libc.a.$SUFFIX *.o
+cd ..
+rm -rf object.$SUFFIX DEFNS.$SUFFIX

@@ -1,0 +1,40 @@
+echo "\tTORCH Triple X System Configuration"
+echo
+tmpfile=/tmp/conf$$
+dir=/etc/initconfigs
+while :
+do
+	for i in `ls $dir | sed 's/.*\.\([^\.]*\)/\1/' | sort | uniq`
+	do
+		for j in $dir/*$i
+		do
+			if sh $j
+			then
+				break
+			fi
+		done
+	done 2>$tmpfile
+	if yorn CHECK "Do you wish to change any of the previous answers ?"
+	then
+		echo "Starting again\n\n"
+	else
+		break
+	fi
+done
+(
+cat <<!
+sy::sysinit:/etc/sysinitrc </dev/systty >/dev/systty 2>&1	#System Init
+is:1:initdefault:				#First Init State
+bl:1:bootwait:/etc/bcheckrc </dev/null >/dev/null 2>&1	#Bootlog
+bc:1:bootwait:/etc/brc </dev/null >/dev/null 2>&1	#Bootrun command
+rc:1:bootwait:/etc/rc 1>/dev/syscon 2>&1	#System initialization - runcom
+sl:1:wait:(rm -f /dev/syscon;ln /dev/systty /dev/syscon;) 1>/dev/systty 2>&1
+pf::powerfail:/etc/powerfail 1>/dev/syscon 2>&1 #Power fail routines
+pf2:6:once:/etc/powerdown 1>/dev/syscon 2>&1 	#Power down routines
+!
+cat $tmpfile
+) >/etc/inittab.new 
+echo "\nOld inittab file saved in /etc/inittab.old"
+mv /etc/inittab /etc/inittab.old
+mv /etc/inittab.new /etc/inittab
+rm $tmpfile

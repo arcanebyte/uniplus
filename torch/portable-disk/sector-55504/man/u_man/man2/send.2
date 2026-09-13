@@ -1,0 +1,57 @@
+.TH SEND 2 UniSoft
+.SH NAME
+send \- send message from a socket
+.SH SYNOPSIS
+.B #include <net/socket.h>
+.sp
+.B send(s, to, msg, len)
+.br
+.B int cc, s;
+.br
+.B struct sockaddr *to;
+.br
+.B char *msg;
+.br
+.B int len;
+.SH DESCRIPTION
+.I Send\^
+is used to transmit a message to another socket from a 
+.SM SOCK_DGRAM
+or 
+.SM SOCK_RAW
+socket.
+The address of the target is given by
+.IR to .
+The length of the message is given by
+.IR len .
+If the message is too long to pass atomically through the
+underlying protocol, then the error 
+.SM EMSGSIZE
+is returned, and
+the message is not transmitted.
+.PP
+No indication of failure to deliver is implicit in
+.IR send .
+Some locally detected errors may be reported to the user
+through the return value from send being \-1 with the errors
+being stored in the external variable
+.IR errno .
+.PP
+If no messages space is available at the socket to hold
+the message to be transmitted, then
+.I send\^
+normally blocks, unless the socket is 
+.SM SO_NONBLOCKING
+in which case a
+.I cc\^
+of \-1 is returned with the external variable errno set to 
+.SM EWOULDBLOCK\*S.
+The
+.IR select\^ (2)
+call may be used to determine when it is possible to send more data.
+.SH SEE ALSO
+send(2), socket(2).
+.SH BUGS
+This call is provisional and will exist in a slightly different form
+in future releases.
+.\"	@(#)send.2	5.1 of 11/2/83

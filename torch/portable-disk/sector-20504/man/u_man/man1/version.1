@@ -1,0 +1,22 @@
+.TH VERSION 1 UniSoft
+.SH NAME
+version \- reports version number of files
+.SH SYNOPSIS
+.B version 
+name ...
+.SH DESCRIPTION
+.I Version\^
+takes a list of files and reports the version number.  If the
+file is not a binary, it reports: "not a binary".  
+If no version number
+is associated with the file, it reports: "pre history".  
+.I Version\^
+is useful for determining which 
+version of the current program you are
+running.
+.SH EXAMPLE
+.IP
+version /bin/version
+.PP
+prints the version number of the version program.
+.\"	@(#)version.1	5.1 of 11/16/83

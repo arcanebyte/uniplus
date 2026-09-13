@@ -1,0 +1,56 @@
+
+error		meaning
+
+000	no error
+010	no index signal
+020	no seek complete
+030	write fault
+040	drive not ready
+050	drive not selected
+060	no track zero found
+070	multiple tracks selected
+090	cartridge changed
+0a0	tape exception (OMTI)
+0d0	seek in progress
+
+100	CRC error in ID field
+110	uncorrectable data error
+120	no address mark in ID field
+130	no address mark in data field
+140	no record found
+150	seek error
+170	write protected
+180	correctable ECC error
+190	bad track flag set (OMTI)
+190	ECC error during verify	(Adaptec)
+1a0	incorrect interleave value
+1c0	unable to read alternate track data (OMTI)
+1c0	unformatted or bad format on drive (Adaptec)
+1d0	self test failed (Adaptec)
+1e0	illegal direct access to alternate track (OMTI)
+1e0	defective track (media errors) (Adaptec)
+1f0	tape drive failure (OMTI)
+
+200	invalid command
+210	invalid command parameter
+220	illegal function for drive type
+230	volume overflow
+240	bad argument
+250	invalid logical unit number in command
+
+300	power up diagnostic error (OMTI)
+310	floppy disc controller error (OMTI)
+
+700	no error
+701	recovered error
+702	device not ready
+703	media error
+704	hardware error
+705	illegal request
+706	unit attention (media change)
+707	write protected media
+708	volume overflow during a read or diagnostic unique
+70a	power up failed
+70b	aborted command
+70d	volume overflow during a write
+

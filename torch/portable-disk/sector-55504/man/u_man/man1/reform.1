@@ -1,0 +1,378 @@
+From root44!csb Mon Jul 16 21:13:37 1984
+Date: Mon, 16 Jul 84 21:13:29 -0100
+From: root44!csb
+Apparently-To: csb
+Status: R
+
+.TH REFORM 1 Obsolescent
+.SH NAME
+reform \- reformat text file
+.SH SYNOPSIS
+.B reform
+[tabspec1 [tabspec2]] [\fB+b\fPn] [\fB+e\fPn] [\fB+f\fP] [\fB+i\fPn]
+[\fB+m\fPn] [\fB+p\fPn] [\fB+s\fP] [\fB+t\fPn]
+.SH DESCRIPTION
+.I Reform\^
+reads each line of the standard input file, reformats it, and
+then writes it to the standard output.
+Various combinations of reformatting operations can be selected, of
+which the most common involve rearrangement of tab characters.
+It is often used to trim trailing blanks,
+truncate lines to a specified length,
+or prepend blanks to lines.
+.PP
+.I Reform\^
+first scans its arguments, which may be given in
+any order.
+It then processes its input file, performing the
+following actions upon each line, in the order given:
+.TP 3
+\-
+A line is read from the standard input.
+.TP
+\-
+If
+\fB+s\fR
+is given, all characters up to the first tab are stripped off
+and saved for later addition to the end of the line.
+Presumably, these characters comprise an
+.SM ``SCCS SID''
+produced by
+.I get\^\c
+(1).
+.TP
+\-
+The line is expanded into a tabless form, by replacing tabs with
+blanks according to the
+.I input\^
+tab specification \fItabspec1\fR.
+.TP
+\-
+If \fB+p\fIn\fR is given,
+\fIn\fR blanks are prepended to the line.
+.TP
+\-
+If \fB+t\fIn\fR is given, the line is truncated
+to a length of \fIn\fR characters.
+.TP
+\-
+All trailing blanks are now removed.
+.TP
+\-
+If \fB+e\fIn\fR is included, the line is extended out with blanks to
+the length of \fIn\fR characters.
+.TP
+\-
+If
+\fB+s\fR
+is given, the previously-saved
+.SM ``SCCS SID''
+is added
+to the end of the line.
+.TP
+\-
+If \fB+b\fIn\fR is given,
+the \fIn\fR characters at the beginning of the line are
+converted to blanks,
+if and only if all of them are either digits or blanks.
+.TP
+\-
+If \fB+m\fIn\fR is included, the line is moved left, i.e.,
+\fIn\fR characters are removed from the beginning of the line.
+.TP
+\-
+The line is now contracted by replacing some blanks with
+tab characters according to the list of tabs indicated by the
+.I output\^
+tab
+specification \fItabspec2\fR, and is written to the standard output file.
+Option \fB+i\fR controls the method of contraction (see below).
+.RE
+.PP
+.i0
+The various arguments accepted by
+.I reform\^
+are as follows:
+.PP
+.RS 1
+.TP 9
+\fItabspec1\fR
+describes the tab stops assumed for the input file.
+This tab specification may take on any of the forms described in
+.I tabs\^\c
+(1).
+In addition, the operand
+\fB\-\-\fP
+indicates that the tab specification is to
+be found in the first line read from the standard input.
+If no legal tab specification is found there, \fB\-8\fR is assumed.
+If
+\fItabspec1\fR
+is omitted entirely, \fB\-\-\fR is assumed.
+.lp +10 9
+.RS 1
+.TP 9
+\fItabspec2\fR
+describes the tabs assumed for the output file.
+It is interpreted in the same way as
+\fItabspec1\fR,
+except that omission of
+\fItabspec2\fR
+causes the value of
+\fItabspec1\fR
+to be used for
+\fItabspec2\fR.
+.RE
+.PP
+.i0
+The remaining arguments are all optional and may be used in any combination,
+although only a few combinations make much sense.
+Specifying an argument causes an action to be performed, as
+opposed to the usual default of not performing the action.
+Some options include numeric values, which also have default values.
+Option actions are applied to each line in the order described above.
+Any line length mentioned applies to the length of a line just
+before
+the execution of the option described,
+and the terminating new-line is never counted in the line length.
+.PP
+.RS 1
+.TP 9
+\fB+b\fIn\fR
+causes the first \fIn\fR characters of a line to be converted
+to blanks, if and only if those characters include only blanks and digits.
+If \fIn\fR is omitted, the default value is 6, which is useful in deleting
+sequence numbers from
+.SM COBOL
+programs.
+.TP
+\fB+e\fIn\fR
+causes each line shorter than \fIn\fR characters to
+be extended out with blanks to that length.
+Omitting \fIn\fR implies a default value of 72.
+This option is useful for those rare cases in which sequence
+numbers need to be added to an existing unnumbered file.
+The use of
+.B $
+in editor regular expressions is more convenient if all lines
+have equal length,
+so that the user can issue editor commands such as:
+.RS
+s/$00001000/
+.RE
+.TP
+\fB+f\fR
+causes a format line to be written to the standard output,
+preceding any other lines written.
+See
+.I "fspec(5)\^"
+for details regarding format specifications.
+The format line is taken from \fItabspec2\fR, i.e., the line
+normally appears as follows:
+.RS
+\fB<:t\-\fItabspec2 \fBd:>\fR
+.RE
+.sp
+If \fItabspec2\fR is of the form \fB\-\-\fIfile-name\fR
+(i.e., an indirect
+reference to a tab specification in the first line of the named file),
+then that tab specification
+line is written to the standard output.
+.TP
+\fB+i\fIn\fR
+controls the technique used to compress interior blanks into
+tabs.
+Unless this option is specified, any sequence of 1 or more blanks
+may be converted to a single
+tab character if that sequence occurs just before a tab stop.
+This causes no problems for blanks that occur before the first
+nonblank character in a line, and it is always possible to convert the
+result back to an equivalent tabless form.
+However, occasionally an interior blank (one occurring after the first
+nonblank) is converted to a tab
+when this is not intended.
+For instance, this might occur in any program written in a language
+utilizing blanks as delimiters.
+Any single blank might be converted to a tab if it
+occurred just before a tab stop.
+Insertion or deletion of characters preceding such a tab may cause it to
+be interpreted in an unexpected way at a later time.
+If the \fB+i\fR option is used, no string of blanks may be converted to
+a tab unless there are \fIn\fR or more contiguous blanks.
+The default value is 2.
+Note that leading blanks are always converted to tabs when possible.
+It is recommended that conversion of programs from non
+-\s-1UNIX\s0
+to
+\s-1UNIX\s0
+systems use this option.
+.TP
+\fB+m\fIn\fR
+causes each line to be moved lift \fIn\fR characters,
+with a default value of 6.
+This can be useful for crunching
+.SM COBOL
+programs.
+.TP
+\fB+p\fIn\fR
+causes \fIn\fR blanks to be prepended (default of 6 if
+.I n\^
+is
+omitted).
+This option is effectively the inverse of \fB+m\fIn\fR,
+and is often useful for adjusting the position of
+.I nroff\^\c
+(1)
+output for terminals lacking both forms tractor positioning
+and a settable left margin.
+.TP
+\fB+s\fR
+is used with the
+.B \-m
+option of
+.I get\^\c
+(1).
+The
+.B \-m
+option causes
+.I get\^
+to prepend to each generated line
+the appropriate
+.SM SCCS SID\*S,
+followed by a tab.
+The \fB+s\fR option causes
+.I reform\^
+to remove the
+.SM SID
+from the front of the line,
+save it, then add it later to the end of the line.
+Because
+.B +e72
+is implied by this option,
+the effect is to produce 80-character card images with 
+.SM SCCS SID
+in columns 73\-80.
+Up to 8 characters of the 
+.SM SID
+are shown;
+if it is longer,
+the eighth character is replaced by
+.B \(**
+and any characters to the right of it are discarded.
+.TP
+\fB+t\fIn\fR
+causes any line longer than \fIn\fR characters to be
+truncated to that length.
+If \fIn\fR is omitted, the length defaults to 72.
+Sequence numbers can thus be removed
+and any blanks immediately preceding them deleted.
+.i0
+.PP
+.RE
+The following illustrate typical uses of
+.IR reform .
+The terms
+.SM \fBPWB\fP
+and
+.SM \fBOBJECT\fP
+below refer to
+.SM UNIX
+and
+non-
+.SM UNIX
+computer systems, respectively.
+Each arrow indicates the direction of conversion.
+The character
+.B ?
+indicates an arbitrary tab specification; see
+.I tabs\^\c
+(1)
+for descriptions of legal specifications.
+.PP
+.if t .ne1.5i
+.SM OBJECT
+\-\-\->
+.SM PWB
+(i.e., manipulation of
+.SM RJE output):
+.PP
+Note that files transferred by
+.SM RJE
+from
+.SM OBJECT
+to
+.SM PWB
+materialize with format \fB\-8\fR.
+.PP
+reform \-8 \-c +t +b +i <oldfile >newfile (into 
+.SM COBOL\*S)
+.br
+reform \-8 \-c3 +t +m +i <oldfile >newfile  (into 
+.SM COBOL\*S,
+crunched)
+.PP
+.SM NOTE\*S: \-c3 is the preferred format for 
+.SM COBOL\*S;
+it uses the least disk space of the
+.SM COBOL
+formats.
+.PP
+.SM PWB
+\-\-\->
+.SM OBJECT
+(i.e., preparation of files for
+.SM RJE
+submission):
+.PP
+reform ? \-8 <oldfile >newfile  (from arbitrary format into \fB\-8\fR)
+.br
+get \-p \-m sccsfile \(or reform +s \(or send ...
+.PP
+.SM PWB ONLY
+(i.e., no involvement with other systems):
+.PP
+pr file \(or reform ? \-0 <oldfile   (print on terminal without hardware tabs)
+.br
+reform ? \-0 <oldfile >newfile  (convert file to tabless format)
+.SH DIAGNOSTICS
+All diagnostics are fatal, and the offending line is
+displayed following the message.
+.br
+``line too long''
+a line exceeds 512 characters (in tabless form).
+.br
+``not \s-1SCCS\s+1 \-m'' a line does not have at least one tab when
+.B +s
+flag is used.
+.br
+Any of the diagnostics of
+.I tabs\^\c
+(1)
+can also appear.
+.SH "EXIT CODES"
+0 \- normal
+.br
+1 \- any error
+.SH "SEE ALSO"
+get(1),
+nroff(1),
+send(1C),
+tabs(1),
+fspec(5).
+.SH BUGS
+.I Reform\^
+is aware of the meanings of backspaces and escape sequences,
+so that it can be
+used as a postprocessor for
+.IR nroff .
+However, be warned that the
+.BR +e ,
+.BR +m ,
+and
+.B +t
+options only count characters,
+not positions.
+Anyone using these options on output containing backspaces or
+halfline motions will probably obtain unexpected results.
+
+

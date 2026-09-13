@@ -1,0 +1,53 @@
+.TH CONNECT 2N UniSoft
+.SH NAME
+connect \- initiate a connection on a socket
+.SH SYNOPSIS
+.B #include <net/socket.h>
+.sp
+.B connect(s, addr)
+.br
+.B int s;
+.br
+.B struct sockaddr *addr;
+.SH DESCRIPTION
+.I Connect\^
+causes a connection request to be initiated to
+the entity at
+.I addr\^
+using the underlying protocol of the socket
+.IR s .
+When the connection completes, a zero value is returned.
+.PP
+If the socket is non-blocking 
+but the connection cannot
+be completed immediately, then the call returns \-1 and sets
+the external variable 
+.I errno\^
+to 
+.SM EWOULDBLOCK\*S.
+It is possible to
+.IR select\^ (2)
+a socket which is connecting by selecting it for writing,
+since writing is not possible before the connection completes.
+.PP
+If the socket is already connected, a value of \-1 is returned and
+.I errno\^ 
+is set to 
+.SM EISCONN\*S.
+Failure to connect often
+results in 
+.SM ETIMEDOUT 
+or 
+.SM EREFUSED
+errors.
+Other errors are also possible.
+.SH SEE ALSO
+accept(2N), select(2N), socket(2N).
+.SH BUGS
+A socket's state is not properly restored if a \fIconnect\^\fP fails;
+for the time being you can \fIclose\^\fP the socket and recreate it
+to get around the bug.
+.PP
+This call is provisional and will exist in a slightly different form
+in future releases.
+.\"N	 @(#)connect.2N	 5.2 of 7/12/84

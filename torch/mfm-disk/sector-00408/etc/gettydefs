@@ -1,0 +1,12 @@
+co_9600# B9600 # B9600 SANE2 TAB3 ONOCR #\r\n\nUniPlus+ V.2 (torch) NFS UNIX\r\n\nlogin: #co_4800
+
+co_4800# B4800 # B4800 SANE2 TAB3 ONOCR #\r\n\nUniPlus+ V.2 NFS UNIX\r\n\nlogin: #co_2400
+
+co_2400# B2400 # B2400 SANE2 TAB3 ONOCR #\r\n\nUniPlus+ V.2 NFS UNIX\r\n\nlogin: #co_1200
+
+co_1200# B1200 # B1200 SANE2 TAB3 ONOCR #\r\n\nUniPlus+ V.2 NFS UNIX\r\n\nlogin: #co_300
+
+co_300# B300 # B300 SANE2 TAB3 ONOCR #\r\n\nUniPlus+ V.2 NFS UNIX\r\n\nlogin: #co_9600
+
+tt_9600# B9600 # B9600 SANE2 TAB3 ONOCR #\r\n\nUniPlus+ V.2 (torch) NFS UNIX\r\n\nlogin: #tt_9600
+

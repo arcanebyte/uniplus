@@ -1,0 +1,71 @@
+accept.2n accept: accept a connection on a socket.
+access.2 access: determine accessibility of a file.
+acct.2 acct: enable or disable process accounting.
+alarm.2 alarm: set a process's alarm clock.
+brk.2 brk, sbrk: change data segment space allocation.
+chdir.2 chdir: change working directory.
+chmod.2 chmod: change mode of file.
+chown.2 chown: change owner and group of a file.
+chroot.2 chroot: change root directory.
+close.2 close: close a file descriptor.
+connect.2n connect: initiate a connection on a socket.
+creat.2 creat: create a new file or rewrite an existing one.
+dup.2 dup: duplicate an open file descriptor.
+exec.2 execl, execv, execle, execve, execlp, execvp: execute a file.
+exit.2 exit, _exit: terminate process.
+fcntl.2 fcntl: file control.
+fork.2 fork: create a new process.
+gethostname.2n gethostname: get name of current host.
+getpid.2 getpid, getpgrp, getppid: get process, process group, and parent process IDs.
+getuid.2 getuid, geteuid, getgid, getegid: get real user, effective user, real group, and effective group IDs.
+intro.2 intro: introduction to system calls and error numbers.
+ioctl.2 ioctl: control device.
+kill.2 kill: send a signal to a process or a group of processes.
+link.2 link: link to a file.
+lockf.2 lockf: provide exclusive file regions for reading or writing.
+lseek.2 lseek: move read/write file pointer.
+mknod.2 mknod: make a directory, or a special or ordinary file.
+mount.2 mount: mount a file system.
+msgctl.2 msgctl: message control operations.
+msgget.2 msgget: get message queue.
+msgop.2 msgop: message operations.
+nice.2 nice: change priority of a process.
+open.2 open: open for reading or writing.
+pause.2 pause: suspend process until signal.
+phys.2 phys: allow a process to access physical addresses.
+pipe.2 pipe: create an interprocess channel.
+plock.2 plock: lock process, text, or data in memory.
+profil.2 profil: execution time profile.
+ptrace.2 ptrace: process trace.
+read.2 read: read from file.
+reboot.2 reboot: reboot the system.
+receive.2n receive: receive message from a socket.
+select.2n select: synchronous i/o multiplexing.
+semctl.2 semctl: semaphore control operations.
+semget.2 semget: get set of semaphores.
+semop.2 semop: semaphore operations.
+send.2 send: send message from a socket.
+sethostname.2n sethostname: set name of host cpu.
+setpgrp.2 setpgrp: set process group ID.
+setuid.2 setuid, setgid: set user and group IDs.
+shmctl.2 shmctl: shared memory control operations.
+shmget.2 shmget: get shared memory segment.
+shmop.2 shmop: shared memory operations.
+signal.2 signal: specify what to do upon receipt of a signal.
+socket.2n socket: create an endpoint for communication.
+socketaddr.2n socketaddr: return address associated with a socket.
+stat.2 stat, fstat: get file status.
+stime.2 stime: set time.
+sync.2 sync: update super-block.
+time.2 time: get time.
+times.2 times: get process and child process times.
+ulimit.2 ulimit: get and set user limits.
+umask.2 umask: set and get file creation mask.
+umount.2 umount: unmount a file system.
+uname.2 uname: get name of current UNIX system.
+unlink.2 unlink: remove directory entry.
+ustat.2 ustat: get file system statistics.
+utime.2 utime: set file access and modification times.
+uvar.2 uvar: returns system-specific configuration information.
+wait.2 wait: wait for child process to stop or terminate.
+write.2 write: write on a file.

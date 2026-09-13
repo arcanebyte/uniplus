@@ -1,0 +1,79 @@
+.TH CLASH 1 Local
+.SH NAME
+clash \- find indistinguishable or long identifiers
+.SH SYNOPSIS
+.B clash
+[
+\fB\-actdsm\fIn\fR
+] [ file ] ...
+.SH DESCRIPTION
+.IR Clash
+finds identifiers that are not distinct in the first
+.I numSigChars
+characters,
+or finds identifiers that are longer than
+.I numSigChars
+characters.
+It lexically analyzes its input, ignoring comments.
+It does not parse, so it does not understand scoping.
+Some restrictions that
+.I clash
+might help detect:
+.IP -
+Most Unix file systems consider file names (components of pathnames) identical
+if their first 14 characters are identical.
+.IP -
+Many Unix assemblers and the loaders consider only the first eight characters
+of an identifier.
+.IP -
+Many C compilers treat identifiers as identical if their first seven
+characters are the same (eight for identifiers that are not external).
+In fact, the ANSI C standard will probably make it legal for
+conforming compilers to ignore all but the first six characters
+and to ignore case distinctions.
+.IP -
+Yacc terminals become C preprocessor symbols, and should therefore
+differ within the first eight characters.
+.PP
+The argument list is a sequence of input file
+names and flags.
+If no input file name is given, the standard input is processed.
+.PP
+A flag operand starts with ``\-'' and continues with any number
+of option names.
+Flags d, l, s, and m toggle a corresponding switch.
+.TP
+.B \-a
+the input is a PDP-11 assembler program
+.TP
+.B \-c
+the input is a C program (default)
+.TP
+.B \-t
+the input is some other language (``text'')
+.TP
+.B \-d
+dump on error
+.TP
+.B \-l
+print long identifiers
+.TP
+.B \-s
+separate: process each file independantly
+.TP
+.B \-m
+monocase: case distinctions don't count
+.TP
+.BI \- n
+sets
+.I numSigChars
+(default is 7)
+.SH "LOCAL INFO"
+Written at the University of Toronto by D. Hugh Redelmeier.
+.SH BUGS
+Understands neither libraries nor #include commands: all
+relevant files must be explicitly scanned.
+.br
+The maximum number of symbols and
+the maximum number of characters in them
+are fixed.

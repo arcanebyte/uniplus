@@ -1,0 +1,178 @@
+.TH FORMAT 1 
+.SH NAME
+left, right, mid, index, rindex, ins, del, con, len
+.br
+.in +10
+\-  String operations available in shell
+.in
+.SH SYNOPSIS
+.B left
+string count
+.sp
+.B right
+string count
+.sp
+.B mid
+string position count
+.sp
+.B index
+string target
+.sp
+.B rindex
+string target
+.sp
+.B ins
+string insertion_string position
+.sp
+.B del
+string position count
+.sp
+.B con
+string1 string2
+.sp
+.B len
+string
+.SH DESCRIPTION
+.I Left
+returns a substring of string made up of the leftmost count characters.
+The returned string is terminated by '\\0' and is followed by
+a newline character.
+If the value passed in count is greater than the number of characters in
+the string then the entire string is returned, it is not padded.
+.PP
+.I Right 
+is similar to left in that it returns a substring of the string
+argument, it returns the rightmost count characters from the string.
+.PP
+.I Mid
+is similar to the application of
+.I right
+then
+.I left
+as it returns a substring of the string argument that begins at
+character position and contains count characters.
+If the start position of the substring is greater than the length of
+the string then nothing is returned, if the count plus the start
+position are greater 
+than the length of the string then the right portion of the string,
+starting at character `position' is returned. No padding is
+carried out.
+.PP
+.I Index
+is used to return the leftmost occurrence of a string or character
+within the target string. Index considers the first character in a
+string to be at character position zero.
+.PP
+.I Rindex
+is exactly the same as index except that it finds the rightmost
+occurrence of the character or string.
+.PP
+.I Ins
+is used to insert one string or character at a particular position
+within another string.
+If the position for the insertion is greater than the length of the
+target string then the insertion is made at the end of the target string,
+ie. the two strings are concatenated.
+.PP
+.I Del
+is used to remove a string of specified length from the string
+starting at the character specified in `position'.
+If the start position is greater than the length of the string then
+no alteration occurs and the original string is returned intact, if
+however the start position falls within the string but the
+start position plus the count of the characters to be removed is
+greater than the length of the string then the leftmost characters
+up to the start position are returned (as in left).
+.PP
+.I Con
+stands for concatenate and will return the two string arguments passed to
+it as a single string.
+.PP
+.I Len
+will return the length of the string argument passed to it.
+.SH "RETURN CODES"
+.ta 4 20
+.nf
+	CODE	MEANING
+.sp
+.ta 6 14
+	0	SUCCESSFUL
+	1	TARGET STRING NOT FOUND (Index and rindex)
+	2	INVALID COMMAND FORMAT
+.fi
+.SH EXAMPLES
+.PP
+The following programs were hacked together to show how the programs
+given above can be used from within shell scripts, no claims are made
+for them.
+.sp 2
+.in +15
+tim
+.sp
+mid "`date`" 11 8
+.in
+.PP
+This program will only work if date returns output in the format:
+.sp
+.in +15
+Sat Jan  5 15:15:46 GMT 1985
+.sp
+.in
+Notice that mid can be used here and cut can not, cut would treat the
+double space between Jan and 5 as a separator followed by a field, however
+if the date was Jan 15 then the double space is reduced to a single
+space so altering the number of fields in the output.
+This highlights the main use of these programs, they can be used when
+the number of characters present is known, cut is better when the
+number of fields are known.
+.sp
+.in +15
+scanner
+.sp 2
+.nf
+if test `left $1 1` = "-"
+then
+  length=`len $1`
+  i=1
+  while test $i -lt 6
+  do
+    echo `mid $1 $i 1` is set
+    i=`expr $i + 1`
+  done
+else
+  echo No flags set in first argument
+fi
+.in
+.fi
+.PP
+It must be said that this program is hideously slow, but try something
+like  scanner -hello, this should demonstrate its workings (and its speed).
+.sp 2
+.in +15
+alarm
+.sp
+.nf
+if test $# != 2
+then
+  echo "Usage: $0 Hour Minute"
+else
+  time=$1:$2:
+  da=`date`
+  dt=`mid "$da" 11 6`
+  if test $dt != $time
+  then
+    (sleep 50; alarm $1 $2) &
+  else
+    echo 
+    echo Alarm call
+    echo 
+  fi
+fi
+.in
+.fi
+.PP
+This final program is simply an alarm clock that runs in background,
+time is specified using the 24 hour clock and the program is accurate
+to 30 seconds (on average, worst case 50 seconds).
+.SH AUTHOR
+Craig Wylie, University of Stirling (cww@sgcs).

@@ -1,0 +1,9 @@
+cd /usr/distrib1.3
+for i in $*
+do
+name=`basename $i .grp`
+if yorn "LIST GROUP" "Confirm that you wish to list the $name group of files"
+then
+	cat $i
+fi
+done

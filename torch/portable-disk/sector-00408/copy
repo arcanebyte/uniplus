@@ -1,0 +1,117 @@
+/usr/clear
+echo "    ***********************************************************************"
+echo "    *   Brian's Torch Computers Disc Copy Program     v2.12    06/02/92   *"
+echo "    ***********************************************************************"
+echo " \nPlease Enter Source Controller Number \(0-1\).?? \c"
+read controller
+echo " \nPlease Enter Source Drive Number \(0-1\).?? \c"
+read disc
+echo " \nPlease Enter Destination Controller Number \(0-1\).?? \c"
+read controller1
+echo " \nPlease Enter Destination Drive Number \(0-1\).?? \c"
+read disc1
+if [ "$controller1" = "0" -a "$disc1" = "0" ]
+then
+   echo "\007"
+   echo ERROR ILLEGAL destination. "\n"
+   exit
+else
+   type=`partsize /dev/disk$controller1$disc1\b|cut -c15-20`
+   size=`partsize /dev/rdisk$controller1$disc1\e 2>/dev/null|cut -c15-20`
+   size1=`partsize /dev/rdisk$controller1$disc1\f 2>/dev/null|cut -c15-20`
+   if [ "$type" -ge "4480" -a "$type" -le "4520" ]
+   then system=V.1.3 drive=f drive1=g
+   else
+   if [ "$type" -ge "5480" -a "$type" -le "5520" ]
+   then system=V.1.2 drive=d drive1=e
+   else
+   if [ "$type" -ge "9980" -a "$type" -le "10018" ]
+   then system=5.2:NFS drive=b drive1=d
+   else
+   if [ "$type" -ge "10020" -a "$type" -le "10080" ]
+   then system=5.2:QX drive=b drive1=d
+   else
+      echo "\007"
+      echo " Partition Size Not Known. Repartition Disc or Contact Torch Computers Service   Department, On Cambs. (0223) 263818\n"
+   exit
+fi
+fi
+fi
+fi
+fi
+   if [ "$controller" = "0" -a "$disc" = "0" ]
+   then
+      echo "\nCopy From Master Drive."
+   disc=
+   else
+      echo "\nCopy From Non Master Drive." 
+
+	drive=b
+	drive1=d
+fi
+   board=controller\ board\ $controller1\ drive\ $disc1\.
+   if yorn "Powerdown" Do You Wish To Powerdown When Copying Is Finished.
+   then pow=1
+      else pow=0
+fi
+if [ $size ]
+   then
+   echo "\nRemaining partition size e" = $size
+else
+   echo "\n\007"No Partition e
+fi
+if [ $size1 ]
+   then
+   echo "\nRemaining partition size f" = $size1
+else
+   echo "\n\007"No Partition f
+fi
+if [ "$size" -gt "20000" ]
+   then size2=?
+      else size2=??
+fi
+if yorn "Continue" Copy Issue $system onto $board 
+   then
+      echo "\nCopying from Controller $controller partition 0$drive onto Controller $controller1 partition ${disc1}b"
+   dd if=/dev/rdisk$controller$disc$drive of=/dev/rdisk$controller1$disc1\b bs=250k 2>/dev/null
+      echo "\nCopying from Controller $controller partition 0$drive1 onto Controller $controller1 partition ${disc1}d"
+   dd if=/dev/rdisk$controller$disc$drive1 of=/dev/rdisk$controller1$disc1\d bs=250k 2>/dev/null
+      echo "\nCopying of Issue $system onto Hard Disc complete."
+else
+      echo "\nNo change to Issue $system on Hard Disc."
+fi
+if [ "$size" > "0" ] 
+   then
+      echo "\nCreate Blank Unix File System On Remaining Partition (s)." 
+   str=Continue
+   if yorn $str "make unix file system"
+   then
+   mkfs /dev/rdisk$controller1$disc1\e $size 2 17 >/dev/null
+   mkfs /dev/rdisk$controller1$disc1\f $size1 2 17 >/dev/null
+   echo "\nFile system created."
+fi
+fi
+if [ "$size2" = "?" -a  "$system" != "5.2:QX" ]
+then
+   echo "\nModify Floppy Device Drivers."
+   str=Continue
+   if yorn $str "make floppy devices"
+   then
+   mount /dev/disk10b /mnt >/dev/null
+   rm /mnt/dev/*floppy
+   mknod /mnt/dev/floppy b 1 64 
+   mknod /mnt/dev/rfloppy c 11 64 
+   chown 3 /mnt/dev/floppy /mnt/dev/rfloppy
+   chgrp 150 /mnt/dev/floppy /mnt/dev/rfloppy
+   chmod 664 /mnt/dev/*floppy
+   umount /dev/disk10b
+fi
+fi
+if [ "$pow" = "1" ]
+then
+   echo "\007"
+   echo "                             *****************"
+   echo "                             * powering down *"
+   echo "                             *****************"
+   telinit 6
+fi

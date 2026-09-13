@@ -1,0 +1,21 @@
+icon: type=e; fn=vi; showbits=utilities:textedit; showname = Edit; +
+      laction=x,wsh -C $0; daction=x,wsh -C $0 $*; raction=; +
+      maxuse=4;
+
+icon: type=e; fn=view; showbits=utilities:textedit; showname = View; +
+      laction=x,wsh -C $0; daction=x,wsh -C $0 $*; raction=; +
+      maxuse=4;
+
+icon: type=e; fn=cc; showname = "Cc";
+
+icon: type=e; fn=csh; showbits=utilities:systemV; showname="C Shell"; +
+      raction=x,wsh -C su root -c "'PATH=/bin:/usr/bin:/etc:/usr/bin/opentop::;export PATH;exec $0'"; +
+      maxuse=16; laction=x,wsh $0;
+
+icon: type=e; fn=rsh; showbits=utilities:systemV; showname="R Shell"; +
+      maxuse=16; laction=x,wsh $0;
+
+icon: type=e; fn=sh; showbits=utilities:systemV; showname="Shell";+ 
+      raction=x,wsh -C su root -c "'PATH=/bin:/usr/bin:/etc:/usr/bin/opentop::;export PATH;exec $0'"; +
+      maxuse=16; laction=x,wsh $0;
+

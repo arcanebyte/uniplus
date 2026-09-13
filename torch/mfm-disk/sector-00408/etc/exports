@@ -1,0 +1,2 @@
+/usr		# /usr partition for everyone - if you remove the first '#'
+/	torch

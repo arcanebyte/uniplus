@@ -1,0 +1,6 @@
+for i in $*
+do
+	dir=`dirname $i`
+	fname=`basename $i`
+	iconls $fname <$dir/.iconspec
+done

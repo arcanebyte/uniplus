@@ -1,0 +1,54 @@
+From root44!csb Mon Jul 16 21:13:08 1984
+Date: Mon, 16 Jul 84 21:13:06 -0100
+From: root44!csb
+Apparently-To: csb
+Status: R
+
+.TH REV 1
+.SH NAME
+.RS
+rev  - output text file in reversed page format
+.RE
+.SH SYNOPSIS
+.RS
+rev [-l<lines per page>] [-f] [filename] [-]
+.RE
+.SH DESCRIPTION
+.RS
+Rev reads lines from a text file or the standard input,
+creates a page index, then outputs the file to the standard
+output in reverse - the last page first.               
+
+Any number of files may be specified. The standard input
+may be explicitly introduced at any desired point by the
+use of "-". The standard input is also the default file
+used if no files are specified.
+
+Options available :
+
+-l<integer>     specifies the number of lines per page,
+                the default is 66.
+
+-f              specifies that form-feeds should be
+                inserted at the start of any page.
+.RE
+.SH EXAMPLE
+.RS
+rev -l55 -f file1 - file2 - file3 file4
+
+This will output file4, file3, then text entered via the
+standard input, then file2, the standard input again and
+finally file1.
+.RE
+.SH BUGS
+.RS
+If any form-feeds are found allready in the file, the -f
+option will be used.      
+.RE
+.SH EXIT CODES
+.RS
+Will normally exit with status 0. If any errors occur the
+exit status will be 1.
+.RE
+
+

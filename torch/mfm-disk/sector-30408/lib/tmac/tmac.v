@@ -1,0 +1,2 @@
+'\"	@(#)tmac.v	UniPlus V.2.1.2	(Motorola 2.1)
+.so /usr/lib/macros/vmca

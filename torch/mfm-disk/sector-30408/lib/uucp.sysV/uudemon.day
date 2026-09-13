@@ -1,0 +1,10 @@
+: 'perform once per day at 0701 hours'
+cd /usr/lib/uucp
+uuclean -p -m -n168 >/dev/null 2>/dev/null
+uuclean -d.XQTDIR -p -n72 >/dev/null 2>/dev/null
+uustat -c168 >/dev/null 2>/dev/null
+cd /usr/spool/uucp
+mv LOGFILE temp
+uniq -c temp >> Log-WEEK
+rm temp
+/usr/lbin/uusub -call -u24

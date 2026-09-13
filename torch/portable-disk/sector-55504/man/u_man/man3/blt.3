@@ -1,0 +1,37 @@
+.TH BLT 3 UniSoft
+.SH NAME
+blt, blt512 \- block transfer data
+.SH SYNOPSIS
+.B int blt(to,from,count)
+.br
+.B char *to;
+.br
+.B char *from;
+.br
+.B int count;
+.sp
+.B int blt512(to,from,count)
+.br
+.B char *to;
+.br
+.B char *from;
+.br
+.B int count;
+.SH DESCRIPTION
+.I Blt\^
+does a fast copy of 
+.I count\^
+bytes of data starting at address 
+.I from\^
+to address 
+.IR to .
+.PP
+.I Blt512\^
+does a fast copy of 
+.I count\^
+number of consecutive 512 byte units
+starting at address 
+.I from\^
+to address 
+.IR to .
+.\"	@(#)blt.3	5.1 of 10/26/83

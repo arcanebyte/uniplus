@@ -1,0 +1,144 @@
+.TH TAKE 1C UniSoft
+.SH NAME
+take \- takes a file from a remote machine
+.SH SYNOPSIS
+.B take
+[
+.B \-p
+.I port
+] [
+.BR \-s SPEED
+] [
+.B \-i
+[ ID ] ]
+.I fromfile
+[
+.I tofile
+]
+.br
+.B take
+[
+.B \-p
+.I port
+] [
+.BR \-s SPEED
+]
+.B \-c
+.I command
+[
+.I args
+] ...
+.SH DESCRIPTION
+.I Take\^
+is part of system of programs useful for transferring files between 
+.SM UNIX
+systems.  It is the "downloader" designed to transmit files from a remote
+machine to a local machine.  For a brief discussion of the take/put
+system and installation instructions, see the companion document:
+\fIInstallation and Overview of the UniSoft Take/Put File Transfer System\fR.
+.PP
+.I Take\^
+transfers a file, directory, or output from a command given at a remote 
+machine.
+The default
+.I port\^
+is 
+.BR /dev/tty0 ;
+the 
+.B \-p
+option can be used to specify an alternate port.
+The default
+.I speed\^
+is determined by the system; the
+.B \-s
+option can be used to specify a specific speed.
+The 
+.B \-i
+[ 
+.SM ID 
+]
+option remaps pathnames on the remote machine.
+The
+.B 
+.SM ID
+(if present) is passed to the remote machine where
+it is used to locate a line containing pathname prefixes (using the
+.B /etc/takelist
+file discussed below).
+If no
+.B 
+.SM ID
+is given after the
+.B \-i
+flag, then the default system 
+.SM ID
+is read from the
+.B /etc/sys_id
+file (if it exists); otherwise
+.B take7
+will use the account name of the invoker (i.e., the person who logged in to
+the port used) to determine which line of
+.B /etc/takelist
+to apply.
+See the overview document for details of the mapping.
+.PP
+The
+.B \-c
+option is useful for executing an arbitrary command on the remote machine.
+All arguments following the
+.B \-c
+flag are collected, transmitted to the remote machine and executed as a single
+command.  The standard output and standard error from this command are
+returned as the standard output and standard error of
+.BR take .
+.PP
+In order to perform its function,
+.IR take\^ (1C)
+interfaces with the program 
+.B /usr/bin/take7
+on the remote machine.
+.SH EXAMPLE
+.IP
+take /a/b/c
+.PP
+takes the contents of the directory (or file) "/a/b/c" on the remote machine
+and copies them into a similarly named directory (or file) on the
+local machine; if "/a/b/c" did not previously exist on the local
+machine, it is created; otherwise it is overwritten.
+.IP
+take file.c /x/y/z/filename
+.PP
+takes the contents of "file.c" from the remote machine and copies
+them into "/x/y/z/filename" on the local machine.  Note that
+if "filename"
+exists on the local machine, 
+its contents are overwritten.
+.SH FILES
+.TP "\w'fromfile\ \ \ \ 'u"
+fromfile
+The remote file name.  When using the
+.B \-i
+option, 
+this file should usually be specified as a pathname starting at the root
+of the local machine.
+.ns
+.TP
+tofile
+The local file name; if 
+.I tofile\^
+is null,
+.I tofile\^
+is defaulted to
+.IR fromfile .
+If 
+.I tofile\^
+is a directory, then
+.I tofile\^
+has the last segment of the
+.I fromfile\^
+path appended to it.
+.SH "SEE ALSO"
+cu(1C), put(1C)
+.br
+.I "Installation and Overview of the UniSoft Take/Put File Transfer System"
+.\"	@(#)take.1	5.2 of 7/23/84

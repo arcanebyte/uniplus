@@ -1,0 +1,26 @@
+.TH SOCKETADDR 2N UniSoft
+.SH NAME
+socketaddr \- return address associated with a socket
+.SH SYNOPSIS
+.B #include <net/socket.h>
+.sp
+.B socketaddr(s, addr)
+.br
+.B int s;
+.br
+.B struct sockaddr *addr;
+.SH DESCRIPTION
+The address associated with the socket
+.I s\^
+is returned in
+.IR addr .
+If
+.I s\^
+is not a socket, \-1 is returned and an appropriate errno is
+returned.
+.SH SEE ALSO
+socket(2N).
+.SH BUGS
+This call is provisional and will exist in a slightly different
+form in future releases.
+.\"N	 @(#)socketaddr.2N	 5.2 of 7/12/84

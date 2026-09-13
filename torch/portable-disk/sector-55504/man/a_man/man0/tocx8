@@ -1,0 +1,6 @@
+boot.8 boot: startup procedures.
+crash.8 crash: what to do when the system crashes.
+delivermail.8n delivermail: deliver mail to arbitrary people.
+intro.8 intro: introduction to system maintenance procedures.
+netmail.8n netmail: the bnet network mail system.
+netmailer.8n netmailer: deliver mail to.

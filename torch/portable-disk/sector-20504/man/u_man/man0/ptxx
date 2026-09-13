@@ -1,0 +1,2045 @@
+.xx "" "/functions of HP 2640 and" "2621-series terminals." "" hp.1
+.xx "" "handle special functions of HP" "2640 and 2621-series/" "hp:" hp.1
+.xx "archiver." "hpio: HP" "2645A terminal tape file" "" hpio.1
+.xx "functions of DASI 300 and/" "" "300, 300s: handle special" "" 300.1
+.xx "" "/special functions of DASI" "300 and 300s terminals." "" 300.1
+.xx "of DASI 300 and 300s/" "300," "300s: handle special functions" "" 300.1
+.xx "" "functions of DASI 300 and" "300s terminals." "/special" 300.1
+.xx "" "l3tol, ltol3: convert between" "3-byte integers and long/" "" l3tol.3C
+.xx "comparison." "diff3:" "3-way differential file" "" diff3.1
+.xx "Tektronix 4014 terminal." "" "4014: paginator for the" "" 4014.1
+.xx "" "paginator for the Tektronix" "4014 terminal." "4014:" 4014.1
+.xx "of the DASI 450 terminal." "" "450: handle special functions" "" 450.1
+.xx "" "special functions of the DASI" "450 terminal." "450: handle" 450.1
+.xx "long integer and base-64/" "" "a64l, l64a: convert between" "" h64l.3C
+.xx "" "" "abort: generate an IOT fault." "" abort.3C
+.xx "value." "" "abs: return integer absolute" "" abs.3C
+.xx "" "abs: return integer" "absolute value." "" abs.3C
+.xx "" "/floor, ceiling, remainder," "absolute value functions." "" floor.3M
+.xx "socket." "accept:" "accept a connection on a" "" accept.2N
+.xx "a socket." "" "accept: accept a connection on" "" accept.2N
+.xx "" "utime: set file" "access and modification times." "" utime.2
+.xx "of a file." "touch: update" "access and modification times" "" touch.1
+.xx "accessibility of a file." "" "access: determine" "" access.2
+.xx "machine/" "sputl, sgetl:" "access long numeric data in a" "" sputl.3X
+.xx "" "phys: allow a process to" "access physical addresses." "" phys.2
+.xx "" "sadp: disk" "access profiler." "" sadp.1
+.xx "" "/setutent, endutent, utmpname:" "access utmp file entry." "" getut.3C
+.xx "" "access: determine" "accessibility of a file." "" access.2
+.xx "" "enable or disable process" "accounting." "acct:" acct.2
+.xx "" "acct: per-process" "accounting file format." "" acct.4
+.xx "" "search and print process" "accounting file(s)." "acctcom:" acctcom.1
+.xx "process accounting." "" "acct: enable or disable" "" acct.2
+.xx "file format." "" "acct: per-process accounting" "" acct.4
+.xx "process accounting file(s)." "" "acctcom: search and print" "" acctcom.1
+.xx "" "sin, cos, tan, asin," "acos, atan, atan2:/" "" trig.3M
+.xx "" "current SCCS file editing" "activity." "sact: print" sact.1
+.xx "" "report process data and system" "activity." "/time a command;" timex.1
+.xx "" "sag: system" "activity graph." "" sag.1G
+.xx "" "sar: system" "activity reporter." "" sar.1
+.xx "" "random, hopefully interesting," "adage." "fortune: print a" fortune.6
+.xx "formatting/" "mosd: the OSDD" "adapter macro package for" "" mosd.5
+.xx "" "" "adb: debugger." "" adb.1
+.xx "" "up internet hosts by name or" "address." "rhost, raddr: look" rhost.3N
+.xx "socket." "socketaddr: return" "address associated with a" "" socketaddr.2N
+.xx "" "a process to access physical" "addresses." "phys: allow" phys.2
+.xx "SCCS files." "" "admin: create and administer" "" admin.1
+.xx "" "admin: create and" "administer SCCS files." "" admin.1
+.xx "game." "" "adventure: an exploration" "" adventure.6
+.xx "" "alarm: set a process's" "alarm clock." "" alarm.2
+.xx "clock." "" "alarm: set a process's alarm" "" alarm.2
+.xx "earth." "aliens: The" "alien invaders attack the" "" aliens.6
+.xx "attack the earth." "" "aliens: The alien invaders" "" aliens.6
+.xx "" "change data segment space" "allocation." "brk, sbrk:" brk.2
+.xx "" "realloc, calloc: main memory" "allocator." "malloc, free," malloc.3C
+.xx "physical addresses." "phys:" "allow a process to access" "" phys.2
+.xx "information for bad block/" "" "altblk: alternate block" "" altblk.4
+.xx "for bad block/" "altblk:" "alternate block information" "" altblk.4
+.xx "" "sort: sort" "and/or merge files." "" sort.1
+.xx "terminal." "worms:" "animate worms on a display" "" worms.6
+.xx "" "rain:" "animated raindrops display." "" rain.6
+.xx "" "bcd: convert to" "antique media." "" bcd.6
+.xx "editor output." "" "a.out: assembler and link" "" a.out.4
+.xx "" "introduction to commands and" "application programs." "intro:" intro.1
+.xx "maintainer." "" "ar: archive and library" "" ar.1
+.xx "format." "" "ar: archive (library) file" "" ar.4
+.xx "" "number: convert" "Arabic numerals to English." "" number.6
+.xx "language." "bc:" "arbitrary-precision arithmetic" "" bc.1
+.xx "" "cpio: format of cpio" "archive." "" cpio.4
+.xx "" "tp: manipulate tape" "archive." "" tp.1
+.xx "maintainer." "ar:" "archive and library" "" ar.1
+.xx "" "ar:" "archive (library) file format." "" ar.4
+.xx "" "HP 2645A terminal tape file" "archiver." "hpio:" hpio.1
+.xx "" "tar: tape file" "archiver." "" tar.1
+.xx "" "cpio: copy file" "archives in and out." "" cpio.1
+.xx "command." "xargs: construct" "argument list(s) and execute" "" xargs.1
+.xx "" "getopt: get option letter from" "argument vector." "" getopt.3C
+.xx "" "echo: echo" "arguments." "" echo.1
+.xx "" "expr: evaluate" "arguments as an expression." "" expr.1
+.xx "" "bc: arbitrary-precision" "arithmetic language." "" bc.1
+.xx "number facts." "" "arithmetic: provide drill in" "" arithmetic.6
+.xx "" "expr: evaluate arguments" "as an expression." "" expr.1
+.xx "" "" "as: assembler." "" as.1
+.xx "characters." "asa: interpret" "ASA carriage control" "" asa.1
+.xx "control characters." "" "asa: interpret ASA carriage" "" asa.1
+.xx "" "ascii: map of" "ASCII character set." "" ascii.5
+.xx "" "/translates object files into" "ASCII formats suitable for/" "" hex.1
+.xx "set." "" "ascii: map of ASCII character" "" ascii.5
+.xx "" "long integer and base-64" "ASCII string." "/convert between" h64l.3C
+.xx "number." "atof: convert" "ASCII string to floating-point" "" atof.3C
+.xx "and/" "ctime, localtime, gmtime," "asctime, tzset: convert date" "" ctime.3C
+.xx "trigonometric/" "sin, cos, tan," "asin, acos, atan, atan2:" "" trig.3M
+.xx "" "help:" "ask for help." "" help.1
+.xx "" "as:" "assembler." "" as.1
+.xx "output." "a.out:" "assembler and link editor" "" a.out.4
+.xx "assertion." "" "assert: verify program" "" assert.3X
+.xx "" "assert: verify program" "assertion." "" assert.3X
+.xx "" "setbuf:" "assign buffering to a stream." "" setbuf.3S
+.xx "" "socketaddr: return address" "associated with a socket." "" socketaddr.2N
+.xx "" "sin, cos, tan, asin, acos," "atan, atan2: trigonometric/" "" trig.3M
+.xx "" "cos, tan, asin, acos, atan," "atan2: trigonometric/" "sin," trig.3M
+.xx "floating-point number." "" "atof: convert ASCII string to" "" atof.3C
+.xx "integer." "strtol, atol," "atoi: convert string to" "" strtol.3C
+.xx "integer." "strtol," "atol, atoi: convert string to" "" strtol.3C
+.xx "" "aliens: The alien invaders" "attack the earth." "" aliens.6
+.xx "" "autorobots: Escape from the" "automatic robots." "" autorobots.6
+.xx "automatic robots." "" "autorobots: Escape from the" "" autorobots.6
+.xx "" "wait:" "await completion of process." "" wait.1
+.xx "processing language." "" "awk: pattern scanning and" "" awk.1
+.xx "" "ungetc: push character" "back into input stream." "" ungetc.3S
+.xx "" "" "back: the game of backgammon." "" back.6
+.xx "" "back: the game of" "backgammon." "" back.6
+.xx "" "block information for" "bad block handling." "/alternate" altblk.4
+.xx "" "" "banner: make posters." "" banner.1
+.xx "" "banner7: print large" "banner on printer." "" banner7.1
+.xx "printer." "" "banner7: print large banner on" "" banner7.1
+.xx "" "terminal capability data" "base." "termcap:" termcap.5
+.xx "port." "ttytype: data" "base of terminal types by" "" ttytype.4
+.xx "" "between long integer and" "base-64 ASCII string." "/convert" h64l.3C
+.xx "" "(visual) display editor" "based on ex." "/screen oriented" vi.1
+.xx "portions of path names." "" "basename, dirname: deliver" "" basename.1
+.xx "arithmetic language." "" "bc: arbitrary-precision" "" bc.1
+.xx "" "" "bcd: convert to antique media." "" bcd.6
+.xx "" "" "bdiff: big diff." "" bdiff.1
+.xx "" "cb: C program" "beautifier." "" cb.1
+.xx "" "list contents of directory" "(Berkeley version)." "ls7:" ls7.1
+.xx "" "j0, j1, jn, y0, y1, yn:" "Bessel functions." "" bessel.3M
+.xx "" "" "bfs: big file scanner." "" bfs.1
+.xx "" "strings in an object, or other" "binary file." "/the printable" strings.1
+.xx "" "fread, fwrite:" "binary input/output." "" fread.3S
+.xx "" "bsearch:" "binary search." "" bsearch.3C
+.xx "" "tdelete, twalk: manage" "binary search trees." "tsearch," tsearch.3C
+.xx "" "remove symbols and relocation" "bits." "strip:" strip.1
+.xx "" "/set or reset the teletype" "bits to a sensible state." "" tset.1
+.xx "" "" "bj: the game of black jack." "" bj.6
+.xx "" "bj: the game of" "black jack." "" bj.6
+.xx "" "sync: update the super" "block." "" sync.1
+.xx "" "sum: print checksum and" "block count of a file." "" sum.1
+.xx "" "block information for bad" "block handling." "/alternate" altblk.4
+.xx "block/" "altblk: alternate" "block information for bad" "" altblk.4
+.xx "" "blt, blt512:" "block transfer data." "" blt.3
+.xx "" "sum7: sum and count" "blocks in a file." "" sum7.1
+.xx "data." "" "blt, blt512: block transfer" "" blt.3
+.xx "" "blt," "blt512: block transfer data." "" blt.3
+.xx "space allocation." "" "brk, sbrk: change data segment" "" brk.2
+.xx "modest-sized programs." "" "bs: a compiler/interpreter for" "" bs.1
+.xx "" "" "bsearch: binary search." "" bsearch.3C
+.xx "" "stdio: standard" "buffered input/output package." "" stdio.3S
+.xx "" "setbuf: assign" "buffering to a stream." "" setbuf.3S
+.xx "" "swab: swap" "bytes." "" swab.3C
+.xx "" "cc:" "C compiler." "" cc.1
+.xx "" "cflow: generate" "C flow graph." "" cflow.1
+.xx "" "cpp: the" "C language preprocessor." "" cpp.1
+.xx "" "maintain a tags file for a" "C program." "ctags:" ctags.1
+.xx "" "cb:" "C program beautifier." "" cb.1
+.xx "" "lint: a" "C program checker." "" lint.1
+.xx "" "cxref: generate" "C program cross reference." "" cxref.1
+.xx "" "message file by massaging" "C source." "/create an error" mkstr.1
+.xx "" "" "cal: print calendar." "" cal.1
+.xx "" "dc: desk" "calculator." "" dc.1
+.xx "" "cal: print" "calendar." "" cal.1
+.xx "" "" "calendar: reminder service." "" calendar.1
+.xx "" "data returned by stat system" "call." "stat:" stat.5
+.xx "" "cu:" "call another UNIX System." "" cu.1C
+.xx "" "malloc, free, realloc," "calloc: main memory allocator." "" malloc.3C
+.xx "" "intro: introduction to system" "calls and error numbers." "" intro.2
+.xx "to an LP line printer." "lp," "cancel: send/cancel requests" "" lp.1
+.xx "" "termcap: terminal" "capability data base." "" termcap.5
+.xx "" "cribbage: the" "card game cribbage." "" cribbage.6
+.xx "" "pnch: file format for" "card images." "" pnch.4
+.xx "" "asa: interpret ASA" "carriage control characters." "" asa.1
+.xx "files." "" "cat: concatenate and print" "" cat.1
+.xx "" "" "cb: C program beautifier." "" cb.1
+.xx "" "" "cc: C compiler." "" cc.1
+.xx "" "" "cd: change working directory." "" cd.1
+.xx "commentary of an SCCS delta." "" "cdc: change the delta" "" cdc.1
+.xx "ceiling, remainder,/" "floor," "ceil, fmod, fabs: floor," "" floor.3M
+.xx "" "/ceil, fmod, fabs: floor," "ceiling, remainder, absolute/" "" floor.3M
+.xx "" "" "cflow: generate C flow graph." "" cflow.1
+.xx "" "delta: make a delta" "(change) to an SCCS file." "" delta.1
+.xx "" "pipe: create an interprocess" "channel." "" pipe.2
+.xx "stream." "ungetc: push" "character back into input" "" ungetc.3S
+.xx "and neqn." "eqnchar: special" "character definitions for eqn" "" eqnchar.5
+.xx "file." "freq: report on" "character frequencies in a" "" freq.1
+.xx "user." "cuserid: get" "character login name of the" "" cuserid.3S
+.xx "" "/getchar, fgetc, getw: get" "character or word from stream." "" getc.3S
+.xx "" "/putchar, fputc, putw: put" "character or word on a stream." "" putc.3S
+.xx "" "ascii: map of ASCII" "character set." "" ascii.5
+.xx "" "interpret ASA carriage control" "characters." "asa:" asa.1
+.xx "" "_tolower, toascii: translate" "characters." "/_toupper," conv.3C
+.xx "" "iscntrl, isascii: classify" "characters." "/isprint, isgraph," ctype.3C
+.xx "" "tr: translate" "characters." "" tr.1
+.xx "given/" "sumdir: sum and count" "characters in the files in the" "" sumdir.1
+.xx "killer robots." "" "chase: Try to escape the" "" chase.6
+.xx "directory." "" "chdir: change working" "" chdir.2
+.xx "constant-width text for/" "cw," "checkcw: prepare" "" cw.1
+.xx "text for nroff or/" "eqn, neqn," "checkeq: format mathematical" "" eqn.1
+.xx "" "lint: a C program" "checker." "" lint.1
+.xx "systems processed by fsck." "" "checklist: list of file" "" checklist.4
+.xx "formatted with the/" "mm, osdd," "checkmm: print/check documents" "" mm.1
+.xx "file." "sum: print" "checksum and block count of a" "" sum.1
+.xx "" "chown," "chgrp: change owner or group." "" chown.1
+.xx "" "times: get process and" "child process times." "" times.2
+.xx "terminate." "wait: wait for" "child process to stop or" "" wait.2
+.xx "" "" "chmod: change mode." "" chmod.1
+.xx "" "" "chmod: change mode of file." "" chmod.2
+.xx "of a file." "" "chown: change owner and group" "" chown.2
+.xx "group." "" "chown, chgrp: change owner or" "" chown.1
+.xx "" "" "chroot: change root directory." "" chroot.2
+.xx "" "isgraph, iscntrl, isascii:" "classify characters." "/isprint," ctype.3C
+.xx "" "" "clear: clear terminal screen." "" clear.1
+.xx "" "clear:" "clear terminal screen." "" clear.1
+.xx "status/" "ferror, feof," "clearerr, fileno: stream" "" ferror.3S
+.xx "" "(command interpreter) with" "C-like syntax." "csh: a shell" csh.1
+.xx "" "alarm: set a process's alarm" "clock." "" alarm.2
+.xx "" "" "clock: report CPU time used." "" clock.3C
+.xx "" "close:" "close a file descriptor." "" close.2
+.xx "descriptor." "" "close: close a file" "" close.2
+.xx "" "fclose, fflush:" "close or flush a stream." "" fclose.3S
+.xx "" "" "cmp: compare two files." "" cmp.1
+.xx "line-feeds." "" "col: filter reverse" "" col.1
+.xx "" "" "comb: combine SCCS deltas." "" comb.1
+.xx "" "comb:" "combine SCCS deltas." "" comb.1
+.xx "common to two sorted files." "" "comm: select or reject lines" "" comm.1
+.xx "" "system: issue a shell" "command." "" system.3S
+.xx "" "test: condition evaluation" "command." "" test.1
+.xx "" "time: time a" "command." "" time.1
+.xx "" "argument list(s) and execute" "command." "xargs: construct" xargs.1
+.xx "" "nice: run a" "command at low priority." "" nice.1
+.xx "" "env: set environment for" "command execution." "" env.1
+.xx "" "uux: unix to unix" "command execution." "" uux.1C
+.xx "(\fIsh\^\fR/" "nohup: run a" "command immune to hangups" "" nohup.1
+.xx "C-like syntax." "csh: a shell" "(command interpreter) with" "" csh.1
+.xx "" "getopt: parse" "command options." "" getopt.1
+.xx "" "/shell, the standard/restricted" "command programming language." "" sh.1
+.xx "and system/" "timex: time a" "command; report process data" "" timex.1
+.xx "" "intro: introduction to" "commands and application/" "" intro.1
+.xx "" "at: execute" "commands at a later time." "" at.1
+.xx "" "cdc: change the delta" "commentary of an SCCS delta." "" cdc.1
+.xx "" "comm: select or reject lines" "common to two sorted files." "" comm.1
+.xx "" "socket: create an endpoint for" "communication." "" socket.2N
+.xx "" "ipcs: report inter-process" "communication facilities/" "" ipcs.1
+.xx "" "stdipc: standard interprocess" "communication package." "" stdipc.3C
+.xx "" "diff: differential file" "comparator." "" diff.1
+.xx "" "cmp:" "compare two files." "" cmp.1
+.xx "SCCS file." "sccsdiff:" "compare two versions of an" "" sccsdiff.1
+.xx "" "diff3: 3-way differential file" "comparison." "" diff3.1
+.xx "" "dircmp: directory" "comparison." "" dircmp.1
+.xx "" "regcmp: regular expression" "compile." "" regcmp.1
+.xx "expression." "regcmp, regex:" "compile and execute regular" "" regcmp.3X
+.xx "" "regexp: regular expression" "compile and match routines." "" regexp.5
+.xx "" "cc: C" "compiler." "" cc.1
+.xx "" "yacc: yet another" "compiler-compiler." "" yacc.1
+.xx "modest-sized programs." "bs: a" "compiler/interpreter for" "" bs.1
+.xx "" "erf, erfc: error function and" "complementary error function." "" erf.3M
+.xx "" "wait: await" "completion of process." "" wait.1
+.xx "" "pack, pcat, unpack:" "compress and expand files." "" pack.1
+.xx "" "cat:" "concatenate and print files." "" cat.1
+.xx "" "test:" "condition evaluation command." "" test.1
+.xx "" "uvar: returns system-specific" "configuration information." "" uvar.2
+.xx "on a socket." "" "connect: initiate a connection" "" connect.2N
+.xx "" "an out-going terminal line" "connection." "dial: establish" dial.3C
+.xx "" "accept: accept a" "connection on a socket." "" accept.2N
+.xx "" "connect: initiate a" "connection on a socket." "" connect.2N
+.xx "" "cw, checkcw: prepare" "constant-width text for troff." "" cw.1
+.xx "execute command." "xargs:" "construct argument list(s) and" "" xargs.1
+.xx "" "nroff/troff, tbl, and eqn" "constructs." "deroff: remove" deroff.1
+.xx "" "ls: list" "contents of directories." "" ls.1
+.xx "(Berkeley version)." "ls7: list" "contents of directory" "" ls7.1
+.xx "" "csplit:" "context split." "" csplit.1
+.xx "" "fcntl: file" "control." "" fcntl.2
+.xx "" "uucp status inquiry and job" "control." "uustat:" uustat.1C
+.xx "" "vc: version" "control." "" vc.1
+.xx "" "asa: interpret ASA carriage" "control characters." "" asa.1
+.xx "" "ioctl:" "control device." "" ioctl.2
+.xx "" "msgctl: message" "control operations." "" msgctl.2
+.xx "" "semctl: semaphore" "control operations." "" semctl.2
+.xx "" "shmctl: shared memory" "control operations." "" shmctl.2
+.xx "" "fcntl: file" "control options." "" fcntl.5
+.xx "" "tcp: Internet Transmission" "Control Protocol." "" tcp.5N
+.xx "terminals." "term:" "conventional names for" "" term.5
+.xx "" "units:" "conversion program." "" units.1
+.xx "" "dd:" "convert and copy a file." "" dd.1
+.xx "English." "number:" "convert Arabic numerals to" "" number.6
+.xx "floating-point number." "atof:" "convert ASCII string to" "" atof.3C
+.xx "integers and/" "l3tol, ltol3:" "convert between 3-byte" "" l3tol.3C
+.xx "and base-64 ASCII/" "a64l, l64a:" "convert between long integer" "" h64l.3C
+.xx "" "/gmtime, asctime, tzset:" "convert date and time to/" "" ctime.3C
+.xx "to string." "ecvt, fcvt, gcvt:" "convert floating-point number" "" ecvt.3C
+.xx "" "scanf, fscanf, sscanf:" "convert formatted input." "" scanf.3S
+.xx "" "strtol, atol, atoi:" "convert string to integer." "" strtol.3C
+.xx "" "bcd:" "convert to antique media." "" bcd.6
+.xx "" "rcp: remote file" "copy." "" rcp.1N
+.xx "" "uulog, uuname: unix to unix" "copy." "uucp," uucp.1C
+.xx "" "System-to-UNIX System file" "copy." "/uupick: public UNIX" uuto.1C
+.xx "" "dd: convert and" "copy a file." "" dd.1
+.xx "" "cpio:" "copy file archives in and out." "" cpio.1
+.xx "" "cp, ln, mv:" "copy, link or move files." "" cp.1
+.xx "file." "" "core: format of core image" "" core.4
+.xx "" "core: format of" "core image file." "" core.4
+.xx "atan2: trigonometric/" "sin," "cos, tan, asin, acos, atan," "" trig.3M
+.xx "functions." "sinh," "cosh, tanh: hyperbolic" "" sinh.3M
+.xx "" "wc: word" "count." "" wc.1
+.xx "" "sum7: sum and" "count blocks in a file." "" sum7.1
+.xx "in the given/" "sumdir: sum and" "count characters in the files" "" sumdir.1
+.xx "" "sum: print checksum and block" "count of a file." "" sum.1
+.xx "files." "" "cp, ln, mv: copy, link or move" "" cp.1
+.xx "" "cpio: format of" "cpio archive." "" cpio.4
+.xx "and out." "" "cpio: copy file archives in" "" cpio.1
+.xx "" "" "cpio: format of cpio archive." "" cpio.4
+.xx "preprocessor." "" "cpp: the C language" "" cpp.1
+.xx "" "sethostname: set name of host" "cpu." "" sethostname.2N
+.xx "" "clock: report" "CPU time used." "" clock.3C
+.xx "" "craps: the game of" "craps." "" craps.6
+.xx "" "" "craps: the game of craps." "" craps.6
+.xx "rewrite an existing one." "" "creat: create a new file or" "" creat.2
+.xx "file." "tmpnam, tempnam:" "create a name for a temporary" "" tmpnam.3S
+.xx "an existing one." "creat:" "create a new file or rewrite" "" creat.2
+.xx "" "fork:" "create a new process." "" fork.2
+.xx "" "tmpfile:" "create a temporary file." "" tmpfile.3S
+.xx "communication." "socket:" "create an endpoint for" "" socket.2N
+.xx "by massaging C source." "mkstr:" "create an error message file" "" mkstr.1
+.xx "channel." "pipe:" "create an interprocess" "" pipe.2
+.xx "files." "admin:" "create and administer SCCS" "" admin.1
+.xx "" "umask: set and get file" "creation mask." "" umask.2
+.xx "" "cribbage: the card game" "cribbage." "" cribbage.6
+.xx "cribbage." "" "cribbage: the card game" "" cribbage.6
+.xx "" "cxref: generate C program" "cross reference." "" cxref.1
+.xx "" "more: file perusal filter for" "crt viewing." "" more.1
+.xx "" "" "crypt: encode/decode." "" crypt.1
+.xx "generate DES encryption." "" "crypt, setkey, encrypt:" "" crypt.3C
+.xx "interpreter) with C-like/" "" "csh: a shell (command" "" csh.1
+.xx "" "" "csplit: context split." "" csplit.1
+.xx "terminal." "" "ct: spawn getty to a remote" "" ct.1C
+.xx "for a C program." "" "ctags: maintain a tags file" "" ctags.1
+.xx "for terminal." "" "ctermid: generate file name" "" ctermid.3S
+.xx "asctime, tzset: convert date/" "" "ctime, localtime, gmtime," "" ctime.3C
+.xx "" "" "cu: call another UNIX System." "" cu.1C
+.xx "" "ttt," "cubic: tic-tac-toe." "" ttt.6
+.xx "" "gethostname: get name of" "current host." "" gethostname.2N
+.xx "" "hostname: set or print name of" "current host system." "" hostname.1N
+.xx "activity." "sact: print" "current SCCS file editing" "" sact.1
+.xx "" "uname: print name of" "current UNIX System." "" uname.1
+.xx "" "uname: get name of" "current UNIX system." "" uname.2
+.xx "" "slot in the utmp file of the" "current user." "/find the" ttyslot.3C
+.xx "" "getcwd: get pathname of" "current working directory." "" getcwd.3C
+.xx "" "spline: interpolate smooth" "curve." "" spline.1G
+.xx "name of the user." "" "cuserid: get character login" "" cuserid.3S
+.xx "of each line of a file." "" "cut: cut out selected fields" "" cut.1
+.xx "each line of a file." "cut:" "cut out selected fields of" "" cut.1
+.xx "constant-width text for/" "" "cw, checkcw: prepare" "" cw.1
+.xx "cross reference." "" "cxref: generate C program" "" cxref.1
+.xx "" "/handle special functions of" "DASI 300 and 300s terminals." "" 300.1
+.xx "" "special functions of the" "DASI 450 terminal." "/handle" 450.1
+.xx "" "blt, blt512: block transfer" "data." "" blt.3
+.xx "" "prof: display profile" "data." "" prof.1
+.xx "" "/time a command; report process" "data and system activity." "" timex.1
+.xx "" "termcap: terminal capability" "data base." "" termcap.5
+.xx "port." "ttytype:" "data base of terminal types by" "" ttytype.4
+.xx "" "/sgetl: access long numeric" "data in a machine independent/" "" sputl.3X
+.xx "" "plock: lock process, text, or" "data in memory." "" plock.2
+.xx "call." "stat:" "data returned by stat system" "" stat.5
+.xx "" "brk, sbrk: change" "data segment space allocation." "" brk.2
+.xx "" "types: primitive system" "data types." "" types.5
+.xx "" "join: relational" "database operator." "" join.1
+.xx "" "udp: Internet User" "Datagram Protocol." "" udp.5N
+.xx "" "date: print and set the" "date." "" date.1
+.xx "" "/asctime, tzset: convert" "date and time to string." "" ctime.3C
+.xx "" "" "date: print and set the date." "" date.1
+.xx "" "" "dc: desk calculator." "" dc.1
+.xx "" "" "dd: convert and copy a file." "" dd.1
+.xx "" "adb:" "debugger." "" adb.1
+.xx "" "eqnchar: special character" "definitions for eqn and neqn." "" eqnchar.5
+.xx "names." "basename, dirname:" "deliver portions of path" "" basename.1
+.xx "file." "tail:" "deliver the last part of a" "" tail.1
+.xx "" "delta commentary of an SCCS" "delta." "cdc: change the" cdc.1
+.xx "file." "delta: make a" "delta (change) to an SCCS" "" delta.1
+.xx "delta." "cdc: change the" "delta commentary of an SCCS" "" cdc.1
+.xx "" "rmdel: remove a" "delta from an SCCS file." "" rmdel.1
+.xx "to an SCCS file." "" "delta: make a delta (change)" "" delta.1
+.xx "" "comb: combine SCCS" "deltas." "" comb.1
+.xx "" "mesg: permit or" "deny messages." "" mesg.1
+.xx "tbl, and eqn constructs." "" "deroff: remove nroff/troff," "" deroff.1
+.xx "" "setkey, encrypt: generate" "DES encryption." "crypt," crypt.3C
+.xx "" "close: close a file" "descriptor." "" close.2
+.xx "" "dup: duplicate an open file" "descriptor." "" dup.2
+.xx "" "dc:" "desk calculator." "" dc.1
+.xx "file." "access:" "determine accessibility of a" "" access.2
+.xx "" "file:" "determine file type." "" file.1
+.xx "" "errors in the specified" "device." "/on/off the extended" exterr.1
+.xx "" "ioctl: control" "device." "" ioctl.2
+.xx "" "master: master" "device information table." "" master.4
+.xx "terminal line connection." "" "dial: establish an out-going" "" dial.3C
+.xx "" "bdiff: big" "diff." "" bdiff.1
+.xx "comparator." "" "diff: differential file" "" diff.1
+.xx "" "diffdir:" "diff directories." "" diffdir.1
+.xx "comparison." "" "diff3: 3-way differential file" "" diff3.1
+.xx "" "" "diffdir: diff directories." "" diffdir.1
+.xx "" "sdiff: side-by-side" "difference program." "" sdiff.1
+.xx "" "diffmk: mark" "differences between files." "" diffmk.1
+.xx "" "diff:" "differential file comparator." "" diff.1
+.xx "" "diff3: 3-way" "differential file comparison." "" diff3.1
+.xx "between files." "" "diffmk: mark differences" "" diffmk.1
+.xx "" "" "dir: format of directories." "" dir.4
+.xx "" "" "dircmp: directory comparison." "" dircmp.1
+.xx "" "diffdir: diff" "directories." "" diffdir.1
+.xx "" "dir: format of" "directories." "" dir.4
+.xx "" "ls: list contents of" "directories." "" ls.1
+.xx "" "rm, rmdir: remove files or" "directories." "" rm.1
+.xx "" "in the files in the given" "directories." "/count characters" sumdir.1
+.xx "" "cd: change working" "directory." "" cd.1
+.xx "" "chdir: change working" "directory." "" chdir.2
+.xx "" "chroot: change root" "directory." "" chroot.2
+.xx "" "pathname of current working" "directory." "getcwd: get" getcwd.3C
+.xx "" "mkdir: make a" "directory." "" mkdir.1
+.xx "" "ls7: list contents of" "directory (Berkeley version)." "" ls7.1
+.xx "" "dircmp:" "directory comparison." "" dircmp.1
+.xx "" "unlink: remove" "directory entry." "" unlink.2
+.xx "" "pwd: working" "directory name." "" pwd.1
+.xx "ordinary file." "mknod: make a" "directory, or a special or" "" mknod.2
+.xx "path names." "basename," "dirname: deliver portions of" "" basename.1
+.xx "printers." "enable," "disable: enable/disable LP" "" enable.1
+.xx "" "acct: enable or" "disable process accounting." "" acct.2
+.xx "" "sadp:" "disk access profiler." "" sadp.1
+.xx "" "du: summarize" "disk usage." "" du.1
+.xx "" "rain: animated raindrops" "display." "" rain.6
+.xx "" "/view: screen oriented (visual)" "display editor based on ex." "" vi.1
+.xx "" "prof:" "display profile data." "" prof.1
+.xx "" "worms: animate worms on a" "display terminal." "" worms.6
+.xx "" "hypot: Euclidean" "distance function." "" hypot.3M
+.xx "" "/lcong48: generate uniformly" "distributed pseudo-random/" "" drand48.3C
+.xx "" "macro package for formatting" "documents." "mm: the MM" mm.5
+.xx "" "macro package for formatting" "documents." "/the OSDD adapter" mosd.5
+.xx "" "mm, osdd, checkmm: print/check" "documents formatted with the/" "" mm.1
+.xx "slides." "mmt, mvt: typeset" "documents, view graphs, and" "" mmt.1
+.xx "" "suitable for Motorola S-record" "downloading." "/ASCII formats" hex.1
+.xx "" "/Motorola S-records from" "downloading into a file." "" rcvhex.1
+.xx "nrand48, mrand48, jrand48,/" "" "drand48, erand48, lrand48," "" drand48.3C
+.xx "" "arithmetic: provide" "drill in number facts." "" arithmetic.6
+.xx "" "" "du: summarize disk usage." "" du.1
+.xx "" "od: octal" "dump." "" od.1
+.xx "descriptor." "" "dup: duplicate an open file" "" dup.2
+.xx "descriptor." "dup:" "duplicate an open file" "" dup.2
+.xx "" "The alien invaders attack the" "earth." "aliens:" aliens.6
+.xx "" "echo:" "echo arguments." "" echo.1
+.xx "" "" "echo: echo arguments." "" echo.1
+.xx "floating-point number to/" "" "ecvt, fcvt, gcvt: convert" "" ecvt.3C
+.xx "" "" "ed, red: text editor." "" ed.1
+.xx "program." "end, etext," "edata: last locations in" "" end.3C
+.xx "" "ex," "edit: text editor." "" ex.1
+.xx "" "sact: print current SCCS file" "editing activity." "" sact.1
+.xx "" "ed, red: text" "editor." "" ed.1
+.xx "" "ex, edit: text" "editor." "" ex.1
+.xx "" "ld: link" "editor." "" ld.1
+.xx "" "sed: stream" "editor." "" sed.1
+.xx "" "oriented (visual) display" "editor based on ex." "/screen" vi.1
+.xx "" "a.out: assembler and link" "editor output." "" a.out.4
+.xx "" "/user, real group, and" "effective group IDs." "" getuid.2
+.xx "and/" "/getegid: get real user," "effective user, real group," "" getuid.2
+.xx "Language." "" "ef\^l: Extended Fortran" "" efl.1
+.xx "" "split fortran, ratfor, or" "ef\^l files." "fsplit:" fsplit.1
+.xx "for a pattern." "grep," "egrep, fgrep: search a file" "" grep.1
+.xx "enable/disable LP printers." "" "enable, disable:" "" enable.1
+.xx "accounting." "acct:" "enable or disable process" "" acct.2
+.xx "" "enable, disable:" "enable/disable LP printers." "" enable.1
+.xx "" "crypt:" "encode/decode." "" crypt.1
+.xx "encryption." "crypt, setkey," "encrypt: generate DES" "" crypt.3C
+.xx "" "setkey, encrypt: generate DES" "encryption." "crypt," crypt.3C
+.xx "" "makekey: generate" "encryption key." "" makekey.1
+.xx "locations in program." "" "end, etext, edata: last" "" end.3C
+.xx "" "/getgrgid, getgrnam, setgrent," "endgrent: get group file/" "" getgrent.3C
+.xx "" "socket: create an" "endpoint for communication." "" socket.2N
+.xx "" "/getpwuid, getpwnam, setpwent," "endpwent: get password file/" "" getpwent.3C
+.xx "utmp/" "/pututline, setutent," "endutent, utmpname: access" "" getut.3C
+.xx "" "convert Arabic numerals to" "English." "number:" number.6
+.xx "" "nlist: get" "entries from name list." "" nlist.3C
+.xx "" "man, manprog: print" "entries in this manual." "" man.1
+.xx "" "man: macros for formatting" "entries in this manual." "" man.5
+.xx "" "endgrent: get group file" "entry." "/getgrnam, setgrent," getgrent.3C
+.xx "" "endpwent: get password file" "entry." "/getpwnam, setpwent," getpwent.3C
+.xx "" "utmpname: access utmp file" "entry." "/setutent, endutent," getut.3C
+.xx "" "putpwent: write password file" "entry." "" putpwent.3C
+.xx "" "unlink: remove directory" "entry." "" unlink.2
+.xx "" "utmp, wtmp: utmp and wtmp" "entry formats." "" utmp.4
+.xx "command execution." "" "env: set environment for" "" env.1
+.xx "" "" "environ: user environment." "" environ.4
+.xx "" "" "environ: user environment." "" environ.5
+.xx "" "environ: user" "environment." "" environ.4
+.xx "" "environ: user" "environment." "" environ.5
+.xx "" "printenv: print out the" "environment." "" printenv.1
+.xx "" "profile: setting up an" "environment at login time." "" profile.4
+.xx "execution." "env: set" "environment for command" "" env.1
+.xx "" "getenv: return value for" "environment name." "" getenv.3C
+.xx "" "character definitions for" "eqn and neqn." "/special" eqnchar.5
+.xx "" "remove nroff/troff, tbl, and" "eqn constructs." "deroff:" deroff.1
+.xx "mathematical text for nroff/" "" "eqn, neqn, checkeq: format" "" eqn.1
+.xx "definitions for eqn and neqn." "" "eqnchar: special character" "" eqnchar.5
+.xx "mrand48, jrand48,/" "drand48," "erand48, lrand48, nrand48," "" drand48.3C
+.xx "complementary error function." "" "erf, erfc: error function and" "" erf.3M
+.xx "complementary error/" "erf," "erfc: error function and" "" erf.3M
+.xx "format." "" "errfile: error-log file" "" errfile.4
+.xx "system error/" "perror," "errno, sys_errlist, sys_nerr:" "" perror.3C
+.xx "" "function and complementary" "error function." "/erfc: error" erf.3M
+.xx "complementary/" "erf, erfc:" "error function and" "" erf.3M
+.xx "massaging C/" "mkstr: create an" "error message file by" "" mkstr.1
+.xx "" "sys_errlist, sys_nerr: system" "error messages." "/errno," perror.3C
+.xx "" "to system calls and" "error numbers." "/introduction" intro.2
+.xx "" "matherr:" "error-handling function." "" matherr.3M
+.xx "" "errfile:" "error-log file format." "" errfile.4
+.xx "" "hashcheck: find spelling" "errors." "/hashmake, spellin," spell.1
+.xx "" "/- turn on/off the extended" "errors in the specified/" "" exterr.1
+.xx "robots." "autorobots:" "Escape from the automatic" "" autorobots.6
+.xx "" "robots:" "Escape from the robots." "" robots.6
+.xx "" "chase: Try to" "escape the killer robots." "" chase.6
+.xx "terminal line/" "dial:" "establish an out-going" "" dial.3C
+.xx "in program." "end," "etext, edata: last locations" "" end.3C
+.xx "" "hypot:" "Euclidean distance function." "" hypot.3M
+.xx "expression." "expr:" "evaluate arguments as an" "" expr.1
+.xx "" "test: condition" "evaluation command." "" test.1
+.xx "" "display editor based on" "ex." "/screen oriented (visual)" vi.1
+.xx "" "" "ex, edit: text editor." "" ex.1
+.xx "reading or/" "lockf: provide" "exclusive file regions for" "" lockf.2
+.xx "execlp, execvp: execute a/" "" "execl, execv, execle, execve," "" exec.2
+.xx "execvp: execute/" "execl, execv," "execle, execve, execlp," "" exec.2
+.xx "" "execl, execv, execle, execve," "execlp, execvp: execute a/" "" exec.2
+.xx "" "execve, execlp, execvp:" "execute a file." "/execle," exec.2
+.xx "" "construct argument list(s) and" "execute command." "xargs:" xargs.1
+.xx "time." "at:" "execute commands at a later" "" at.1
+.xx "" "regcmp, regex: compile and" "execute regular expression." "" regcmp.3X
+.xx "" "set environment for command" "execution." "env:" env.1
+.xx "" "uux: unix to unix command" "execution." "" uux.1C
+.xx "" "sleep: suspend" "execution for an interval." "" sleep.1
+.xx "" "sleep: suspend" "execution for interval." "" sleep.3C
+.xx "" "monitor: prepare" "execution profile." "" monitor.3C
+.xx "" "profil:" "execution time profile." "" profil.2
+.xx "execvp: execute a/" "execl," "execv, execle, execve, execlp," "" exec.2
+.xx "execute/" "execl, execv, execle," "execve, execlp, execvp:" "" exec.2
+.xx "" "/execv, execle, execve, execlp," "execvp: execute a file." "" exec.2
+.xx "" "a new file or rewrite an" "existing one." "creat: create" creat.2
+.xx "process." "" "exit, _exit: terminate" "" exit.2
+.xx "" "exit," "_exit: terminate process." "" exit.2
+.xx "exponential, logarithm,/" "" "exp, log, log10, pow, sqrt:" "" exp.3M
+.xx "" "pcat, unpack: compress and" "expand files." "pack," pack.1
+.xx "" "adventure: an" "exploration game." "" adventure.6
+.xx "" "exp, log, log10, pow, sqrt:" "exponential, logarithm, power,/" "" exp.3M
+.xx "expression." "" "expr: evaluate arguments as an" "" expr.1
+.xx "" "expr: evaluate arguments as an" "expression." "" expr.1
+.xx "" "compile and execute regular" "expression." "regcmp, regex:" regcmp.3X
+.xx "" "regcmp: regular" "expression compile." "" regcmp.1
+.xx "routines." "regexp: regular" "expression compile and match" "" regexp.5
+.xx "" "exterr - turn on/off the" "extended errors in the/" "" exterr.1
+.xx "" "ef\^l:" "Extended Fortran Language." "" efl.1
+.xx "" "greek: graphics for the" "extended TTY-37 type-box." "" greek.5
+.xx "extended errors in the/" "" "exterr - turn on/off the" "" exterr.1
+.xx "remainder,/" "floor, ceil, fmod," "fabs: floor, ceiling," "" floor.3M
+.xx "" "factor:" "factor a number." "" factor.1
+.xx "" "" "factor: factor a number." "" factor.1
+.xx "" "true," "false: provide truth values." "" true.1
+.xx "" "data in a machine independent" "fashion.." "/access long numeric" sputl.3X
+.xx "" "abort: generate an IOT" "fault." "" abort.3C
+.xx "a stream." "" "fclose, fflush: close or flush" "" fclose.3S
+.xx "" "" "fcntl: file control." "" fcntl.2
+.xx "" "" "fcntl: file control options." "" fcntl.5
+.xx "floating-point number/" "ecvt," "fcvt, gcvt: convert" "" ecvt.3C
+.xx "" "fopen, freopen," "fdopen: open a stream." "" fopen.3S
+.xx "status inquiries." "ferror," "feof, clearerr, fileno: stream" "" ferror.3S
+.xx "fileno: stream status/" "" "ferror, feof, clearerr," "" ferror.3S
+.xx "stream." "fclose," "fflush: close or flush a" "" fclose.3S
+.xx "word from/" "getc, getchar," "fgetc, getw: get character or" "" getc.3S
+.xx "stream." "gets," "fgets: get a string from a" "" gets.3S
+.xx "pattern." "grep, egrep," "fgrep: search a file for a" "" grep.1
+.xx "" "determine accessibility of a" "file." "access:" access.2
+.xx "" "chmod: change mode of" "file." "" chmod.2
+.xx "" "change owner and group of a" "file." "chown:" chown.2
+.xx "" "core: format of core image" "file." "" core.4
+.xx "" "fields of each line of a" "file." "cut: cut out selected" cut.1
+.xx "" "dd: convert and copy a" "file." "" dd.1
+.xx "" "a delta (change) to an SCCS" "file." "delta: make" delta.1
+.xx "" "execlp, execvp: execute a" "file." "/execv, execle, execve," exec.2
+.xx "" "on character frequencies in a" "file." "freq: report" freq.1
+.xx "" "get: get a version of an SCCS" "file." "" get.1
+.xx "" "group: group" "file." "" group.4
+.xx "" "issue: issue identification" "file." "" issue.4
+.xx "" "link: link to a" "file." "" link.2
+.xx "" "or a special or ordinary" "file." "/make a directory," mknod.2
+.xx "" "change the format of a text" "file." "newform:" newform.1
+.xx "" "passwd: password" "file." "" passwd.4
+.xx "" "or subsequent lines of one" "file." "/lines of several files" paste.1
+.xx "" "prs: print an SCCS" "file." "" prs.1
+.xx "" "from downloading into a" "file." "/Motorola S-records" rcvhex.1
+.xx "" "read: read from" "file." "" read.2
+.xx "" "remove a delta from an SCCS" "file." "rmdel:" rmdel.1
+.xx "" "two versions of an SCCS" "file." "sccsdiff: compare" sccsdiff.1
+.xx "" "sccsfile: format of SCCS" "file." "" sccsfile.4
+.xx "" "size: size of an object" "file." "" size.1
+.xx "" "in an object, or other binary" "file." "/the printable strings" strings.1
+.xx "" "checksum and block count of a" "file." "sum: print" sum.1
+.xx "" "sum and count blocks in a" "file." "sum7:" sum7.1
+.xx "" "deliver the last part of a" "file." "tail:" tail.1
+.xx "" "tmpfile: create a temporary" "file." "" tmpfile.3S
+.xx "" "create a name for a temporary" "file." "tmpnam, tempnam:" tmpnam.3S
+.xx "" "and modification times of a" "file." "touch: update access" touch.1
+.xx "" "undo a previous get of an SCCS" "file." "unget:" unget.1
+.xx "" "report repeated lines in a" "file." "uniq:" uniq.1
+.xx "" "val: validate SCCS" "file." "" val.1
+.xx "" "write: write on a" "file." "" write.2
+.xx "times." "utime: set" "file access and modification" "" utime.2
+.xx "" "hpio: HP 2645A terminal tape" "file archiver." "" hpio.1
+.xx "" "tar: tape" "file archiver." "" tar.1
+.xx "" "cpio: copy" "file archives in and out." "" cpio.1
+.xx "" "mkstr: create an error message" "file by massaging C source." "" mkstr.1
+.xx "" "diff: differential" "file comparator." "" diff.1
+.xx "" "diff3: 3-way differential" "file comparison." "" diff3.1
+.xx "" "fcntl:" "file control." "" fcntl.2
+.xx "" "fcntl:" "file control options." "" fcntl.5
+.xx "" "rcp: remote" "file copy." "" rcp.1N
+.xx "" "UNIX System-to-UNIX System" "file copy." "/uupick: public" uuto.1C
+.xx "" "umask: set and get" "file creation mask." "" umask.2
+.xx "" "close: close a" "file descriptor." "" close.2
+.xx "" "dup: duplicate an open" "file descriptor." "" dup.2
+.xx "" "" "file: determine file type." "" file.1
+.xx "" "sact: print current SCCS" "file editing activity." "" sact.1
+.xx "" "setgrent, endgrent: get group" "file entry." "/getgrnam," getgrent.3C
+.xx "" "endpwent: get password" "file entry." "/setpwent," getpwent.3C
+.xx "" "utmpname: access utmp" "file entry." "/endutent," getut.3C
+.xx "" "putpwent: write password" "file entry." "" putpwent.3C
+.xx "" "ctags: maintain a tags" "file for a C program." "" ctags.1
+.xx "" "grep, egrep, fgrep: search a" "file for a pattern." "" grep.1
+.xx "" "acct: per-process accounting" "file format." "" acct.4
+.xx "" "ar: archive (library)" "file format." "" ar.4
+.xx "" "errfile: error-log" "file format." "" errfile.4
+.xx "" "pnch:" "file format for card images." "" pnch.4
+.xx "" "intro: introduction to" "file formats." "" intro.4
+.xx "" "take: takes a" "file from a remote machine." "" take.1C
+.xx "" "take7: takes a" "file from a remote machine.." "" take7.1C
+.xx "" "split: split a" "file into pieces." "" split.1
+.xx "" "mktemp: make a unique" "file name." "" mktemp.3C
+.xx "" "ctermid: generate" "file name for terminal." "" ctermid.3S
+.xx "" "/find the slot in the utmp" "file of the current user." "" ttyslot.3C
+.xx "" "put: puts a" "file onto a remote machine.." "" put.1C
+.xx "" "put7: puts a" "file onto a remote machine.." "" put7.1C
+.xx "one." "creat: create a new" "file or rewrite an existing" "" creat.2
+.xx "viewing." "more:" "file perusal filter for crt" "" more.1
+.xx "" "lseek: move read/write" "file pointer." "" lseek.2
+.xx "" "/rewind, ftell: reposition a" "file pointer in a stream." "" fseek.3S
+.xx "" "lockf: provide exclusive" "file regions for reading or/" "" lockf.2
+.xx "" "bfs: big" "file scanner." "" bfs.1
+.xx "" "stat, fstat: get" "file status." "" stat.2
+.xx "" "mount: mount a" "file system." "" mount.2
+.xx "" "umount: unmount a" "file system." "" umount.2
+.xx "volume." "" "file system: format of system" "" fs.4
+.xx "" "ustat: get" "file system statistics." "" ustat.2
+.xx "" "mnttab: mounted" "file system table." "" mnttab.4
+.xx "fsck." "checklist: list of" "file systems processed by" "" checklist.4
+.xx "" "ftw: walk a" "file tree." "" ftw.3C
+.xx "" "file: determine" "file type." "" file.1
+.xx "" "umask: set" "file-creation mode mask." "" umask.1
+.xx "" "ferror, feof, clearerr," "fileno: stream status/" "" ferror.3S
+.xx "" "and print process accounting" "file(s)." "acctcom: search" acctcom.1
+.xx "" "create and administer SCCS" "files." "admin:" admin.1
+.xx "" "cat: concatenate and print" "files." "" cat.1
+.xx "" "cmp: compare two" "files." "" cmp.1
+.xx "" "lines common to two sorted" "files." "comm: select or reject" comm.1
+.xx "" "cp, ln, mv: copy, link or move" "files." "" cp.1
+.xx "" "mark differences between" "files." "diffmk:" diffmk.1
+.xx "" "find: find" "files." "" find.1
+.xx "" "format specification in text" "files." "fspec:" fspec.4
+.xx "" "fortran, ratfor, or ef\^l" "files." "fsplit: split" fsplit.1
+.xx "" "string, format of graphical" "files." "/graphical primitive" gps.4
+.xx "" "unpack: compress and expand" "files." "pack, pcat," pack.1
+.xx "" "pr: print" "files." "" pr.1
+.xx "" "sort: sort and/or merge" "files." "" sort.1
+.xx "" "reports version number of" "files." "version:" version.1
+.xx "" "what: identify SCCS" "files." "" what.1
+.xx "" "updater: update" "files between two machines." "" updater.1
+.xx "" "and count characters in the" "files in the given/" "/sum" sumdir.1
+.xx "" "hex: translates object" "files into ASCII formats/" "" hex.1
+.xx "" "rm, rmdir: remove" "files or directories." "" rm.1
+.xx "" "/merge same lines of several" "files or subsequent lines of/" "" paste.1
+.xx "" "greek: select terminal" "filter." "" greek.1
+.xx "" "nl: line numbering" "filter." "" nl.1
+.xx "" "more: file perusal" "filter for crt viewing." "" more.1
+.xx "" "col:" "filter reverse line-feeds." "" col.1
+.xx "" "tplot: graphics" "filters." "" tplot.1G
+.xx "" "find:" "find files." "" find.1
+.xx "" "" "find: find files." "" find.1
+.xx "" "hyphen:" "find hyphenated words." "" hyphen.1
+.xx "" "ttyname, isatty:" "find name of a terminal." "" ttyname.3C
+.xx "object library." "lorder:" "find ordering relation for an" "" lorder.1
+.xx "" "hashmake, spellin, hashcheck:" "find spelling errors." "spell," spell.1
+.xx "an object, or other/" "strings:" "find the printable strings in" "" strings.1
+.xx "of the current user." "ttyslot:" "find the slot in the utmp file" "" ttyslot.3C
+.xx "" "fish: play ``Go" "Fish''." "" fish.6
+.xx "" "" "fish: play ``Go Fish''." "" fish.6
+.xx "" "a command immune to hangups" "(\fIsh\^\fR only)." "nohup: run" nohup.1
+.xx "" "tee: pipe" "fitting." "" tee.1
+.xx "" "atof: convert ASCII string to" "floating-point number." "" atof.3C
+.xx "" "ecvt, fcvt, gcvt: convert" "floating-point number to/" "" ecvt.3C
+.xx "" "/modf: manipulate parts of" "floating-point numbers." "" frexp.3C
+.xx "floor, ceiling, remainder,/" "" "floor, ceil, fmod, fabs:" "" floor.3M
+.xx "" "floor, ceil, fmod, fabs:" "floor, ceiling, remainder,/" "" floor.3M
+.xx "" "cflow: generate C" "flow graph." "" cflow.1
+.xx "" "fclose, fflush: close or" "flush a stream." "" fclose.3S
+.xx "remainder,/" "floor, ceil," "fmod, fabs: floor, ceiling," "" floor.3M
+.xx "stream." "" "fopen, freopen, fdopen: open a" "" fopen.3S
+.xx "" "" "fork: create a new process." "" fork.2
+.xx "" "per-process accounting file" "format." "acct:" acct.4
+.xx "" "ar: archive (library) file" "format." "" ar.4
+.xx "" "errfile: error-log file" "format." "" errfile.4
+.xx "" "tp: magnetic tape" "format." "" tp.4
+.xx "" "pnch: file" "format for card images." "" pnch.4
+.xx "nroff or/" "eqn, neqn, checkeq:" "format mathematical text for" "" eqn.1
+.xx "" "newform: change the" "format of a text file." "" newform.1
+.xx "" "inode:" "format of an inode." "" inode.4
+.xx "" "core:" "format of core image file." "" core.4
+.xx "" "cpio:" "format of cpio archive." "" cpio.4
+.xx "" "dir:" "format of directories." "" dir.4
+.xx "" "/graphical primitive string," "format of graphical files." "" gps.4
+.xx "" "sccsfile:" "format of SCCS file." "" sccsfile.4
+.xx "" "file system:" "format of system volume." "" fs.4
+.xx "files." "fspec:" "format specification in text" "" fspec.4
+.xx "troff." "tbl:" "format tables for nroff or" "" tbl.1
+.xx "" "nroff:" "format text." "" nroff.1
+.xx "" "intro: introduction to file" "formats." "" intro.4
+.xx "" "wtmp: utmp and wtmp entry" "formats." "utmp," utmp.4
+.xx "" "/object files into ASCII" "formats suitable for Motorola/" "" hex.1
+.xx "" "scanf, fscanf, sscanf: convert" "formatted input." "" scanf.3S
+.xx "" "fprintf, sprintf: print" "formatted output." "printf," printf.3S
+.xx "" "/checkmm: print/check documents" "formatted with the MM macros." "" mm.1
+.xx "" "mptx: the macro package for" "formatting a permuted index." "" mptx.5
+.xx "" "nroff7: text" "formatting and typesetting." "" nroff7.1
+.xx "" "troff7: text" "formatting and typesetting." "" troff7.1
+.xx "" "mm: the MM macro package for" "formatting documents." "" mm.5
+.xx "" "OSDD adapter macro package for" "formatting documents." "/the" mosd.5
+.xx "manual." "man: macros for" "formatting entries in this" "" man.5
+.xx "" "ef\^l: Extended" "Fortran Language." "" efl.1
+.xx "files." "fsplit: split" "fortran, ratfor, or ef\^l" "" fsplit.1
+.xx "hopefully interesting, adage." "" "fortune: print a random," "" fortune.6
+.xx "formatted output." "printf," "fprintf, sprintf: print" "" printf.3S
+.xx "word on a/" "putc, putchar," "fputc, putw: put character or" "" putc.3S
+.xx "stream." "puts," "fputs: put a string on a" "" puts.3S
+.xx "input/output." "" "fread, fwrite: binary" "" fread.3S
+.xx "memory allocator." "malloc," "free, realloc, calloc: main" "" malloc.3C
+.xx "stream." "fopen," "freopen, fdopen: open a" "" fopen.3S
+.xx "frequencies in a file." "" "freq: report on character" "" freq.1
+.xx "" "freq: report on character" "frequencies in a file." "" freq.1
+.xx "parts of floating-point/" "" "frexp, ldexp, modf: manipulate" "" frexp.3C
+.xx "" "take: takes a file" "from a remote machine." "" take.1C
+.xx "" "take7: takes a file" "from a remote machine.." "" take7.1C
+.xx "" "receive: receive message" "from a socket." "" receive.2N
+.xx "" "send: send message" "from a socket." "" send.2
+.xx "" "gets, fgets: get a string" "from a stream." "" gets.3S
+.xx "" "rmdel: remove a delta" "from an SCCS file." "" rmdel.1
+.xx "" "getopt: get option letter" "from argument vector." "" getopt.3C
+.xx "" "/translates Motorola S-records" "from downloading into a file." "" rcvhex.1
+.xx "" "read: read" "from file." "" read.2
+.xx "" "nlist: get entries" "from name list." "" nlist.3C
+.xx "" "getw: get character or word" "from stream." "/getchar, fgetc," getc.3S
+.xx "" "autorobots: Escape" "from the automatic robots." "" autorobots.6
+.xx "" "robots: Escape" "from the robots." "" robots.6
+.xx "" "getpw: get name" "from UID." "" getpw.3C
+.xx "formatted input." "scanf," "fscanf, sscanf: convert" "" scanf.3S
+.xx "" "of file systems processed by" "fsck." "checklist: list" checklist.4
+.xx "reposition a file pointer in/" "" "fseek, rewind, ftell:" "" fseek.3S
+.xx "text files." "" "fspec: format specification in" "" fspec.4
+.xx "or ef\^l files." "" "fsplit: split fortran, ratfor," "" fsplit.1
+.xx "" "stat," "fstat: get file status." "" stat.2
+.xx "pointer in a/" "fseek, rewind," "ftell: reposition a file" "" fseek.3S
+.xx "" "" "ftw: walk a file tree." "" ftw.3C
+.xx "" "and complementary error" "function." "/error function" erf.3M
+.xx "" "gamma: log gamma" "function." "" gamma.3M
+.xx "" "hypot: Euclidean distance" "function." "" hypot.3M
+.xx "" "matherr: error-handling" "function." "" matherr.3M
+.xx "error/" "erf, erfc: error" "function and complementary" "" erf.3M
+.xx "" "j0, j1, jn, y0, y1, yn: Bessel" "functions." "" bessel.3M
+.xx "" "logarithm, power, square root" "functions." "/sqrt: exponential," exp.3M
+.xx "" "remainder, absolute value" "functions." "/floor, ceiling," floor.3M
+.xx "" "sinh, cosh, tanh: hyperbolic" "functions." "" sinh.3M
+.xx "" "atan, atan2: trigonometric" "functions." "/tan, asin, acos," trig.3M
+.xx "" "300, 300s: handle special" "functions of DASI 300 and 300s/" "" 300.1
+.xx "" "hp: handle special" "functions of HP 2640 and/" "" hp.1
+.xx "terminal." "450: handle special" "functions of the DASI 450" "" 450.1
+.xx "" "fread," "fwrite: binary input/output." "" fread.3S
+.xx "" "adventure: an exploration" "game." "" adventure.6
+.xx "" "moo: guessing" "game." "" moo.6
+.xx "" "trek: trekkie" "game." "" trek.6
+.xx "" "worm: Play the growing worm" "game." "" worm.6
+.xx "" "cribbage: the card" "game cribbage." "" cribbage.6
+.xx "" "back: the" "game of backgammon." "" back.6
+.xx "" "bj: the" "game of black jack." "" bj.6
+.xx "" "craps: the" "game of craps." "" craps.6
+.xx "" "wump: the" "game of hunt-the-wumpus." "" wump.6
+.xx "" "life: play the" "game of life." "" life.6
+.xx "" "intro: introduction to" "games." "" intro.6
+.xx "" "gamma: log" "gamma function." "" gamma.3M
+.xx "" "" "gamma: log gamma function." "" gamma.3M
+.xx "number to string." "ecvt, fcvt," "gcvt: convert floating-point" "" ecvt.3C
+.xx "" "maze:" "generate a maze." "" maze.6
+.xx "" "abort:" "generate an IOT fault." "" abort.3C
+.xx "" "cflow:" "generate C flow graph." "" cflow.1
+.xx "reference." "cxref:" "generate C program cross" "" cxref.1
+.xx "" "crypt, setkey, encrypt:" "generate DES encryption." "" crypt.3C
+.xx "" "makekey:" "generate encryption key." "" makekey.1
+.xx "terminal." "ctermid:" "generate file name for" "" ctermid.3S
+.xx "lexical tasks." "lex:" "generate programs for simple" "" lex.1
+.xx "" "/srand48, seed48, lcong48:" "generate uniformly distributed/" "" drand48.3C
+.xx "" "srand: simple random-number" "generator." "rand," rand.3C
+.xx "" "gets, fgets:" "get a string from a stream." "" gets.3S
+.xx "" "get:" "get a version of an SCCS file." "" get.1
+.xx "" "ulimit:" "get and set user limits." "" ulimit.2
+.xx "the user." "cuserid:" "get character login name of" "" cuserid.3S
+.xx "" "getc, getchar, fgetc, getw:" "get character or word from/" "" getc.3S
+.xx "" "nlist:" "get entries from name list." "" nlist.3C
+.xx "" "umask: set and" "get file creation mask." "" umask.2
+.xx "" "stat, fstat:" "get file status." "" stat.2
+.xx "" "ustat:" "get file system statistics." "" ustat.2
+.xx "file." "" "get: get a version of an SCCS" "" get.1
+.xx "" "/getgrnam, setgrent, endgrent:" "get group file entry." "" getgrent.3C
+.xx "" "getlogin:" "get login name." "" getlogin.3C
+.xx "" "logname:" "get login name." "" logname.1
+.xx "" "msgget:" "get message queue." "" msgget.2
+.xx "" "getpw:" "get name from UID." "" getpw.3C
+.xx "" "gethostname:" "get name of current host." "" gethostname.2N
+.xx "system." "uname:" "get name of current UNIX" "" uname.2
+.xx "" "unget: undo a previous" "get of an SCCS file." "" unget.1
+.xx "argument vector." "getopt:" "get option letter from" "" getopt.3C
+.xx "" "/getpwnam, setpwent, endpwent:" "get password file entry." "" getpwent.3C
+.xx "working directory." "getcwd:" "get pathname of current" "" getcwd.3C
+.xx "times." "times:" "get process and child process" "" times.2
+.xx "and/" "getpid, getpgrp, getppid:" "get process, process group," "" getpid.2
+.xx "" "/geteuid, getgid, getegid:" "get real user, effective user,/" "" getuid.2
+.xx "" "semget:" "get set of semaphores." "" semget.2
+.xx "" "shmget:" "get shared memory segment." "" shmget.2
+.xx "" "tty:" "get the terminal's name." "" tty.1
+.xx "" "time:" "get time." "" time.2
+.xx "get character or word from/" "" "getc, getchar, fgetc, getw:" "" getc.3S
+.xx "character or word from/" "getc," "getchar, fgetc, getw: get" "" getc.3S
+.xx "current working directory." "" "getcwd: get pathname of" "" getcwd.3C
+.xx "" "getuid, geteuid, getgid," "getegid: get real user,/" "" getuid.2
+.xx "environment name." "" "getenv: return value for" "" getenv.3C
+.xx "real user, effective/" "getuid," "geteuid, getgid, getegid: get" "" getuid.2
+.xx "user,/" "getuid, geteuid," "getgid, getegid: get real" "" getuid.2
+.xx "setgrent, endgrent: get group/" "" "getgrent, getgrgid, getgrnam," "" getgrent.3C
+.xx "endgrent: get group/" "getgrent," "getgrgid, getgrnam, setgrent," "" getgrent.3C
+.xx "get group/" "getgrent, getgrgid," "getgrnam, setgrent, endgrent:" "" getgrent.3C
+.xx "current host." "" "gethostname: get name of" "" gethostname.2N
+.xx "" "" "getlogin: get login name." "" getlogin.3C
+.xx "argument vector." "" "getopt: get option letter from" "" getopt.3C
+.xx "" "" "getopt: parse command options." "" getopt.1
+.xx "" "" "getpass: read a password." "" getpass.3C
+.xx "process group, and/" "getpid," "getpgrp, getppid: get process," "" getpid.2
+.xx "process, process group, and/" "" "getpid, getpgrp, getppid: get" "" getpid.2
+.xx "group, and/" "getpid, getpgrp," "getppid: get process, process" "" getpid.2
+.xx "" "" "getpw: get name from UID." "" getpw.3C
+.xx "setpwent, endpwent: get/" "" "getpwent, getpwuid, getpwnam," "" getpwent.3C
+.xx "get/" "getpwent, getpwuid," "getpwnam, setpwent, endpwent:" "" getpwent.3C
+.xx "endpwent: get/" "getpwent," "getpwuid, getpwnam, setpwent," "" getpwent.3C
+.xx "a stream." "" "gets, fgets: get a string from" "" gets.3S
+.xx "" "and terminal settings used by" "getty." "gettydefs: speed" gettydefs.4
+.xx "" "ct: spawn" "getty to a remote terminal." "" ct.1C
+.xx "settings used by getty." "" "gettydefs: speed and terminal" "" gettydefs.4
+.xx "getegid: get real user,/" "" "getuid, geteuid, getgid," "" getuid.2
+.xx "pututline, setutent,/" "" "getutent, getutid, getutline," "" getut.3C
+.xx "setutent, endutent,/" "getutent," "getutid, getutline, pututline," "" getut.3C
+.xx "setutent,/" "getutent, getutid," "getutline, pututline," "" getut.3C
+.xx "from/" "getc, getchar, fgetc," "getw: get character or word" "" getc.3S
+.xx "convert/" "ctime, localtime," "gmtime, asctime, tzset:" "" ctime.3C
+.xx "" "fish: play" "``Go Fish''." "" fish.6
+.xx "" "setjmp, long\|jmp: non-local" "goto." "" setjmp.3C
+.xx "string, format of graphical/" "" "gps: graphical primitive" "" gps.4
+.xx "" "cflow: generate C flow" "graph." "" cflow.1
+.xx "" "sag: system activity" "graph." "" sag.1G
+.xx "" "primitive string, format of" "graphical files." "/graphical" gps.4
+.xx "format of graphical/" "gps:" "graphical primitive string," "" gps.4
+.xx "" "tplot:" "graphics filters." "" tplot.1G
+.xx "TTY-37 type-box." "greek:" "graphics for the extended" "" greek.5
+.xx "" "plot:" "graphics interface." "" plot.4
+.xx "subroutines." "plot:" "graphics interface" "" plot.3X
+.xx "" "mvt: typeset documents, view" "graphs, and slides." "mmt," mmt.1
+.xx "" "package for typesetting view" "graphs and slides." "/macro" mv.5
+.xx "extended TTY-37 type-box." "" "greek: graphics for the" "" greek.5
+.xx "" "" "greek: select terminal filter." "" greek.1
+.xx "file for a pattern." "" "grep, egrep, fgrep: search a" "" grep.1
+.xx "" "chown, chgrp: change owner or" "group." "" chown.1
+.xx "" "newgrp: log in to a new" "group." "" newgrp.1
+.xx "" "/user, effective user, real" "group, and effective group/" "" getuid.2
+.xx "" "/getppid: get process, process" "group, and parent process IDs." "" getpid.2
+.xx "" "group:" "group file." "" group.4
+.xx "" "setgrent, endgrent: get" "group file entry." "/getgrnam," getgrent.3C
+.xx "" "" "group: group file." "" group.4
+.xx "" "setpgrp: set process" "group ID." "" setpgrp.2
+.xx "" "real group, and effective" "group IDs." "/effective user," getuid.2
+.xx "" "setuid, setgid: set user and" "group IDs." "" setuid.2
+.xx "" "id: print user and" "group IDs and names." "" id.1
+.xx "" "chown: change owner and" "group of a file." "" chown.2
+.xx "" "a signal to a process or a" "group of processes." "/send" kill.2
+.xx "" "update, and regenerate" "groups of programs." "/maintain," make.1
+.xx "" "worm: Play the" "growing worm game." "" worm.6
+.xx "" "ssignal," "gsignal: software signals." "" ssignal.3C
+.xx "" "hangman:" "guess the word." "" hangman.6
+.xx "" "moo:" "guessing game." "" moo.6
+.xx "DASI 300 and 300s/" "300, 300s:" "handle special functions of" "" 300.1
+.xx "2640 and 2621-series/" "hp:" "handle special functions of HP" "" hp.1
+.xx "the DASI 450 terminal." "450:" "handle special functions of" "" 450.1
+.xx "" "information for bad block" "handling." "/alternate block" altblk.4
+.xx "" "" "hangman: guess the word." "" hangman.6
+.xx "" "nohup: run a command immune to" "hangups (\fIsh\^\fR only)." "" nohup.1
+.xx "" "hcreate, hdestroy: manage" "hash search tables." "hsearch," hsearch.3C
+.xx "" "spell, hashmake, spellin," "hashcheck: find spelling/" "" spell.1
+.xx "find spelling errors." "spell," "hashmake, spellin, hashcheck:" "" spell.1
+.xx "search tables." "hsearch," "hcreate, hdestroy: manage hash" "" hsearch.3C
+.xx "tables." "hsearch, hcreate," "hdestroy: manage hash search" "" hsearch.3C
+.xx "" "help: ask for" "help." "" help.1
+.xx "" "" "help: ask for help." "" help.1
+.xx "into ASCII formats suitable/" "" "hex: translates object files" "" hex.1
+.xx "" "fortune: print a random," "hopefully interesting, adage." "" fortune.6
+.xx "" "get name of current" "host." "gethostname:" gethostname.2N
+.xx "" "sethostname: set name of" "host cpu." "" sethostname.2N
+.xx "" "ruptime: show" "host status of local machines." "" ruptime.1N
+.xx "" "set or print name of current" "host system." "hostname:" hostname.1N
+.xx "current host system." "" "hostname: set or print name of" "" hostname.1N
+.xx "" "rhost, raddr: look up internet" "hosts by name or address." "" rhost.3N
+.xx "" "handle special functions of" "HP 2640 and 2621-series/" "hp:" hp.1
+.xx "archiver." "hpio:" "HP 2645A terminal tape file" "" hpio.1
+.xx "of HP 2640 and 2621-series/" "" "hp: handle special functions" "" hp.1
+.xx "file archiver." "" "hpio: HP 2645A terminal tape" "" hpio.1
+.xx "manage hash search tables." "" "hsearch, hcreate, hdestroy:" "" hsearch.3C
+.xx "" "wump: the game of" "hunt-the-wumpus." "" wump.6
+.xx "" "sinh, cosh, tanh:" "hyperbolic functions." "" sinh.3M
+.xx "" "" "hyphen: find hyphenated words." "" hyphen.1
+.xx "" "hyphen: find" "hyphenated words." "" hyphen.1
+.xx "function." "" "hypot: Euclidean distance" "" hypot.3M
+.xx "" "semaphore set or shared memory" "id." "/remove a message queue," ipcrm.1
+.xx "" "setpgrp: set process group" "ID." "" setpgrp.2
+.xx "and names." "" "id: print user and group IDs" "" id.1
+.xx "" "issue: issue" "identification file." "" issue.4
+.xx "" "what:" "identify SCCS files." "" what.1
+.xx "" "group, and parent process" "IDs." "/get process, process" getpid.2
+.xx "" "group, and effective group" "IDs." "/effective user, real" getuid.2
+.xx "" "setgid: set user and group" "IDs." "setuid," setuid.2
+.xx "" "id: print user and group" "IDs and names." "" id.1
+.xx "" "core: format of core" "image file." "" core.4
+.xx "" "pnch: file format for card" "images." "" pnch.4
+.xx "only)." "nohup: run a command" "immune to hangups (\fIsh\^\fR" "" nohup.1
+.xx "" "long numeric data in a machine" "independent fashion.." "/access" sputl.3X
+.xx "" "/tgoto, tputs: terminal" "independent operation/" "" termcap.3
+.xx "" "for formatting a permuted" "index." "/the macro package" mptx.5
+.xx "" "ptx: permuted" "index." "" ptx.1
+.xx "family." "" "inet: Internet protocol" "" inet.5N
+.xx "" "inittab: script for the" "init process." "" inittab.4
+.xx "socket." "connect:" "initiate a connection on a" "" connect.2N
+.xx "process." "popen, pclose:" "initiate pipe to/from a" "" popen.3S
+.xx "process." "" "inittab: script for the init" "" inittab.4
+.xx "" "inode: format of an" "inode." "" inode.4
+.xx "" "" "inode: format of an inode." "" inode.4
+.xx "" "sscanf: convert formatted" "input." "scanf, fscanf," scanf.3S
+.xx "" "push character back into" "input stream." "ungetc:" ungetc.3S
+.xx "" "fread, fwrite: binary" "input/output." "" fread.3S
+.xx "" "stdio: standard buffered" "input/output package." "" stdio.3S
+.xx "" "fileno: stream status" "inquiries." "/feof, clearerr," ferror.3S
+.xx "" "uustat: uucp status" "inquiry and job control." "" uustat.1C
+.xx "" "atol, atoi: convert string to" "integer." "strtol," strtol.3C
+.xx "" "abs: return" "integer absolute value." "" abs.3C
+.xx "" "/l64a: convert between long" "integer and base-64 ASCII/" "" h64l.3C
+.xx "" "3-byte integers and long" "integers." "/convert between" l3tol.3C
+.xx "" "/ltol3: convert between 3-byte" "integers and long integers." "" l3tol.3C
+.xx "" "print a random, hopefully" "interesting, adage." "fortune:" fortune.6
+.xx "" "loop: software loopback" "interface." "" lo.5N
+.xx "" "plot: graphics" "interface." "" plot.4
+.xx "" "plot: graphics" "interface subroutines." "" plot.3X
+.xx "" "rhost, raddr: look up" "internet hosts by name or/" "" rhost.3N
+.xx "" "ip:" "Internet Protocol." "" ip.5N
+.xx "" "inet:" "Internet protocol family." "" inet.5N
+.xx "Protocol." "tcp:" "Internet Transmission Control" "" tcp.5N
+.xx "Protocol." "udp:" "Internet User Datagram" "" udp.5N
+.xx "" "spline:" "interpolate smooth curve." "" spline.1G
+.xx "characters." "asa:" "interpret ASA carriage control" "" asa.1
+.xx "" "sno: SNOBOL" "interpreter." "" sno.1
+.xx "syntax." "csh: a shell (command" "interpreter) with C-like" "" csh.1
+.xx "" "pipe: create an" "interprocess channel." "" pipe.2
+.xx "facilities/" "ipcs: report" "inter-process communication" "" ipcs.1
+.xx "package." "stdipc: standard" "interprocess communication" "" stdipc.3C
+.xx "" "suspend execution for an" "interval." "sleep:" sleep.1
+.xx "" "sleep: suspend execution for" "interval." "" sleep.3C
+.xx "commands and application/" "" "intro: introduction to" "" intro.1
+.xx "formats." "" "intro: introduction to file" "" intro.4
+.xx "" "" "intro: introduction to games." "" intro.6
+.xx "miscellany." "" "intro: introduction to" "" intro.5
+.xx "subroutines and libraries." "" "intro: introduction to" "" intro.3
+.xx "calls and error numbers." "" "intro: introduction to system" "" intro.2
+.xx "application programs." "intro:" "introduction to commands and" "" intro.1
+.xx "" "intro:" "introduction to file formats." "" intro.4
+.xx "" "intro:" "introduction to games." "" intro.6
+.xx "" "intro:" "introduction to miscellany." "" intro.5
+.xx "facilities." "net:" "introduction to networking" "" net.5N
+.xx "and libraries." "intro:" "introduction to subroutines" "" intro.3
+.xx "and error numbers." "intro:" "introduction to system calls" "" intro.2
+.xx "" "aliens: The alien" "invaders attack the earth." "" aliens.6
+.xx "" "select: synchronous" "i/o multiplexing." "" select.2N
+.xx "" "" "ioctl: control device." "" ioctl.2
+.xx "" "abort: generate an" "IOT fault." "" abort.3C
+.xx "" "" "ip: Internet Protocol." "" ip.5N
+.xx "semaphore set or shared/" "" "ipcrm: remove a message queue," "" ipcrm.1
+.xx "communication facilities/" "" "ipcs: report inter-process" "" ipcs.1
+.xx "" "/islower, isdigit, isxdigit," "isalnum, isspace, ispunct,/" "" ctype.3C
+.xx "isdigit, isxdigit, isalnum,/" "" "isalpha, isupper, islower," "" ctype.3C
+.xx "" "/isprint, isgraph, iscntrl," "isascii: classify characters." "" ctype.3C
+.xx "terminal." "ttyname," "isatty: find name of a" "" ttyname.3C
+.xx "" "/ispunct, isprint, isgraph," "iscntrl, isascii: classify/" "" ctype.3C
+.xx "" "isalpha, isupper, islower," "isdigit, isxdigit, isalnum,/" "" ctype.3C
+.xx "" "/isspace, ispunct, isprint," "isgraph, iscntrl, isascii:/" "" ctype.3C
+.xx "isalnum,/" "isalpha, isupper," "islower, isdigit, isxdigit," "" ctype.3C
+.xx "" "/isalnum, isspace, ispunct," "isprint, isgraph, iscntrl,/" "" ctype.3C
+.xx "" "/isxdigit, isalnum, isspace," "ispunct, isprint, isgraph,/" "" ctype.3C
+.xx "" "/isdigit, isxdigit, isalnum," "isspace, ispunct, isprint,/" "" ctype.3C
+.xx "" "system:" "issue a shell command." "" system.3S
+.xx "" "issue:" "issue identification file." "" issue.4
+.xx "file." "" "issue: issue identification" "" issue.4
+.xx "isxdigit, isalnum,/" "isalpha," "isupper, islower, isdigit," "" ctype.3C
+.xx "" "/isupper, islower, isdigit," "isxdigit, isalnum, isspace,/" "" ctype.3C
+.xx "" "news: print news" "items." "" news.1
+.xx "functions." "" "j0, j1, jn, y0, y1, yn: Bessel" "" bessel.3M
+.xx "functions." "j0," "j1, jn, y0, y1, yn: Bessel" "" bessel.3M
+.xx "" "bj: the game of black" "jack." "" bj.6
+.xx "functions." "j0, j1," "jn, y0, y1, yn: Bessel" "" bessel.3M
+.xx "operator." "" "join: relational database" "" join.1
+.xx "" "/lrand48, nrand48, mrand48," "jrand48, srand48, seed48,/" "" drand48.3C
+.xx "" "makekey: generate encryption" "key." "" makekey.1
+.xx "process or a group of/" "" "kill: send a signal to a" "" kill.2
+.xx "" "" "kill: terminate a process." "" kill.1
+.xx "" "chase: Try to escape the" "killer robots." "" chase.6
+.xx "" "quiz: test your" "knowledge." "" quiz.6
+.xx "3-byte integers and long/" "" "l3tol, ltol3: convert between" "" l3tol.3C
+.xx "integer and base-64/" "a64l," "l64a: convert between long" "" h64l.3C
+.xx "" "scanning and processing" "language." "awk: pattern" awk.1
+.xx "" "arbitrary-precision arithmetic" "language." "bc:" bc.1
+.xx "" "ef\^l: Extended Fortran" "Language." "" efl.1
+.xx "" "command programming" "language." "/standard/restricted" sh.1
+.xx "" "cpp: the C" "language preprocessor." "" cpp.1
+.xx "" "/jrand48, srand48, seed48," "lcong48: generate uniformly/" "" drand48.3C
+.xx "" "" "ld: link editor." "" ld.1
+.xx "of floating-point/" "frexp," "ldexp, modf: manipulate parts" "" frexp.3C
+.xx "" "getopt: get option" "letter from argument vector." "" getopt.3C
+.xx "simple lexical tasks." "" "lex: generate programs for" "" lex.1
+.xx "" "generate programs for simple" "lexical tasks." "lex:" lex.1
+.xx "" "to subroutines and" "libraries." "/introduction" intro.3
+.xx "" "relation for an object" "library." "/find ordering" lorder.1
+.xx "" "ar: archive" "(library) file format." "" ar.4
+.xx "" "ar: archive and" "library maintainer." "" ar.1
+.xx "" "ulimit: get and set user" "limits." "" ulimit.2
+.xx "" "line: read one" "line." "" line.1
+.xx "" "an out-going terminal" "line connection." "/establish" dial.3C
+.xx "" "nl:" "line numbering filter." "" nl.1
+.xx "" "out selected fields of each" "line of a file." "cut: cut" cut.1
+.xx "" "send/cancel requests to an LP" "line printer." "lp, cancel:" lp.1
+.xx "" "lpr:" "line printer spooler." "" lpr.1
+.xx "" "" "line: read one line." "" line.1
+.xx "" "lsearch:" "linear search and update." "" lsearch.3C
+.xx "" "col: filter reverse" "line-feeds." "" col.1
+.xx "" "head: give first few" "lines." "" head.1
+.xx "files." "comm: select or reject" "lines common to two sorted" "" comm.1
+.xx "" "uniq: report repeated" "lines in a file." "" uniq.1
+.xx "" "of several files or subsequent" "lines of one file." "/same lines" paste.1
+.xx "subsequent/" "paste: merge same" "lines of several files or" "" paste.1
+.xx "" "ld:" "link editor." "" ld.1
+.xx "" "a.out: assembler and" "link editor output." "" a.out.4
+.xx "" "" "link: link to a file." "" link.2
+.xx "" "cp, ln, mv: copy," "link or move files." "" cp.1
+.xx "" "link:" "link to a file." "" link.2
+.xx "" "" "lint: a C program checker." "" lint.1
+.xx "" "nlist: get entries from name" "list." "" nlist.3C
+.xx "" "nm: print name" "list." "" nm.1
+.xx "" "ls:" "list contents of directories." "" ls.1
+.xx "(Berkeley version)." "ls7:" "list contents of directory" "" ls7.1
+.xx "by fsck." "checklist:" "list of file systems processed" "" checklist.4
+.xx "" "xargs: construct argument" "list(s) and execute command." "" xargs.1
+.xx "files." "cp," "ln, mv: copy, link or move" "" cp.1
+.xx "tzset: convert date/" "ctime," "localtime, gmtime, asctime," "" ctime.3C
+.xx "" "end, etext, edata: last" "locations in program." "" end.3C
+.xx "memory." "plock:" "lock process, text, or data in" "" plock.2
+.xx "regions for reading or/" "" "lockf: provide exclusive file" "" lockf.2
+.xx "" "gamma:" "log gamma function." "" gamma.3M
+.xx "" "newgrp:" "log in to a new group." "" newgrp.1
+.xx "exponential, logarithm,/" "exp," "log, log10, pow, sqrt:" "" exp.3M
+.xx "logarithm, power,/" "exp, log," "log10, pow, sqrt: exponential," "" exp.3M
+.xx "" "/log10, pow, sqrt: exponential," "logarithm, power, square root/" "" exp.3M
+.xx "" "rwho: who is" "logged in on local machines." "" rwho.1N
+.xx "" "rlogin: remote" "login." "" rlogin.1N
+.xx "" "getlogin: get" "login name." "" getlogin.3C
+.xx "" "logname: get" "login name." "" logname.1
+.xx "" "cuserid: get character" "login name of the user." "" cuserid.3S
+.xx "" "logname: return" "login name of user." "" logname.3X
+.xx "" "passwd: change" "login password." "" passwd.1
+.xx "" "" "login: sign on." "" login.1
+.xx "" "setting up an environment at" "login time." "profile:" profile.4
+.xx "" "" "logname: get login name." "" logname.1
+.xx "user." "" "logname: return login name of" "" logname.3X
+.xx "" "a64l, l64a: convert between" "long integer and base-64 ASCII/" "" h64l.3C
+.xx "" "between 3-byte integers and" "long integers." "/ltol3: convert" l3tol.3C
+.xx "" "sputl, sgetl: access" "long numeric data in a machine/" "" sputl.3X
+.xx "" "setjmp," "long\|jmp: non-local goto." "" setjmp.3C
+.xx "interface." "" "loop: software loopback" "" lo.5N
+.xx "" "loop: software" "loopback interface." "" lo.5N
+.xx "for an object library." "" "lorder: find ordering relation" "" lorder.1
+.xx "" "nice: run a command at" "low priority." "" nice.1
+.xx "requests to an LP line/" "" "lp, cancel: send/cancel" "" lp.1
+.xx "" "send/cancel requests to an" "LP line printer." "lp, cancel:" lp.1
+.xx "" "disable: enable/disable" "LP printers." "enable," enable.1
+.xx "" "lpstat: print" "LP status information." "" lpstat.1
+.xx "" "" "lpr: line printer spooler." "" lpr.1
+.xx "information." "" "lpstat: print LP status" "" lpstat.1
+.xx "jrand48,/" "drand48, erand48," "lrand48, nrand48, mrand48," "" drand48.3C
+.xx "directories." "" "ls: list contents of" "" ls.1
+.xx "directory (Berkeley version)." "" "ls7: list contents of" "" ls7.1
+.xx "update." "" "lsearch: linear search and" "" lsearch.3C
+.xx "pointer." "" "lseek: move read/write file" "" lseek.2
+.xx "integers and long/" "l3tol," "ltol3: convert between 3-byte" "" l3tol.3C
+.xx "" "" "m4: macro processor." "" m4.1
+.xx "truth value about your/" "" "m68k, pdp11, u3b, vax: provide" "" machid.1
+.xx "" "put: puts a file onto a remote" "machine.." "" put.1C
+.xx "" "puts a file onto a remote" "machine.." "put7:" put7.1C
+.xx "" "takes a file from a remote" "machine." "take:" take.1C
+.xx "" "takes a file from a remote" "machine.." "take7:" take7.1C
+.xx "" "/access long numeric data in a" "machine independent fashion.." "" sputl.3X
+.xx "" "show host status of local" "machines." "ruptime:" ruptime.1N
+.xx "" "who is logged in on local" "machines." "rwho:" rwho.1N
+.xx "" "update files between two" "machines." "updater:" updater.1
+.xx "permuted index." "mptx: the" "macro package for formatting a" "" mptx.5
+.xx "documents." "mm: the MM" "macro package for formatting" "" mm.5
+.xx "" "mosd: the OSDD adapter" "macro package for formatting/" "" mosd.5
+.xx "view graphs and/" "mv: a troff" "macro package for typesetting" "" mv.5
+.xx "" "m4:" "macro processor." "" m4.1
+.xx "" "formatted with the MM" "macros." "/print/check documents" mm.1
+.xx "in this manual." "man:" "macros for formatting entries" "" man.5
+.xx "" "tp:" "magnetic tape format." "" tp.4
+.xx "" "send mail to users or read" "mail." "mail, rmail:" mail.1
+.xx "users or read mail." "" "mail, rmail: send mail to" "" mail.1
+.xx "" "mail, rmail: send" "mail to users or read mail." "" mail.1
+.xx "" "malloc, free, realloc, calloc:" "main memory allocator." "" malloc.3C
+.xx "program." "ctags:" "maintain a tags file for a C" "" ctags.1
+.xx "regenerate groups of/" "make:" "maintain, update, and" "" make.1
+.xx "" "ar: archive and library" "maintainer." "" ar.1
+.xx "SCCS file." "delta:" "make a delta (change) to an" "" delta.1
+.xx "" "mkdir:" "make a directory." "" mkdir.1
+.xx "or ordinary file." "mknod:" "make a directory, or a special" "" mknod.2
+.xx "" "mktemp:" "make a unique file name." "" mktemp.3C
+.xx "regenerate groups of/" "" "make: maintain, update, and" "" make.1
+.xx "" "ssp:" "make output single spaced." "" ssp.1
+.xx "" "banner:" "make posters." "" banner.1
+.xx "key." "" "makekey: generate encryption" "" makekey.1
+.xx "main memory allocator." "" "malloc, free, realloc, calloc:" "" malloc.3C
+.xx "entries in this manual." "" "man: macros for formatting" "" man.5
+.xx "this manual." "" "man, manprog: print entries in" "" man.1
+.xx "" "tsearch, tdelete, twalk:" "manage binary search trees." "" tsearch.3C
+.xx "" "hsearch, hcreate, hdestroy:" "manage hash search tables." "" hsearch.3C
+.xx "" "frexp, ldexp, modf:" "manipulate parts of/" "" frexp.3C
+.xx "" "tp:" "manipulate tape archive." "" tp.1
+.xx "manual." "man," "manprog: print entries in this" "" man.1
+.xx "" "manprog: print entries in this" "manual." "man," man.1
+.xx "" "for formatting entries in this" "manual." "man: macros" man.5
+.xx "" "ascii:" "map of ASCII character set." "" ascii.5
+.xx "files." "diffmk:" "mark differences between" "" diffmk.1
+.xx "" "umask: set file-creation mode" "mask." "" umask.1
+.xx "" "set and get file creation" "mask." "umask:" umask.2
+.xx "" "an error message file by" "massaging C source." "/create" mkstr.1
+.xx "table." "master:" "master device information" "" master.4
+.xx "information table." "" "master: master device" "" master.4
+.xx "" "regular expression compile and" "match routines." "regexp:" regexp.5
+.xx "" "eqn, neqn, checkeq: format" "mathematical text for nroff or/" "" eqn.1
+.xx "function." "" "matherr: error-handling" "" matherr.3M
+.xx "" "maze: generate a" "maze." "" maze.6
+.xx "" "" "maze: generate a maze." "" maze.6
+.xx "" "bcd: convert to antique" "media." "" bcd.6
+.xx "memcpy, memset: memory/" "" "memccpy, memchr, memcmp," "" memory.3C
+.xx "memset: memory/" "memccpy," "memchr, memcmp, memcpy," "" memory.3C
+.xx "operations." "memccpy, memchr," "memcmp, memcpy, memset: memory" "" memory.3C
+.xx "" "memccpy, memchr, memcmp," "memcpy, memset: memory/" "" memory.3C
+.xx "" "lock process, text, or data in" "memory." "plock:" plock.2
+.xx "" "free, realloc, calloc: main" "memory allocator." "malloc," malloc.3C
+.xx "" "shmctl: shared" "memory control operations." "" shmctl.2
+.xx "" "queue, semaphore set or shared" "memory id." "/remove a message" ipcrm.1
+.xx "" "memcmp, memcpy, memset:" "memory operations." "/memchr," memory.3C
+.xx "" "shmop: shared" "memory operations." "" shmop.2
+.xx "" "shmget: get shared" "memory segment." "" shmget.2
+.xx "" "/memchr, memcmp, memcpy," "memset: memory operations." "" memory.3C
+.xx "" "sort: sort and/or" "merge files." "" sort.1
+.xx "files or subsequent/" "paste:" "merge same lines of several" "" paste.1
+.xx "" "" "mesg: permit or deny messages." "" mesg.1
+.xx "" "msgctl:" "message control operations." "" msgctl.2
+.xx "" "mkstr: create an error" "message file by massaging C/" "" mkstr.1
+.xx "" "receive: receive" "message from a socket." "" receive.2N
+.xx "" "send: send" "message from a socket." "" send.2
+.xx "" "msgop:" "message operations." "" msgop.2
+.xx "" "msgget: get" "message queue." "" msgget.2
+.xx "or shared/" "ipcrm: remove a" "message queue, semaphore set" "" ipcrm.1
+.xx "" "mesg: permit or deny" "messages." "" mesg.1
+.xx "" "sys_nerr: system error" "messages." "/errno, sys_errlist," perror.3C
+.xx "" "" "mkdir: make a directory." "" mkdir.1
+.xx "special or ordinary file." "" "mknod: make a directory, or a" "" mknod.2
+.xx "file by massaging C source." "" "mkstr: create an error message" "" mkstr.1
+.xx "name." "" "mktemp: make a unique file" "" mktemp.3C
+.xx "formatting documents." "mm: the" "MM macro package for" "" mm.5
+.xx "" "documents formatted with the" "MM macros." "/print/check" mm.1
+.xx "documents formatted with the/" "" "mm, osdd, checkmm: print/check" "" mm.1
+.xx "formatting documents." "" "mm: the MM macro package for" "" mm.5
+.xx "view graphs, and slides." "" "mmt, mvt: typeset documents," "" mmt.1
+.xx "table." "" "mnttab: mounted file system" "" mnttab.4
+.xx "" "chmod: change" "mode." "" chmod.1
+.xx "" "umask: set file-creation" "mode mask." "" umask.1
+.xx "" "chmod: change" "mode of file." "" chmod.2
+.xx "" "bs: a compiler/interpreter for" "modest-sized programs." "" bs.1
+.xx "floating-point/" "frexp, ldexp," "modf: manipulate parts of" "" frexp.3C
+.xx "" "utime: set file access and" "modification times." "" utime.2
+.xx "" "touch: update access and" "modification times of a file." "" touch.1
+.xx "profile." "" "monitor: prepare execution" "" monitor.3C
+.xx "" "" "moo: guessing game." "" moo.6
+.xx "package for formatting/" "" "mosd: the OSDD adapter macro" "" mosd.5
+.xx "" "/ASCII formats suitable for" "Motorola S-record downloading." "" hex.1
+.xx "" "rcvhex: translates" "Motorola S-records from/" "" rcvhex.1
+.xx "" "mount:" "mount a file system." "" mount.2
+.xx "" "" "mount: mount a file system." "" mount.2
+.xx "" "mnttab:" "mounted file system table." "" mnttab.4
+.xx "" "cp, ln, mv: copy, link or" "move files." "" cp.1
+.xx "" "lseek:" "move read/write file pointer." "" lseek.2
+.xx "formatting a permuted index." "" "mptx: the macro package for" "" mptx.5
+.xx "" "/erand48, lrand48, nrand48," "mrand48, jrand48, srand48,/" "" drand48.3C
+.xx "operations." "" "msgctl: message control" "" msgctl.2
+.xx "" "" "msgget: get message queue." "" msgget.2
+.xx "" "" "msgop: message operations." "" msgop.2
+.xx "" "select: synchronous i/o" "multiplexing." "" select.2N
+.xx "typesetting view graphs and/" "" "mv: a troff macro package for" "" mv.5
+.xx "" "cp, ln," "mv: copy, link or move files." "" cp.1
+.xx "graphs, and slides." "mmt," "mvt: typeset documents, view" "" mmt.1
+.xx "" "definitions for eqn and" "neqn." "/special character" eqnchar.5
+.xx "mathematical text for/" "eqn," "neqn, checkeq: format" "" eqn.1
+.xx "networking facilities." "" "net: introduction to" "" net.5N
+.xx "" "rstat:" "network statistics program." "" rstat.1N
+.xx "" "net: introduction to" "networking facilities." "" net.5N
+.xx "a text file." "" "newform: change the format of" "" newform.1
+.xx "" "" "newgrp: log in to a new group." "" newgrp.1
+.xx "" "news: print" "news items." "" news.1
+.xx "" "" "news: print news items." "" news.1
+.xx "process." "" "nice: change priority of a" "" nice.2
+.xx "priority." "" "nice: run a command at low" "" nice.1
+.xx "" "" "nl: line numbering filter." "" nl.1
+.xx "list." "" "nlist: get entries from name" "" nlist.3C
+.xx "" "" "nm: print name list." "" nm.1
+.xx "hangups (\fIsh\^\fR only)." "" "nohup: run a command immune to" "" nohup.1
+.xx "" "setjmp, long\|jmp:" "non-local goto." "" setjmp.3C
+.xx "" "drand48, erand48, lrand48," "nrand48, mrand48, jrand48,/" "" drand48.3C
+.xx "" "" "nroff: format text." "" nroff.1
+.xx "" "format mathematical text for" "nroff or troff." "/checkeq:" eqn.1
+.xx "" "tbl: format tables for" "nroff or troff." "" tbl.1
+.xx "typesetting." "" "nroff7: text formatting and" "" nroff7.1
+.xx "constructs." "deroff: remove" "nroff/troff, tbl, and eqn" "" deroff.1
+.xx "" "nl: line" "numbering filter." "" nl.1
+.xx "" "number: convert Arabic" "numerals to English." "" number.6
+.xx "" "sputl, sgetl: access long" "numeric data in a machine/" "" sputl.3X
+.xx "" "size: size of an" "object file." "" size.1
+.xx "formats/" "hex: translates" "object files into ASCII" "" hex.1
+.xx "" "find ordering relation for an" "object library." "lorder:" lorder.1
+.xx "" "/the printable strings in an" "object, or other binary file." "" strings.1
+.xx "" "od:" "octal dump." "" od.1
+.xx "" "" "od: octal dump." "" od.1
+.xx "" "immune to hangups (\fIsh\^\fR" "only)." "nohup: run a command" nohup.1
+.xx "the specified/" "exterr - turn" "on/off the extended errors in" "" exterr.1
+.xx "" "put: puts a file" "onto a remote machine.." "" put.1C
+.xx "" "put7: puts a file" "onto a remote machine.." "" put7.1C
+.xx "" "fopen, freopen, fdopen:" "open a stream." "" fopen.3S
+.xx "" "dup: duplicate an" "open file descriptor." "" dup.2
+.xx "" "open:" "open for reading or writing." "" open.2
+.xx "writing." "" "open: open for reading or" "" open.2
+.xx "" "tputs: terminal independent" "operation routines." "/tgoto," termcap.3
+.xx "" "memcmp, memcpy, memset: memory" "operations." "memccpy, memchr," memory.3C
+.xx "" "msgctl: message control" "operations." "" msgctl.2
+.xx "" "msgop: message" "operations." "" msgop.2
+.xx "" "semctl: semaphore control" "operations." "" semctl.2
+.xx "" "semop: semaphore" "operations." "" semop.2
+.xx "" "shmctl: shared memory control" "operations." "" shmctl.2
+.xx "" "shmop: shared memory" "operations." "" shmop.2
+.xx "" "strcspn, strtok: string" "operations." "/strpbrk, strspn," string.3C
+.xx "" "join: relational database" "operator." "" join.1
+.xx "vector." "getopt: get" "option letter from argument" "" getopt.3C
+.xx "" "fcntl: file control" "options." "" fcntl.5
+.xx "" "getopt: parse command" "options." "" getopt.1
+.xx "object library." "lorder: find" "ordering relation for an" "" lorder.1
+.xx "" "a directory, or a special or" "ordinary file." "mknod: make" mknod.2
+.xx "editor based/" "vi, view: screen" "oriented (visual) display" "" vi.1
+.xx "formatting/" "mosd: the" "OSDD adapter macro package for" "" mosd.5
+.xx "documents formatted with/" "mm," "osdd, checkmm: print/check" "" mm.1
+.xx "" "dial: establish an" "out-going terminal line/" "" dial.3C
+.xx "" "assembler and link editor" "output." "a.out:" a.out.4
+.xx "" "sprintf: print formatted" "output." "printf, fprintf," printf.3S
+.xx "" "ssp: make" "output single spaced." "" ssp.1
+.xx "" "chown: change" "owner and group of a file." "" chown.2
+.xx "" "chown, chgrp: change" "owner or group." "" chown.1
+.xx "and expand files." "" "pack, pcat, unpack: compress" "" pack.1
+.xx "" "standard buffered input/output" "package." "stdio:" stdio.3S
+.xx "" "interprocess communication" "package." "stdipc: standard" stdipc.3C
+.xx "permuted/" "mptx: the macro" "package for formatting a" "" mptx.5
+.xx "documents." "mm: the MM macro" "package for formatting" "" mm.5
+.xx "" "mosd: the OSDD adapter macro" "package for formatting/" "" mosd.5
+.xx "graphs and/" "mv: a troff macro" "package for typesetting view" "" mv.5
+.xx "4014 terminal." "4014:" "paginator for the Tektronix" "" 4014.1
+.xx "" "process, process group, and" "parent process IDs." "/get" getpid.2
+.xx "" "getopt:" "parse command options." "" getopt.1
+.xx "" "" "passwd: change login password." "" passwd.1
+.xx "" "" "passwd: password file." "" passwd.4
+.xx "" "getpass: read a" "password." "" getpass.3C
+.xx "" "passwd: change login" "password." "" passwd.1
+.xx "" "passwd:" "password file." "" passwd.4
+.xx "" "/setpwent, endpwent: get" "password file entry." "" getpwent.3C
+.xx "" "putpwent: write" "password file entry." "" putpwent.3C
+.xx "several files or subsequent/" "" "paste: merge same lines of" "" paste.1
+.xx "" "dirname: deliver portions of" "path names." "basename," basename.1
+.xx "directory." "getcwd: get" "pathname of current working" "" getcwd.3C
+.xx "" "fgrep: search a file for a" "pattern." "grep, egrep," grep.1
+.xx "processing language." "awk:" "pattern scanning and" "" awk.1
+.xx "signal." "" "pause: suspend process until" "" pause.2
+.xx "expand files." "pack," "pcat, unpack: compress and" "" pack.1
+.xx "a process." "popen," "pclose: initiate pipe to/from" "" popen.3S
+.xx "value about your/" "m68k," "pdp11, u3b, vax: provide truth" "" machid.1
+.xx "" "mesg:" "permit or deny messages." "" mesg.1
+.xx "" "macro package for formatting a" "permuted index." "mptx: the" mptx.5
+.xx "" "ptx:" "permuted index." "" ptx.1
+.xx "format." "acct:" "per-process accounting file" "" acct.4
+.xx "sys_nerr: system error/" "" "perror, errno, sys_errlist," "" perror.3C
+.xx "viewing." "more: file" "perusal filter for crt" "" more.1
+.xx "" "tc:" "phototypesetter simulator." "" tc.1
+.xx "access physical addresses." "" "phys: allow a process to" "" phys.2
+.xx "" "allow a process to access" "physical addresses." "phys:" phys.2
+.xx "" "split: split a file into" "pieces." "" split.1
+.xx "channel." "" "pipe: create an interprocess" "" pipe.2
+.xx "" "tee:" "pipe fitting." "" tee.1
+.xx "" "popen, pclose: initiate" "pipe to/from a process." "" popen.3S
+.xx "" "fish:" "play ``Go Fish''." "" fish.6
+.xx "" "life:" "play the game of life." "" life.6
+.xx "" "worm:" "Play the growing worm game." "" worm.6
+.xx "data in memory." "" "plock: lock process, text, or" "" plock.2
+.xx "" "" "plot: graphics interface." "" plot.4
+.xx "subroutines." "" "plot: graphics interface" "" plot.3X
+.xx "images." "" "pnch: file format for card" "" pnch.4
+.xx "" "lseek: move read/write file" "pointer." "" lseek.2
+.xx "" "ftell: reposition a file" "pointer in a stream." "/rewind," fseek.3S
+.xx "to/from a process." "" "popen, pclose: initiate pipe" "" popen.3S
+.xx "" "data base of terminal types by" "port." "ttytype:" ttytype.4
+.xx "" "basename, dirname: deliver" "portions of path names." "" basename.1
+.xx "" "banner: make" "posters." "" banner.1
+.xx "logarithm,/" "exp, log, log10," "pow, sqrt: exponential," "" exp.3M
+.xx "" "/sqrt: exponential, logarithm," "power, square root functions." "" exp.3M
+.xx "" "" "pr: print files." "" pr.1
+.xx "for troff." "cw, checkcw:" "prepare constant-width text" "" cw.1
+.xx "" "monitor:" "prepare execution profile." "" monitor.3C
+.xx "" "cpp: the C language" "preprocessor." "" cpp.1
+.xx "" "unget: undo a" "previous get of an SCCS file." "" unget.1
+.xx "graphical/" "gps: graphical" "primitive string, format of" "" gps.4
+.xx "" "types:" "primitive system data types." "" types.5
+.xx "interesting, adage." "fortune:" "print a random, hopefully" "" fortune.6
+.xx "" "prs:" "print an SCCS file." "" prs.1
+.xx "" "date:" "print and set the date." "" date.1
+.xx "" "cal:" "print calendar." "" cal.1
+.xx "of a file." "sum:" "print checksum and block count" "" sum.1
+.xx "editing activity." "sact:" "print current SCCS file" "" sact.1
+.xx "" "man, manprog:" "print entries in this manual." "" man.1
+.xx "" "cat: concatenate and" "print files." "" cat.1
+.xx "" "pr:" "print files." "" pr.1
+.xx "" "printf, fprintf, sprintf:" "print formatted output." "" printf.3S
+.xx "" "banner7:" "print large banner on printer." "" banner7.1
+.xx "" "lpstat:" "print LP status information." "" lpstat.1
+.xx "" "nm:" "print name list." "" nm.1
+.xx "system." "hostname: set or" "print name of current host" "" hostname.1N
+.xx "System." "uname:" "print name of current UNIX" "" uname.1
+.xx "" "news:" "print news items." "" news.1
+.xx "" "printenv:" "print out the environment." "" printenv.1
+.xx "file(s)." "acctcom: search and" "print process accounting" "" acctcom.1
+.xx "names." "id:" "print user and group IDs and" "" id.1
+.xx "object, or/" "strings: find the" "printable strings in an" "" strings.1
+.xx "formatted/" "mm, osdd, checkmm:" "print/check documents" "" mm.1
+.xx "environment." "" "printenv: print out the" "" printenv.1
+.xx "" "banner7: print large banner on" "printer." "" banner7.1
+.xx "" "requests to an LP line" "printer." "/cancel: send/cancel" lp.1
+.xx "" "lpr: line" "printer spooler." "" lpr.1
+.xx "" "disable: enable/disable LP" "printers." "enable," enable.1
+.xx "print formatted output." "" "printf, fprintf, sprintf:" "" printf.3S
+.xx "" "nice: run a command at low" "priority." "" nice.1
+.xx "" "nice: change" "priority of a process." "" nice.2
+.xx "" "exit, _exit: terminate" "process." "" exit.2
+.xx "" "fork: create a new" "process." "" fork.2
+.xx "" "inittab: script for the init" "process." "" inittab.4
+.xx "" "kill: terminate a" "process." "" kill.1
+.xx "" "nice: change priority of a" "process." "" nice.2
+.xx "" "initiate pipe to/from a" "process." "popen, pclose:" popen.3S
+.xx "" "wait: await completion of" "process." "" wait.1
+.xx "" "acct: enable or disable" "process accounting." "" acct.2
+.xx "" "acctcom: search and print" "process accounting file(s)." "" acctcom.1
+.xx "times." "times: get" "process and child process" "" times.2
+.xx "" "timex: time a command; report" "process data and system/" "" timex.1
+.xx "" "/getpgrp, getppid: get process," "process group, and parent/" "" getpid.2
+.xx "" "setpgrp: set" "process group ID." "" setpgrp.2
+.xx "" "process group, and parent" "process IDs." "/get process," getpid.2
+.xx "" "kill: send a signal to a" "process or a group of/" "" kill.2
+.xx "" "getpid, getpgrp, getppid: get" "process, process group, and/" "" getpid.2
+.xx "" "ps: report" "process status." "" ps.1
+.xx "memory." "plock: lock" "process, text, or data in" "" plock.2
+.xx "" "times: get process and child" "process times." "" times.2
+.xx "addresses." "phys: allow a" "process to access physical" "" phys.2
+.xx "" "wait: wait for child" "process to stop or terminate." "" wait.2
+.xx "" "ptrace:" "process trace." "" ptrace.2
+.xx "" "pause: suspend" "process until signal." "" pause.2
+.xx "" "list of file systems" "processed by fsck." "checklist:" checklist.4
+.xx "" "to a process or a group of" "processes." "/send a signal" kill.2
+.xx "" "awk: pattern scanning and" "processing language." "" awk.1
+.xx "" "m4: macro" "processor." "" m4.1
+.xx "" "provide truth value about your" "processor type." "/u3b, vax:" machid.1
+.xx "" "alarm: set a" "process's alarm clock." "" alarm.2
+.xx "" "" "prof: display profile data." "" prof.1
+.xx "profile." "" "profil: execution time" "" profil.2
+.xx "" "monitor: prepare execution" "profile." "" monitor.3C
+.xx "" "profil: execution time" "profile." "" profil.2
+.xx "" "prof: display" "profile data." "" prof.1
+.xx "environment at login time." "" "profile: setting up an" "" profile.4
+.xx "" "sadp: disk access" "profiler." "" sadp.1
+.xx "" "standard/restricted command" "programming language." "/the" sh.1
+.xx "" "ip: Internet" "Protocol." "" ip.5N
+.xx "" "Internet Transmission Control" "Protocol." "tcp:" tcp.5N
+.xx "" "udp: Internet User Datagram" "Protocol." "" udp.5N
+.xx "" "inet: Internet" "protocol family." "" inet.5N
+.xx "" "arithmetic:" "provide drill in number facts." "" arithmetic.6
+.xx "for reading or/" "lockf:" "provide exclusive file regions" "" lockf.2
+.xx "" "m68k, pdp11, u3b, vax:" "provide truth value about your/" "" machid.1
+.xx "" "true, false:" "provide truth values." "" true.1
+.xx "" "" "prs: print an SCCS file." "" prs.1
+.xx "" "" "ps: report process status." "" ps.1
+.xx "" "/generate uniformly distributed" "pseudo-random numbers." "" drand48.3C
+.xx "" "" "ptrace: process trace." "" ptrace.2
+.xx "" "" "ptx: permuted index." "" ptx.1
+.xx "stream." "ungetc:" "push character back into input" "" ungetc.3S
+.xx "remote machine.." "" "put7: puts a file onto a" "" put7.1C
+.xx "put character or word on a/" "" "putc, putchar, fputc, putw:" "" putc.3S
+.xx "character or word on a/" "putc," "putchar, fputc, putw: put" "" putc.3S
+.xx "entry." "" "putpwent: write password file" "" putpwent.3C
+.xx "machine.." "put:" "puts a file onto a remote" "" put.1C
+.xx "machine.." "put7:" "puts a file onto a remote" "" put7.1C
+.xx "stream." "" "puts, fputs: put a string on a" "" puts.3S
+.xx "" "getutent, getutid, getutline," "pututline, setutent, endutent,/" "" getut.3C
+.xx "a/" "putc, putchar, fputc," "putw: put character or word on" "" putc.3S
+.xx "" "" "pwd: working directory name." "" pwd.1
+.xx "" "" "qsort: quicker sort." "" qsort.3C
+.xx "" "msgget: get message" "queue." "" msgget.2
+.xx "" "ipcrm: remove a message" "queue, semaphore set or shared/" "" ipcrm.1
+.xx "" "qsort:" "quicker sort." "" qsort.3C
+.xx "" "" "quiz: test your knowledge." "" quiz.6
+.xx "by name or address." "rhost," "raddr: look up internet hosts" "" rhost.3N
+.xx "display." "" "rain: animated raindrops" "" rain.6
+.xx "" "rain: animated" "raindrops display." "" rain.6
+.xx "random-number generator." "" "rand, srand: simple" "" rand.3C
+.xx "adage." "fortune: print a" "random, hopefully interesting," "" fortune.6
+.xx "" "rand, srand: simple" "random-number generator." "" rand.3C
+.xx "" "fsplit: split fortran," "ratfor, or ef\^l files." "" fsplit.1
+.xx "" "" "rcp: remote file copy." "" rcp.1N
+.xx "S-records from downloading/" "" "rcvhex: translates Motorola" "" rcvhex.1
+.xx "" "getpass:" "read a password." "" getpass.3C
+.xx "" "read:" "read from file." "" read.2
+.xx "" "rmail: send mail to users or" "read mail." "mail," mail.1
+.xx "" "line:" "read one line." "" line.1
+.xx "" "" "read: read from file." "" read.2
+.xx "" "exclusive file regions for" "reading or writing." "/provide" lockf.2
+.xx "" "open: open for" "reading or writing." "" open.2
+.xx "" "lseek: move" "read/write file pointer." "" lseek.2
+.xx "allocator." "malloc, free," "realloc, calloc: main memory" "" malloc.3C
+.xx "" "" "reboot: reboot the system." "" reboot.2
+.xx "" "reboot:" "reboot the system." "" reboot.2
+.xx "" "specify what to do upon" "receipt of a signal." "signal:" signal.2
+.xx "" "receive:" "receive message from a socket." "" receive.2N
+.xx "a socket." "" "receive: receive message from" "" receive.2N
+.xx "" "ed," "red: text editor." "" ed.1
+.xx "" "generate C program cross" "reference." "cxref:" cxref.1
+.xx "execute regular expression." "" "regcmp, regex: compile and" "" regcmp.3X
+.xx "compile." "" "regcmp: regular expression" "" regcmp.1
+.xx "" "make: maintain, update, and" "regenerate groups of programs." "" make.1
+.xx "regular expression." "regcmp," "regex: compile and execute" "" regcmp.3X
+.xx "compile and match routines." "" "regexp: regular expression" "" regexp.5
+.xx "" "lockf: provide exclusive file" "regions for reading or/" "" lockf.2
+.xx "" "regex: compile and execute" "regular expression." "regcmp," regcmp.3X
+.xx "" "regcmp:" "regular expression compile." "" regcmp.1
+.xx "match routines." "regexp:" "regular expression compile and" "" regexp.5
+.xx "sorted files." "comm: select or" "reject lines common to two" "" comm.1
+.xx "" "lorder: find ordering" "relation for an object/" "" lorder.1
+.xx "" "join:" "relational database operator." "" join.1
+.xx "" "strip: remove symbols and" "relocation bits." "" strip.1
+.xx "" "/fmod, fabs: floor, ceiling," "remainder, absolute value/" "" floor.3M
+.xx "" "calendar:" "reminder service." "" calendar.1
+.xx "" "rcp:" "remote file copy." "" rcp.1N
+.xx "" "rlogin:" "remote login." "" rlogin.1N
+.xx "" "put: puts a file onto a" "remote machine.." "" put.1C
+.xx "" "put7: puts a file onto a" "remote machine.." "" put7.1C
+.xx "" "take: takes a file from a" "remote machine." "" take.1C
+.xx "" "take7: takes a file from a" "remote machine.." "" take7.1C
+.xx "" "remsh:" "remote shell." "" remsh.1N
+.xx "" "ct: spawn getty to a" "remote terminal." "" ct.1C
+.xx "file." "rmdel:" "remove a delta from an SCCS" "" rmdel.1
+.xx "semaphore set or/" "ipcrm:" "remove a message queue," "" ipcrm.1
+.xx "" "unlink:" "remove directory entry." "" unlink.2
+.xx "" "rm, rmdir:" "remove files or directories." "" rm.1
+.xx "eqn constructs." "deroff:" "remove nroff/troff, tbl, and" "" deroff.1
+.xx "bits." "strip:" "remove symbols and relocation" "" strip.1
+.xx "" "" "remsh: remote shell." "" remsh.1N
+.xx "" "uniq: report" "repeated lines in a file." "" uniq.1
+.xx "" "clock:" "report CPU time used." "" clock.3C
+.xx "communication/" "ipcs:" "report inter-process" "" ipcs.1
+.xx "frequencies in a file." "freq:" "report on character" "" freq.1
+.xx "" "timex: time a command;" "report process data and system/" "" timex.1
+.xx "" "ps:" "report process status." "" ps.1
+.xx "file." "uniq:" "report repeated lines in a" "" uniq.1
+.xx "" "sar: system activity" "reporter." "" sar.1
+.xx "files." "version:" "reports version number of" "" version.1
+.xx "stream." "fseek, rewind, ftell:" "reposition a file pointer in a" "" fseek.3S
+.xx "" "lp, cancel: send/cancel" "requests to an LP line/" "" lp.1
+.xx "teletype bits to a/" "tset," "reset: set or reset the" "" tset.1
+.xx "sensible/" "tset, reset: set or" "reset the teletype bits to a" "" tset.1
+.xx "a socket." "socketaddr:" "return address associated with" "" socketaddr.2N
+.xx "" "abs:" "return integer absolute value." "" abs.3C
+.xx "" "logname:" "return login name of user." "" logname.3X
+.xx "name." "getenv:" "return value for environment" "" getenv.3C
+.xx "" "stat: data" "returned by stat system call." "" stat.5
+.xx "configuration/" "uvar:" "returns system-specific" "" uvar.2
+.xx "" "col: filter" "reverse line-feeds." "" col.1
+.xx "file pointer in a/" "fseek," "rewind, ftell: reposition a" "" fseek.3S
+.xx "" "creat: create a new file or" "rewrite an existing one." "" creat.2
+.xx "hosts by name or address." "" "rhost, raddr: look up internet" "" rhost.3N
+.xx "" "" "rlogin: remote login." "" rlogin.1N
+.xx "directories." "" "rm, rmdir: remove files or" "" rm.1
+.xx "read mail." "mail," "rmail: send mail to users or" "" mail.1
+.xx "SCCS file." "" "rmdel: remove a delta from an" "" rmdel.1
+.xx "directories." "rm," "rmdir: remove files or" "" rm.1
+.xx "" "Escape from the automatic" "robots." "autorobots:" autorobots.6
+.xx "" "Try to escape the killer" "robots." "chase:" chase.6
+.xx "" "robots: Escape from the" "robots." "" robots.6
+.xx "robots." "" "robots: Escape from the" "" robots.6
+.xx "" "chroot: change" "root directory." "" chroot.2
+.xx "" "logarithm, power, square" "root functions." "/exponential," exp.3M
+.xx "" "expression compile and match" "routines." "regexp: regular" regexp.5
+.xx "" "terminal independent operation" "routines." "/tgoto, tputs:" termcap.3
+.xx "standard/restricted/" "sh," "rsh: shell, the" "" sh.1
+.xx "program." "" "rstat: network statistics" "" rstat.1N
+.xx "" "nice:" "run a command at low priority." "" nice.1
+.xx "hangups (\fIsh\^\fR/" "nohup:" "run a command immune to" "" nohup.1
+.xx "local machines." "" "ruptime: show host status of" "" ruptime.1N
+.xx "local machines." "" "rwho: who is logged in on" "" rwho.1N
+.xx "editing activity." "" "sact: print current SCCS file" "" sact.1
+.xx "" "" "sadp: disk access profiler." "" sadp.1
+.xx "" "" "sag: system activity graph." "" sag.1G
+.xx "" "" "sar: system activity reporter." "" sar.1
+.xx "space allocation." "brk," "sbrk: change data segment" "" brk.2
+.xx "formatted input." "" "scanf, fscanf, sscanf: convert" "" scanf.3S
+.xx "" "bfs: big file" "scanner." "" bfs.1
+.xx "language." "awk: pattern" "scanning and processing" "" awk.1
+.xx "" "the delta commentary of an" "SCCS delta." "cdc: change" cdc.1
+.xx "" "comb: combine" "SCCS deltas." "" comb.1
+.xx "" "make a delta (change) to an" "SCCS file." "delta:" delta.1
+.xx "" "get: get a version of an" "SCCS file." "" get.1
+.xx "" "prs: print an" "SCCS file." "" prs.1
+.xx "" "rmdel: remove a delta from an" "SCCS file." "" rmdel.1
+.xx "" "compare two versions of an" "SCCS file." "sccsdiff:" sccsdiff.1
+.xx "" "sccsfile: format of" "SCCS file." "" sccsfile.4
+.xx "" "undo a previous get of an" "SCCS file." "unget:" unget.1
+.xx "" "val: validate" "SCCS file." "" val.1
+.xx "" "sact: print current" "SCCS file editing activity." "" sact.1
+.xx "" "admin: create and administer" "SCCS files." "" admin.1
+.xx "" "what: identify" "SCCS files." "" what.1
+.xx "of an SCCS file." "" "sccsdiff: compare two versions" "" sccsdiff.1
+.xx "" "" "sccsfile: format of SCCS file." "" sccsfile.4
+.xx "" "clear: clear terminal" "screen." "" clear.1
+.xx "" "twinkle: twinkle stars on the" "screen." "" twinkle.6
+.xx "display editor/" "vi, view:" "screen oriented (visual)" "" vi.1
+.xx "" "inittab:" "script for the init process." "" inittab.4
+.xx "program." "" "sdiff: side-by-side difference" "" sdiff.1
+.xx "" "bsearch: binary" "search." "" bsearch.3C
+.xx "" "grep, egrep, fgrep:" "search a file for a pattern." "" grep.1
+.xx "accounting file(s)." "acctcom:" "search and print process" "" acctcom.1
+.xx "" "lsearch: linear" "search and update." "" lsearch.3C
+.xx "" "hcreate, hdestroy: manage hash" "search tables." "hsearch," hsearch.3C
+.xx "" "tdelete, twalk: manage binary" "search trees." "tsearch," tsearch.3C
+.xx "" "" "sed: stream editor." "" sed.1
+.xx "" "/mrand48, jrand48, srand48," "seed48, lcong48: generate/" "" drand48.3C
+.xx "" "shmget: get shared memory" "segment." "" shmget.2
+.xx "" "brk, sbrk: change data" "segment space allocation." "" brk.2
+.xx "to two sorted files." "comm:" "select or reject lines common" "" comm.1
+.xx "multiplexing." "" "select: synchronous i/o" "" select.2N
+.xx "" "greek:" "select terminal filter." "" greek.1
+.xx "of a file." "cut: cut out" "selected fields of each line" "" cut.1
+.xx "" "semctl:" "semaphore control operations." "" semctl.2
+.xx "" "semop:" "semaphore operations." "" semop.2
+.xx "" "ipcrm: remove a message queue," "semaphore set or shared memory/" "" ipcrm.1
+.xx "" "semget: get set of" "semaphores." "" semget.2
+.xx "operations." "" "semctl: semaphore control" "" semctl.2
+.xx "" "" "semget: get set of semaphores." "" semget.2
+.xx "" "" "semop: semaphore operations." "" semop.2
+.xx "a group of processes." "kill:" "send a signal to a process or" "" kill.2
+.xx "mail." "mail, rmail:" "send mail to users or read" "" mail.1
+.xx "" "send:" "send message from a socket." "" send.2
+.xx "socket." "" "send: send message from a" "" send.2
+.xx "line printer." "lp, cancel:" "send/cancel requests to an LP" "" lp.1
+.xx "" "reset the teletype bits to a" "sensible state." "/reset: set or" tset.1
+.xx "stream." "" "setbuf: assign buffering to a" "" setbuf.3S
+.xx "IDs." "setuid," "setgid: set user and group" "" setuid.2
+.xx "" "getgrent, getgrgid, getgrnam," "setgrent, endgrent: get group/" "" getgrent.3C
+.xx "cpu." "" "sethostname: set name of host" "" sethostname.2N
+.xx "goto." "" "setjmp, long\|jmp: non-local" "" setjmp.3C
+.xx "encryption." "crypt," "setkey, encrypt: generate DES" "" crypt.3C
+.xx "" "" "setpgrp: set process group ID." "" setpgrp.2
+.xx "" "getpwent, getpwuid, getpwnam," "setpwent, endpwent: get/" "" getpwent.3C
+.xx "login time." "profile:" "setting up an environment at" "" profile.4
+.xx "" "gettydefs: speed and terminal" "settings used by getty." "" gettydefs.4
+.xx "group IDs." "" "setuid, setgid: set user and" "" setuid.2
+.xx "" "/getutid, getutline, pututline," "setutent, endutent, utmpname:/" "" getut.3C
+.xx "data in a machine/" "sputl," "sgetl: access long numeric" "" sputl.3X
+.xx "standard/restricted command/" "" "sh, rsh: shell, the" "" sh.1
+.xx "operations." "shmctl:" "shared memory control" "" shmctl.2
+.xx "" "queue, semaphore set or" "shared memory id." "/a message" ipcrm.1
+.xx "" "shmop:" "shared memory operations." "" shmop.2
+.xx "" "shmget: get" "shared memory segment." "" shmget.2
+.xx "" "remsh: remote" "shell." "" remsh.1N
+.xx "" "system: issue a" "shell command." "" system.3S
+.xx "with C-like syntax." "csh: a" "shell (command interpreter)" "" csh.1
+.xx "command programming/" "sh, rsh:" "shell, the standard/restricted" "" sh.1
+.xx "operations." "" "shmctl: shared memory control" "" shmctl.2
+.xx "segment." "" "shmget: get shared memory" "" shmget.2
+.xx "operations." "" "shmop: shared memory" "" shmop.2
+.xx "program." "sdiff:" "side-by-side difference" "" sdiff.1
+.xx "" "login:" "sign on." "" login.1
+.xx "" "pause: suspend process until" "signal." "" pause.2
+.xx "" "what to do upon receipt of a" "signal." "signal: specify" signal.2
+.xx "upon receipt of a signal." "" "signal: specify what to do" "" signal.2
+.xx "of processes." "kill: send a" "signal to a process or a group" "" kill.2
+.xx "" "ssignal, gsignal: software" "signals." "" ssignal.3C
+.xx "" "lex: generate programs for" "simple lexical tasks." "" lex.1
+.xx "generator." "rand, srand:" "simple random-number" "" rand.3C
+.xx "" "tc: phototypesetter" "simulator." "" tc.1
+.xx "atan, atan2: trigonometric/" "" "sin, cos, tan, asin, acos," "" trig.3M
+.xx "" "ssp: make output" "single spaced." "" ssp.1
+.xx "functions." "" "sinh, cosh, tanh: hyperbolic" "" sinh.3M
+.xx "" "size:" "size of an object file." "" size.1
+.xx "" "" "size: size of an object file." "" size.1
+.xx "an interval." "" "sleep: suspend execution for" "" sleep.1
+.xx "interval." "" "sleep: suspend execution for" "" sleep.3C
+.xx "" "documents, view graphs, and" "slides." "mmt, mvt: typeset" mmt.1
+.xx "" "typesetting view graphs and" "slides." "/macro package for" mv.5
+.xx "current/" "ttyslot: find the" "slot in the utmp file of the" "" ttyslot.3C
+.xx "" "spline: interpolate" "smooth curve." "" spline.1G
+.xx "" "" "sno: SNOBOL interpreter." "" sno.1
+.xx "" "sno:" "SNOBOL interpreter." "" sno.1
+.xx "" "accept a connection on a" "socket." "accept:" accept.2N
+.xx "" "initiate a connection on a" "socket." "connect:" connect.2N
+.xx "" "receive message from a" "socket." "receive:" receive.2N
+.xx "" "send: send message from a" "socket." "" send.2
+.xx "" "address associated with a" "socket." "socketaddr: return" socketaddr.2N
+.xx "communication." "" "socket: create an endpoint for" "" socket.2N
+.xx "associated with a socket." "" "socketaddr: return address" "" socketaddr.2N
+.xx "" "loop:" "software loopback interface." "" lo.5N
+.xx "" "ssignal, gsignal:" "software signals." "" ssignal.3C
+.xx "" "qsort: quicker" "sort." "" qsort.3C
+.xx "" "tsort: topological" "sort." "" tsort.1
+.xx "" "sort:" "sort and/or merge files." "" sort.1
+.xx "" "" "sort: sort and/or merge files." "" sort.1
+.xx "" "or reject lines common to two" "sorted files." "comm: select" comm.1
+.xx "" "message file by massaging C" "source." "/create an error" mkstr.1
+.xx "" "brk, sbrk: change data segment" "space allocation." "" brk.2
+.xx "" "ssp: make output single" "spaced." "" ssp.1
+.xx "terminal." "ct:" "spawn getty to a remote" "" ct.1C
+.xx "" "fspec: format" "specification in text files." "" fspec.4
+.xx "" "the extended errors in the" "specified device." "/turn on/off" exterr.1
+.xx "receipt of a signal." "signal:" "specify what to do upon" "" signal.2
+.xx "used by getty." "gettydefs:" "speed and terminal settings" "" gettydefs.4
+.xx "hashcheck: find spelling/" "" "spell, hashmake, spellin," "" spell.1
+.xx "spelling/" "spell, hashmake," "spellin, hashcheck: find" "" spell.1
+.xx "" "spellin, hashcheck: find" "spelling errors." "/hashmake," spell.1
+.xx "curve." "" "spline: interpolate smooth" "" spline.1G
+.xx "" "csplit: context" "split." "" csplit.1
+.xx "" "split:" "split a file into pieces." "" split.1
+.xx "ef\^l files." "fsplit:" "split fortran, ratfor, or" "" fsplit.1
+.xx "pieces." "" "split: split a file into" "" split.1
+.xx "" "lpr: line printer" "spooler." "" lpr.1
+.xx "output." "printf, fprintf," "sprintf: print formatted" "" printf.3S
+.xx "numeric data in a machine/" "" "sputl, sgetl: access long" "" sputl.3X
+.xx "power,/" "exp, log, log10, pow," "sqrt: exponential, logarithm," "" exp.3M
+.xx "" "exponential, logarithm, power," "square root functions." "/sqrt:" exp.3M
+.xx "generator." "rand," "srand: simple random-number" "" rand.3C
+.xx "" "/nrand48, mrand48, jrand48," "srand48, seed48, lcong48:/" "" drand48.3C
+.xx "" "formats suitable for Motorola" "S-record downloading." "/ASCII" hex.1
+.xx "" "rcvhex: translates Motorola" "S-records from downloading/" "" rcvhex.1
+.xx "input." "scanf, fscanf," "sscanf: convert formatted" "" scanf.3S
+.xx "signals." "" "ssignal, gsignal: software" "" ssignal.3C
+.xx "spaced." "" "ssp: make output single" "" ssp.1
+.xx "package." "stdio:" "standard buffered input/output" "" stdio.3S
+.xx "communication/" "stdipc:" "standard interprocess" "" stdipc.3C
+.xx "" "sh, rsh: shell, the" "standard/restricted command/" "" sh.1
+.xx "" "twinkle: twinkle" "stars on the screen." "" twinkle.6
+.xx "system call." "" "stat: data returned by stat" "" stat.5
+.xx "" "" "stat, fstat: get file status." "" stat.2
+.xx "" "stat: data returned by" "stat system call." "" stat.5
+.xx "" "ustat: get file system" "statistics." "" ustat.2
+.xx "" "rstat: network" "statistics program." "" rstat.1N
+.xx "" "communication facilities" "status." "/report inter-process" ipcs.1
+.xx "" "ps: report process" "status." "" ps.1
+.xx "" "stat, fstat: get file" "status." "" stat.2
+.xx "" "lpstat: print LP" "status information." "" lpstat.1
+.xx "" "feof, clearerr, fileno: stream" "status inquiries." "ferror," ferror.3S
+.xx "control." "uustat: uucp" "status inquiry and job" "" uustat.1C
+.xx "" "ruptime: show host" "status of local machines." "" ruptime.1N
+.xx "input/output package." "" "stdio: standard buffered" "" stdio.3S
+.xx "communication package." "" "stdipc: standard interprocess" "" stdipc.3C
+.xx "" "" "stime: set time." "" stime.2
+.xx "" "wait for child process to" "stop or terminate." "wait:" wait.2
+.xx "strncmp, strcpy, strncpy,/" "" "strcat, strncat, strcmp," "" string.3C
+.xx "" "/strcpy, strncpy, strlen," "strchr, strrchr, strpbrk,/" "" string.3C
+.xx "strncpy,/" "strcat, strncat," "strcmp, strncmp, strcpy," "" string.3C
+.xx "" "/strncat, strcmp, strncmp," "strcpy, strncpy, strlen,/" "" string.3C
+.xx "" "/strrchr, strpbrk, strspn," "strcspn, strtok: string/" "" string.3C
+.xx "" "fflush: close or flush a" "stream." "fclose," fclose.3S
+.xx "" "fopen, freopen, fdopen: open a" "stream." "" fopen.3S
+.xx "" "reposition a file pointer in a" "stream." "fseek, rewind, ftell:" fseek.3S
+.xx "" "get character or word from" "stream." "/getchar, fgetc, getw:" getc.3S
+.xx "" "fgets: get a string from a" "stream." "gets," gets.3S
+.xx "" "put character or word on a" "stream." "/putchar, fputc, putw:" putc.3S
+.xx "" "puts, fputs: put a string on a" "stream." "" puts.3S
+.xx "" "setbuf: assign buffering to a" "stream." "" setbuf.3S
+.xx "" "push character back into input" "stream." "ungetc:" ungetc.3S
+.xx "" "sed:" "stream editor." "" sed.1
+.xx "" "/feof, clearerr, fileno:" "stream status inquiries." "" ferror.3S
+.xx "" "convert date and time to" "string." "/asctime, tzset:" ctime.3C
+.xx "" "floating-point number to" "string." "/fcvt, gcvt: convert" ecvt.3C
+.xx "" "long integer and base-64 ASCII" "string." "/l64a: convert between" h64l.3C
+.xx "" "gps: graphical primitive" "string, format of graphical/" "" gps.4
+.xx "" "gets, fgets: get a" "string from a stream." "" gets.3S
+.xx "" "puts, fputs: put a" "string on a stream." "" puts.3S
+.xx "" "strspn, strcspn, strtok:" "string operations." "/strpbrk," string.3C
+.xx "number." "atof: convert ASCII" "string to floating-point" "" atof.3C
+.xx "" "strtol, atol, atoi: convert" "string to integer." "" strtol.3C
+.xx "strings in an object, or/" "" "strings: find the printable" "" strings.1
+.xx "" "strings: find the printable" "strings in an object, or other/" "" strings.1
+.xx "relocation bits." "" "strip: remove symbols and" "" strip.1
+.xx "" "/strncmp, strcpy, strncpy," "strlen, strchr, strrchr,/" "" string.3C
+.xx "strcpy, strncpy,/" "strcat," "strncat, strcmp, strncmp," "" string.3C
+.xx "" "strcat, strncat, strcmp," "strncmp, strcpy, strncpy,/" "" string.3C
+.xx "" "/strcmp, strncmp, strcpy," "strncpy, strlen, strchr,/" "" string.3C
+.xx "" "/strlen, strchr, strrchr," "strpbrk, strspn, strcspn,/" "" string.3C
+.xx "" "/strncpy, strlen, strchr," "strrchr, strpbrk, strspn,/" "" string.3C
+.xx "" "/strchr, strrchr, strpbrk," "strspn, strcspn, strtok:/" "" string.3C
+.xx "" "/strpbrk, strspn, strcspn," "strtok: string operations." "" string.3C
+.xx "string to integer." "" "strtol, atol, atoi: convert" "" strtol.3C
+.xx "another user." "" "su: become super-user or" "" su.1
+.xx "" "plot: graphics interface" "subroutines." "" plot.3X
+.xx "" "intro: introduction to" "subroutines and libraries." "" intro.3
+.xx "" "/same lines of several files or" "subsequent lines of one file." "" paste.1
+.xx "" "/files into ASCII formats" "suitable for Motorola S-record/" "" hex.1
+.xx "file." "sum7:" "sum and count blocks in a" "" sum7.1
+.xx "the files in the/" "sumdir:" "sum and count characters in" "" sumdir.1
+.xx "count of a file." "" "sum: print checksum and block" "" sum.1
+.xx "a file." "" "sum7: sum and count blocks in" "" sum7.1
+.xx "characters in the files in/" "" "sumdir: sum and count" "" sumdir.1
+.xx "" "du:" "summarize disk usage." "" du.1
+.xx "" "sync: update the" "super block." "" sync.1
+.xx "" "sync: update" "super-block." "" sync.2
+.xx "" "su: become" "super-user or another user." "" su.1
+.xx "interval." "sleep:" "suspend execution for an" "" sleep.1
+.xx "interval." "sleep:" "suspend execution for" "" sleep.3C
+.xx "" "pause:" "suspend process until signal." "" pause.2
+.xx "" "" "swab: swap bytes." "" swab.3C
+.xx "" "swab:" "swap bytes." "" swab.3C
+.xx "" "strip: remove" "symbols and relocation bits." "" strip.1
+.xx "" "" "sync: update super-block." "" sync.2
+.xx "" "" "sync: update the super block." "" sync.1
+.xx "" "select:" "synchronous i/o multiplexing." "" select.2N
+.xx "" "interpreter) with C-like" "syntax." "csh: a shell (command" csh.1
+.xx "error/" "perror, errno," "sys_errlist, sys_nerr: system" "" perror.3C
+.xx "" "perror, errno, sys_errlist," "sys_nerr: system error/" "" perror.3C
+.xx "information." "uvar: returns" "system-specific configuration" "" uvar.2
+.xx "" "uuto, uupick: public UNIX" "System-to-UNIX System file/" "" uuto.1C
+.xx "" "master device information" "table." "master:" master.4
+.xx "" "mnttab: mounted file system" "table." "" mnttab.4
+.xx "" "hdestroy: manage hash search" "tables." "hsearch, hcreate," hsearch.3C
+.xx "" "tbl: format" "tables for nroff or troff." "" tbl.1
+.xx "" "tabs: set" "tabs on a terminal." "" tabs.1
+.xx "" "" "tabs: set tabs on a terminal." "" tabs.1
+.xx "" "ctags: maintain a" "tags file for a C program." "" ctags.1
+.xx "a file." "" "tail: deliver the last part of" "" tail.1
+.xx "remote machine." "" "take: takes a file from a" "" take.1C
+.xx "remote machine.." "" "take7: takes a file from a" "" take7.1C
+.xx "machine." "take:" "takes a file from a remote" "" take.1C
+.xx "machine.." "take7:" "takes a file from a remote" "" take7.1C
+.xx "trigonometric/" "sin, cos," "tan, asin, acos, atan, atan2:" "" trig.3M
+.xx "" "sinh, cosh," "tanh: hyperbolic functions." "" sinh.3M
+.xx "" "tp: manipulate" "tape archive." "" tp.1
+.xx "" "hpio: HP 2645A terminal" "tape file archiver." "" hpio.1
+.xx "" "tar:" "tape file archiver." "" tar.1
+.xx "" "tp: magnetic" "tape format." "" tp.4
+.xx "" "" "tar: tape file archiver." "" tar.1
+.xx "" "programs for simple lexical" "tasks." "lex: generate" lex.1
+.xx "" "deroff: remove nroff/troff," "tbl, and eqn constructs." "" deroff.1
+.xx "or troff." "" "tbl: format tables for nroff" "" tbl.1
+.xx "" "" "tc: phototypesetter simulator." "" tc.1
+.xx "Control Protocol." "" "tcp: Internet Transmission" "" tcp.5N
+.xx "search trees." "tsearch," "tdelete, twalk: manage binary" "" tsearch.3C
+.xx "" "" "tee: pipe fitting." "" tee.1
+.xx "" "4014: paginator for the" "Tektronix 4014 terminal." "" 4014.1
+.xx "" "tset, reset: set or reset the" "teletype bits to a sensible/" "" tset.1
+.xx "temporary file." "tmpnam," "tempnam: create a name for a" "" tmpnam.3S
+.xx "" "tmpfile: create a" "temporary file." "" tmpfile.3S
+.xx "" "tempnam: create a name for a" "temporary file." "tmpnam," tmpnam.3S
+.xx "terminals." "" "term: conventional names for" "" term.5
+.xx "data base." "" "termcap: terminal capability" "" termcap.5
+.xx "" "for the Tektronix 4014" "terminal." "4014: paginator" 4014.1
+.xx "" "functions of the DASI 450" "terminal." "450: handle special" 450.1
+.xx "" "ct: spawn getty to a remote" "terminal." "" ct.1C
+.xx "" "generate file name for" "terminal." "ctermid:" ctermid.3S
+.xx "" "tabs: set tabs on a" "terminal." "" tabs.1
+.xx "" "isatty: find name of a" "terminal." "ttyname," ttyname.3C
+.xx "" "animate worms on a display" "terminal." "worms:" worms.6
+.xx "" "termcap:" "terminal capability data base." "" termcap.5
+.xx "" "greek: select" "terminal filter." "" greek.1
+.xx "" "/tgetstr, tgoto, tputs:" "terminal independent operation/" "" termcap.3
+.xx "" "dial: establish an out-going" "terminal line connection." "" dial.3C
+.xx "" "clear: clear" "terminal screen." "" clear.1
+.xx "getty." "gettydefs: speed and" "terminal settings used by" "" gettydefs.4
+.xx "" "hpio: HP 2645A" "terminal tape file archiver." "" hpio.1
+.xx "" "ttytype: data base of" "terminal types by port." "" ttytype.4
+.xx "" "functions of DASI 300 and 300s" "terminals." "/handle special" 300.1
+.xx "" "of HP 2640 and 2621-series" "terminals." "/special functions" hp.1
+.xx "" "term: conventional names for" "terminals." "" term.5
+.xx "" "tty: get the" "terminal's name." "" tty.1
+.xx "" "for child process to stop or" "terminate." "wait: wait" wait.2
+.xx "" "kill:" "terminate a process." "" kill.1
+.xx "" "exit, _exit:" "terminate process." "" exit.2
+.xx "command." "" "test: condition evaluation" "" test.1
+.xx "" "quiz:" "test your knowledge." "" quiz.6
+.xx "" "nroff: format" "text." "" nroff.1
+.xx "" "troff: typeset" "text." "" troff.1
+.xx "" "ed, red:" "text editor." "" ed.1
+.xx "" "ex, edit:" "text editor." "" ex.1
+.xx "" "change the format of a" "text file." "newform:" newform.1
+.xx "" "fspec: format specification in" "text files." "" fspec.4
+.xx "" "/checkeq: format mathematical" "text for nroff or troff." "" eqn.1
+.xx "" "prepare constant-width" "text for troff." "cw, checkcw:" cw.1
+.xx "typesetting." "nroff7:" "text formatting and" "" nroff7.1
+.xx "typesetting." "troff7:" "text formatting and" "" troff7.1
+.xx "" "plock: lock process," "text, or data in memory." "" plock.2
+.xx "tgetstr, tgoto, tputs:/" "" "tgetent, tgetnum, tgetflag," "" termcap.3
+.xx "tputs:/" "tgetent, tgetnum," "tgetflag, tgetstr, tgoto," "" termcap.3
+.xx "tgoto, tputs:/" "tgetent," "tgetnum, tgetflag, tgetstr," "" termcap.3
+.xx "" "tgetent, tgetnum, tgetflag," "tgetstr, tgoto, tputs:/" "" termcap.3
+.xx "" "/tgetnum, tgetflag, tgetstr," "tgoto, tputs: terminal/" "" termcap.3
+.xx "" "ttt, cubic:" "tic-tac-toe." "" ttt.6
+.xx "" "execute commands at a later" "time." "at:" at.1
+.xx "" "up an environment at login" "time." "profile: setting" profile.4
+.xx "" "stime: set" "time." "" stime.2
+.xx "" "time: get" "time." "" time.2
+.xx "" "time:" "time a command." "" time.1
+.xx "data and system/" "timex:" "time a command; report process" "" timex.1
+.xx "" "" "time: get time." "" time.2
+.xx "" "profil: execution" "time profile." "" profil.2
+.xx "" "" "time: time a command." "" time.1
+.xx "" "tzset: convert date and" "time to string." "/asctime," ctime.3C
+.xx "" "clock: report CPU" "time used." "" clock.3C
+.xx "" "get process and child process" "times." "times:" times.2
+.xx "" "file access and modification" "times." "utime: set" utime.2
+.xx "process times." "" "times: get process and child" "" times.2
+.xx "" "update access and modification" "times of a file." "touch:" touch.1
+.xx "process data and system/" "" "timex: time a command; report" "" timex.1
+.xx "file." "" "tmpfile: create a temporary" "" tmpfile.3S
+.xx "for a temporary file." "" "tmpnam, tempnam: create a name" "" tmpnam.3S
+.xx "" "/tolower, _toupper, _tolower," "toascii: translate characters." "" conv.3C
+.xx "" "popen, pclose: initiate pipe" "to/from a process." "" popen.3S
+.xx "" "toupper, tolower, _toupper," "_tolower, toascii: translate/" "" conv.3C
+.xx "toascii: translate/" "toupper," "tolower, _toupper, _tolower," "" conv.3C
+.xx "" "tsort:" "topological sort." "" tsort.1
+.xx "modification times of a file." "" "touch: update access and" "" touch.1
+.xx "translate/" "toupper, tolower," "_toupper, _tolower, toascii:" "" conv.3C
+.xx "_tolower, toascii: translate/" "" "toupper, tolower, _toupper," "" conv.3C
+.xx "" "" "tp: magnetic tape format." "" tp.4
+.xx "" "" "tp: manipulate tape archive." "" tp.1
+.xx "" "" "tplot: graphics filters." "" tplot.1G
+.xx "" "/tgetflag, tgetstr, tgoto," "tputs: terminal independent/" "" termcap.3
+.xx "" "" "tr: translate characters." "" tr.1
+.xx "" "ptrace: process" "trace." "" ptrace.2
+.xx "" "blt, blt512: block" "transfer data." "" blt.3
+.xx "" "/_toupper, _tolower, toascii:" "translate characters." "" conv.3C
+.xx "" "tr:" "translate characters." "" tr.1
+.xx "from downloading into/" "rcvhex:" "translates Motorola S-records" "" rcvhex.1
+.xx "ASCII formats suitable/" "hex:" "translates object files into" "" hex.1
+.xx "" "tcp: Internet" "Transmission Control Protocol." "" tcp.5N
+.xx "" "ftw: walk a file" "tree." "" ftw.3C
+.xx "" "twalk: manage binary search" "trees." "tsearch, tdelete," tsearch.3C
+.xx "" "" "trek: trekkie game." "" trek.6
+.xx "" "trek:" "trekkie game." "" trek.6
+.xx "" "tan, asin, acos, atan, atan2:" "trigonometric functions." "/cos," trig.3M
+.xx "" "constant-width text for" "troff." "cw, checkcw: prepare" cw.1
+.xx "" "mathematical text for nroff or" "troff." "/neqn, checkeq: format" eqn.1
+.xx "" "format tables for nroff or" "troff." "tbl:" tbl.1
+.xx "typesetting view graphs/" "mv: a" "troff macro package for" "" mv.5
+.xx "" "" "troff: typeset text." "" troff.1
+.xx "typesetting." "" "troff7: text formatting and" "" troff7.1
+.xx "values." "" "true, false: provide truth" "" true.1
+.xx "" "m68k, pdp11, u3b, vax: provide" "truth value about your/" "" machid.1
+.xx "" "true, false: provide" "truth values." "" true.1
+.xx "robots." "chase:" "Try to escape the killer" "" chase.6
+.xx "manage binary search trees." "" "tsearch, tdelete, twalk:" "" tsearch.3C
+.xx "teletype bits to a sensible/" "" "tset, reset: set or reset the" "" tset.1
+.xx "" "" "tsort: topological sort." "" tsort.1
+.xx "" "" "ttt, cubic: tic-tac-toe." "" ttt.6
+.xx "" "" "tty: get the terminal's name." "" tty.1
+.xx "" "graphics for the extended" "TTY-37 type-box." "greek:" greek.5
+.xx "a terminal." "" "ttyname, isatty: find name of" "" ttyname.3C
+.xx "utmp file of the current/" "" "ttyslot: find the slot in the" "" ttyslot.3C
+.xx "types by port." "" "ttytype: data base of terminal" "" ttytype.4
+.xx "trees." "tsearch, tdelete," "twalk: manage binary search" "" tsearch.3C
+.xx "" "twinkle:" "twinkle stars on the screen." "" twinkle.6
+.xx "screen." "" "twinkle: twinkle stars on the" "" twinkle.6
+.xx "" "file: determine file" "type." "" file.1
+.xx "" "value about your processor" "type." "/u3b, vax: provide truth" machid.1
+.xx "" "for the extended TTY-37" "type-box." "greek: graphics" greek.5
+.xx "" "types: primitive system data" "types." "" types.5
+.xx "" "ttytype: data base of terminal" "types by port." "" ttytype.4
+.xx "types." "" "types: primitive system data" "" types.5
+.xx "graphs, and slides." "mmt, mvt:" "typeset documents, view" "" mmt.1
+.xx "" "troff:" "typeset text." "" troff.1
+.xx "" "nroff7: text formatting and" "typesetting." "" nroff7.1
+.xx "" "troff7: text formatting and" "typesetting." "" troff7.1
+.xx "" "mv: a troff macro package for" "typesetting view graphs and/" "" mv.5
+.xx "" "/localtime, gmtime, asctime," "tzset: convert date and time/" "" ctime.3C
+.xx "about your/" "m68k, pdp11," "u3b, vax: provide truth value" "" machid.1
+.xx "Protocol." "" "udp: Internet User Datagram" "" udp.5N
+.xx "" "getpw: get name from" "UID." "" getpw.3C
+.xx "" "" "ul: do underlining." "" ul.1
+.xx "limits." "" "ulimit: get and set user" "" ulimit.2
+.xx "creation mask." "" "umask: set and get file" "" umask.2
+.xx "mask." "" "umask: set file-creation mode" "" umask.1
+.xx "" "" "umount: unmount a file system." "" umount.2
+.xx "UNIX system." "" "uname: get name of current" "" uname.2
+.xx "UNIX System." "" "uname: print name of current" "" uname.1
+.xx "" "ul: do" "underlining." "" ul.1
+.xx "file." "unget:" "undo a previous get of an SCCS" "" unget.1
+.xx "an SCCS file." "" "unget: undo a previous get of" "" unget.1
+.xx "into input stream." "" "ungetc: push character back" "" ungetc.3S
+.xx "" "/seed48, lcong48: generate" "uniformly distributed/" "" drand48.3C
+.xx "a file." "" "uniq: report repeated lines in" "" uniq.1
+.xx "" "mktemp: make a" "unique file name." "" mktemp.3C
+.xx "" "" "units: conversion program." "" units.1
+.xx "entry." "" "unlink: remove directory" "" unlink.2
+.xx "" "umount:" "unmount a file system." "" umount.2
+.xx "files." "pack, pcat," "unpack: compress and expand" "" pack.1
+.xx "" "lsearch: linear search and" "update." "" lsearch.3C
+.xx "times of a file." "touch:" "update access and modification" "" touch.1
+.xx "of programs." "make: maintain," "update, and regenerate groups" "" make.1
+.xx "machines." "updater:" "update files between two" "" updater.1
+.xx "" "sync:" "update super-block." "" sync.2
+.xx "" "sync:" "update the super block." "" sync.1
+.xx "two machines." "" "updater: update files between" "" updater.1
+.xx "" "du: summarize disk" "usage." "" du.1
+.xx "" "character login name of the" "user." "cuserid: get" cuserid.3S
+.xx "" "logname: return login name of" "user." "" logname.3X
+.xx "" "become super-user or another" "user." "su:" su.1
+.xx "" "the utmp file of the current" "user." "/find the slot in" ttyslot.3C
+.xx "" "write: write to another" "user." "" write.1
+.xx "" "setuid, setgid: set" "user and group IDs." "" setuid.2
+.xx "" "id: print" "user and group IDs and names." "" id.1
+.xx "" "udp: Internet" "User Datagram Protocol." "" udp.5N
+.xx "" "/getgid, getegid: get real" "user, effective user, real/" "" getuid.2
+.xx "" "environ:" "user environment." "" environ.4
+.xx "" "environ:" "user environment." "" environ.5
+.xx "" "ulimit: get and set" "user limits." "" ulimit.2
+.xx "" "/get real user, effective" "user, real group, and/" "" getuid.2
+.xx "" "mail, rmail: send mail to" "users or read mail." "" mail.1
+.xx "statistics." "" "ustat: get file system" "" ustat.2
+.xx "modification times." "" "utime: set file access and" "" utime.2
+.xx "" "utmp, wtmp:" "utmp and wtmp entry formats." "" utmp.4
+.xx "" "endutent, utmpname: access" "utmp file entry." "/setutent," getut.3C
+.xx "" "ttyslot: find the slot in the" "utmp file of the current user." "" ttyslot.3C
+.xx "entry formats." "" "utmp, wtmp: utmp and wtmp" "" utmp.4
+.xx "" "/pututline, setutent, endutent," "utmpname: access utmp file/" "" getut.3C
+.xx "control." "uustat:" "uucp status inquiry and job" "" uustat.1C
+.xx "unix copy." "" "uucp, uulog, uuname: unix to" "" uucp.1C
+.xx "copy." "uucp," "uulog, uuname: unix to unix" "" uucp.1C
+.xx "" "uucp, uulog," "uuname: unix to unix copy." "" uucp.1C
+.xx "System-to-UNIX System/" "uuto," "uupick: public UNIX" "" uuto.1C
+.xx "and job control." "" "uustat: uucp status inquiry" "" uustat.1C
+.xx "System-to-UNIX System file/" "" "uuto, uupick: public UNIX" "" uuto.1C
+.xx "execution." "" "uux: unix to unix command" "" uux.1C
+.xx "configuration information." "" "uvar: returns system-specific" "" uvar.2
+.xx "" "" "val: validate SCCS file." "" val.1
+.xx "" "val:" "validate SCCS file." "" val.1
+.xx "" "abs: return integer absolute" "value." "" abs.3C
+.xx "" "/pdp11, u3b, vax: provide truth" "value about your processor/" "" machid.1
+.xx "" "getenv: return" "value for environment name." "" getenv.3C
+.xx "" "ceiling, remainder, absolute" "value functions." "/fabs: floor," floor.3M
+.xx "" "true, false: provide truth" "values." "" true.1
+.xx "your/" "m68k, pdp11, u3b," "vax: provide truth value about" "" machid.1
+.xx "" "" "vc: version control." "" vc.1
+.xx "" "option letter from argument" "vector." "getopt: get" getopt.3C
+.xx "" "assert:" "verify program assertion." "" assert.3X
+.xx "" "of directory (Berkeley" "version)." "ls7: list contents" ls7.1
+.xx "" "vc:" "version control." "" vc.1
+.xx "" "version: reports" "version number of files." "" version.1
+.xx "" "get: get a" "version of an SCCS file." "" get.1
+.xx "number of files." "" "version: reports version" "" version.1
+.xx "" "sccsdiff: compare two" "versions of an SCCS file." "" sccsdiff.1
+.xx "(visual) display editor based/" "" "vi, view: screen oriented" "" vi.1
+.xx "" "mmt, mvt: typeset documents," "view graphs, and slides." "" mmt.1
+.xx "" "macro package for typesetting" "view graphs and slides." "/troff" mv.5
+.xx "display editor based on/" "vi," "view: screen oriented (visual)" "" vi.1
+.xx "" "file perusal filter for crt" "viewing." "more:" more.1
+.xx "on/" "vi, view: screen oriented" "(visual) display editor based" "" vi.1
+.xx "" "file system: format of system" "volume." "" fs.4
+.xx "process." "" "wait: await completion of" "" wait.1
+.xx "or terminate." "wait:" "wait for child process to stop" "" wait.2
+.xx "to stop or terminate." "" "wait: wait for child process" "" wait.2
+.xx "" "ftw:" "walk a file tree." "" ftw.3C
+.xx "" "" "wc: word count." "" wc.1
+.xx "" "" "what: identify SCCS files." "" what.1
+.xx "signal." "signal: specify" "what to do upon receipt of a" "" signal.2
+.xx "machines." "rwho:" "who is logged in on local" "" rwho.1N
+.xx "" "who:" "who is on the system." "" who.1
+.xx "" "" "who: who is on the system." "" who.1
+.xx "" "cd: change" "working directory." "" cd.1
+.xx "" "chdir: change" "working directory." "" chdir.2
+.xx "" "get pathname of current" "working directory." "getcwd:" getcwd.3C
+.xx "" "pwd:" "working directory name." "" pwd.1
+.xx "" "worm: Play the growing" "worm game." "" worm.6
+.xx "game." "" "worm: Play the growing worm" "" worm.6
+.xx "display terminal." "" "worms: animate worms on a" "" worms.6
+.xx "" "worms: animate" "worms on a display terminal." "" worms.6
+.xx "" "write:" "write on a file." "" write.2
+.xx "" "putpwent:" "write password file entry." "" putpwent.3C
+.xx "" "write:" "write to another user." "" write.1
+.xx "" "" "write: write on a file." "" write.2
+.xx "" "" "write: write to another user." "" write.1
+.xx "" "file regions for reading or" "writing." "/provide exclusive" lockf.2
+.xx "" "open: open for reading or" "writing." "" open.2
+.xx "" "utmp, wtmp: utmp and" "wtmp entry formats." "" utmp.4
+.xx "formats." "utmp," "wtmp: utmp and wtmp entry" "" utmp.4
+.xx "hunt-the-wumpus." "" "wump: the game of" "" wump.6
+.xx "list(s) and execute command." "" "xargs: construct argument" "" xargs.1
+.xx "" "j0, j1, jn," "y0, y1, yn: Bessel functions." "" bessel.3M
+.xx "" "j0, j1, jn, y0," "y1, yn: Bessel functions." "" bessel.3M
+.xx "compiler-compiler." "" "yacc: yet another" "" yacc.1
+.xx "" "j0, j1, jn, y0, y1," "yn: Bessel functions." "" bessel.3M

@@ -1,0 +1,13 @@
+# Seagate ST225 20 Mbytes
+# 615 cylinders, 4 heads, 6us step rate.
+# reduced write current not used
+# write precompensation on cylinder 256
+# landing cylinder 615-670, imbedded servo not present
+ST225
+615
+4
+0
+256
+620
+6
+0

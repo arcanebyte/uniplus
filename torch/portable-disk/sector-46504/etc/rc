@@ -1,0 +1,54 @@
+#	@(#)rc.sh	1.7
+
+# used to be PST8PDT
+TZ=GMT0BST
+export TZ
+if [ ! -f /etc/mnttab ]
+then
+	: default mounted filesystem is root /
+	/etc/devnm / | grep -v swap | grep -v root | /etc/setmnt
+	: put mounts here
+#	echo mounting disk0d as /usr
+	mount /dev/disk0d /usr
+	: run update to sync filesystem blocks every 30secs
+	/etc/update
+#	echo update started
+	: run preserve to ensure lost files are reclaimable
+	/usr/lib/ex3.7preserve -
+	: put lines here to empty administration files that would grow.
+#	echo emptying admin files
+	> /etc/utmp
+#	> /etc/wtmp
+#	> /usr/adm/cronlog
+#	> /usr/adm/sulog
+	:
+	: The following lines are user selectable and should be
+	: 'turned on' as required by system usage
+	:
+	: cron 
+#	/etc/cron
+#	echo cron started
+	: run LP scheduler
+	rm -f /usr/spool/lp/SCHEDLOCK
+	(
+		trap '' 1
+		: change line below for different baud rate and printer port
+		BAUD=9600
+		LPPRINTER=printer
+		DEVICE=`cat /usr/spool/lp/member/$LPPRINTER`
+		stty $BAUD < $DEVICE
+		/usr/lib/lpsched 5< $DEVICE
+#		echo lp scheduler started
+	)&
+	: make sure default floppy format not changed
+#	rm -f /etc/floppyformat
+	: automatically empty the tmp and waste directories
+#	rm -f /tmp/* /waste/*
+	: start accounting
+#	/bin/su - adm -c /usr/lib/acct/startup
+#	echo process accounting started
+	: UUCP  admin
+#	rm -f /usr/spool/uucp/LCK*
+#	SYSTEMNAME=TripleX
+#	chgnod $SYSTEMNAME /unix
+fi

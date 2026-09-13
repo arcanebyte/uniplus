@@ -1,0 +1,30 @@
+.TH TTYTYPE 4 UniSoft
+.SH NAME
+ttytype \- data base of terminal types by port
+.SH DESCRIPTION
+.I Ttytype
+is a database containing, for each tty port on the system,
+the kind of terminal that is attached to it.
+There is one line per port,
+containing the terminal kind (as a name listed in termcap(5)),
+a space, and the name of the tty, minus /dev/.
+.PP
+This information is read by
+.IR tset (1)
+and by
+.IR login (1)
+to initialize the TERM environment variable at login time.
+.SH EXAMPLE
+.IP
+.nf
+dw console
+3a tty0
+h19 tty1
+h19 tty2
+du ttyd0
+.fi
+.SH FILES
+/etc/ttytype
+.SH "SEE ALSO"
+tset(1), login(1).
+.\"	@(#)ttytype.4	5.1 of 10/18/83

@@ -1,0 +1,17 @@
+.TH HOSTNAME 1N UniSoft
+.SH NAME
+hostname \- set or print name of current host system
+.SH SYNOPSIS
+.B hostname
+[ nameofhost ]
+.SH DESCRIPTION
+The
+.I hostname\^
+command prints the name of the current host, as given before the
+"login" prompt.
+The super-user can set the hostname by giving an argument; this
+is usually done in the startup script 
+.B /etc/rc.
+.SH SEE ALSO
+gethostname(2N), sethostname(2N)
+.\"N	 @(#)hostname.1N	 5.2 of 7/12/84

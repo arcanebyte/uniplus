@@ -1,0 +1,9 @@
+if yorn  CONSOLE "Do you wish to force a login at this keyboard ?"
+then
+	echo "Console using login"
+	echo "co:1:respawn:/etc/getty wb console" 1>&2
+	exit 0
+else
+	echo "Console using Desktop"
+	echo "dm:1:respawn:/bin/login deskuser </dev/wb 1>/dev/wb 2>&1 # Desktop Non Super-User"  1>&2
+fi

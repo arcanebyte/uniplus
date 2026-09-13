@@ -1,0 +1,1 @@
+#define ND 0

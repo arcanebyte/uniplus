@@ -1,0 +1,4 @@
+DIR ttya unused 9600 ttya
+DIR ttyb unused 9600 ttyb
+DIR ttyc unused 9600 ttyc
+ACU dialout unused 300  dialout

@@ -1,0 +1,24 @@
+.TH LOGNAME 1
+.SH NAME
+logname \- get login name
+.SH SYNOPSIS
+.B logname
+.SH DESCRIPTION
+.I Logname\^
+returns the contents of the environment variable
+.SM \fB$LOGNAME\fP\*S,
+which is set when a
+user logs into the system.
+.SH EXAMPLE
+.IP
+logname
+.PP
+displays the 
+.SM \fB$LOGNAME\fP
+of the user logged into the system on the current
+port.
+.SH FILES
+/etc/profile
+.SH SEE ALSO
+env(1), login(1), logname(3X), environ(5), printenv(1).
+.\"	@(#)logname.1	5.2 of 6/21/84

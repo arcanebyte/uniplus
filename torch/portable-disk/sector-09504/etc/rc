@@ -1,0 +1,38 @@
+#	@(#)rc.sh	1.7
+
+# used to be PST8PDT
+TZ=GMT0BST
+export TZ
+if [ ! -f /etc/mnttab ]
+then
+	echo phase 1 - Mounting Filesystems /usr and /usr/bin
+	> /etc/mnttab
+	/etc/devnm / | grep -v swap | grep -v root | /etc/setmnt
+	: put mounts here
+	mount /dev/disk0d /usr
+	: run update
+	/etc/update
+	echo update started
+	: run LP scheduler
+	rm -f /usr/spool/lp/SCHEDLOCK
+	/usr/lib/lpsched
+	echo "LP scheduler started"
+	# make sure default floppy format not changed
+	rm -f /etc/floppyformat
+fi
+set `who -r`
+if [ $7 = 2 ]
+then
+	echo phase 2
+	/usr/lib/ex3.7preserve -
+#	/bin/su - adm -c /usr/lib/acct/startup
+#	echo process accounting started
+#	rm -f /tmp/*
+	rm -f /usr/spool/uucp/LCK*
+#	rm -f /usr/spool/lpd/lock
+#	rm -f /usr/spool/vpd/lock
+#	rm -f /usr/spool/dpd/lock
+#	rm -f /usr/spool/dpd/glock
+#	/usr/lib/lpd
+#	/usr/lib/dpd
+fi

@@ -1,0 +1,26 @@
+icon: type=f; fn=$WASTE; showbits=:wastebin; showname=Waste; +
+      daction=b,towaste $*;
+
+icon: type=d; fn=.desktop; showbits=:desktop; laction=;
+icon: type=d; fn=.iconspec; laction=; showbits=:iconspec; +
+	laction=x,wsh -C -c vi $0; raction=x,wsh -C more $0; 
+
+icon: type=d; fn=/icons/*; showbits=:resfile; +
+	raction=x,resshow $0; laction=x,resed $0; daction=;
+
+icon: type=d; fn=*.res; showbits=:resfile; +
+	raction=x,resshow $0; laction=x,resed $0; daction=;
+
+icon: type=d; fn=*.c; showbits=:cprog; +
+      laction=x,wsh -C -c vi $0; +
+      raction=b,cc -v -O -m -o `dirname $0`/`basename $0 \.c` $0 -lW -lres; +
+      daction=;
+
+icon: type=d; fn=*; laction=x,wsh -C -c vi $0; raction=b,file $0; +
+	daction=;
+
+icon: type=f; fn=/; showbits=:fcabinet;
+icon: type=f; fn=..; 
+icon: type=f; fn=.; showbits=:dot;
+icon: type=f; fn=*; daction=b,/etc/mountdisk $1 $0,p1=m;
+

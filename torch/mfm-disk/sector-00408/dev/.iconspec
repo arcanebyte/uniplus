@@ -1,0 +1,29 @@
+icon: type=m; fn=floppy; showbits=devices:floppydrv; showname=Floppy; +
+      laction=b,/etc/mountdisk $0 /mnt; +
+	raction=b,/etc/mountdisk $0 /mnt -r;
+
+icon: type=c; fn=w0; showbits=devices:window;
+icon: type=c; fn=w1; showbits=devices:window;
+icon: type=c; fn=w2; showbits=devices:window;
+icon: type=c; fn=w3; showbits=devices:window;
+icon: type=c; fn=w4; showbits=devices:window; 
+icon: type=c; fn=w5; showbits=devices:window; 
+icon: type=c; fn=w6; showbits=devices:window; 
+icon: type=c; fn=w7; showbits=devices:window; 
+icon: type=c; fn=w8; showbits=devices:window; 
+icon: type=c; fn=w9; showbits=devices:window; 
+icon: type=c; fn=wa; showbits=devices:window; 
+icon: type=c; fn=wb; showbits=devices:window; 
+
+icon: type=c; fn=desktop; showbits=devices:desktop;
+
+icon: type=c; fn=printer; showbits=devices:printer;
+
+icon: type=c; fn=printera; showbits=devices:printer;
+
+icon: type=c; fn=printerb; showbits=devices:printer;
+
+icon: type=c; fn=dialin; showbits=devices:modem;
+
+icon: type=c; fn=dialout; showbits=devices:modem;
+

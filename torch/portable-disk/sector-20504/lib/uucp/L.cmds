@@ -1,0 +1,10 @@
+#	Example L.cmds
+# This is the list of commands that uuxqt will execute.
+# A line of from PATH=... changes the path used to locate the commands.
+#
+PATH=/usr/local/bin:/bin:/usr/bin:/usr/ucb
+rmail
+rnews
+ruusend
+# These next programs are security holes, but noone seems to care
+cpr

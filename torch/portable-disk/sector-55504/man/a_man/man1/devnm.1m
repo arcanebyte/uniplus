@@ -1,0 +1,47 @@
+.TH DEVNM 1M
+.SH NAME
+devnm \- device name
+.SH SYNOPSIS
+.B /etc/devnm
+[\|names\|]
+.SH DESCRIPTION
+.I Devnm\^
+identifies the special file
+associated with the mounted file system
+where the argument \fIname\fP resides
+(as a special case,
+both the block device name and the swap device name is printed for
+the argument name
+.B /
+if swapping is done on the same disk section as the
+.B root
+file system).
+Argument names must be full path names.
+.PP
+This command is most commonly used by
+.B /etc/rc
+(see
+.IR brc (1M))
+to construct a mount table entry for the
+.B root
+device.
+.SH EXAMPLE
+.IP
+/etc/devnm /usr
+.PP
+produces
+.IP
+rp1 /usr
+.PP
+if
+.B /usr
+is mounted on
+.BR /dev/rp1 .
+.SH FILES
+/dev/rp\(**, /dev/dsk\(**
+.br
+/etc/mnttab
+.SH SEE ALSO
+brc(1M),
+setmnt(1M).
+.\"	@(#)devnm.1m	5.1 of 10/17/83

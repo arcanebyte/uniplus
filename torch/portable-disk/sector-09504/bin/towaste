@@ -1,0 +1,11 @@
+for i
+do
+	if mv $i /waste
+	then
+		rmicon $i
+		addicon /waste/`basename $i`
+	else
+		exit 1
+	fi
+done
+exit 0

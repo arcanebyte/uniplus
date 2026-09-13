@@ -1,0 +1,17 @@
+# template for a disc parameters file.
+# name
+# number of cylinders
+# number of heads
+# reduced write current cylinder
+# rite precompensation cylinder
+# landing zone cylinder
+# step rate in microseconds
+# imbedded servo flag (0 for not present, non-zero for present)
+MR522
+612
+4
+0
+256
+665
+12
+1

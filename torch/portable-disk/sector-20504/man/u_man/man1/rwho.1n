@@ -1,0 +1,61 @@
+.TH RWHO 1N UniSoft
+.SH NAME
+rwho \- who is logged in on local machines
+.SH SYNOPSIS
+.B rwho
+[
+.B \-a
+] [
+.B \-u
+] [
+.I systemname(s)
+] [
+.I \- systemname(s)
+]
+.SH DESCRIPTION
+The
+.I rwho\^
+command produces output similar to
+.IR who ,
+but for all machines on the local network.
+If no report has been
+received from a machine for 5 minutes, then
+.I rwho\^
+assumes the machine is down, and does not report users last known
+to be logged into that machine.
+.PP
+If a user hasn't typed to the system for
+an hour or more, then
+the user will be omitted from the output of
+.I rwho\^
+unless the
+.B \-a
+flag is given.
+.I Rwho\^ 
+normally sorts its output by 
+.IR systemname ,
+the
+.B \-u 
+option will cause 
+.I rwho\^ 
+to sort its output by 
+.IR username .
+If a 
+.I systemname\^
+is given, 
+only information for that system in printed.
+If a
+.I \-systemname 
+is given, 
+output is suppressed for that system.
+.SH FILES
+.ta \w'/etc/whod.*\ \ \ \ 'u
+/etc/whod.*	information about other machines
+.DT
+.SH BUGS
+This is unwieldy when the number of machines
+on the local net is large.
+.PP
+This command is provisional and may change 
+in future releases.
+.\"N	 @(#)rwho.1N	 5.2 of 7/12/84

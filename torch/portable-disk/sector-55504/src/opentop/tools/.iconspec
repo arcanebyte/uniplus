@@ -1,0 +1,3 @@
+icon: type=d; fn=makefile; laction=n,vi $0; raction=n,view $0;+
+      daction=b,sh -c \"cd `dirname $0`\;nice -19 make `basename $1`\";
+

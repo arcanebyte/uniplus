@@ -1,0 +1,96 @@
+.TH "CASINO BLACKJACK" 6 "21 January 1985"
+.UC 4
+.SH NAME
+cbj \- casino blackjack
+.SH SYNOPSIS
+.B /usr/games/cbj
+[
+.B \-d
+.I no_decks
+]
+[
+.B \-p
+.I no_players
+]
+[
+.B \-b
+.I bankroll
+]
+[
+.B \-m
+.I minimum_bet
+]
+[
+.B \-f
+.I save_file
+]
+[
+.B \-u
+]
+.SH DESCRIPTION
+.PP
+.I cbj
+is a non-fullscreen version of blackjack, with an attempt to stay
+as close to casino play as possible.
+.PP
+To invoke, just type "cbj".
+The defaults are set for a casual player who walks into an
+Atlantic City casino.
+Besides the user,
+there will be 2 simulated players and the house.  The players all
+start off with a $100.00 bankroll.
+The minimum bet is set at $2.00, and 8 decks of cards are used.
+The deck is reshuffled when less than 50% of the original deck remains.
+.PP
+If
+.I "-d no_decks"
+is specified,
+then the default number of decks is changed.
+.PP
+If
+.I "-p no_players"
+is specified,
+then the default number of players is changed.
+There will always be one player (the user).
+.PP
+If
+.I "-b bankroll"
+is specified,
+then the starting bankroll of all the players is changed.
+Units are in dollars.
+.PP
+If
+.I "-m minimum_bet"
+is specified,
+then the minimum bet is changed.
+.PP
+If
+.I "-f save_file"
+is specified,
+then the game will be restored from a previously saved session.
+.PP
+The
+.B \-u
+option will keep a running count of the "goodness" of the pack with
+respect to the number of high and low cards that have been played.
+For a newly shuffled deck, the Uston count starts at 0.
+For each 3,4,5,6, and 7, the count is increased by one.
+For each 10 valued card or ace, the count is decreased by one.
+For each 8 or 9, no change is made to the count.
+For more information on how to use the count, read:
+"Million Dollar Blackjack", Ken Uston, Kingsport Press, 1983.
+.SH AUTHOR
+Miles Murdocca
+.SH BUGS
+.PP
+If the dealer has 17 with an ace counted as 11 then the house stands,
+which may not be the rule in all casinos.
+At payoff time, the program determines the optimal assignment of aces
+(1 or 11) for all players.
+This is not a bug, but non-optimal thinkers may think it is.
+The simulated players play a wimpy game.
+That is, they always bet the minimum, stand at 17, and
+only hit, bet, or stand throughout the game so they always
+wind up losers.
+There are probably other bugs too.
+Drop me a message if you find one, but I'll make no promises.

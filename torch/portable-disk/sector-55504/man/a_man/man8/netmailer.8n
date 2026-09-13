@@ -1,0 +1,37 @@
+.TH NETMAILER 8N UniSoft
+.SH NAME
+netmailer \- deliver mail to 
+.SM BNET
+.SH SYNOPSIS
+.B /etc/netmailer
+.I from-address
+.I to-host
+.I to-user
+.SH DESCRIPTION
+.I Netmailer\^
+queues the letter found on its standard input
+for delivery to the host and user specified.
+The actual delivery will be performed by the
+.SM BNET
+mailer daemon 
+.RB ( /etc/bnetmaild ).
+.PP
+If the letter does not appear to have a full
+.SM BNET
+header,
+.I netmailer\^
+will insert "Date:" and "From:"
+fields in the proper format.
+The "From:" person
+is determined by the 
+.I from-address\^
+argument,
+with colons translated to periods
+and "@<local-host>" appended.
+The "<local-host>" is obtained from the file 
+.BR /usr/lib/uucp/\s-1SYSTEMNAME\s+1 .
+.SH FILES
+/usr/spool/netmail/\(**
+.SH SEE ALSO
+delivermail(8N), netmail(8N).
+.\"	 @(#)netmailer.8n	 5.2 of 7/26/84

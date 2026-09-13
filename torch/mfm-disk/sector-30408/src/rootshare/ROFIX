@@ -1,0 +1,5 @@
+ed - $1 << 'EOF'
+g/^	data/s/data/text/
+w
+q
+EOF

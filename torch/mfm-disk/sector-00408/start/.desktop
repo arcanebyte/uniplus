@@ -1,0 +1,5 @@
+/dev/floppy G0 2  
+/bin/sh G0 3  
+/start G0 4  
+/ G0 0 S
+/usr/start/waste G0 1 S

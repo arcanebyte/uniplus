@@ -1,0 +1,101 @@
+noboot
+:STICKLEBACK MINIMAL BASIC SYSTEM V DISC
+:720 BLOCKS FILE SYSTEM
+:2048 BLOCKS SWAP SPACE HELD ON THE HARD DISC
+:120  INODES
+720 120 
+d--777 0 0
+wunix	---644 0 1 /wunix
+bin     d--775 2 2
+        sh      ---775 2 2 /bin/sh
+        su      -u-755 0 2 /bin/su
+        env     ---775 2 2 /bin/env
+        echo    ---775 2 2 /bin/echo
+        ls      ---775 2 2 /bin/ls
+        mkdir   -u-755 0 1 /bin/mkdir
+        ln      ---775 2 2 /bin/ln
+        chown   ---775 2 2 /bin/chown
+        chmod   ---775 2 2 /bin/chmod
+	cpio	---755 2 2 /bin/cpio
+        $
+mnt	d--755 0 1
+	$
+lib	d--775 2 2
+	$
+usr     d--755 0 1
+        $
+tmp     d--777 3 3
+        $
+etc     d--775 3 3
+	passwd  ---775 3 3 /etc/passwd
+        mknod   ---775 2 2 /etc/mknod
+        fsck    ---755 2 2 /etc/fsck
+        mount   ---775 2 2 /etc/mount
+        umount  ---755 2 2 /etc/umount
+        init    ---754 2 2 /etc/init
+        inittab ---664 3 3 /etc/inittab
+        rc      ---755 3 3 /etc/rc
+        mnttab  ---644 0 1 /etc/rc
+        reboot  ---755 0 1 /etc/reboot
+        $
+dev     d--775 3 3
+	console  c--622 0 1 0 0
+	desktop  c--622 0 1 0 99
+	disk0a   b--644 0 1 0 0
+	disk0b   b--600 0 1 0 1
+	disk0c   b--600 0 1 0 2
+	disk0d   b--600 0 1 0 3
+	disk0e   b--644 0 1 0 4
+	disk0f   b--644 0 1 0 5
+	disk1a   b--644 0 1 0 32
+	disk1b   b--644 0 1 0 33
+	disk1c   b--644 0 1 0 34
+	disk1d   b--644 0 1 0 35
+	disk1e   b--644 0 1 0 36
+	disk1f   b--644 0 1 0 37
+	disk10a   b--644 0 1 1 0
+	disk10b   b--600 0 1 1 1
+	disk10c   b--600 0 1 1 2
+	disk10d   b--600 0 1 1 3
+	disk10e   b--644 0 1 1 4
+	disk10f   b--644 0 1 1 5
+	dmd      c--644 0 1 8 0
+	dml	 c--644 0 1 7 0
+	error    c--600 0 1 3 0
+	floppy   b--644 0 1 0 64
+	kmem     c--644 0 1 2 1
+	mem      c--644 0 1 2 0
+	null     c--666 0 1 2 2
+	rdisk0a  c--600 0 1 10 0
+	rdisk0b  c--600 0 1 10 1
+	rdisk0c  c--600 0 1 10 2
+	rdisk0d  c--600 0 1 10 3
+	rdisk0e  c--600 0 1 10 4
+	rdisk0f  c--600 0 1 10 5
+	rdisk10a c--600 0 1 11 0
+	rdisk10b c--600 0 1 11 1
+	rdisk10c c--600 0 1 11 2
+	rdisk10d c--600 0 1 11 3
+	rdisk10e c--600 0 1 11 4
+	rdisk10f c--600 0 1 11 5
+	rfloppy  c--600 0 1 10 64
+	scsi	 c--600 0 1 17 0
+	service	 c--600 0 1 5 0
+	swap     b--600 0 1 0 2
+	syscon   c--622 0 1 0 0
+	systty   c--622 0 1 0 0
+	tty      c--666 0 1 0 0
+	ttya     c--622 0 1 6 0
+	ttyb     c--622 0 1 6 1
+	ttyc     c--622 0 1 0 0
+	w0	 c--622 0 1 0 0
+	w1	 c--622 0 1 0 1
+	w2	 c--622 0 1 0 2
+	w3	 c--622 0 1 0 3
+	w4	 c--622 0 1 0 4
+	w5	 c--622 0 1 0 5
+	w6	 c--622 0 1 0 6
+	w7	 c--622 0 1 0 7
+        $
+$
+

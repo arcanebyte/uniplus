@@ -1,0 +1,18 @@
+# installfloppy script version 1.20
+PATH=/usr/bin/opentop:/bin:/usr/bin:/etc:
+export PATH
+cd /
+echo "\n\n\tThis is the Triple X Software Installation Program."
+echo
+echo "Free disc space\n"
+df
+while :
+do
+	if yorn "INSTALL" "List contents of disc first ? Use close box to exit."
+	then
+		/etc/listfloppy.sh
+		/etc/loadfloppy.sh
+	else
+		/etc/loadfloppy.sh
+	fi
+done

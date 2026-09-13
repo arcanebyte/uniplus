@@ -1,0 +1,6 @@
+#	SCCS:	%W%	%G%	%U%
+#	Revise local list in hash files
+
+cd /usr/lib/spell
+./spellin hlista <local >nhlista  &&  mv nhlista hlista
+./spellin hlistb <local >nhlistb  &&  mv nhlistb hlistb

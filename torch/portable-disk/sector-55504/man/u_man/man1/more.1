@@ -1,0 +1,279 @@
+.TH MORE 1 UniSoft
+.SH NAME
+more \- file perusal filter for crt viewing
+.SH SYNOPSIS
+.B more
+[
+.B \-df\^l\fIn\fP
+]
+[
+.B +\fIlinenumber\fP | +/\fIpattern\fP
+]
+[
+name ...
+]
+.SH DESCRIPTION
+.I More\^
+is a filter which allows examination of a continuous text
+one screenful at a time on a 
+.SM CRT
+terminal.
+It normally pauses after each screenful, printing "--More--"
+at the bottom of the screen.
+.PP
+If the user then types a carriage return, one more line is displayed.
+If the user hits a space,
+another screenful is displayed.
+If a space is preceded by an integer, that number of lines is printed.
+If the user hits
+.B d
+or control-D,
+11 more lines (usually half a screenful) are displayed (a "scroll").
+.PP
+.I More\^
+looks in the user's environment and, if necessary, the file
+.B /etc/termcap
+to determine terminal characteristics
+and to determine the default window size.
+On a terminal capable of displaying 24 lines,
+the default window size is 22 lines.
+.PP
+If
+.I more\^
+is reading from a file, rather than a pipe, then a percentage is displayed
+along with the "--More--" prompt.
+This gives the fraction of the file (in characters, not lines) that has been
+read so far.
+.PP
+The
+following options are available:
+.TP "\w'\fB\-n\fR\|\ \ 'u"
+.B \-n
+is an integer which is the size (in lines) of the window which
+.I more\^
+will use instead of the default.
+.TP
+.B \-c
+.I More
+will draw each page by beginning at the top
+of the screen and erasing each line just before it draws on it.
+This avoids scrolling the screen, making it easier to read while
+.I more
+is writing.
+This option will be ignored if the terminal does not have the
+ability to clear to the end of a line.
+.TP
+.B \-d
+causes 
+.I more\^
+to prompt the user with the message "Hit
+space to continue, Rubout to abort" at the end of each screenful.
+.TP
+.B \-f
+causes
+.I more\^
+to count logical, rather than screen lines.
+That is, long lines are not folded.  This option is
+recommended if 
+.I nroff\|
+output is being piped through
+.IR ul ,
+since the latter may generate escape sequences.
+These escape sequences contain characters which would 
+ordinarily occupy screen positions, but which do not print when they
+are sent to the terminal as part of an escape sequence.  Thus
+.I more\^
+may think that lines are longer than they actually are,
+and fold lines erroneously.
+.TP
+.B \-l
+causes
+.I more\^
+not to treat control-L (form feed) specially.
+If this option is not given,
+.I more\^
+will pause after any line that contains a control-L, as if the end of a
+screenful had been reached.
+Also, if a file begins with a form feed, the screen will be cleared
+before the file is printed.
+.TP
+.B \-s
+Squeeze multiple blank lines from the output, producing
+only one blank line.
+Especially helpful when viewing
+.I nroff
+output, this option maximizes the useful information
+present on the screen.
+.TP
+.B \-u
+Normally,
+.I more
+will handle underlining such as produced by
+.I nroff
+in a manner appropriate to the particular terminal:
+if the terminal can perform underlining or has a stand-out
+mode,
+.I more
+will output appropriate escape sequences to enable underlining
+or stand-out mode for underlined information in the source
+file.
+The
+.B \-u
+option suppresses this processing.
+.TP
+.B +\fIlinenumber\fR
+option causes
+.I more\^
+to start up at \fIlinenumber\fP
+.TP
+.B +/\fIpattern\fP
+causes
+.I more\^
+to start up two lines before the line containing the
+regular expression \fIpattern\fP.
+.PP
+Once inside
+.IR more ,
+other sequences may be typed when
+.I more\^
+pauses.  The sequences and their effects are as follows
+(\fIi\|\fP is an optional integer
+argument, defaulting to 1) :
+.TP "\w'\fB\-n\fR\|\ \ 'u"
+.I =
+display the current line number
+.TP
+.I v
+start up the editor
+.I vi
+at the current line
+.TP
+.I h
+help command;
+give a description of all the
+.I more
+commands
+.TP
+\fIi\|\fP:n
+skip to the \fIi\fP-th next file given in the command
+line (Skips to last file if \fIn\fP doesn't make sense.)
+.TP
+\fIi\|\fP:p
+skip to the \fIi\fP-th previous file given in the command
+line.
+If this command is given in the middle of printing out a file,
+then
+.I more
+goes back to the beginning of the file.
+If \fIi\fP doesn't make sense,
+more skips back to the first file.
+If
+.I more
+is not reading from a file,
+the bell is rung and nothing else happens.
+.TP
+\fIi\|\fP:f
+display the current file name and line number.
+.TP
+\fIi\|\fP:q or :Q
+exit from
+.I more
+(same as q or Q).
+.TP
+\s+2.\s0
+repeat the previous command.
+.TP
+\fIi\|\fPz
+same as typing a space except that \fIi\|\fP, if present, becomes the new
+window size.
+.TP
+\fIi\|\fPs
+skip \fIi\|\fP lines and print a screenful of lines
+.TP
+\fIi\|\fPf
+skip \fIi\|\fP screenfuls and print a screenful of lines
+.TP
+\fIi\|\fPn
+skip to the \fIi\|\fP-th next file given in the command line
+(skips to last file if n doesn't make sense)
+.TP
+\fIi\|\fPp
+skip to the \fIi\|\fP-th previous file given in the command line.
+If this command is given in the middle of printing out a
+file, then
+.I more\^
+goes back to the beginning of the file. If \fIi\|\fP doesn't make sense,
+.I more\^
+skips back to the first file.
+If
+.I more\^
+is not reading from a file, the bell is rung and nothing else happens.
+.TP 
+q or Q
+Exit from more.
+.TP
+\fIi\|\fP/expr
+search for the \fIi\|\fP-th occurrence of the regular expression \fIexpr\fP.
+If there are less than \fIi\|\fP occurrences of \fIexpr\fP
+and the input is a file (rather than a pipe),
+then the position in the file remains unchanged.
+Otherwise, a screenful is displayed, starting two lines before the place
+where the expression was found.
+The user's erase and kill characters may be used to edit the regular
+expression.
+Erasing back past the first column cancels the search command.
+.TP 
+\&'
+(single quote) Go to the point from which the last search started.
+If no search has been performed in the current file, this command
+goes back to the beginning of the file.
+.TP 
+!command
+invoke a shell with \fIcommand\fP. 
+.PP
+The commands take effect immediately, i.e., it is not necessary to
+type a carriage return.
+Up to the time when the command character itself is given,
+the user may hit the line kill character to cancel the numerical
+argument being formed.
+In addition, the user may hit the erase character to redisplay the
+"--More--(xx%)" message.
+.PP
+At any time when output is being sent to the terminal, the user can
+hit the quit key (normally control\-\\).
+.I More\^
+will stop sending output, and will display the usual "--More--"
+prompt.
+The user may then enter one of the above commands in the normal manner.
+Unfortunately, some output is lost when this is done, due to the
+fact that any characters waiting in the terminal's output queue
+are flushed when the quit signal occurs.
+.PP
+The terminal is set to
+.I noecho\^
+mode by this program so that the output can be continuous.
+What you type will thus not show on your terminal, except for the "/" and "!"
+commands.
+.PP
+If the standard output is not a teletype, then
+.I more\^
+acts just like
+.IR cat ,
+except that a header is printed before each file (if there is
+more than one).
+.SH EXAMPLE
+.IP
+nroff \-ms +2 doc.n | more
+.PP
+would show the 
+.I nroff\|
+output on the terminal screen.
+.SH FILES
+.ta \w'/usr/lib/more.help\ \ \ \ 'u
+/etc/termcap		Terminal data base
+.br
+/usr/lib/more.help	Help file
+.DT
+.SH AUTHOR
+Eric Shienbrood
+.\"	@(#)more.1	5.2 of 7/10/84

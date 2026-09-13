@@ -1,0 +1,104 @@
+.TH INET 5N UniSoft
+.SH NAME
+inet \- Internet protocol family
+.SH SYNOPSIS
+.SH DESCRIPTION
+The Internet protocol family is a collection of protocols
+layered atop the
+.I "Internet Protocol\^" 
+.RI ( \s-1IP\s+1\^ )
+transport layer, and utilizing the Internet address format.
+The Internet family provides protocol support for the
+.SM SOCK_STREAM\*S, 
+.SM SOCK_DGRAM\*S, 
+and 
+.SM SOCK_RAW 
+socket types; the
+.SM SOCK_RAW
+interface provides access to the 
+.SM 
+.I IP\^
+protocol.
+.SH ADDRESSING
+Internet addresses are four byte quantities, stored in
+network standard format.
+The include file 
+.RI < \|net/in.h\| > 
+defines this address
+as a discriminated union with the following conventions,
+.PP
+.nf
+.ta \w'/'u  +\w'*/\ 'u
+/*
+	*	Internet address
+	*/
+.PP
+struct in_addr {
+	union {
+		struct { u_char s_b1,s_b2,s_b3,s_b4; } S_un_b;
+		struct { u_short s_w1,s_w2; } S_un_w;
+		u_long S_addr;
+	} S_un;
+};
+.fi
+.DT
+.PP
+Sockets bound to the Internet protocol family utilize
+the following addressing structure,
+.PP
+.nf
+.ta \w'struct\ 'u +\w'sockaddr_in {\ \ \ \ 'u
+struct	sockaddr_in {
+	short	sin_family;
+	u_short	sin_port;
+	struct	in_addr sin_addr;
+	char	sin_zero[8];
+};
+.fi
+.PP
+Sockets may be created with the address
+.SM INADDR_ANY
+to effect "wildcard" matching on incoming messages. 
+.SH PROTOCOLS
+The Internet protocol family is comprised of
+the 
+.SM
+.I IP\^
+transport protocol, Internet Control
+Message Protocol 
+.RI ( \s-1ICMP\s+1\^ ),
+Transmission Control Protocol 
+.RI ( \s-1TCP\s+1\^ ),
+and User Datagram Protocol 
+.RI ( \s-1UDP\s+1\^ ).
+.SM
+.I TCP\^ 
+is used to support the 
+.SM SOCK_STREAM
+abstraction while 
+.SM
+.I UDP\^ 
+is used to support the 
+.SM SOCK_DGRAM
+abstraction.  A raw interface to 
+.SM 
+.I IP\^
+is available
+by creating an Internet socket of type 
+.SM SOCK_RAW\*S.
+The 
+.SM 
+.I ICMP\^
+message protocol is not directly accessible.
+.SH INTERFACES
+A number of interfaces are usable with the Internet
+protocol family.  These include 
+various Ethernet interfaces
+and standard a
+"software loopback" interface.
+.SH SEE ALSO
+ip(5N),
+lo(5N)
+tcp(5N), 
+udp(5N).
+.\"N	 @(#)inet.5N	 5.2 of 7/12/84

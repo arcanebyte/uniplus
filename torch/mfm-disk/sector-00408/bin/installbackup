@@ -1,0 +1,81 @@
+trap : 2
+echo "\n\n\tThis is the Triple X Software Backups Installation Program."
+echo
+
+if [ -f /First_Time ]
+then	echo "\tInsert Unix 5.2 kernel disc"
+	if yorn "Unix 5.2 Kernel" "Disk Ready ?"
+	then	until cpio -icvdum < /dev/rfloppy
+		do
+			if yorn "ERROR !!" "Insert Unix 5.2 Kernel Disk"
+			then	:
+			else	exit 1
+			fi
+		done
+	else	exit 1
+	fi
+	echo "\tInsert Unix 5.2 Utilities disc"
+	if yorn "Unix 5.2 Utilities" "Disk Ready ?"
+	then	until cpio -icvdum < /dev/rfloppy
+		do
+			if yorn "ERROR !!" "Insert Unix 5.2 Utilities Disk"
+			then	:
+			else	exit 1
+			fi
+		done
+		mv /bin/sh /tmp
+		mv /bin/sh5.2 /bin/sh
+		mv /bin/cpio5.2 /bin/cpio
+		rm -f /First_Time > /dev/null 2>&1
+		rm /etc/dofsck > /dev/null 2>&1
+		echo "ReBooting Unix 5.2 ..."
+		sync
+		reboot
+	fi
+	exit 1
+fi
+	
+while :
+do
+	echo "\tSelect required option"
+	echo
+	echo "\t\t1) List contents of disc(s)."
+	echo "\t\t2) Load contents of disc(s)."
+	echo "\t\tq) To QUIT"
+	echo "\t\c"
+
+	read option
+	case "$option" in 
+		1)	
+	echo "\n\n\tFor each disc to be listed, press 'l' followed by the return key."
+	echo "\tTo stop listing program, press any other key followed by return key"
+	echo "\n\n\tPress "l" followed by return to continue \c"
+	read key
+	while [ "$key" = "l" ]
+	do
+		cpio -iBdct </dev/rfloppy
+		echo "\n\n\tPress "l" followed by return to continue \c"
+		read key
+	done
+			;;
+
+		2)	
+		echo "\n\n\tFor each disc to be loaded, press 'l' followed by the return key."
+		echo "\tTo stop loading, press any other key followed by return key"
+		echo "\n\n\tPress "l" followed by return to continue \c"
+		read key
+		while [ "$key" = "l" ]
+		do
+			cpio -iBvcdu </dev/rfloppy
+			echo "\n\n\tPress "l" followed by return to continue \c"
+			read key
+		done
+			;;
+
+		q)	exit 0
+			;;
+
+		*)	echo Option unknown
+
+	esac
+done

@@ -1,0 +1,7 @@
+#
+# root44 unused unused 9600 unused unused \
+#	\32\r\32\32\32\r
+rootmk unused unused 9600 unused unused \
+	\32\r\32\32\32\r
+sticky unused unused 9600 unused unused \
+	\3stty\40cs8\r\n

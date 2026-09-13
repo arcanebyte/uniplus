@@ -1,0 +1,37 @@
+.TH PATH 1L (local)
+.SH NAME
+path \- show the path to commands
+.SH SYNOPSIS
+.B path
+[ -a ] commands
+.SH DESCRIPTION
+Path shows which file is executed in response to a command.
+.PP
+The directories referenced in the
+.B PATH
+environment variable are searched for an executable file that matches the
+current argument. If one is found the path is printed on the standard output,
+and the next argument processed. If an argument is not found a grumble is
+output on the standard error.
+.PP
+If the
+.I -a
+option is given, then all the directories in the current
+.B PATH
+are searched for the current argument. This can be useful in showing trouble
+caused by different versions of a command being in different directories.
+.PP
+Shell pattern matching may be used. Note that the pattern matching symbols
+should be escaped. This is particularly useful in conjunction with the
+.I -a
+option.
+.SH "EXIT CODE"
+0 is returned if all the commands are found.
+.br
+1 is returned if any command was not found.
+.SH EXAMPLES
+path -a \e*grep
+.br
+ls -l `path man`
+.SH "SEE ALSO"
+sh(1)

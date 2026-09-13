@@ -1,0 +1,43 @@
+.TH DISKTUNE 1M UniSoft
+.SH NAME
+disktune - tune floppy disk settling time parameters
+.SH SYNOPSIS
+disktune [\-srt #] [\-hlt #] [\-hut #] device
+.SH DESCRIPTION
+.I Disktune
+tunes floppy disk settling time parameters.
+These include
+the motor stepping rate
+and the rate at which the head loads and unloads.
+.I Disktune
+thus enables you to obtain the most efficient operation
+from your floppy on those systems that support it.
+.PP
+If no settable parameters are given,
+.I disktune
+will report the current settings on
+.I device.
+.I Disktune
+retains the current settings on parameters which are not specified.
+.PP
+The raw device, 
+.BR /dev/rflop , 
+must be specified.
+.PP
+The settable parameters are:
+.TP 9
+.B \-srt #
+seek motor stepping rate time in milliseconds 
+.TP 9
+.B \-hlt #
+head loading time in milliseconds 
+.TP 9
+.B \-hut #
+head unload time in milliseconds 
+.SH EXAMPLE
+.IP
+disktune -srt 3 /dev/rfdc0
+.PP
+will set the step rate time on the floppy controller to
+3 ms per step.
+.\"	@(#)disktune.5	5.1 of 11/1/83

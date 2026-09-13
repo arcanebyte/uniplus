@@ -1,0 +1,9 @@
+is:1:initdefault:
+sy::sysinit:/etc/setshmlib 1>/dev/null 2>&1
+bl:1:bootwait:/etc/bcheckrc </dev/null 1>/dev/null 2>&1
+bc:1:bootwait:/etc/brc 1>/dev/null 2>&1
+sl:1:wait:(rm -f /dev/syscon;ln /dev/systty /dev/syscon;) 1>/dev/console 2>&1
+rc:1:wait:/etc/rc </dev/null 1>/dev/null 2>&1
+pf:1:powerfail:/etc/powerfail </dev/null 1>/dev/null 2>&1
+sd:6:once:/etc/shutdown
+co:1:respawn:/etc/getty wb console

@@ -1,0 +1,131 @@
+.TH XSTR 1 2/7/82
+.SH NAME
+xstr \- extract strings from C programs to implement shared strings
+.SH SYNOPSIS
+.B xstr
+[
+.B \-c
+] [
+.B \-
+] [
+file
+]
+.SH DESCRIPTION
+.I Xstr
+maintains a file
+.I strings
+into which strings in component parts of a large program are hashed.
+The strings in the programs modules are replaced with pointers to this common area.
+This serves to implement shared constant strings, most useful if they
+are also read-only.
+.PP
+The command
+.PP
+.DT
+	\fBxstr \-c\fR name
+.PP
+will extract the strings from the C source in the file
+.I name,
+replacing
+string references by expressions of the form (&xstr[number])
+for some number.
+An appropriate declaration of
+.I xstr
+is prepended to the file.
+.PP
+The resulting C text is placed in the file
+.I x.c,
+after which it can be compiled.
+The strings from this file are placed in the
+.I strings
+data base if they are not there already.
+Repeated strings and strings which are suffixes of existing strings
+do not cause changes to the data base.
+.PP
+After all components of a large program have been compiled a file
+.I xs.c
+declaring the common
+.I xstr
+space can be created by a command of the form
+.PP
+.DT
+	\fBxstr\fR
+.PP
+This
+.I xs.c
+file should then be compiled and loaded with the rest
+of the program.
+If possible, the array can be made read-only (shared) saving
+space and swap overhead.
+.PP
+.I Xstr
+can also be used on a single file.
+A command
+.PP
+.DT
+	\fBxstr\fR name
+.PP
+creates files
+.I x.c
+and
+.I xs.c
+as before, without using or affecting any
+other
+.I strings
+or C text file in the same directory.
+.PP
+It may be useful to run
+.I xstr
+after the C preprocessor if any macro definitions yield strings
+or if there is conditional code which contains strings
+which may not, in fact, be needed.
+.I Xstr
+reads from its standard input when the argument `\-' is given.
+An appropriate command sequence for running
+.I xstr
+after the C preprocessor is:
+.PP
+.nf
+.DT
+	\fBcc \-E\fR name.c | \fBxstr \-c\fR \-
+	\fBcc \-c\fR x.c
+	\fBmv\fR x.o name.o
+.fi
+.PP
+.I Xstr
+does not touch the file
+.I strings
+unless new items are added, thus
+.I make
+can avoid remaking
+.I xs.o
+unless truly necessary.
+.SH EXAMPLE
+.IP
+xstr -c file1.c
+.PP
+creates a new file named "x.c" which is a modified version of "file1.c"
+with the strings removed; the strings are saved into a file
+named "strings".
+.SH FILES
+.DT
+strings	Data base of strings
+.br
+x.c		Massaged C source
+.br
+xs.c		C source for definition of array `xstr'
+.br
+/tmp/xs*	Temp file when `xstr name' doesn't touch
+.I strings
+.SH "SEE ALSO"
+mkstr(1)
+.SH AUTHOR
+Bill Joy
+.SH BUGS
+If a string is a suffix of another string in the data base,
+but the shorter string is seen first by
+.I xstr
+both strings will be placed in the data base, when just
+placing the longer one there will do.
+
+

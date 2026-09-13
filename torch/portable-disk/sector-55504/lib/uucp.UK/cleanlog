@@ -1,0 +1,1 @@
+find /usr/spool/uucp \( -name C.* -o -name D.* \) -type f -atime +3 -exec rm {} \;

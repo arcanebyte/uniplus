@@ -1,0 +1,8 @@
+#	@(#)uudemon.hr	UniPlus V.2.1.2	(UniSoft 1.2)
+# 'perform every hour on the 56-minute mark'
+LOGNAME=uucp
+export LOGNAME
+PATH=:/usr/lib/uucp:/bin:/usr/bin
+cd /usr/lib/uucp
+uucico -r1
+uulog

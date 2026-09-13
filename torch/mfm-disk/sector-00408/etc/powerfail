@@ -1,0 +1,47 @@
+# POWERFAIL file.
+# This file is executed by init whenever the touch switch is pressed.
+# It may also be called  by the desktop manager when menu option selected.
+# Desktop must be super-user to switch off !.
+#
+if [ `whoami` = "root" ]
+then :
+else
+	yorn "POWERDOWN" "Not Super-User. Please use touch switch."
+	exit
+fi
+tmpfile="/tmp/foo$$"
+who > $tmpfile
+nusers=`wc -l <$tmpfile`
+nprocs=`ps -e |wc -l`
+rm -f $tmpfile
+nprocs=`expr $nprocs - 3`
+if [ $nusers -gt 1 ]
+then 
+	mesg="There are $nusers users and $nprocs user processes using the system."
+else
+	
+	if [ $nprocs -gt 1 ]
+	then
+		mesg="There are $nprocs user processes running."
+	else
+		mesg=""
+	fi
+fi
+if yorn POWERDOWN "$mesg" "Please confirm that you wish to switch off ?" 
+then
+	# if others using system - write to them
+	if [ "$nusers" -gt 1 ]
+	then
+		wall <<!
+System closing down in approx 20 secs.
+Please log off immediately !
+!
+	sleep 20
+	fi
+	#
+	# For NFS best if we umount all mounted file systems now
+	umount -av
+	#
+	# tell init to change to shutdown run level
+	telinit 6 >/dev/null 2>&1
+fi

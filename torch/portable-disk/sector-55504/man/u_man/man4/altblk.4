@@ -1,0 +1,77 @@
+'\" t
+.TH ALTBLK 4 UniSoft
+.SH NAME
+altblk \- alternate block information for bad block handling
+.SH SYNOPSIS
+.B #include <altblk.h>
+.SH DESCRIPTION
+.I Altblk
+is the data structure used by
+.IR badblk (1M) 
+to handle bad blocks for disk drives that
+support soft sector bad block remapping.
+.PP
+The layout of this structure is as follows:
+.PP
+.TS
+l lp-1 l l.
+#define	MAXALT	50	/* max alternate disk blocks */
+#define	ALTMAGIC	0xDBDF	/* bad block information is valid flag */
+.TE
+.PP
+.TS
+l0 l1 l.
+/	*
+	*	structure for alternate block mapping
+	*/
+.TE
+.TS
+l1 l l.
+struct	a_map {
+	long a_altbk;	/* bad block */
+	long a_index;	/* relative bad block index */
+};
+.TE
+.PP
+.TS
+l0 l1 l.
+/	*
+	*	disk header block format for alternate block mapping
+	*/
+.TE
+.TS
+l1 l l
+l1 l s
+l1 l l.
+struct	altblk {
+	char a_fill[\s-1BSIZE\s+1-sizeof(struct a_map)-4*sizeof(long)];
+		/* fill to make structure \s-1BSIZE\s+1 bytes long */
+	struct a_map a_map[1];	/* mapping */
+	long a_magic;	/* verification code (ALTMAGIC) */
+	long a_count;	/* bad block count */
+	long a_nicbad;	/* max number of bad blocks */
+	long a_maxalt;	/* max alt block used so far */
+};
+.TE
+.PP
+This structure describes the upper portion of block
+0 of each physical disk.
+The array a_map is inverted (i.e., it is indexed backwards).
+The specific fields in
+.I altblk
+are:
+.PP
+.ta \w'a_maxalt\ 'u +\w'\-\ 'u
+a_maxalt	\-	the next usable block in bad block area relative to the start of 
+		the bad block area
+.br
+a_nicbad	\-	the maximum number of elements in the a_map structure
+.br
+a_count	\-	the number of bad blocks currently remapped on the disk
+.br
+a_magic	\-	a magic number for verification 
+.br
+a_map	\-	bad block remap information
+.SH "SEE ALSO"
+badblk(1M)
+.\"	@(#)altblk.4	5.1 of 10/18/83

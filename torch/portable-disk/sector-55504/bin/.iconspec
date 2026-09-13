@@ -1,0 +1,10 @@
+icon: type=e; fn=more; daction=n,$0 $*; 
+
+icon: type=e; fn=man; showbits=utilities:manuals; showname=Manual; +
+      laction=n,$0 -y man; daction=n,$0 -y `basename $1`; 
+
+icon: type=e; fn=lp; showbits=utilities:fprint; showname=Print; +
+      laction=b,lpstat; raction=b,lpstat -t; daction=b,lp -dprinter $*;
+
+icon: type=f; fn=opentop; showname=OpenTop;
+

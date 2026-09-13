@@ -1,0 +1,26 @@
+.TH TPLOT 1G
+.SH NAME
+tplot \- graphics filters
+.SH SYNOPSIS
+.B tplot
+[
+.BR \-T\| terminal
+[
+.BR \-e " raster"
+] ]
+.SH DESCRIPTION
+These commands read plotting instructions (see
+.IR plot\^ (4))
+from the standard input
+produce, on the standard output, plotting instructions suitable for
+a Triple X.
+.PD
+.SH EXAMPLE
+.IP
+tplot graph.out
+.PP
+will use the encoded information in "graph.out" to plot
+a graph in the current window of the Triple X.
+.SH SEE ALSO
+plot(3X), plot(4), term(5).
+.\"	@(#)tplot.1g	5.1 of 11/10/83

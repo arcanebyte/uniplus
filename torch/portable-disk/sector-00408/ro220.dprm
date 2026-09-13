@@ -1,0 +1,13 @@
+# Rodime 220 20 Mbytes
+# 320 cylinders, 8 heads, 12us step rate.
+# reduced write current on cylinder 132
+# write precompensation not used
+# landing cylinder 320, imbedded servo not present
+RO220
+320
+8
+132
+0
+320
+12
+0

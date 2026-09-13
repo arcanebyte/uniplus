@@ -1,0 +1,47 @@
+.TH RECEIVE 2N UniSoft
+.SH NAME
+receive \- receive message from a socket
+.SH SYNOPSIS
+.B #include <net/socket.h>
+.sp
+.B cc = receive(s, from, buf, len);
+.br
+.B int cc, s;
+.br
+.B struct sockaddr *from;
+.br
+.B char *buf;
+.br
+.B int len;
+.SH DESCRIPTION
+.I Receive\^
+is used to receive a message from a 
+.SM SOCK_DGRAM
+or 
+.SM SOCK_RAW 
+socket.
+The source address of the message is placed in
+.IR from .
+The length of the message is returned in
+.IR cc .
+If the message is too long to fit in the supplied buffer,
+then excess characters are discarded.
+.PP
+If no messages are available at the socket, the
+.I receive\^
+waits for a message to arrive, unless the socket is nonblocking
+in which case a
+.I cc\^
+of \-1 is returned with the external variable errno set to 
+.SM EWOULDBLOCK\*S.
+.PP
+The
+.IR select\^ (2N)
+call may be used to determine when more data arrives.
+.SH SEE ALSO
+send(2), socket(2N).
+.SH BUGS
+.PP
+This call is provisional and will exist in a slightly different form
+in future releases.
+.\"N	 @(#)receive.2N	 5.2 of 7/12/84

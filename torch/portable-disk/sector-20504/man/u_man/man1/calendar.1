@@ -1,0 +1,60 @@
+.TH CALENDAR 1 
+.SH NAME
+calendar \- reminder service
+.SH SYNOPSIS
+.B calendar
+[ \- ]
+.SH DESCRIPTION
+.I Calendar\^
+consults the file \f3calendar\fP in the current directory
+and prints out lines that contain today's or
+tomorrow's date anywhere in the line.
+Most reasonable month-day dates such as ``Dec. 7,''
+``december 7,'' ``12/7,'' etc., are recognized, but not
+``7 December' or ``7/12''.
+On weekends ``tomorrow'' extends through Monday.
+.PP
+When 
+an argument is present,
+.I calendar\^
+does its job for every user
+who has a file \f3calendar\fP in their login directory
+and sends them any positive results by
+.IR mail\^ (1).
+Normally this is done daily by facilities in the 
+.SM UNIX
+operating system under control of 
+.IR cron\^ (1M).
+.SH EXAMPLE
+.PP
+If the user has the following line, among other lines containing
+date information, in the file "calendar" in the login directory:
+.IP
+Monday, September 6	Labor Day Holiday
+.PP
+typing in 
+.IP
+calendar
+.PP
+either on the Friday before or on the specified Monday will cause this line
+to be printed on the screen.
+.SH FILES
+calendar
+.br
+/usr/lib/calprog    to figure out today's and tomorrow's dates
+.br
+/etc/passwd
+.br
+/tmp/cal\(**
+.br
+/usr/lib/crontab
+.SH "SEE ALSO"
+mail(1).
+.SH BUGS
+Your calendar must be public information for you
+to get reminder service.
+.br
+.I Calendar's\^
+extended idea of ``tomorrow'' does not account for
+holidays.
+.\"	@(#)calendar.1	5.1 of 10/26/83

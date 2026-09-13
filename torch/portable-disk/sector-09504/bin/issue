@@ -1,0 +1,14 @@
+echo
+echo "\t\tTriple X Software Issue Detailer"
+echo "\t\t================================"
+echo
+echo "Triple X System V Release 1.0 Issue 1.2m"
+echo
+echo
+echo "/unix\t" `fgrep Version /unix`
+for i in /bin/dm /bin/logger /bin/controlpanel
+do
+	echo
+	version $i
+done
+sleep 5

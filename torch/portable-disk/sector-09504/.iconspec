@@ -1,0 +1,3 @@
+icon: type=f; fn=waste; showbits=:wastebin; showname=Waste; +
+      daction=b,towaste $*;
+

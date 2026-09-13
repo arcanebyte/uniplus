@@ -1,0 +1,19 @@
+#
+# Clear the connection to ukc
+# Send the usual ^D's then force the pad to clear the call
+ukc unused unused 2400 unused unused \
+	\004\004\r\r\020Aclear\r\r
+#
+mcnc unused unused 4800 unused unused \
+	\004\004\r
+#
+rti-sel unused unused 300 unused unused \
+	\004\004\r
+#
+ftl-sel unused unused 300 unused unused \
+	\004\004\r
+# 
+# This will only be used on the modem line since these scripts are not run
+# run for UNET connections.
+ncsu unused unused 300 unused unused \
+	\004\004\r

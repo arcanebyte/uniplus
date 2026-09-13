@@ -1,0 +1,43 @@
+.TH CHGNOD 1M
+.SH NAME
+chgnod \- change current \s-1UNIX\s0 system nodename
+.SH SYNOPSIS
+.B chgnod 
+[ new-name ] 
+.SH DESCRIPTION
+.I Chgnod\^
+accesses the structure
+defined in \f3<sys/utsname.h>\fP:
+.PP
+.RS
+.nf
+struct utsname {
+	char	sysname[9];
+	char	nodename[9];
+	char	release[9];
+	char	version[9];
+	char	machine[9];
+};
+.fi
+.RE
+.PP
+.I Chgnod\^
+with no arguments reports the settings of all of the above fields.
+When supplied with one argument
+.I chgnod\^
+changes the nodename in the current running system.
+.I Nodename\^
+is a null terminated string containing the name that the system
+is known by on a communications network.
+.PP
+New-name must be no longer than eight characters.
+.SH EXAMPLE
+.IP
+chgnod funky
+.PP
+changes the nodename of your system to 'funky'.
+.SH SEE ALSO
+uname(2).
+.SH NB
+As this change has to be performed every time that the machine is rebooted,
+it may be a good idea to put this command into /etc/rc.

@@ -1,0 +1,706 @@
+.TH VCHK 1M UniSoft
+... %W%
+.SH NAME
+vchk \- version checkup
+.SH SYNOPSIS
+.B vchk
+[
+argument
+] ...
+.SH DESCRIPTION
+.I Vchk
+is a highly specialized form of
+.IR make (1)
+designed to check and maintain the modes, ownerships, and versions of a
+set of files specified in the \fIdescription file\fP.
+The description file is essentially a
+"photograph" of what a healthy system
+(i.e., one with all its components in the correct state) looks like.
+It contains a list of pathnames (for both files and directories)
+that should exist and have specific protections and contents.
+.I Vchk
+reads the description file, 
+checks each item specified and prints error messages
+when a file does not match its description.  
+Many problems can be fixed directly by
+.IR vchk ,
+such as incorrect mode and/or owner and missing link names.
+All other problems involve actually replacing a file,  
+detected by comparing some combination of checksum, length, and/or
+version number (from the description file) with
+the value generated from the actual file being checked.
+When a file needs to be replaced
+.I vchk
+invokes the command named by the \s-1REMAKE\s+1
+macro (see \s-1MACROS\s+1 below).
+.PP
+Each
+.I argument
+is either a definition or an option.
+Option arguments begin with the character \- and 
+consist of a string of letters (called
+.IR flags )
+from the set
+.nh
+.RB \` ADIPSabcdefiklmprstvx \'.
+.hy
+The
+.B f
+and 
+.B t
+flags cause the next argument to be considered specially.  The
+.B p
+and 
+.B P
+flags cause the rest of the argument in which they appear to
+be considered specially.
+Other arguments
+are either macro definitions
+(i.e., \fIname = string\fP pairs)
+or simply strings which are saved as numeric macros.
+Briefly, the
+.I flags
+are as follows:
+.TP "\w'\fB\-D\fP\ \ 'u"
+.BI \-A sysid 
+specifies an alternate 
+.I sysid 
+rather than using the one
+found in 
+.BR /etc/sys_id .
+.TP
+.B \-D
+enables debugging messages.
+.TP
+.B \-I
+process control lines only.
+.TP
+.BI \-P sysid
+preprocess the description file;
+.I sysid
+is optional and is explained below under \s-1PREPROCESSING\s+1.
+.TP
+.B \-S
+suppress printing of non-fatal error messages.
+.TP
+.B \-a
+checks all lines in the description file.  Modifies the
+.BR b ,
+.BR P ,
+and
+.B k
+options.
+.TP
+.B \-b
+build a description file for the current directory.
+.TP
+.B \-c
+print shell commands to fix the file system.
+.TP
+.B \-d
+suppress re-installation commands and error messages.
+.TP
+.B \-e
+suppress checks for everything but existence.
+.TP
+.BI \-f " filename "
+cause
+.I vchk
+to read filename instead of
+.BR /etc/vchk_tree .
+.TP
+.B \-i
+go interactive:  modifies 
+.BR b , 
+.BR c , 
+and 
+.B x 
+options.
+.TP
+.B \-k
+perform checksums on files having checksum field.
+.TP
+.B \-l
+suppress listing of files left in directories.
+.TP
+.B \-m
+allow multiple copies of files.
+.TP
+.BI \-p pw_file
+force
+.I vchk
+to re-evaluate and/or use an alternate password file.
+.TP
+.B \-r
+allow redundant password entries (user \s-1ID\s_1).
+.TP
+.B \-s
+remain silent about trivial problems.
+.TP
+.B \-v
+suppress checking of version numbers.
+.TP
+.B \-x
+execute shell commands to fix the file system (cf. the
+.B \-c
+option which prints rather than executes).
+.SS "DESCRIPTION FILE SYNTAX"
+Lines in the description file are either comments, 
+control lines, specifications, or
+commands.  Control lines provide a simple 
+.I ifdef
+mechanism for selectively ignoring specification lines.  
+Specification lines describe
+files and/or directories that need to be checked.  
+Commands are not processed by
+.I vchk
+but (in the spirit of
+.IR make (1))
+are used when the file specified above them is found to need replacing.
+.PP
+Several conventions are observed to maintain the readability of the 
+description file;
+for example, a trailing backslash and all leading white space on the
+following line are ignored when processed.
+In addition, backslash may be used to delay the expansion
+of macros (in macro definitions only) and, as described below, to
+alter the evaluation of parentheses and braces in pathnames.
+.SS COMMENTS
+Comment lines always start with a \`#\'.  
+If the second character on a comment
+line is also a \`#\', then that line is printed on the standard error when
+read by
+.IR vchk .
+Any line may have a trailing comment, which is universally ignored.
+.SS "CONTROL LINES"
+Control lines start with a \`.\' (period).
+The mechanism is similar to the C language pre-processor except that
+defined words do not have values associated with them; words are simply
+defined or not.
+The control commands supported are as follows:
+.TP .3i
+.IR \&.define " wordlist"
+where
+.I wordlist
+is a list of white-space-separated words to be defined which have
+no associated values.
+Note that only the first twelve
+letters of defined words are significant.  
+Storage for defined words is static. 
+There is a maximum of sixty defined words at any given time.
+.TP .3i
+.IR \&.ifdef " define_expression"
+where
+.I define_expression
+is an infix boolean expression involving defined words and the
+operators !, &, and |\|, which mean \`not\', \`and\', and \`or\', respectively.
+The value of each word evaluates to a boolean "yes" if that word is defined
+and "no" if not.  
+If the expression evaluates to be false, lines are ignored until
+the matching
+.IR \&.endif " or " \&.else
+control line is read.  
+.I Ifndef
+is also supported and reverses the sense of the expression test.
+.TP
+.IR \&.include " filename"
+is very similar the C pre-processor 
+.I include 
+with the exception that
+there are no default searching places and that the filename is not
+enclosed in double quotes or angle brackets.  In addition, if the first
+character of the filename is an exclamation mark (!), then the rest of
+line is considered to be a shell command and its standard output is
+what gets included.
+.TP
+.IR \&.undef " wordlist"
+undefines each word in the wordlist.
+.TP
+.IR \&.unset " wordlist"
+frees the storage associated with macro definitions (detailed in a
+following section) for the given wordlist (which is composed of macro names).  
+Words in wordlist that
+are already unset (or were never set) are silently ignored.
+.TP
+.IR \&.chdir " directory_name"
+changes the current directory to the one specified and
+alters the starting location of pathnames anchored from the current directory. 
+.TP
+.IR \&.exit " message"
+causes
+.I vchk
+to print the message and exit immediately.
+.PP
+As an aid to debugging the description file, 
+a single \`.\' on a line by itself causes
+.I vchk
+to print the currently defined control symbols on the
+standard error when it reads that line.
+.SS MACROS
+A macro processing facility very similar to the one used by
+.IR make (1)
+is provided.
+Macros are defined when a line containing the macro name, an equal sign,
+and the value is read.  The value may be null or include macro invocations.
+Unlike \`defined\' words, macro names are fully significant and
+are saved in dynamic memory.
+Macros are invoked by the \`$\' character.  As in
+.I make
+scripts, macro names must be surrounded by \fB()\fPs when they are 
+longer than a single letter.
+There is a special macro (named \`.\', thus referenced with \`$.\')
+which always expands to the name of the current directory.
+It is useful in the construction of link names since most files have
+their links close by.
+.PP
+Except in the definition of a new macro (where interpretation may need to
+be delayed) and in comments, it is always an error for a macro to be
+used if it is undefined.  
+Since the \`##\' comment is printed after
+macro substitution, it is a useful debugging tool.  
+In keeping with the
+spirit of the \`dump control words\' command (.), a single \`$\' on a
+line by itself prints all the currently defined macros and their
+values.
+.PP
+Note that lines are re-scanned once a macro has been substituted
+so that a macro may be defined to expand to a control line, comment,
+or even a macro definition.  Note that this degenerates to a recursive
+loop if the definition of a macro contains a reference to that macro.
+.PP
+Two predefined macros exist.  The first, called \s-1REMAKE\s+1, contains the
+name (and options) of the program to use to replace damaged or missing files.
+If the file 
+.B /etc/sys_id
+exists and is not empty, it is assumed to contain the
+.I UniSoft
+code name assigned to your system and
+.I vchk
+will setup the \s-1REMAKE\s+1 macro to be the
+command "take\ \-i\fBN\fP" where \fBN\fP is the name
+found in 
+.BR /etc/sys_id .
+This allows systems that reside at
+.I UniSoft
+to be updated automatically over a direct 
+.I tty 
+line via the
+.IR take (1M)
+program.
+If the 
+.B /etc/sys_id
+file has a single empty line in it, then \s-1REMAKE\s+1
+will be set to "take \-i".
+This allows remote systems to be updated automatically
+over phone lines.  If the 
+.B /etc/sys_id
+file does not exist,
+.I vchk
+sets the \s-1REMAKE\s+1 macro to be "install".
+Note that the description file may redefine
+the \s-1REMAKE\s+1 macro at any time.
+.PP
+The second predefined macro is called \s-1ARGS\s+1 and can be set
+but not referenced.
+Strings assigned to \s-1ARGS\s+1 are treated as command line options.
+The \- preceding option keyletters is still required,
+and enables that option.
+A plus sign, \`+\', must be used instead to disable a keyletter option.
+Resetting the
+.BR b , 
+.BR p , 
+and 
+.B r
+is not allowed.
+.SS "DESCRIPTION LINES"
+Each line that is not a comment, control line, macro definition, or
+command is considered to be the specification for a particular file or
+directory.  These have a simple and regular
+syntax:  the first and only mandatory field is the
+.IR pathname ,
+which must begin at the root (\fB/\fP) or the current directory (\fB./\fP).  
+In practice
+we find that starting all lines with a macro allows easy relocation
+of the entire tree described and is very readable.
+.PP
+The rest of the line contains optional information about the contents
+and protection of the file.  Contents specifications are separated
+from the pathname by white space.  The entire protection specification
+is bracketed to separate it from the rest of the line.
+.SS PATHNAMES
+Pathnames refer to directories (if and only if they end in a \`/\' character) 
+or files (if they do not end in a \`/\').
+Use of shell metacharacters
+.RI ( globbing )
+is not supported but two mechanisms are provided to allow variable 
+pathnames:  braces, \fB{}\fPs, and parentheses.
+Braces are interpreted just as in
+.IR csh (1);
+each of the expanded pathnames must exist and must match the description
+given.
+Parentheses in pathnames are interpreted similarly,
+except that
+.I exactly one
+of the resulting pathnames must exist.
+This feature is useful, for example, to allow a program to be in
+either
+.B /bin
+or
+.BR /usr/bin ,
+but not both.
+.PP
+Parentheses and braces are expanded left to right; for example,
+the construction
+.B (a,b){x,y}
+means either
+.B ax
+and
+.B ay
+must exist or
+.B bx
+and
+.BR by .
+Backslashes may be used to delay or prevent the interpretation of \fB()\fPs
+and \fB{}\fPs.
+For example,
+.B \e(a,b\e){x,y}
+means one of
+.B ax
+or
+.B bx
+and one of
+.B ay
+or
+.B by
+must exist.  One layer of backslashes are removed for each pass through
+the pathname and each time an unescaped parenthesis or bracket is detected
+and expanded, another pass is made.
+.PP
+Note that when alternative paths are used (i.e., parentheses occur in
+the pathname) the first one is considered the one to be rebuilt in the
+event that all are missing.  For example, the pathname
+.B (/usr)/bin/ls
+would look first in
+.B /usr/bin
+for \`ls\', then in
+.BR /bin ,
+and try to "\s-1REMAKE\s+1\ /usr/bin/ls" if both are missing.
+The reverse is true for
+.BR (,/usr)/bin/ls .
+.SS SPECIFICATIONS
+Two kinds of specifications are implemented.  The first kind deals with
+the contents of the file or directory and follows the pathname (separated
+from it by white space).  
+The second kind deals with the files protection; these are enclosed
+in some type of parentheses to separate them from contents specifications.
+The kind of parentheses used, \fB()\fPs, \fB[]\fPs, \fB<>\fPs,
+or \fB{}\fPs, modify the action
+taken by
+.IR vchk
+according to the table below:
+.TP
+.B ()
+Enables checking and replacing of the file.
+.TP
+.B []
+Enables checking but never replacing.  If the file is missing,
+.I vchk
+will complain but not try to rebuild it.
+.TP
+.B <>
+Enables checking (if and only if the file exists or the
+.B \-a
+command line option is given) and never replacing.
+.TP
+.B {}
+Enables checking but not repairing, (i.e., if the file is missing then
+it will be remade, but if it exists and is incorrect it will not be remade).
+.PP
+Associated with each directory is a default mode and ownership for 
+the files and directories contained within it.
+Unless explicitly given, each directory inherits its defaults
+from its parent directory.   
+If unspecified, the uppermost directory
+(either the root or current directory) sets the mode
+and ownership of its contents from its own mode and ownership.
+These defaults may be reset at any time simply by following the directory
+name with a mode and/or user name.
+.PP
+Regular files have three optional contents specification fields:
+length, checksum, and version number.
+These may be specified with a word (either Length, Checksum, or Version), 
+an optional space, or a numeric value.  
+The word may be any prefix, for example, \`Length 34\'
+or \`L34\'.  The checksums used are the same as those produced by
+.IR sum (1).
+The length checked is that returned by
+.IR stat (2).
+These checks do not apply to device files (only block and character
+devices are supported); thus their contents specification field must begin
+with either
+.B b
+or
+.B c
+and must be followed by the major and minor device number (separated by
+white space).  
+If
+.B x
+is used instead of either the major or minor device number,
+.I vchk
+will allow the device to have any value.
+.PP
+The protection specification consists of a list of command prefixes
+separated by semicolons.  The commands supported are
+.I chmod,
+.I chown,
+and
+.IR "link to" .
+If angle brackets (i.e., \fB<>\fPs) are used instead of parentheses to
+enclose the protection specification, the file or directory so referenced
+is optional and will not generate diagnostics if it is missing.  It can
+be raised to the status of \fB[]\fPs by giving the
+.B \-a
+command line option.
+If square brackets (i.e., \fB[]\fPs) are used, the referenced file cannot
+be replaced automatically, as for example, the password file.
+If curly brackets (i.e., \fB{}\fPs) are used, the referenced file will
+be replaced only if it is missing, not if it exists and is
+wrong (according to the description file).
+This is useful for files like 
+.BR  /etc/termcap .
+.PP
+Any other information in the protection specification is treated as
+a special comment that is printed with error messages about that file.
+.SS OPERATION
+In order for
+.I vchk
+to check the ownership of files it must map user 
+.SM ID 
+numbers onto login
+names.  The password file is normally used for this mapping but it is
+too expensive to look up each name every time it is used so
+.I vchk
+creates a temporary file 
+.RB ( /etc/vchk_pw )
+the first time it is run; whenever its temporary is out of date
+with respect to the real password file,
+.I vchk
+recreates the temporary file.
+.PP
+In the process of reading the password file
+.I vchk
+inspects each account and prints diagnostics when it finds questionable
+data there.  These messages are warnings or simply situations which bear
+reporting; the format of these messages is "Line\ <number>:\ message".
+The word "Error:\ " is prepended to the warnings for a particular line if
+.I vchk
+has decided to ignore that line of the password file.
+.PP
+The
+.BI \-p[ pw_file ]
+option is provided to allow users who do not have write permission in 
+.B /etc
+to use
+.IR vchk .
+If specified with a filename after it,
+.I vchk
+will get the saved password information from that file.  
+If the file does not exist,
+.I vchk
+will create it.
+Use of the
+.B \-p
+option without a filename informs
+.I vchk
+to reprocess the password file even if it is not out of date.
+.PP
+.I Vchk
+normally expects the description file to be
+.BR /etc/vchk_tree ,
+but if the standard input to
+.I vchk
+is a regular file, that file will be read instead.
+.PP
+Instead of redirecting the standard input, the
+.B \-f
+option can be used 
+to respecify the description file.  It is an error to use both.
+.PP
+The best way to build a new description file is to
+.I chdir 
+to the appropriate directory
+and run
+.I vchk
+with the
+.B \-b
+option.  
+A description file for the current directory will be 
+produced on the standard output.
+The
+.B \-i
+option may also be used, causing
+.I vchk
+to ask before descending each directory.
+.PP
+In addition to reporting errors, the 
+.B \-c
+flag prints shell commands to correct the detected error.
+The
+.B \-i
+option can be used with the 
+.B \-c 
+option to ask before outputting a command.
+.PP
+It is inadvisable to use the
+.B \-x
+flag until the description file has been used and debugged.
+This flag allows
+.I vchk
+to execute the
+.IR chmod (2),
+.IR chown (2),
+and
+.IR ln (2)
+commands internally, saving much time.
+Re-installation commands (cf. the \s-1REMAKE\s+1 macro) are executed via the
+.IR system (3)
+call.
+.SS PREPROCESSING
+The
+.BI \-P sysid
+command line option provides a means for simplifying a complex 
+description file.
+Everything except macro substitution is suppressed and after each line
+is parsed, it is printed on the standard output instead of being used
+to check the filesystem.
+.PP
+If a
+.I sysid
+is given after the
+.B \-P
+flag, then it is used to lookup a line from the
+.RB ( /etc/takelist )
+file.  (See
+.IR take (1m)
+for a more complete description of the function of the
+.B /etc/takelist
+file.)
+.PP
+The lines in
+.B /etc/takelist
+are composed of any number of fields (called alternates) separated by
+colons (\fB:\fPs).
+The first alternate in a line is a list of system names separated by
+or bars (\fB|\fP\|s).
+The
+.I sysid
+above is compared with each of the system names in the first alternate
+of each line until it is found.  If not found, then
+.I vchk
+exits with an appropriate error message.
+.PP
+When the line from
+.B /etc/takelist
+for the current
+.I sysid
+is found, then each of the additional alternates are considered lists
+of root directories (separated by colons or bars) to be prepended to filenames
+in the tree file before looking for them.
+.PP
+If a file is found in more or less than exactly 1 place in the list,
+then an error is reported and that line is not include in the preprocessed
+output.  If it is found, then the checksum, length, and version number
+are computed from that file and replaced in the preprocessed output.
+.SH EXAMPLE
+Following are some excerpts from a typical description file.
+.RS .3i
+.nf
+.ta \w'$B/sccsdif\ \ \ 'u +\w'C54686 L1253\ \ \ 'u
+B = (/usr)/bin	# programs can be in /bin or /usr/bin
+.sp .5
+/	bin 755	(chmod 755)
+$B/ar	Version 1.0
+$B/awk	Version 1.3
+$B/more	Version 1.0	(link to $./page)
+$B/sccsdiff	C54686 L1253	(shell script)	
+$B/su	Version 1.0	(chown root; chmod 4755)
+/etc/	root 644
+/etc/passwd		[password file]
+/etc/group		[group file]
+/etc/init	Version 1.0	(chmod 700)
+/etc/update	Version 1.1	(chmod 700)
+/etc/ddate		<dump dates>
+.fi
+.RE
+.PP
+The first line of the above example defines a macro,
+.IR B ,
+to be the string 
+.BR (/usr)/bin .
+This macro is then invoked on lines 3 through
+7 of the example to allow the programs mentioned to be in either 
+.B /usr/bin 
+or
+.BR /bin .
+.PP
+The second line specifies that the root directory 
+.RB ( / ) should have mode 755 and
+that the default mode and owner for files found in it be 755 and 
+.BR bin.
+.PP
+The third line specifies that the 
+.I ar
+program should be version 1.0, owned
+by 
+.B bin
+and have mode 755.  The mode and owner are implied in the following
+way.  Each directory inherits its mode and ownership from its parent.  Thus
+.B /bin 
+inherits the owner of root (which is unspecified in the example and
+thus defaults to whatever the owner of the root 
+.RB ( / )
+is when the example is run).
+The mode of the root directory is specified as 755.
+.SH FILES
+.TP "\w'<standard output>\ \ 'u"
+/etc/vchk_pw	
+the file where
+.I vchk
+saves the password file summary.
+.TP
+/etc/passwd
+the password file.
+.TP
+/etc/vchk_tree
+the default description file.
+.TP
+/dev/tty
+where
+.I vchk
+prints questions and gets the responses (when the
+.B \-i
+option is used).
+.TP
+<standard error>
+used to print all diagnostics.
+.TP
+<standard output>
+used to print shell commands and the newly built description file 
+(when using the
+.B \-b
+option).
+.TP
+<standard input>
+considered the default description file if it is a regular file.
+.SH "SEE ALSO"
+chmod(1), ln(1), chown(1M).
+.SH BUGS
+There is no way (except tediously via the
+.B \-i
+option) to exclude directories from inspection when building a new 
+description file.
+There is also no way to automatically update an existing 
+description file (i.e., to tell
+.I vchk
+to fix the description file instead of the filesystem).
+.\"	@(#)vchk.1m	5.2 of 7/26/84

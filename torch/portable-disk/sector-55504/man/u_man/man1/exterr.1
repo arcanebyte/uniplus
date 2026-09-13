@@ -1,0 +1,27 @@
+.TH EXTERR 1 UniSoft
+.SH NAME
+exterr - turn on/off the extended errors in the specified device
+.SH SYNOPSIS
+.B exterr 
+.B /dev/devicename 
+[\^yn\^]
+.SH DESCRIPTION
+.I Exterr\^ 
+turns on (or off) the reporting of extended errors on the
+specified device.
+.PP
+If reporting of errors is turned "off" with the argument
+.BR n ,
+only fatal errors are reported.
+.PP
+The default condition is "yes", in which case soft as well as hard
+errors are reported on the specified device.
+The devicename must be the "raw" one to access the 
+.IR ioctl .
+.SH EXAMPLE
+.IP
+exterr /dev/xxxx n
+.PP
+turns to off the reporting of extended errors for device 
+.BR /dev/xxxx .
+.\"	@(#)exterr.1	5.1 of 11/16/83

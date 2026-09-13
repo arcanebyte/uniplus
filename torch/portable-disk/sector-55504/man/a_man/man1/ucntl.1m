@@ -1,0 +1,117 @@
+From root44!csb Mon Jul 16 21:13:51 1984
+Date: Mon, 16 Jul 84 21:13:48 -0100
+From: root44!csb
+Apparently-To: csb
+Status: R
+
+.TH UCNTL 1M "Root Computers Proprietary"
+.SH NAME
+ucntl \- create/delete/adjust users and groups
+.SH SYNOPSIS
+.B ucntl \-a
+user group
+.br
+.B ucntl \-c
+user group
+.br
+.B ucntl \-d
+user group
+.br
+.B ucntl \-e
+group
+.br
+.B ucntl \-g
+group
+.br
+.B ucntl \-m
+user shell
+.br
+.B ucntl \-n
+user
+.br
+.B ucntl \-p
+user
+.br
+.B ucntl \-r
+user
+.br
+.B ucntl \-u
+user group pathname
+.SH DESCRIPTION
+.I Ucntl
+adds and deletes entries to and from the password and group files, and
+makes amendments as requested.
+.PP
+.B ucntl \-g group
+adds the specified group to the system. The numerical value of the
+group id chosen is the greater of 100 or one more than the highest in
+the file.
+.PP
+.B ucntl \-e group
+erases the specified group (which should have no users, and should have
+a numeric value greater than or equal to 100) from the system.
+.PP
+.B ucntl \-a user group
+adds the specified user to the specified group.
+.PP
+.B ucntl \-d user group
+deletes the specified user from the specified group. Note that the
+specified group must not be the user's default group.
+.PP
+.B ucntl \-c user group
+changes the given user's default group to the specified group. The user
+must already be a member of the group.
+.PP
+.B ucntl \-p user
+resets the user's password. This is prompted for in the usual way, but
+length checks etc are suppressed.
+.PP
+.B ucntl \-u user group pathname
+creates a new user, with the specified name, in the specified group
+(which must already exist) creating the directory specified by
+.I pathname
+as the home directory of the user. The pathname should normally be given in
+full (with initial
+.IR / "),"
+however the directory may be created as a subdirectory of the current
+directory. The mode of the directory is determined by the current value of
+.IR umask .
+The numeric value of the new user id is the greater of 100 or one more
+than the highest in the password file.
+.PP
+.B ucntl \-r user
+removes the specified user (which must have numeric value greater than
+or equal to 100) from the system. The home directory is also deleted. This
+should normally only be used when the user has been inactive for over a month,
+and all files have been copied elsewhere.
+.PP
+.B ucntl \-m user shell
+is used to set the user as 'restricted', i.e. on login a program other
+than the shell is invoked, and the home directory is not writable by the
+user. The usual shell invoked is
+.IR /bin/rsh ,
+which for convenience may be abbreviated to
+.IR R .
+.PP
+.B ucntl \-n user
+resets a 'restricted' user to normal.
+.SH FILES
+/etc/passwd		password file
+.br
+/etc/group		group file
+.br
+/etc/opasswd		previous password file
+.br
+/etc/ogroup		previous group file
+.br
+/etc/ptmp			temporary password file
+.br
+/etc/gtmp			temporary group file
+.SH SEE ALSO
+group(5),
+passwd(5).
+.SH DIAGNOSTICS
+Diagnostics are reported on the standard error. Non-zero exit codes
+denote failure.
+
+

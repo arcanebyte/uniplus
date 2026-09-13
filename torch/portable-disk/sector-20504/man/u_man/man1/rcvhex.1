@@ -1,0 +1,38 @@
+.TH RCVHEX 1 UniSoft
+.SH NAME
+rcvhex \- translates Motorola S-records from downloading into a file
+.SH SYNOPSIS
+.B rcvhex
+[
+.B \-p
+port
+] [
+.B \-c
+command
+] file
+.SH DESCRIPTION
+.I Rcvhex\^
+translates Motorola S-records
+shipped from a port
+into a file.
+The following options are available:
+.TP "\w'\fBc\fI command\fR\|\ \ 'u"
+.BI p \ port
+specifies an alternate port for reception;
+the default port is 
+.BR /dev/tty0 .
+.TP
+.BI c \ command
+ship the specified command (in quotes)
+over the remote port;
+the default is to not ship anything.
+.TP
+.B ifile
+File to be created by 
+.IR rcvhex .
+.PP
+The file's starting address must be zero
+and successive records must be sequential.
+.SH AUTHOR
+Asa Romberger, UniSoft Systems
+.\"	@(#)rcvhex.1	5.2 of 7/23/84

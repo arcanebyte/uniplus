@@ -1,0 +1,111 @@
+.TH BOOT 8
+.SH NAME
+boot \- startup procedures
+.SH DESCRIPTION
+A 68000 
+.SM UNIX 
+system is typically started by
+a two-stage process.
+The first is a primary bootstrap
+which
+is used to read in the system itself.
+.PP
+The primary bootstrap,
+when read into memory and executed,
+sets up memory management if necessary,
+and types a prompt message on the console.
+Then it
+reads from the console
+a device specification (see below) followed immediately by
+a pathname.
+This program
+finds the corresponding file on the given device,
+loads that file into the proper memory location,
+and then transfers control of the program. 
+Normal
+line editing characters can be used.
+.PP
+Conventionally, 
+the name of the current version of the system
+is `/unix'.
+Then, the recipe is:
+.TP 3
+1)
+Load the boot program by fiddling with the
+console keys and crt as appropriate for your hardware.
+.TP 3
+2)
+When the ``:'' prompt is given, type
+[for example]
+.RS
+fpy(0,0)unix
+.br
+or
+.br
+hd(0,0)unix
+.RE
+.IP 3
+depending on whether you are loading from floppy or hard disk,
+respectively.
+The first 0 indicates the physical unit number;
+the second indicates
+the block number of the beginning of the logical file
+system (device) to be searched.
+(See below).
+.IP 3
+When asked for the device name, a list of valid device names 
+can be obtained by typing a ``?'' followed by a carriage return.
+A carriage return by itself boots the 
+.SM UNIX
+system on the default device.
+.PP
+When the system is running, it types a ``#'' prompt.
+After doing any file system checks via 
+.IR fsck (1)
+and setting the date
+.RI ( date (1)),
+the system can be brought up for standard operation by typing 
+\fBinit 2\fP
+in response to the ``#'' prompt,
+then an EOT (control-d) when the system requests it.
+.PP
+.SS "Device Specifications"
+A device specification has the following form:
+.IP 3
+device(unit,offset)
+.LP
+where
+.I device
+is the type of the device to be searched,
+.I unit
+is the unit number of the device,
+and 
+.I offset
+is the block offset of the file system on the device.
+.I Device
+specifications vary according to which 68000 UNIX system
+you are using.  Check manufacturer's instructions for
+the device specifications.
+.PP
+For example, the specification
+.IP 3
+hp(1,7000)
+.LP
+would indicate an HP disk, unit 1, and the file system found
+starting at block 7000.
+.SS "ROM Programs"
+Programs to call the primary bootstrap
+may be installed in read-only memories
+or manually keyed into main 
+memory.
+Each program is position-independent
+but should be placed well above location 0
+so it will not be overwritten.
+See manufacturer's instructions for a manually
+keyed-in 
+.SM ROM
+boot program, should one become
+necessary.
+.SH FILES
+/unix \- system code
+.\"	@(#)boot.8	5.1 of 10/15/83

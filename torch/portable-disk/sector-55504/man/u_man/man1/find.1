@@ -1,0 +1,224 @@
+.TH FIND 1
+.SH NAME
+find \- find files
+.SH SYNOPSIS
+.B find
+path-name-list  expression
+.SH DESCRIPTION
+.I Find\^
+recursively descends
+the directory hierarchy for
+each path name in the
+.I path-name-list\^
+(i.e., one or more path names)
+seeking files that match a boolean
+.I expression\^
+written in the primaries given below.
+In the descriptions, the argument
+.I n\^
+is used as a decimal integer
+where
+.BI + n\^
+means more than
+.IR n ,
+.BI \- n\^
+means less than
+.I n\^
+and
+.I n\^
+means exactly
+.IR n .
+.TP "\w'\fB\-group \fIgname\^\fP\ \ 'u"
+.BI \-name " file\^"
+True if
+.I file\^
+matches the current file name.
+Normal shell
+argument syntax may be used if escaped (watch out for
+.BR [ ", "
+.BR ? " and "
+.BR \(** ).
+.TP
+.BI \-perm " onum\^"
+True if the file permission flags
+exactly
+match the
+octal number
+.I onum\^
+(see
+.IR chmod\^ (1)).
+If
+.I onum\^
+is prefixed by a minus sign,
+more flag bits (017777, see
+.IR stat\^ (2))
+become significant and
+the flags are compared:
+.sp \n(PDu
+.RS 10m
+(flags&onum)==onum
+.RE
+.sp \n(PDu
+.TP
+.BI \-type " c\^"
+True if the type of the file
+is
+.IR c ,
+where
+.I c\^
+is
+.BR b ,
+.BR c ,
+.BR d ,
+.BR p ,
+or
+.B f
+for
+block special file, character special file,
+directory, fifo (a.k.a named pipe), or plain file.
+.TP
+.BI \-links " n\^"
+True if the file has
+.I n\^
+links.
+.TP
+.BI \-user " uname\^"
+True if the file belongs to the user
+.IR uname .
+If
+.I uname\^
+is numeric and does not appear as a login name in the
+.B /etc/passwd
+file, it is taken as a user \s-1ID\s0.
+.TP
+.BI \-group " gname\^"
+True if the file belongs to the group
+.IR gname .
+If 
+.I gname\^
+is numeric and does not appear in the
+.B /etc/group
+file, it is taken as a group \s-1ID\s0.
+.TP
+.BI \-size " n\^"
+True if the file is
+.I n\^
+blocks long (512 bytes per block).
+.TP
+.BI \-atime " n\^"
+True if the file has been accessed in
+.I n\^
+days.
+.TP
+.BI \-mtime " n\^"
+True if the file has been modified in
+.I n\^
+days.
+.TP
+.BI \-ctime " n\^"
+True if the file has been changed in
+.I n\^
+days.
+.TP
+.BI \-exec " cmd\^"
+True if the executed
+.I cmd\^
+returns
+a zero value as exit status.
+The end of
+.I cmd\^
+must be punctuated by an escaped
+semicolon.
+A command argument
+.B {}
+is replaced by the
+current path name.
+.TP
+.BI \-ok " cmd\^"
+Like
+.B \-exec
+except that the generated command line is printed
+with a question mark first,
+and is executed only if the user responds
+by typing
+.BR y .
+.TP
+.B  \-print
+Always true;
+causes the current path name to be printed.
+.TP
+.BI \-cpio " device\^"
+Write the current file on
+.I device\^
+in
+.IR cpio\^ (4)
+format (5120 byte records).
+.TP
+.BI \-newer " file\^"
+True if
+the current file has been modified more recently than the argument
+.IR file .
+.TP
+.BI ( " expression " )
+True if the parenthesized expression is true
+(parentheses are special to the shell and must be escaped).
+.PP
+The primaries may be combined using the following operators
+(in order of decreasing precedence):
+.TP 4
+1)
+The negation of a primary
+.RB ( !
+is the unary
+.I not\^
+operator).
+.TP 4
+2)
+Concatenation of primaries
+(the
+.I and\^
+operation
+is implied by the juxtaposition of two primaries).
+.TP 4
+3)
+Alternation of primaries
+.RB "(" \-o " is the"
+.I or\^
+operator).
+.SH EXAMPLE
+.IP
+find / -perm 755 -exec ls "{}" ";"
+.PP
+will find all files, starting with the root directory, on which
+the permission levels have been set to 755 (see
+.IR chmod\^ (1)).
+.PP
+With 
+.B \-exec
+and a command such as
+.IR ls ,
+it is often necessary to escape the "{}" that stores
+the current pathname under investigation by putting it
+in double quotes.  It is
+.B always
+necessary to escape the semicolon at the end of an
+.B \-exec
+sequence.
+.PP
+Note again that it is also necessary to escape
+parentheses
+" \\( "
+and
+" \\) "
+used for grouping primaries, by means of a backslash.
+.IP
+find  /  \\( \-name a.out \-o \-name \(fm\(**.o\(fm \\)
+\-atime +7 \-exec rm {} \\;
+.PP
+removes all files named "a.out" or "\(**.o" that
+have not been accessed for a week.
+.SH FILES
+/etc/passwd, /etc/group
+.SH "SEE ALSO"
+cpio(1), sh(1), test(1), stat(2), cpio(4), fs(4).
+.\"	@(#)find.1	5.1 of 11/8/83

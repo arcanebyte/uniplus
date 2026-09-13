@@ -1,0 +1,20 @@
+if [ $# -gt 2 ]
+then
+	echo "makedump: too many arguments ?"
+	exit 1
+fi
+fname=`gs -r 16 1 -n "Save $1" "Please enter filename(.res)"`
+fname=$HOME/resources/$fname
+case "$1" in 
+	"Screen")	
+			sd >$fname
+			deskicon $fname
+		;;
+	"Window")	
+			wdump >$fname
+			deskicon $fname
+		;;
+	*)
+			echo "makedump: unknown argument $1 ?"
+			exit 1
+esac

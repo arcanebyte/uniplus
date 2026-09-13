@@ -1,0 +1,476 @@
+.TH SE 1 
+.SH NAME
+se \- screen editor for video terminals
+.SH SYNOPSIS
+\fBse\fR [\fB\-T\|\fR[term]] [\fB\-i\fRfile] [\fB\-o\fRfile] [\fB\-s\fR] [file]
+.SH DESCRIPTION
+\fISe\^\fR is an interactive screen editor
+for use
+on asynchronous, \s-1ASCII CRT\s+1 terminals.
+If the \fIfile\^\fR argument is given, \fIse\^\fR will read the file into
+its buffer so that it can be edited.
+If no \fIfile\^\fR is specified,
+the buffer will be empty and
+there will be no current file name.
+.PP
+Options to \fIse\^\fR are:
+.TP "\w'\fB\-T\|\fIterm\fR\ \ \ 'u"
+\fB\-T\fR
+Causes \fIse\^\fR to print a list of the terminal types it understands
+and exit immediately, ignoring all other options.
+.TP
+.BI \-T\| term
+Specifies the terminal type being used.
+If no \fB\-T\fR option is specified, \fIse\^\fR will check the environment
+variables \s-1SETERM\s+1
+and \s-1TERM\s+1
+(in that order)
+to determine the terminal type specified (the first non-null value it
+finds is the one used).
+If no terminal type is specified or if the terminal type specified is
+unknown to \fIse\fR, \fIse\^\fR will print a diagnostic followed by a list
+of terminal types it understands and then exit.
+.TP
+.BI \-i\| file
+Causes a sequence of \fIse\^\fR commands to be read from the
+named \fIfile\fR.
+The file is read to end of file.
+If more than one \fB\-i\fR option is given,
+the files are read in the order specified on the command line.
+When all \fB\-i\fR options have been processed, commands
+are read from the standard input.
+A maximum of five files may be specified.
+.TP
+.BI \-o\| file
+Causes a copy of all commands given to this invocation of \fIse\^\fR
+to be placed in \fIfile\fR.
+This file may then be used with the \fB\-i\fR option.
+.TP
+\fB\-s\fR
+Reduce the number of messages printed on the status line.
+This is intended for the expert user.
+.PP
+Other than the order of multiple \fB\-i\fR options,
+the order of the options and the filename
+on the command line is not important.
+.PP
+During editing, \fIse\^\fR displays the contents
+of the file on the screen.
+As the file is edited, the screen is updated
+to reflect changes made in the file contents.
+If the entire contents of the file will not fit
+on the screen, \fIse\^\fR displays a portion of it.
+The limits of the file are indicated on the screen
+by the 
+.SM
+.B TOP OF FILE
+and
+.SM
+.B BOTTOM OF FILE
+messages.
+.PP
+The top line of the display is used for a status line.
+The status line contains (from left to right):
+the last command entered (or being entered),
+error messages
+and the name of the file being edited.
+.PP
+The current position in the file is indicated by the position
+of the \fIcursor\^\fR on the screen.
+The cursor can be moved
+to different file positions by cursor
+movement commands or find commands.
+The cursor is not restricted to text already present.
+If text is inserted or overwritten to the right of the end of the line,
+the line will be padded with blanks.
+.PP
+\fISe\^\fR operates in command mode:  each character typed
+is interpreted as part of an \fIse\^\fR command.
+As each command is recognized, the appropriate action is
+performed.
+To add new text to the file, the 
+.I insert\^
+command is used.
+During insert, characters typed are interpreted as text
+to be added to the file.
+The text is added before the current cursor position.
+For example, if the cursor is positioned on the first \fBr\fR in
+the word \fBedr-formatter\fR and the insert
+command is given,
+typing \fBito\fR and ending the insert yields \fBeditor-formatter\fR.
+.SH COMMAND SYNTAX
+.PP
+Most \fIse\^\fR commands are of the form:
+.IP "" 5
+[count] [text-identifier] command
+.PP 
+The \fIcount\^\fR is an optional field, an integer between
+1 and 32,767.
+The default value for \fIcount\^\fR is one.
+The optional \fItext-identifier\^\fR specifies the block of
+text of interest.
+Valid text-identifiers are described below; the default value
+for text-identifiers is dependent on the command.
+If more than one \fIcount\^\fR or \fItext-identifier\^\fP is used,
+all but the last will be ignored.
+\fICommands\^\fR are specified below.
+.SH TEXT IDENTIFIERS
+.PP
+The valid text-identifiers
+(\fItext-id\|\fR)
+are:
+.RS .3i
+.TP "\w'\fBText-id\fR\ \ \ \ \ 'u"
+.B Text-id 
+.B Text Represented
+.PD 0
+.TP
+\&\fB.\fP
+Character
+.TP
+w
+Word
+.TP
+F
+File
+.TP
+l
+Line
+.TP
+S (or s)
+Screen
+.TP
+e
+Previously defined region
+.TP
+\&/
+Region found by last \fBfind\fR command
+.RE
+.PD
+.PP
+In general, a \fItext-id\^\fR block is identified as that in which the cursor
+is positioned.
+A \fItext-id\^\fR may also be identified by a cursor positioned on the
+white space \fIfollowing\^\fR the \fItext-id\fR.
+.SH CURSOR KEYS
+.PP
+The cursor keys on the terminal keyboard
+are used to move the cursor
+around the screen and through the file.
+For terminals with no cursor keys,
+the
+\fBctrl+z\fP, \fBctrl+x\fP, \fBctrl+c\fP, \fBctrl+v\fP keys
+may be used instead of
+\(<-, \(da, \(ua and \(-> respectively.
+.SH NOTATION
+.PP
+In the list of \fIse\^\fR commands below, the following notations
+apply:
+.RS .3i
+.TP "\w'position-cursor\ \ \ 'u"
+[\|]
+items within brackets are optional
+.PD 0
+.TP
+{\|}
+one of the items within the braces must be used
+.TP
+text-id
+identifies a block of text
+.TP
+chars
+any string of characters
+.TP
+position-cursor
+a sequence of \fIcursor-moves\^\fR
+or \fIfind\^\fR commands (see below)
+.RE
+.PD
+.SH TEXT COMMANDS
+.PP
+Commands longer than one character
+(for example, \s-1\fBREAD\fR\s+1)
+may be invoked by typing
+an unique initial substring followed by a \s-1\fBRETURN\fR\s+1
+(\fInewline\|\fP).
+If the substring is not unique the \fI\s-1\fBRETURN\fR\s+1 is ignored.
+The \s-1\fBBREAK\fR\s+1 key causes \fIse\^\fR to stop its current action
+and return to \fIits\^\fR command level.
+.SS cursor moves
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] " "cursor key"
+Move the cursor \fIcount\^\fR lines up (\(ua) or down (\(da) or
+\fIcount\^\fR characters to the left (\(<-) or the right (\(->).
+Screen scroll will occur if the top or bottom of screen is encountered.
+The cursor will wrap at line beginning and end as expected.
+.TP
+.RB "[count] [text-id] " "cursor key"
+Move the cursor the specified amount
+of \fItext-id\^\fR blocks.
+If the \fItext-id\^\fR is character (\fB.\fR) (default),
+the action is the same as for plain cursor key use (see above).
+For all other \fItext-id\fRs,
+\(<- means \fIbeginning of\fR,
+\(-> means \fIend of\fR,
+\(ua means \fIprevious\fR,
+and
+\(da means \fInext\fR.
+For example, \fBS\fR\(da means go to the next screen.
+.TP
+.BR "space-bar"
+The space-bar moves the cursor one character to the right
+(equivalent to \fB.\(->\fR).
+.TP
+.B \s-1RETURN\s+1
+The \s-1\fBRETURN\fR\s+1
+key moves the cursor to the beginning of the next line.
+.TP
+.B \s-1TAB\s+1
+The \s-1\fBTAB\fR\s+1
+key moves the cursor to the next tab position (set every 8 columns).
+.TP
+.B \s-1HOME\s+1
+For terminals that have a \s-1\fBHOME\s+1\fR key,
+it moves the cursor to the top left corner of the screen
+(equivalent to \fBS\fR\(<-).
+.SS Define Region
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.BR "b " "[position-cursor] " "ctrl+d"
+Define an arbitrary linear region.
+Any command that changes the file being edited will cause the
+current region to be undefined.
+.SS Copy text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] [text-id] " "c " "[position-cursor] " "ctrl+d"
+Copy \fItext-id\^\fR block (default is one character) at new
+cursor position.
+.SS Delete text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] [text-id] " "d"
+Delete \fItext-id\^\fR block
+(default is one character).
+.SS Refresh document display
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.B \s-1DISPLAY\s+1
+Rewrites display from the file.
+Useful to restore contents of screen from the effects of line noise etc.
+.SS Edit file
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.BR "\s-1EDIT\s+1 " "[filename] " "{\^ctrl+d, \s-1RETURN\s+1\^}"
+Start editing the specified file.
+If no file name has been specified,
+use the current file.
+If the contents of the current file have been altered
+since the last \s-1\fBWRITE\fR\s+1 command,
+the user is first queried as to whether to save those changes.
+.SS Find string occurrence
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+[text-id] \fBf\fR chars \fB{\^ctrl+d, \s-1RETURN\s+1\^}\fR
+Search \fItext-id\^\fR
+(default is entire file)
+for \fIchars\^\fP and position cursor there.
+The cursor is not moved if \fIchars\^\fP are not found.
+The chars are interpreted as a regular expression
+(see \fIregexp\^\fR(5)).
+.SS Find all and execute command automatically
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+[count] [text-id] \fBg\fR chars \fB{\^ctrl+d, \s-1RETURN\s+1\^}\fR command
+Search \fItext-id\^\fR (default is entire file) for all occurrences
+of chars; position-cursor at first occurrence and
+execute 
+.IR command .
+Continue to next occurrence and apply the same \fIcommand\fR,
+and so on.
+The \fIcommand\^\fR may not be another global command.
+The chars are interpreted as a regular expression
+(see \fIregexp\^\fR(5)).
+.SS Find all and execute command interactively
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+[count] [text-id] \fBG\fR chars \fB{\^ctrl+d, \s-1RETURN\s+1\^}\fR command
+Search \fItext-id\^\fR (default is entire file) for first occurrence
+of chars; position-cursor at first occurrence and wait
+for 
+.IR command ;
+execute 
+.I command\^
+and continue to next
+occurrence where a new \fIcommand\^\fR may
+be input, and so on.
+The \fIcommand\^\fR may not be another global command.
+The chars are interpreted as a regular expression
+(see \fIregexp\^\fR(5)).
+.SS Insert text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+[text-id] \fBi\fR chars \fBctrl+d\fR
+Insert text at the current cursor position.
+If the \fItext-id\^\fR is \fBl\fR,
+a blank line is inserted and the cursor positioned
+at the beginning of that line.
+Use of cursor-keys (no preceding \fIcount\^\fR or \fItext-id\|\fR)
+positions the cursor at the next character to be inserted.
+The back-space key will cause the previous character to be deleted.
+.SS Move text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] [text-id] " "m " "[position-cursor] " "ctrl+d"
+Reposition \fItext-id\^\fR block
+(default is one character)
+at new position.
+It is an error if the new position is within the text to be moved.
+.SS Overwrite text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+\fBo\fR chars\fB ctrl+d\fR
+Performs one-to-one character replacement
+beginning at cursor position.
+Use of cursor-keys (no preceding \fIcount\^\fR or \fItext-id\|\fR)
+positions the cursor at the next character to be overwritten.
+The back-space key will cause the previous character to be deleted.
+.SS Leave the editor
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.B q
+Exits from \fIse\fR.
+If the contents of the current file have been altered since
+the last \fB\s-1WRITE\s+1\fR command,
+the user is first queried as whether to save those changes.
+.SS Get text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.BR "\s-1READ\s+1 " "[filename] " "{\^ctrl+d, \s-1RETURN\s+1\^}"
+Insert text from 
+.I filename\^
+at cursor position.
+If no 
+.I filename\^
+is specified,
+the current filename is used.
+The cursor position is unchanged.
+.SS Replace text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] [text-id] " "r " "chars " "ctrl+d"
+Replace \fItext-id\^\fR block (default is
+one character) with text.
+.SS Undo last command
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.B \s-1UNDO\s+1
+Undoes last text-modifying command.
+An 
+.SM UNDO
+may not be undone.
+.SS Save text
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] [text-id] " "\s-1WRITE\s+1 " "[filename] " "{\^ctrl+d, \s-1RETURN\s+1\^}"
+Save text from \fItext-id\^\fR (default is entire file) in
+the named file.
+If \fIfilename\^\fR is not specified, text is saved in
+the file currently being edited.
+Note that existing text in the file is replaced.
+.SS Process through the \s-1UNIX\s+1 system
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] [text-id] " "X " "\s-1UNIX\s+1 command " "{\^ctrl+d, \s-1RETURN\s+1\^}"
+Passes \fItext-id\^\fR block (default is no text) 
+to the \fI\s-1UNIX\s+1 command\^\fR as standard input and replaces
+\fItext-id\^\fR block with the standard output
+from the \fI\s-1UNIX\s+1 command\fR.
+.SS Request help
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.BR "?"
+Display a listing of available
+\fIse text-id\|\fRs, commands and their syntax.
+.SS Escape from editor
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.RB "[count] [text-id] " "! " "\s-1UNIX\s+1 command " "{\^ctrl+d, \s-1RETURN\s+1\^}"
+If the \fItext-id\^\fR or \fIcount\^\fR is specified, it is given
+as standard input to the \fI\s-1UNIX\s+1 command\fR.
+Otherwise, standard input is the same as for \fIse\fR.
+No changes are made to the file being edited.
+.SS Repeat last command
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.B "
+Ditto repeats the last command.
+This means the command plus preceding \fItext-id\^\fR and \fIcount\fR.
+.SS Go to line
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.IB "N " "#"
+Move to line 
+.IR N ,
+where 
+.I N\^
+is an integer between 1 and 32,767.
+.SS Erase input
+.TP "\w'[count] [text-id]\ \fBcursor key\fR\ \ \ 'u"
+.B "@"
+Cause \fIse\^\fR to ignore any partially typed command
+(including count, modifier, and multi-character command).
+.SH TERMINAL REQUIREMENTS
+.PP
+\fISe\^\fR can run on any terminal with suitable cursor addressing. 
+In order to use cursor keys, they must emit characters to the host computer.
+Performance may be degraded if the terminal does not have:
+.PP
+.PD 0
+.TP "\w'\-\ \ 'u"
+\&\-
+character insert and delete
+.TP
+\&\-
+line insert and delete
+.TP
+\&\-
+erase to end of line and page
+.PD
+.PP
+If the terminal type specified
+is not suitable
+(i.e., it has no cursor addressing), 
+.IR se\^
+prints a diagnostic and exits immediately.
+.PP
+The environment variable \s-1TERMINFO\s+1 modifies the search for the
+specified terminal type in the terminal description file.
+If present, it should contain one of two kinds of values:
+.TP "\w'\-\ \ 'u"
+\&\-
+an alternate file name for the terminal description file
+(in this case, the first character must be a \fB/\fR).
+This file will be used to search for a description of the specified
+terminal instead of the default terminal description file.
+.TP
+\&\-
+the description for a specific terminal
+(this should be the entry from the terminal description file
+with the escaped newlines removed). 
+This description will be treated as though it had been prepended to
+the default terminal description file.
+Using \s-1TERMINFO\s+1 in this manner allows the redefinition of a
+specific terminal description or the inclusion of a description for
+a terminal that is not included in the default terminal description
+file.
+.PP
+If the description contained in \s-1TERMINFO\s+1 is that of the
+terminal to be used with \fIse\fR, start-up time for \fIse\^\fR can
+be reduced considerably since the terminal description file need
+not be searched.
+.SH FILES
+.PD 0
+.TP "\w'/usr/lib/se.term\ \ \ 'u"
+/tmp/se#
+temporary; # is the process number.
+.TP
+/tmp/sei#
+record of keystrokes; # is the process number.
+.TP
+/usr/lib/se.term
+terminal description file
+.PD
+.SH DIAGNOSTICS
+Error messages are displayed on the message line on the
+screen during editing.
+.SH WARNING
+Regular expressions span more than one line,
+thus \fIabc.*xyz\^\fR may match the entire file.
+.PP
+Some terminals need persuasion to make the cursor keys emit characters.
+For example, HP2621 cursor keys only emit characters when the function labels
+are displayed and
+the \s-1SHIFT\s+1 key is held down and the cursor key struck.
+.SH SEE ALSO
+regexp(5).
+.\"	@(#)se.1	5.1 of 11/10/83

@@ -1,0 +1,18 @@
+sy::sysinit:/etc/sysinitrc </dev/systty >/dev/systty 2>&1	#System Init
+is:1:initdefault:				#First Init State
+bl:1:bootwait:/etc/bcheckrc </dev/null >/dev/null 2>&1	#Bootlog
+bc:1:bootwait:/etc/brc </dev/null >/dev/null 2>&1	#Bootrun command
+rc:1:bootwait:/etc/rc 1>/dev/syscon 2>&1	#System initialization - runcom
+sl:1:wait:(rm -f /dev/syscon;ln /dev/systty /dev/syscon;) 1>/dev/systty 2>&1
+pf::powerfail:/etc/powerfail 1>/dev/syscon 2>&1 #Power fail routines
+pf2:6:once:/etc/powerdown 1>/dev/syscon 2>&1 	#Power down routines
+net0:1:off:/etc/portmap
+net1:1:off:/etc/inetd
+rwho:1:off:/usr/etc/in.rwhod
+nfs0:1:off:/etc/biod 4
+nfs1:1:off:/etc/nfsd 4
+serv:1:off:/usr/etc/ypserv
+yp1:1:off:/etc/ypbind
+yp2:1:off:/usr/etc/rpc.yppasswdd /etc/yp/src/passwd -m passwd DIR=/etc/yp/src
+nfs2:1:off:/etc/remotes > /dev/console
+rm:1:respawn:/bin/login deskuser </dev/wb 1>/dev/wb 2>&1 # Desktop Non Super-User
