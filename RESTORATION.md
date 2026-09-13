@@ -2,7 +2,7 @@
 
 This page records the effort, started September 2026, to restore the networking stack of UniSoft UniPlus+ System V on the Apple Lisa: what we set out to do, what we found, what was built, where things stand, and what comes next. It links to the more detailed documents in the repo instead of repeating them.
 
-> **Status in one line (13 September 2026):** the V.1.5+ network kernel builds on a (LisaEm) Lisa, boots, and is on a network: LisaEm emulates the 3Com EtherBox that `if_eb.c` drives and connects it to the Mac through libslirp (lisaem PR #57), so TCP works both ways between the Lisa and the Mac and `netlib/ping` gets replies. Raw sockets needed five kernel fixes (section 9). Next: a `route` tool for a default route, then telnet/ftp.
+> **Status in one line (13 September 2026):** the V.1.5+ network kernel builds on a (LisaEm) Lisa, boots, and reaches the internet: LisaEm emulates the 3Com EtherBox that `if_eb.c` drives and connects it to the Mac through libslirp (lisaem PR #57), TCP works both ways between the Lisa and the Mac, and with a default route `netlib/ping 8.8.8.8` gets replies. Raw sockets needed five kernel fixes and default routes one more (section 9). Next: `nc`, then telnet and ftp ported from 2.9BSD.
 
 ## 1. Starting point
 
@@ -197,12 +197,17 @@ Plan and register-level details: `etherbox-emulation-plan.md`. Code: lisaem bran
 | `nc 127.0.0.1 5555` on the Mac to `tcpecho` on the Lisa (port forward) | Echoed |
 | `ping 127.0.0.1` | 2 of 2 |
 | `ping 10.0.2.2` | 2 of 2 |
+| `route add default 10.0.2.2`, then `ping 8.8.8.8` | 4 of 4 at 5 MHz |
+
+**Routing.** The 4.1a `rtalloc()` looks for a host route, then a route to the destination's class-based network, and nothing else: a route to `0.0.0.0` only ever matched network 0. `route.c` now falls back to a network route whose destination is all zeros, as 4.2BSD does. The kernel already handled `SIOCADDRT`/`SIOCDELRT`, and `netlib/route` adds, deletes and shows routes, reading the `rthost`/`rtnet` hash tables through `/dev/kmem`. A route to one network (`route add 8.0.0.0 10.0.2.2`) works without the patch.
+
+**Emulated speed.** The Lisa's clock follows emulated time. With LisaEm at 512 MHz a 20 ms round trip to the internet took over 2 seconds of Lisa time, so `ping` gave up before the replies came; at 5 MHz all replies arrive in time. TCP timers work the same way, so talk to real hosts at a realistic speed. slirp opens one host ICMP socket per request, and macOS hands a reply to every socket with the same ID, so overlapping requests produce duplicate replies (`ping` marks them).
 
 **Build trap:** the Lisa's clock can go backwards between LisaEm sessions. Objects compiled later then look older than `net.o`, and `make` installs the old `unix.net` without relinking. Remove `net.o unix.net` before rebuilding (`lisa-build.md`).
 
 ## 10. Current state
 
-**uniplus repo:** branch `lisa-raw-icmp-ping` (on top of `lisa-network-tests`, PR #5) has the raw socket and ICMP fixes, `conf.c` at 10.0.2.15, `netlib/ping` and these notes. Only the disk images are untracked.
+**uniplus repo:** the raw socket and ICMP fixes, `conf.c` at 10.0.2.15 and `netlib/ping` are on `master` (PRs #6, #7). Branch `lisa-route` adds the default route fallback, `netlib/route` and `ping -w`. Only the disk images are untracked.
 
 **lisaem:**
 - PR #55 (faithful ProFile and VIA emulation): merged.
@@ -227,8 +232,8 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 1. **Loopback TCP and UDP: done.** `netlib/looptest` (TCP, 51 bytes round trip) and `netlib/udptest` (UDP datagram with addresses) pass on `unix.net` over 127.0.0.1; `netlib/netinfo` reads the host name and the configured address (`SIOCGIADDR`).
 2. **Rebuild `unix.net` from the fixed source: done.** `unix.net` rebuilt on the Lisa from the fixed `pro.c` is `/unix` on `build2`, so it no longer depends on the image patch. After a Lisa power-off/on within one LisaEm session it panicked in `ppintr` when slot 1 was empty. The cause was a LisaEm VIA Timer 1 latch bug, fixed in lisaem PR #55.
 3. **Etherbox emulation in LisaEm: done** (section 9, lisaem PR #57).
-4. **Default route:** a small `route` tool using `SIOCADDRT`, so the Lisa can reach past the Mac through slirp.
-5. **Port network tools:** try the Torch 4.1a telnet/ftp binaries, port 2.9BSD `netstat`.
+4. **Default route: done** (`netlib/route`, `rtalloc()` fallback).
+5. **Network tools:** the Torch binaries can't run on the Lisa (they map a shared C library with a Torch-only system call and expect data at `0x400000`), so port from the 2.9BSD network kit (`bsd/2.9BSD/usr/net/src/netser/`), which uses the same 4.1a socket API: a small `nc` first, then `telnet`, `ftp`/`tftp`, `netstat`, `/etc/hosts` lookups and a DNS resolver, then the servers.
 
 **LisaEm (PR #55)**, full list in `ProFileEmulationTesting.md`:
 1. **Dual parallel card:** ProFile read/write and boot. It used to hang; not yet tried on the new emulation.

@@ -138,7 +138,10 @@ Then `fsck /dev/rp0e` on the Lisa before mounting.
 4. **Tests,** in `/usr/src/netlib`:
    - `./netinfo` shows 10.0.2.15.
    - `./ping 10.0.2.2` (root) gets replies from slirp's host address.
+   - `./route add default 10.0.2.2`, then `./ping 8.8.8.8`, reaches the internet. Routes are lost at reboot; add the `route` line to `/etc/rc` to keep it.
    - With `nc -l 7001` on the Mac, `./tcpconn 10.0.2.2 7001 hello` delivers the line.
    - With `./tcpecho 5000 &` on the Lisa, `nc 127.0.0.1 5555` on the Mac is echoed.
 
 On macOS, avoid host ports 5000 and 7000 (AirPlay Receiver) and connect to `127.0.0.1` rather than `localhost`.
+
+Run LisaEm at a realistic CPU speed (5 MHz works) when talking to real hosts. The Lisa's clock follows emulated time, so at hundreds of MHz real network delays look like seconds to it, and `ping` and TCP time out early.
