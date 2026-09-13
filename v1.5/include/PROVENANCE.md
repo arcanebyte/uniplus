@@ -45,7 +45,7 @@ So the Lisa's `file.h`, `proc.h`, `types.h` and `ioctl.h` need no changes. The n
 
 | File | Contents | Evidence |
 |---|---|---|
-| `sys/config.h` | `PR0` 0, `SN1` 1, `CV2` 2, `PM3` 3, `NSC` 2, `CONSOLE` 0 | Block majors: `bdevsw[]` order in `conf.c` (CONFIRMED). `NSC`: two `sc_ttptr[]` entries (CONFIRMED). `CONSOLE`: console is major/minor 0 (INFERRED). The Torch `config.h` is for different hardware and wasn't used. |
+| `sys/config.h` | `PR0` 0, `SN1` 1, `CV2` 2, `PM3` 3, `NSC` 2, `NTE` 4, `CONSOLE` 0 | Block majors: `bdevsw[]` order in `conf.c` (CONFIRMED). `NSC`: two `sc_ttptr[]` entries (CONFIRMED). `NTE`: `te_cnt` = 4 in the symbol table and data of the working 1.4 `/unix` (CONFIRMED); without it `conf.c` silently omits the Tecmar tables and the link leaves `te_*` undefined. `CONSOLE`: console is major/minor 0 (INFERRED). The Torch `config.h` is for different hardware and wasn't used. |
 | `sys/al_ioctl.h` | `AL_S*` 1–9, `AL_REVVIDEO` 10, `AL_G*` 17–25, `AL_EJECT` 34, `AL_GBMADDR` 26, `AL_GMOUSE` 32, `AL_SMOUSE` 33 | Names and meanings: `console(5L)`, `mouse(5L)`, `eject(1L)` in the UniPlus+ Lisa-specific manual (Bitsavers `pdf/unisoft/UniPlus-Lisa-specific.pdf`). Values 1–10, 17–25 decoded from the `ioctl()` calls in `/usr/bin/setparams`, whose call order matches its menu, the `co.c` switch order and the manual (CONFIRMED). 34 from `/usr/bin/eject` and `/bin/tar` (CONFIRMED). No surviving program or document gives `AL_GBMADDR`, `AL_GMOUSE`, `AL_SMOUSE` (GUESS). |
 | `sys/speaker.h` | `struct speaker { ushort sk_wavlen, sk_duration, sk_volume; }`, `MINWLEN` 8, `MAXWLEN` 8191 | `speaker(5L)` gives the struct and the 8/8191 limits (CONFIRMED); `sk.c` uses `MAXWLEN` as a mask, and 8191 = 0x1FFF works as one. |
 
@@ -67,6 +67,9 @@ The Lisa network sources are Berkeley's 82/06/20 network release (the base also 
 
 ## Build notes and open issues
 
+**Reconstructed source file (in `../sys`):**
+- **`../sys/cxstub.c`:** empty `cxrelse()` and `cxtxfree()`. `slp.c`, `text.c` and `sys1.c` call them, but their real definitions in `context.c` are for a many-context MMU (`cxmap`, `USERCX`, `NUMUCONTX`, `context[]` aren't in any Lisa header) and aren't in the Lisa build. The first Lisa link reported both as undefined. On the Lisa no context is ever allocated, so `p_context` and `x_cxaddr` stay 0, and for those values the `context.c` versions return without doing anything. The stubs are equivalent. Added to `KERNEL` and `SKERNEL` in the Makefile.
+
 **Build changes already made:**
 - **`-Dm68000` added to `DEFS` in `../sys/Makefile`.** `net/ip.h` and `net/ip_var.h` test `m68000`, but the Lisa `cpp` predefines only `unix` and `mc68000`. Without it, `struct ip` has no `ip_v`/`ip_hl` fields.
 - **Include path:** the Makefile's `INCLUDE=` is empty. On the Lisa, either copy this directory into `/usr/include`, or set `INCLUDE=-I<this directory>` so these files are found before `/usr/include`. `uioctl.h` and `mmu.h` must win over the stock copies.
@@ -74,10 +77,13 @@ The Lisa network sources are Berkeley's 82/06/20 network release (the base also 
 **Host syntax check.** `clang -fsyntax-only -std=gnu89` on all 97 build sources, with the Makefile defines, against this directory plus `../../dump/usr/include`:
 - **Result:** no undefined identifiers, unknown types or missing struct members, apart from the items below.
 - **Not errors:** the remaining messages are clang being stricter than a 1984 compiler (K&R code, kernel `malloc`/`free` clashing with built-ins) and the `-D` values `name.c` gets from the Makefile.
-- **Limits:** this only proves every name resolves. It doesn't check struct layouts or values on the 68000.
+- **Limits:** this only proves every name resolves. It doesn't check struct layouts or values on the 68000, and it can't see link-time problems. A macro that's never defined silently reads as 0 in `#if` (how the missing `NTE` slipped through), so also run the preprocessor with `-Wundef`. Only the Lisa `ld` reports undefined symbols.
 
-**To test on the Lisa:**
-1. **`net/misc.h` has `typedef short void;`.** The Lisa C compiler appears to treat `void` as a keyword, in which case this line fails. If so, the fix is a MODIFIED `misc.h` without that typedef.
-2. **`net/ip.h`, `struct ip_timestamp`:** the union member has no name or terminating `;` (4.2BSD names it `ipt_timestamp`). The Torch compiler accepted it; the Lisa compiler may not.
-3. **`../sys/sys1.c`:** `#ifdef NONSCATLOAD` at line 700 is never closed. This matches both source copies and the 1986 printed listing, so UniSoft's `cpp` evidently accepted it.
-4. **`AL_GBMADDR`, `AL_GMOUSE`, `AL_SMOUSE`** are guesses. They only matter for binary compatibility with programs that use them; none survive on the known disks.
+**Results from building on the Lisa (Sep 2026):**
+- **Compile:** all sources compile with the Lisa `cc` (`-OBPS -v`), including `net/misc.h`'s `typedef short void;` and `net/ip.h`'s unnamed union in `struct ip_timestamp`; no changes were needed.
+- **Link:** the first link left `_cxrelse`, `_cxtxfree` and the `_te_*` Tecmar tables undefined. UniSoft's `ld` still writes the output file with these resolved to 0, so check `build.log` for `Undefined` after every link. Fixed by `NTE` in `sys/config.h` and `../sys/cxstub.c`.
+- **Boot:** that first `unix.net` panicked mounting root (`HARD DISK ERROR dev 0: EXCESSIVE DISK DELAY`, `panic: iinit`); not yet re-tested with the link fixed.
+
+**Other notes:**
+- **`../sys/sys1.c`:** `#ifdef NONSCATLOAD` at line 700 is never closed. This matches both source copies and the 1986 printed listing, so UniSoft's `cpp` evidently accepted it.
+- **`AL_GBMADDR`, `AL_GMOUSE`, `AL_SMOUSE`** are guesses. They only matter for binary compatibility with programs that use them; none survive on the known disks.

@@ -23,6 +23,15 @@
 #define	NSC	2
 
 /*
+ * Number of Tecmar quad serial ports (4 per card).  conf.c only defines
+ * te_tty[], te_ttptr[], te_dparam[], te_modem[] and te_cnt "#if NTE != 0",
+ * and tecmar.c always references them.  Value: te_cnt = 4 in the working
+ * UniPlus 1.4 /unix on the 10 MB Lisa disk (te_tty[] spans 4 struct tty).
+ *                                                            CONFIRMED
+ */
+#define	NTE	4
+
+/*
  * Device number of the console (bitmap display/keyboard): cdevsw major 0,
  * minor 0.  co.c compares a minor number, ms.c compares u.u_ttyd against
  * it; both are 0 for the console.                            INFERRED
