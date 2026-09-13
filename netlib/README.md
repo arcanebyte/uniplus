@@ -18,7 +18,8 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `include/sys/socket.h`, `include/netinet/in.h` | One-line aliases for the `net/` headers |
 | `sockcall.s` | `trap #0` stubs for syscalls 70–79: `select`, `gethostname`, `sethostname`, `socket`, `accept`, `connect`, `receive`, `send`, `socketaddr`, `netreset` |
 | `tcpconn.c` | Test client: `tcpconn a.b.c.d port [message]` |
-| `Makefile` | Builds `tcpconn` on the Lisa |
+| `tcpecho.c` | Test server: `tcpecho port`, echoes one connection at a time (loopback: `tcpecho 5000 &` then `tcpconn 127.0.0.1 5000 hello`) |
+| `Makefile` | Builds `tcpconn` and `tcpecho` on the Lisa |
 
 ## Status
 
