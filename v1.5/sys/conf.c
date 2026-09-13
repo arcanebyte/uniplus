@@ -280,7 +280,7 @@ forlint()
 extern struct uba_driver ebdriver;
 struct uba_device ubdinit[] = {
 	/* driver,	unit,	addr,	flags*/
-	{ &ebdriver,    0,   (caddr_t)5,  0x59002908 },  /* net 89 */
+	{ &ebdriver,    0,   (caddr_t)5,  0x0a00020f },  /* 10.0.2.15, libslirp's guest address */
 	0
 };
 

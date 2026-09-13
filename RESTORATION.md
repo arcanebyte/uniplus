@@ -2,7 +2,7 @@
 
 This page records the effort, started September 2026, to restore the networking stack of UniSoft UniPlus+ System V on the Apple Lisa: what we set out to do, what we found, what was built, where things stand, and what comes next. It links to the more detailed documents in the repo instead of repeating them.
 
-> **Status in one line (13 September 2026):** the V.1.5+ network kernel builds on a (LisaEm) Lisa and boots, and a full TCP round trip over loopback passes (`netlib/looptest`). That needed faithful ProFile and 6522 VIA emulation in LisaEm (lisaem PR #55), which replaced LisaEm's UniPlus-specific hacks. Next: the dual parallel card and the remaining Lisa OS regression tests for the emulation, and networking beyond loopback.
+> **Status in one line (13 September 2026):** the V.1.5+ network kernel builds on a (LisaEm) Lisa, boots, and is on a network: LisaEm emulates the 3Com EtherBox that `if_eb.c` drives and connects it to the Mac through libslirp (lisaem PR #57), so TCP works both ways between the Lisa and the Mac and `netlib/ping` gets replies. Raw sockets needed five kernel fixes (section 9). Next: a `route` tool for a default route, then telnet/ftp.
 
 ## 1. Starting point
 
@@ -162,36 +162,73 @@ Research and design: `profile-emulation-notes.md`, `profile-emulation-plan.md`. 
 - **Partition e:** `pro.c`'s `prlmap[]` had e = `{0, 0}`, so kernels built from source rejected every `/dev/p0e` block ("read error"). Fixed in `pro.c` (`{19456, 19456}`), and the 2 bytes patched into `/unix` on `build2` (backup: `uniplus_unix_20mb.build2.before-prlmap-patch.image`).
 - **8-character struct tags:** the Lisa `cc` keeps only 8 characters of a struct tag, so netlib's `sockaddr_in` collided with `sockaddr`. Fixed with `#define sockaddr_in sock_in`, as the kernel's `net/misc.h` does.
 
-## 9. Current state
+## 9. Ethernet: the EtherBox in LisaEm, and raw sockets
 
-**uniplus repo:** everything through the netlib `sock_in` fix is committed (link fixes, `unix.pad` diagnostic, `make_profile_image.py`, `lisa-build.md`, research docs, `tcpecho.c`, `pro.c` partition e). Only the disk images are untracked.
+Plan and register-level details: `etherbox-emulation-plan.md`. Code: lisaem branch `etherbox-emulation`, **PR #57**.
 
-**lisaem:** branch `profile-emulation`, PR #55 (open, review required):
-- `00bc0f4` Loopback serial-port fix
-- `a2cd251` drive and timer
-- `12dd3f0` VIA flags
-- `170e18d` UniPlus patch removal
-- testing doc
+**The EtherBox.** `if_eb.c` drives a 3Com box through one parallel port VIA: a command code on port B (`$A0` select register, `$B0` write, `$B8` read, `$A8` idle), register numbers and data bytes on port A, one byte per CA2 strobe. Behind it is an EDLC-style controller with a station address PROM, a 2 K transmit buffer and two 2 K receive buffers; the box interrupts by pulsing CA1. LisaEm now emulates it as a device for a dual parallel card port. `conf.c` puts it on unit 5, the upper port of the card in slot 2.
 
-Test build: `~/github/lisaem/bin/LisaEm-profile.app`. `bin/LisaEm.app` is the master build.
+**Host side.** LisaEm backends, chosen with `LISAEM_ETHERBOX_BACKEND`:
+- `none`: drops frames;
+- `responder`: a fake host that answers ARP and ping and refuses TCP connections;
+- `slirp`: libslirp user-mode NAT (build with `build.sh --with-slirp`). The Lisa is 10.0.2.15, the Mac is 10.0.2.2, and `LISAEM_ETHERBOX_HOSTFWD` forwards Mac ports on 127.0.0.1 to the Lisa.
+
+`LISAEM_ETHERBOX_TRACE` and `LISAEM_ETHERBOX_PCAP` log register access and write frames for Wireshark. The LisaEm README lists all the settings.
+
+**Kernel address.** `conf.c` now gives the interface 10.0.2.15 (`0x0a00020f`) instead of 89.0.41.8. Addressing is class-based, so 10.0.2.2 is on the same network and needs no route.
+
+**Driver behaviour found on the way (not changed):**
+- `ifinit()` calls each interface's init before setting its send queue length, so the ARP request `ebinit()` sends at boot is always dropped (`IF_QFULL` with a limit of 0).
+- `ebread()` copies a frame into a 1500 byte buffer, so a full 1514 byte frame would overrun it. The emulation delivers at most 1500 bytes; slirp is set to stay under that, and UniPlus advertises a TCP MSS of 1024 anyway.
+- `ebintr()` re-reads AUXCSR after each frame and starts over if it changed. Sending a reply changes it, so a frame could be handled more than once. The emulation reports a buffer as handed back once its status byte has been read.
+
+**Raw sockets and ping.** Nothing had ever used a raw socket on this kernel, and `netlib/ping` found five bugs:
+1. **No raw ICMP protocol entry (`proto.c`):** `socket(SOCK_RAW, {PF_INET, IPPROTO_ICMP})` matched the ICMP input entry, which has no user-request routine, and the kernel called a null pointer. A `SOCK_RAW`/`IPPROTO_ICMP` entry now comes before it; `pffindproto()` takes the first match and `ip_init()` gives `ip_protox[]` the last, so ICMP input still goes to `icmp_input()`.
+2. **Addresses passed the wrong way (`raw_cb.c`, `raw_usrreq.c`):** Berkeley's 83/02 raw socket code expects addresses in mbufs; this kernel's `sosend()`/`soconnect()` pass plain `struct sockaddr` pointers, as `udp_usrreq.c` expects. Sends went to a garbage address ("Network is unreachable") and `PRU_SOCKADDR` wrote through a bad pointer.
+3. **`m_get()` without `m_off` (`raw_cb.c`, `raw_usrreq.c`):** UniSoft replaced `m_getclr()` with `m_get()` in `raw_attach()` ("don't gtclr -- will it work?"), but `m_get()` leaves `m_off` 0. The control block overwrote its own mbuf header and closing the socket panicked with `mfreep`; `raw_input()` had the same fault. Both set `m_off`, and the control block is cleared. `rip_output()` also clears the IP header's TOS and offset.
+4. **Double free (`ip_icmp.c`):** `icmp_input()` handed echo replies to `raw_input()`, which owns them, and then freed them (`panic: mfreep`).
+5. **ICMP header not in the first mbuf (`ip_icmp.c`):** a packet sent on a raw socket has its IP header in an mbuf of its own, and `icmp_input()` read the ICMP header from past it, so a local echo request looked like a reply (the source said `/* need routine to make sure header is in this mbuf here */`). It now uses `m_pullup()`, like `ip_input()`, `tcp_input()` and `udp_input()`.
+
+**Results** (LisaEm with slirp):
+
+| Test | Result |
+|---|---|
+| `tcpconn` from the Lisa to `nc -l` on the Mac | Data arrives, connection closes cleanly |
+| `nc 127.0.0.1 5555` on the Mac to `tcpecho` on the Lisa (port forward) | Echoed |
+| `ping 127.0.0.1` | 2 of 2 |
+| `ping 10.0.2.2` | 2 of 2 |
+
+**Build trap:** the Lisa's clock can go backwards between LisaEm sessions. Objects compiled later then look older than `net.o`, and `make` installs the old `unix.net` without relinking. Remove `net.o unix.net` before rebuilding (`lisa-build.md`).
+
+## 10. Current state
+
+**uniplus repo:** branch `lisa-raw-icmp-ping` (on top of `lisa-network-tests`, PR #5) has the raw socket and ICMP fixes, `conf.c` at 10.0.2.15, `netlib/ping` and these notes. Only the disk images are untracked.
+
+**lisaem:**
+- PR #55 (faithful ProFile and VIA emulation): merged.
+- PR #57, branch `etherbox-emulation`: EtherBox, backends, `--with-slirp`.
+
+Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem repo), built with `--with-slirp`.
 
 **Disk images in `~/Documents/LisaEm Files`:**
 
 | Image | State |
 |---|---|
-| `uniplus_unix_20mb.build2.image` | **Current.** `/unix` = `unix.net` with partition e patched; `/unix.orig` = 1.4. Partition e has the sources, objects, `unix.net`/`unix.nonet`/`unix.pad` (old prlmap), logs, `netlib` (on-disk `in.h` has the `sock_in` fix only if it was edited on the Lisa). |
+| `uniplus_unix_20mb.build2.image` | **Current.** `/unix` = `unix.net` built from this branch (10.0.2.15, raw socket and ICMP fixes); `/unix.prev` = the earlier `unix.net` (89.0.41.8); `/unix.orig` = 1.4. Partition e has the sources, objects, logs and `netlib` including `ping`. |
+| `uniplus_unix_20mb.build2.before-*.image` | Backups taken before each change written from the Mac (`ping`, `rawfix`, `icmpfix`, `pingdebug`, `pullup`, and earlier) |
 | `uniplus_unix_20mb.build2.before-prlmap-patch.image` | Backup from just before the `/unix` partition e patch |
 | `uniplus_unix_20mb.original.image` | Earlier build (before the link fixes) |
 | `uniplus_unix_20mb.test*.image` | Throwaway test copies; `test2` has a damaged root inode |
 | `uniplus_unix_10mb_testing.image` | Your 10 MB system disk |
 
-## 10. Next steps
+## 11. Next steps
 
 **Networking (uniplus):**
 1. **Loopback TCP and UDP: done.** `netlib/looptest` (TCP, 51 bytes round trip) and `netlib/udptest` (UDP datagram with addresses) pass on `unix.net` over 127.0.0.1; `netlib/netinfo` reads the host name and the configured address (`SIOCGIADDR`).
 2. **Rebuild `unix.net` from the fixed source: done.** `unix.net` rebuilt on the Lisa from the fixed `pro.c` is `/unix` on `build2`, so it no longer depends on the image patch. After a Lisa power-off/on within one LisaEm session it panicked in `ppintr` when slot 1 was empty. The cause was a LisaEm VIA Timer 1 latch bug, fixed in lisaem PR #55.
-3. **Etherbox emulation in LisaEm:** the register-level plan, libslirp backend and a private IP in `conf.c` are in `etherbox-emulation-plan.md`.
-4. **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
+3. **Etherbox emulation in LisaEm: done** (section 9, lisaem PR #57).
+4. **Default route:** a small `route` tool using `SIOCADDRT`, so the Lisa can reach past the Mac through slirp.
+5. **Port network tools:** try the Torch 4.1a telnet/ftp binaries, port 2.9BSD `netstat`.
 
 **LisaEm (PR #55)**, full list in `ProFileEmulationTesting.md`:
 1. **Dual parallel card:** ProFile read/write and boot. It used to hang; not yet tried on the new emulation.

@@ -64,6 +64,19 @@ struct protosw protosw[] = {
   0,
   ip_init,	0,		ip_slowtimo,	ip_drain,
 },
+/*
+ * Raw ICMP sockets, for ping.  Without this entry socket(SOCK_RAW) with
+ * protocol IPPROTO_ICMP finds the entry below, which has no pr_usrreq,
+ * and the kernel calls through a null pointer.  It must come before
+ * that entry: pffindproto() takes the first match, while ip_init()
+ * lets the last match own ip_protox[IPPROTO_ICMP], so incoming ICMP
+ * still goes to icmp_input(), which hands echo replies to raw sockets.
+ */
+{ SOCK_RAW,	PF_INET,	IPPROTO_ICMP,	PR_ATOMIC|PR_ADDR,
+  rip_input,	rip_output,	0,		0,
+  raw_usrreq,
+  0,		0,		0,		0,
+},
 { 0,		PF_INET,	IPPROTO_ICMP,	0,
   icmp_input,	0,		0,		0,
   0,
