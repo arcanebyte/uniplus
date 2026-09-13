@@ -13,18 +13,21 @@
 | Alternative without this file: libc's syscall(n, a0, d1, a1, d2, ...)
 | e.g. syscall(73, SOCK_STREAM, 0, 0, 0) for socket().
 
+| The Lisa cc keeps 7 characters of an external C name plus the '_'
+| (gethostname() calls _gethost), but as keeps labels whole, so the
+| long names are spelled here as cc emits them.
 	.text
-	.globl	_select, _gethostname, _sethostname, _socket, _accept
-	.globl	_connect, _receive, _send, _socketaddr, _netreset
+	.globl	_select, _gethost, _sethost, _socket, _accept
+	.globl	_connect, _receive, _send, _socketa, _netrese
 	.globl	_errno
 
 _select:	movl	d2,sp@-
 		moveq	#70,d0
 		jra	sys
-_gethostname:	movl	d2,sp@-
+_gethost:	movl	d2,sp@-
 		moveq	#71,d0
 		jra	sys
-_sethostname:	movl	d2,sp@-
+_sethost:	movl	d2,sp@-
 		moveq	#72,d0
 		jra	sys
 _socket:	movl	d2,sp@-
@@ -42,10 +45,10 @@ _receive:	movl	d2,sp@-
 _send:		movl	d2,sp@-
 		moveq	#77,d0
 		jra	sys
-_socketaddr:	movl	d2,sp@-
+_socketa:	movl	d2,sp@-
 		moveq	#78,d0
 		jra	sys
-_netreset:	movl	d2,sp@-
+_netrese:	movl	d2,sp@-
 		moveq	#79,d0
 		jra	sys
 

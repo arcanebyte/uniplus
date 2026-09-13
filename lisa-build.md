@@ -114,4 +114,10 @@ Only try this on a copy of your system disk image.
    ./tcpconn 127.0.0.1 5000 hello
    ```
    With nothing listening, "Connection refused" proves the syscalls and the loopback TCP stack work (**confirmed** on `unix.net`).
-4. Full round trip: build `tcpecho` (`cc -O -I./include -o tcpecho tcpecho.c sockcall.o`, or `make` with the current Makefile), run `./tcpecho 5000 &`, then `./tcpconn 127.0.0.1 5000 hello`. Press DEL to end `tcpconn` (there is no `shutdown()`). Not yet run.
+4. Full round trip: `make looptest; ./looptest`. It forks an echo server, connects to 127.0.0.1, checks the echo and prints PASS (**confirmed** on `unix.net`). For an interactive test, run `./tcpecho 5000 &`, then `./tcpconn 127.0.0.1 5000 hello`, and press DEL to end `tcpconn` (there is no `shutdown()`).
+
+LisaEm can't paste into the Lisa, so new or changed source files go onto the disk image from the Mac with `tools/put_profile_files.py` while LisaEm is shut down, for example:
+```
+python3 tools/put_profile_files.py uniplus_unix_20mb.image --base 19456 netlib/looptest.c=netlib/looptest.c
+```
+Then `fsck /dev/rp0e` on the Lisa before mounting.

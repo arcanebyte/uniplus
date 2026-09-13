@@ -2,7 +2,7 @@
 
 This page records the effort, started September 2026, to restore the networking stack of UniSoft UniPlus+ System V on the Apple Lisa: what we set out to do, what we found, what was built, where things stand, and what comes next. It links to the more detailed documents in the repo instead of repeating them.
 
-> **Status in one line (13 September 2026):** the V.1.5+ network kernel builds on a (LisaEm) Lisa and boots, and its TCP/IP stack answers over loopback. That needed faithful ProFile and 6522 VIA emulation in LisaEm (lisaem PR #55), which replaced LisaEm's UniPlus-specific hacks. Next: the `tcpecho` round trip, the dual parallel card, and regression tests of other Lisa OSes on the new emulation.
+> **Status in one line (13 September 2026):** the V.1.5+ network kernel builds on a (LisaEm) Lisa and boots, and a full TCP round trip over loopback passes (`netlib/looptest`). That needed faithful ProFile and 6522 VIA emulation in LisaEm (lisaem PR #55), which replaced LisaEm's UniPlus-specific hacks. Next: the dual parallel card and the remaining Lisa OS regression tests for the emulation, and networking beyond loopback.
 
 ## 1. Starting point
 
@@ -59,6 +59,7 @@ Details: `v1.5/include/PROVENANCE.md`. Every file is labelled ORIGINAL, MODIFIED
 ## 5. Tools and LisaEm setup
 
 - **`tools/extract_profile_image.py`:** read-only extractor for UniPlus System V images: Lisa ProFile (532-byte tagged sectors, 512-byte blocks) and Torch (512-byte sectors, 1 K blocks), including multi-filesystem disks.
+- **`tools/put_profile_files.py`:** adds or replaces files in an existing filesystem on an image, in place, allocating like the kernel and checking the filesystem before and after. This is how files reach the Lisa, since LisaEm can't paste.
 - **`tools/make_profile_image.py`:** builds a ProFile image with a new filesystem from host folders, and self-verifies. Options:
   - `--base-image`, `--disk-sectors`, `--start`, `--blocks` build a larger system disk around an existing one;
   - `--prlmap LETTER` patches that kernel partition table entry;
@@ -187,11 +188,10 @@ Test build: `~/github/lisaem/bin/LisaEm-profile.app`. `bin/LisaEm.app` is the ma
 ## 10. Next steps
 
 **Networking (uniplus):**
-1. **Echo test:** paste `netlib/tcpecho.c` onto the Lisa, then `tcpecho 5000 &` and `tcpconn 127.0.0.1 5000 hello`, for a full TCP round trip.
-2. **Bring partition e in step:** put the fixed `pro.c` and `in.h` there (`ed` one-liners in the session notes, or regenerate the partition), and rebuild `unix.net` so the built kernel matches the source.
-3. **More netlib tests:** a UDP test, and a netinfo program (`SIOCGIADDR`).
-4. **Etherbox emulation in LisaEm** (register-level spec in `if_eb.c`; slirp backend), with a private IP in `conf.c`.
-5. **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
+1. **Loopback TCP and UDP: done.** `netlib/looptest` (TCP, 51 bytes round trip) and `netlib/udptest` (UDP datagram with addresses) pass on `unix.net` over 127.0.0.1; `netlib/netinfo` reads the host name and the configured address (`SIOCGIADDR`).
+2. **Rebuild `unix.net` from the fixed source: done.** `unix.net` rebuilt on the Lisa from the fixed `pro.c` is `/unix` on `build2`, so it no longer depends on the image patch. After a Lisa power-off/on within one LisaEm session it panicked in `ppintr` when slot 1 was empty. The cause was a LisaEm VIA Timer 1 latch bug, fixed in lisaem PR #55.
+3. **Etherbox emulation in LisaEm:** the register-level plan, libslirp backend and a private IP in `conf.c` are in `etherbox-emulation-plan.md`.
+4. **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
 
 **LisaEm (PR #55)**, full list in `ProFileEmulationTesting.md`:
 1. **Dual parallel card:** ProFile read/write and boot. It used to hang; not yet tried on the new emulation.
