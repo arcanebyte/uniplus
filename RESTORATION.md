@@ -188,11 +188,10 @@ Test build: `~/github/lisaem/bin/LisaEm-profile.app`. `bin/LisaEm.app` is the ma
 ## 10. Next steps
 
 **Networking (uniplus):**
-1. **Loopback TCP: done.** `netlib/looptest` passes on `unix.net`: 51 bytes round trip over 127.0.0.1.
-2. **Bring partition e in step:** put the fixed `pro.c` and `in.h` there (`ed` one-liners in the session notes, or regenerate the partition), and rebuild `unix.net` so the built kernel matches the source.
-3. **More netlib tests:** a UDP test, and a netinfo program (`SIOCGIADDR`).
-4. **Etherbox emulation in LisaEm** (register-level spec in `if_eb.c`; slirp backend), with a private IP in `conf.c`.
-5. **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
+1. **Loopback TCP and UDP: done.** `netlib/looptest` (TCP, 51 bytes round trip) and `netlib/udptest` (UDP datagram with addresses) pass on `unix.net` over 127.0.0.1; `netlib/netinfo` reads the host name and the configured address (`SIOCGIADDR`).
+2. **Rebuild `unix.net` from the fixed source:** partition e now has the fixed `pro.c` (written with `tools/put_profile_files.py`). Rebuild and install it so `/unix` no longer depends on the 2-byte image patch.
+3. **Etherbox emulation in LisaEm:** the register-level plan, libslirp backend and a private IP in `conf.c` are in `etherbox-emulation-plan.md`.
+4. **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
 
 **LisaEm (PR #55)**, full list in `ProFileEmulationTesting.md`:
 1. **Dual parallel card:** ProFile read/write and boot. It used to hang; not yet tried on the new emulation.
