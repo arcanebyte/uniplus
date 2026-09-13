@@ -67,6 +67,31 @@ rtalloc(ro)
 		if (rtmin == 0 || rt->rt_use < rtmin->rt_use)
 			rtmin = rt;
 	}
+	if (rtmin)
+		goto found;
+
+	/*
+	 * No host or network route: use a wildcard (default) route, a
+	 * network route whose destination address is all zeros, as 4.2BSD
+	 * does.  Its network hash is 0, so it is in rtnet[0] with rt_hash 0.
+	 */
+	for (m = rtnet[0]; m; m = m->m_next) {
+		register int i;
+
+		rt = mtod(m, struct rtentry *);
+		if (rt->rt_hash != 0 || rt->rt_dst.sa_family != af)
+			continue;
+		if ((rt->rt_flags & RTF_UP) == 0 ||
+		    (rt->rt_ifp->if_flags & IFF_UP) == 0)
+			continue;
+		for (i = 0; i < sizeof (rt->rt_dst.sa_data); i++)
+			if (rt->rt_dst.sa_data[i])
+				break;
+		if (i < sizeof (rt->rt_dst.sa_data))
+			continue;
+		if (rtmin == 0 || rt->rt_use < rtmin->rt_use)
+			rtmin = rt;
+	}
 found:
 	ro->ro_rt = rtmin;
 	if (rtmin)
