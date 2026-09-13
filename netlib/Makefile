@@ -2,7 +2,7 @@
 CFLAGS	= -O -I./include
 AS	= as
 
-all: tcpconn tcpecho
+all: tcpconn tcpecho looptest
 
 tcpconn: tcpconn.o sockcall.o
 	$(CC) $(CFLAGS) -o tcpconn tcpconn.o sockcall.o
@@ -16,8 +16,14 @@ tcpecho: tcpecho.o sockcall.o
 tcpecho.o: tcpecho.c include/net/socket.h include/net/in.h
 	$(CC) $(CFLAGS) -c tcpecho.c
 
+looptest: looptest.o sockcall.o
+	$(CC) $(CFLAGS) -o looptest looptest.o sockcall.o
+
+looptest.o: looptest.c include/net/socket.h include/net/in.h
+	$(CC) $(CFLAGS) -c looptest.c
+
 sockcall.o: sockcall.s
 	$(AS) -o sockcall.o sockcall.s
 
 clean:
-	rm -f tcpconn tcpecho *.o
+	rm -f tcpconn tcpecho looptest *.o
