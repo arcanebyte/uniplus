@@ -28,6 +28,7 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
   - The register calling convention matches the stubs in the shipped `/lib/libc.a` (see `../dump`).
   - Network errno values (55–85) are already in the stock `<sys/errno.h>`, and `perror()` knows their text.
 - **Unverified:** constants tagged `[B]` in the headers (`SOCK_STREAM`, `AF_INET`, `SO_*`) are taken from 4.1a/4.1c BSD. The ioctl numbers (`SIOC*`, `FIONBIO`) are unknown and left out.
-- **Not run yet:** nothing here has been tested on a Lisa. It needs a kernel built as `unix.net`; the installed `/unix` has no networking. Building `unix.net` requires recreating the missing `net/*.h` kernel headers.
+- **Tested on a Lisa (13 September 2026):** on `unix.net`, `tcpconn 127.0.0.1 5000 hello` builds and gets "Connection refused" from the loopback TCP stack, which exercises the headers, `sockcall.s`, `socket()` and `connect()`. The `tcpecho` round trip hasn't been run yet.
+- **Lisa `cc` limit:** struct tags are unique only to 8 characters, so `in.h` maps `sockaddr_in` to `sock_in`, as the kernel's `net/misc.h` does. Keep new identifiers unique within 8 characters, and external names within 7.
 
 If `sockcall.s` won't assemble, libc's generic `syscall()` works instead, e.g. `syscall(73, SOCK_STREAM, 0, 0, 0)`.

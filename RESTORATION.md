@@ -2,7 +2,7 @@
 
 This page records the effort, started September 2026, to restore the networking stack of UniSoft UniPlus+ System V on the Apple Lisa: what we set out to do, what we found, what was built, where things stand, and what comes next. It links to the more detailed documents in the repo instead of repeating them.
 
-> **Status in one line:** the V.1.5+ network kernel now builds cleanly on a (LisaEm) Lisa. It doesn't boot yet, because LisaEm's ProFile emulation only works with the stock UniPlus 1.4 kernel, through address-specific hacks. Next step: make those hacks address-independent (option 2), then make the ProFile emulation faithful (option 1).
+> **Status in one line (13 September 2026):** the V.1.5+ network kernel builds on a (LisaEm) Lisa and boots, and its TCP/IP stack answers over loopback. That needed faithful ProFile and 6522 VIA emulation in LisaEm (lisaem PR #55), which replaced LisaEm's UniPlus-specific hacks. Next: the `tcpecho` round trip, the dual parallel card, and regression tests of other Lisa OSes on the new emulation.
 
 ## 1. Starting point
 
@@ -66,8 +66,8 @@ Details: `v1.5/include/PROVENANCE.md`. Every file is labelled ORIGINAL, MODIFIED
 - **LisaEm fix (committed, lisaem `00bc0f4`):** moving one serial port off Loopback now moves the other to Nothing with an alert, instead of silently reverting PseudoTTY.
 - **Serial file transfer:** `uucp.md` covers UUCP over the PseudoTTY. A LisaEm constant (`SCC_MIN_CYCLES_BETWEEN_READS` in `z8530.c`) deliberately limits incoming Serial B data to about one byte per emulated MHz per second.
 - **Build disk:**
-  - **Tried first:** a separate 10 MB source ProFile on a dual parallel card. I/O on slot-card ProFiles hangs under LisaEm (both ports, block and raw).
-  - **What works:** a **20 MB system disk** (`lisa-build.md` section 0). The first 10 MB is the system disk; the second is a source filesystem in partition `e` (sector 19456, 19456 blocks), mounted from `/dev/p0e` after changing `prlmap[e]` in `/unix` from `{0,0}` to `{19456,19456}`. This boots and works.
+  - **Tried first:** a separate 10 MB source ProFile on a dual parallel card. I/O on slot-card ProFiles hung under LisaEm (both ports, block and raw); not yet retested on the new emulation (section 8).
+  - **What works:** a **20 MB system disk** (`lisa-build.md` section 0). The first 10 MB is the system disk; the second is a source filesystem in partition `e` (sector 19456, 19456 blocks), mounted from `/dev/p0e` after changing `prlmap[e]` in `/unix` from `{0,0}` to `{19456,19456}`. This boots and works. `v1.5/sys/pro.c` now has that entry too, so rebuilt kernels see partition e.
 - **Port mapping observed:** LisaEm slot 1 *high* is UniPlus `/dev/p2h`, and *low* is `/dev/p1h`.
 - **Minor issues found along the way:**
   - `vi` "Input read error" on Esc: the `vtl` termcap arrow-key timeout; workaround `set notimeout`.
@@ -101,7 +101,7 @@ grep -n Undefined build.log buildnet.log     # UniSoft ld writes output even wit
   - **Configuration data** (root/swap devices, `prlmap`, `pro_da`, device counts) is identical.
   - **The only code differences** are the Lisa `cc` emitting PC-relative `bsr` instead of absolute `jsr` for calls within a file, and trivial source changes.
 
-## 7. Why the new kernels don't boot: LisaEm's UniPlus hacks
+## 7. Why the new kernels didn't boot: LisaEm's UniPlus hacks (resolved in section 8)
 
 **Symptoms:**
 - **`unix.net` and `unix.nonet`:** at the first root-disk command, `ASSERTION ((devp->d_irb&BSY)==BSY) FAILED IN PROC prochk`, then `EXCESSIVE DISK DELAY`, then `panic: iinit`, every time and at any throttle (5 MHz included).
@@ -129,49 +129,72 @@ grep -n Undefined build.log buildnet.log     # UniSoft ld writes output even wit
 
 The same emulation gap most likely explains why ProFiles on the dual parallel card hang under UniPlus.
 
-## 8. Current state
+## 8. Faithful ProFile emulation in LisaEm
 
-**uniplus repo commits (newest first):**
-- `16e00cb` Makefile `-Dm68000`
-- `33a690b` kernel header set and `PROVENANCE.md`
-- `2294ee7` Torch images and filesystems
-- `2c56cae` extractor 1 K blocks
-- `573fd56` v1.0 additions
-- `8f8bde4` `bsd/` references
-- `cb967f6` `uucp.md`
-- `840e48d` v1.0 snapshot
-- `e17c5cf` `dump/`
-- `a938190` extractor
-- `558bc2f` `netlib`
+Research and design: `profile-emulation-notes.md`, `profile-emulation-plan.md`. Code: lisaem branch `profile-emulation`, **PR #55** (https://github.com/arcanebyte/lisaem/pull/55). Test status there: `ProFileEmulationTesting.md`.
 
-**Uncommitted in the uniplus repo:**
-- `v1.5/include/sys/config.h` (`NTE`) and `v1.5/include/PROVENANCE.md` (link fixes, Lisa build results);
-- `v1.5/sys/Makefile` (`cxstub.o`, diagnostic `unix.pad` target) and new `v1.5/sys/cxstub.c`, `v1.5/sys/kpad.s` (diagnostic);
-- `tools/make_profile_image.py`, `lisa-build.md`, this file;
-- untracked disk images.
+**Exact failure:** `prochk` asserts that /BSY is high (drive not busy) before each exchange. LisaEm's drive held /BSY low while the six command bytes arrived and after each transfer. 1.4 only survived because LisaEm patched that assertion out of 1.4's RAM.
 
-**LisaEm:** `00bc0f4` committed; no other changes.
+**What changed in LisaEm:**
+- **Drive (`profile.c`):** level-driven state machine following the ProFile protocol (ESProFile/Aphid):
+  - reply to /CMD low with $01/$02–$04/$06 and /BSY low;
+  - sample $55 when /CMD rises;
+  - stay busy for a scheduled time (`clock_e`, now a real timer event in `irq.c`), then raise /BSY once;
+  - /BSY high whenever the drive waits for the Lisa, no drive-side timeouts, one byte per /PSTRB.
+- **VIA (`via6522.c`), parallel port VIAs only:** 6522 datasheet behaviour:
+  - CA1 latched only on a BSY edge, regardless of IER; no flag side effects from IFR reads, PCR writes or IER writes;
+  - register 1 clears CA1 and strobes only in CA2 handshake/pulse mode; register 15 has no handshake;
+  - interrupts are taken as soon as IFR & IER is non-zero.
+- **`hle.c`:** the 1.4 and `sunix` BSY-assert and timeout RAM patches, the UniPlus loader handshake patches, and the UniPlus/Xenix BSY/CA1 fakes are gone.
+- **Checked:** the H boot ROM's ProFile code uses CA2 pulse mode through register 1, matching the new strobe rules.
+
+**Results with the new emulation** (built-in port, "Hard drive acceleration" off):
+
+| Kernel / OS | Result |
+|---|---|
+| V.1.5+ `unix.nonet` | Boots. `find`, `sum`, `cp`/`cmp` round trips pass. |
+| V.1.5+ `unix.net` | Boots. Mounts partition e. `tcpconn 127.0.0.1 5000` gets "Connection refused" from loopback TCP. |
+| UniPlus 1.4 `/unix` (now `/unix.orig` on `build2`) | Boots without the removed RAM patches |
+| LOS 3.1 | Opens (its HLE read/write loops always run, see below) |
+
+**Two kernel-side issues found once the kernel booted:**
+- **Partition e:** `pro.c`'s `prlmap[]` had e = `{0, 0}`, so kernels built from source rejected every `/dev/p0e` block ("read error"). Fixed in `pro.c` (`{19456, 19456}`), and the 2 bytes patched into `/unix` on `build2` (backup: `uniplus_unix_20mb.build2.before-prlmap-patch.image`).
+- **8-character struct tags:** the Lisa `cc` keeps only 8 characters of a struct tag, so netlib's `sockaddr_in` collided with `sockaddr`. Fixed with `#define sockaddr_in sock_in`, as the kernel's `net/misc.h` does.
+
+## 9. Current state
+
+**uniplus repo:** everything through the netlib `sock_in` fix is committed (link fixes, `unix.pad` diagnostic, `make_profile_image.py`, `lisa-build.md`, research docs, `tcpecho.c`, `pro.c` partition e). Only the disk images are untracked.
+
+**lisaem:** branch `profile-emulation`, PR #55 (open, review required):
+- `00bc0f4` Loopback serial-port fix
+- `a2cd251` drive and timer
+- `12dd3f0` VIA flags
+- `170e18d` UniPlus patch removal
+- testing doc
+
+Test build: `~/github/lisaem/bin/LisaEm-profile.app`. `bin/LisaEm.app` is the master build.
 
 **Disk images in `~/Documents/LisaEm Files`:**
 
 | Image | State |
 |---|---|
-| `uniplus_unix_20mb.build2.image` | Known good: 1.4 `/unix`, source partition with `unix.net`, `unix.nonet`, `unix.pad`, objects and logs |
+| `uniplus_unix_20mb.build2.image` | **Current.** `/unix` = `unix.net` with partition e patched; `/unix.orig` = 1.4. Partition e has the sources, objects, `unix.net`/`unix.nonet`/`unix.pad` (old prlmap), logs, `netlib` (on-disk `in.h` has the `sock_in` fix only if it was edited on the Lisa). |
+| `uniplus_unix_20mb.build2.before-prlmap-patch.image` | Backup from just before the `/unix` partition e patch |
 | `uniplus_unix_20mb.original.image` | Earlier build (before the link fixes) |
 | `uniplus_unix_20mb.test*.image` | Throwaway test copies; `test2` has a damaged root inode |
 | `uniplus_unix_10mb_testing.image` | Your 10 MB system disk |
 
-## 9. Next steps
+## 10. Next steps
 
-**Option 2 — address-independent hacks in LisaEm (start here).** Keep the existing workarounds, but locate them by content instead of fixed addresses, so any UniPlus kernel build gets them:
-1. **Detect UniPlus by a signature:** e.g. the UniSoft copyright or `oemmsg` string in kernel memory, or the `ivec.s` dispatch table pattern that vectors 25/26 point into, instead of `_dispatc == 0x1c208`.
-2. **Find `prochk`'s BSY-assert branch and timeout constant by scanning** for their instruction patterns (1.4 context around `0x20f9c` and `0x210b0`), then patch there.
-3. **Find the idle-loop and HLE intercept points** the same way, or disable them for non-1.4 kernels.
-4. **Test:** 1.4 and `sunix` must still boot, and `unix.nonet`/`unix.net` from `build2` should boot without padding.
+**Networking (uniplus):**
+1. **Echo test:** paste `netlib/tcpecho.c` onto the Lisa, then `tcpecho 5000 &` and `tcpconn 127.0.0.1 5000 hello`, for a full TCP round trip.
+2. **Bring partition e in step:** put the fixed `pro.c` and `in.h` there (`ed` one-liners in the session notes, or regenerate the partition), and rebuild `unix.net` so the built kernel matches the source.
+3. **More netlib tests:** a UDP test, and a netinfo program (`SIOCGIADDR`).
+4. **Etherbox emulation in LisaEm** (register-level spec in `if_eb.c`; slirp backend), with a private IP in `conf.c`.
+5. **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
 
-**Option 1 — faithful ProFile emulation (the goal).** Model the real ProFile handshake: BSY timing relative to CMD and data, 6522 CA1 edge and PCR polarity, and IFR set/clear on port A access, so UniPlus's interrupt-driven driver works unmodified on the built-in port and the dual parallel card. Then remove the UniPlus-specific patches, detection and BSY/CA1 fakes. Reference implementations, the protocol, and a list of specific LisaEm deficiencies are in `profile-emulation-notes.md`.
-
-**After booting a network kernel:**
-- **Loopback TCP/UDP test** with `netlib` (needs a small echo server and UDP test).
-- **Etherbox emulation in LisaEm** (register-level spec in `if_eb.c`; slirp backend), which needs the slot-card VIA interrupt path working; set a private IP in `conf.c`.
-- **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
+**LisaEm (PR #55)**, full list in `ProFileEmulationTesting.md`:
+1. **Dual parallel card:** ProFile read/write and boot. It used to hang; not yet tried on the new emulation.
+2. **LOS 3.1 on the full emulation path:** first make `apply_los31_hacks()` respect "Hard drive acceleration" (`if (!los31_hle || !hle) return;`, not done).
+3. **Other OSes:** LOS 1.x/2.x, Workshop, MacWorks, Xenix, `sunix`, LisaTest; other boot ROMs; UniPlus 1.4 with HLE on.
+4. **Build quirk:** `build.sh` fails in-tree while a git worktree sits under `.claude/`; build from a copy (workaround in the testing doc).

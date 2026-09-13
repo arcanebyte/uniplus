@@ -1,5 +1,7 @@
 # Faithful ProFile + VIA emulation in LisaEm: implementation plan
 
+**Status (13 September 2026):** implemented as lisaem PR #55 (https://github.com/arcanebyte/lisaem/pull/55). UniPlus 1.4, V.1.5+ `unix.nonet` and `unix.net`, and LOS 3.1 boot on the built-in port; remaining tests are listed in the lisaem repo's `ProFileEmulationTesting.md`.
+
 Branch `profile-emulation` in `~/github/lisaem`. Background and references are in `profile-emulation-notes.md`; the deficiency letters (A–H, G1–G7) below refer to that file.
 
 ## What the study found

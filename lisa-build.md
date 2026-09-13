@@ -1,12 +1,12 @@
 # Building the UniPlus+ V.1.5+ kernel on the Lisa (LisaEm)
 
-**Status:** untested. This is the planned procedure; update it as it gets tried.
+**Status (13 September 2026):** tested. The section 0 route (20 MB disk) builds `unix.nonet` and `unix.net`, and both boot on LisaEm with the faithful ProFile emulation from lisaem PR #55. The stock LisaEm release cannot boot them (see `RESTORATION.md` section 7).
 
 The kernel sources and headers go on a second 10 MB ProFile (a "build disk") mounted at `/usr/src`. The system disk stays untouched, and objects, intermediate links and the new kernel don't fill the root filesystem, which has only ~2.7 MB free.
 
 ## 0. Recommended: 20 MB system disk (no expansion card)
 
-ProFiles on the dual parallel card currently hang under LisaEm (see the known problem in section 3). Until that's fixed, use a single larger drive on the built-in parallel port instead:
+ProFiles on the dual parallel card hung under the stock LisaEm (see the known problem in section 3). A single larger drive on the built-in parallel port avoids the card:
 
 - **Build it on the Mac** (LisaEm must be shut down; the base image is only read):
   ```
@@ -17,6 +17,7 @@ ProFiles on the dual parallel card currently hang under LisaEm (see the known pr
   ```
 - **Layout:**
   - The first 10 MB is the base system disk, copied unchanged, except partition `e` of the kernel's partition table in `/unix`, set from `{0, 0}` to `{19456, 19456}` (2 bytes).
+  - `v1.5/sys/pro.c` has the same partition `e` entry, so kernels built from these sources can mount `/dev/p0e`. Kernels built before that fix give "read error" on `/dev/p0e`; patch their `/unix` the same way.
   - The second 10 MB (sectors 19456–38911) is a new filesystem with the sources.
 - **In LisaEm:** point the built-in parallel port ProFile at `uniplus_unix_20mb.image` and boot as usual. The dual parallel card isn't needed.
 - **On UniPlus, as root** (the device nodes are needed once):
@@ -28,7 +29,7 @@ ProFiles on the dual parallel card currently hang under LisaEm (see the known pr
   mount /dev/p0e /usr/src
   ```
 - **Then continue with section 4.**
-- **Untested:** whether the Lisa boot ROM and LisaEm accept a 20 MB drive on the built-in port. If it doesn't boot, point LisaEm back at the 10 MB image.
+- **Tested:** the Lisa boot ROM and LisaEm accept the 20 MB drive on the built-in port.
 
 ## 1. Build disk contents (separate 10 MB disk)
 
@@ -67,7 +68,7 @@ df /usr/src
 
 `/dev/p1h` (block 0x17) is the other port on the same card. "cannot open" on a port means no drive answered there.
 
-**Known problem (Sep 2026):** I/O on `/dev/p2h` hangs under LisaEm, even though the drive is detected. The UniPlus ProFile driver is interrupt-driven: it waits for the drive's BSY signal to raise a CA1 interrupt on the card's VIA, which `ppintr()` in `sys/config.c` services for both slot 1 ports. LisaEm's handling of that interrupt for expansion-slot ProFiles is the prime suspect.
+**Known problem (Sep 2026, stock LisaEm):** I/O on `/dev/p2h` hangs, even though the drive is detected. Not yet retested with lisaem PR #55, which rewrites the slot-card VIA interrupt handling. The UniPlus ProFile driver is interrupt-driven: it waits for the drive's BSY signal to raise a CA1 interrupt on the card's VIA, which `ppintr()` in `sys/config.c` services for both slot 1 ports. LisaEm's handling of that interrupt for expansion-slot ProFiles is the prime suspect.
 
 Unmount before stopping LisaEm or changing the image on the Mac:
 ```
@@ -104,11 +105,13 @@ Things likely to need attention, from `include/PROVENANCE.md`:
 Only try this on a copy of your system disk image.
 
 1. Copy the kernel to the root filesystem under a different name: `cp unix.net /unix.net`.
-2. Boot it on the copy. How to select a kernel other than `/unix` at boot isn't documented here yet; the simplest route is to replace `/unix` on the *copy* of the system image and keep the original image untouched.
+2. Boot it on the copy. The simplest route is to replace `/unix` on the *copy* of the system image, keeping the old kernel as `/unix.orig` so it can be named at the boot prompt as a fallback. Use a LisaEm build with the faithful ProFile emulation (lisaem PR #55); the stock build fails with `ASSERTION BSY` / `panic: iinit`.
 3. With the network kernel running, test loopback (no Ethernet hardware needed):
    ```
+   mount /dev/p0e /usr/src
    cd /usr/src/netlib
-   make
-   ./tcpconn 127.0.0.1 <port>
+   make tcpconn
+   ./tcpconn 127.0.0.1 5000 hello
    ```
-   There's no TCP server yet, so expect "Connection refused" (errno 81) at first. That still proves the syscalls work.
+   With nothing listening, "Connection refused" proves the syscalls and the loopback TCP stack work (**confirmed** on `unix.net`).
+4. Full round trip: build `tcpecho` (`cc -O -I./include -o tcpecho tcpecho.c sockcall.o`, or `make` with the current Makefile), run `./tcpecho 5000 &`, then `./tcpconn 127.0.0.1 5000 hello`. Press DEL to end `tcpconn` (there is no `shutdown()`). Not yet run.
