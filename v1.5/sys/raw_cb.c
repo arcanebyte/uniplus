@@ -47,7 +47,14 @@ raw_attach(so)
 		goto bad;
 	if (sbreserve(&so->so_rcv, RAWRCVQ) == 0)
 		goto bad2;
+	/*
+	 * m_get() leaves m_off 0 here, unlike m_getclr(): without this the
+	 * control block overwrites the mbuf header, and raw_detach() panics
+	 * with "mfreep".  The block isn't cleared either.
+	 */
+	m->m_off = MMINOFF;
 	rp = mtod(m, struct rawcb *);
+	bzero((caddr_t)rp, sizeof (*rp));
 	rp->rcb_socket = so;
 	insque(rp, &rawcb);
 	so->so_pcb = (caddr_t)rp;
@@ -159,12 +166,13 @@ raw_bind(so, nam)
 /*
  * Associate a peer's address with a
  * raw connection block.
+ * This kernel passes addresses to pr_usrreq as struct sockaddr
+ * pointers (sosend, soconnect), not in mbufs as 4.1c does.
  */
-raw_connaddr(rp, nam)
+raw_connaddr(rp, addr)
 	struct rawcb *rp;
-	struct mbuf *nam;
+	struct sockaddr *addr;
 {
-	struct sockaddr *addr = mtod(nam, struct sockaddr *);
 
 	bcopy((caddr_t)addr, (caddr_t)&rp->rcb_faddr, sizeof(*addr));
 	rp->rcb_flags |= RAW_FADDR;

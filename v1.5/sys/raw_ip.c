@@ -78,6 +78,8 @@ rip_output(m0, so)
 	m->m_len = sizeof(struct ip);
 	m->m_next = m0;
 	ip = mtod(m, struct ip *);
+	ip->ip_tos = 0;			/* the mbuf isn't cleared */
+	ip->ip_off = 0;
 	ip->ip_p = so->so_proto->pr_protocol;
 	ip->ip_len = sizeof(struct ip) + len;
 	if (rp->rcb_flags & RAW_LADDR) {

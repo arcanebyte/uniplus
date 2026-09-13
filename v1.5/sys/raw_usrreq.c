@@ -54,6 +54,7 @@ raw_input(m0, proto, src, dst)
 		m_freem(m0);
 		return;
 	}
+	m->m_off = MMINOFF;		/* m_get() leaves it 0 */
 	m->m_next = m0;
 	m->m_len = sizeof(struct raw_header);
 	rh = mtod(m, struct raw_header *);
@@ -202,7 +203,7 @@ raw_usrreq(so, req, m, nam)
 	case PRU_CONNECT:
 		if (rp->rcb_flags & RAW_FADDR)
 			return (EISCONN);
-		raw_connaddr(rp, nam);
+		raw_connaddr(rp, (struct sockaddr *)nam);
 		soisconnected(so);
 		break;
 
@@ -228,7 +229,7 @@ raw_usrreq(so, req, m, nam)
 		if (nam) {
 			if (rp->rcb_flags & RAW_FADDR)
 				return (EISCONN);
-			raw_connaddr(rp, nam);
+			raw_connaddr(rp, (struct sockaddr *)nam);
 		} else if ((rp->rcb_flags & RAW_FADDR) == 0)
 			return (ENOTCONN);
 		error = (*so->so_proto->pr_output)(m, so);
@@ -255,9 +256,9 @@ raw_usrreq(so, req, m, nam)
 		break;
 
 	case PRU_SOCKADDR:
-		bcopy((caddr_t)&rp->rcb_laddr, mtod(nam, caddr_t),
+		/* nam is a struct sockaddr pointer here, as for udp and tcp */
+		bcopy((caddr_t)&rp->rcb_laddr, (caddr_t)nam,
 		    sizeof (struct sockaddr));
-		nam->m_len = sizeof (struct sockaddr);
 		break;
 
 	default:
