@@ -189,7 +189,7 @@ Test build: `~/github/lisaem/bin/LisaEm-profile.app`. `bin/LisaEm.app` is the ma
 
 **Networking (uniplus):**
 1. **Loopback TCP and UDP: done.** `netlib/looptest` (TCP, 51 bytes round trip) and `netlib/udptest` (UDP datagram with addresses) pass on `unix.net` over 127.0.0.1; `netlib/netinfo` reads the host name and the configured address (`SIOCGIADDR`).
-2. **Rebuild `unix.net` from the fixed source:** partition e now has the fixed `pro.c` (written with `tools/put_profile_files.py`). Rebuild and install it so `/unix` no longer depends on the 2-byte image patch.
+2. **Rebuild `unix.net` from the fixed source: done.** `unix.net` rebuilt on the Lisa from the fixed `pro.c` is `/unix` on `build2`, so it no longer depends on the image patch. After a Lisa power-off/on within one LisaEm session it panicked in `ppintr` when slot 1 was empty. The cause was a LisaEm VIA Timer 1 latch bug, fixed in lisaem PR #55.
 3. **Etherbox emulation in LisaEm:** the register-level plan, libslirp backend and a private IP in `conf.c` are in `etherbox-emulation-plan.md`.
 4. **Port network tools:** try the Torch 4.1a binaries, port 2.9BSD `netstat`.
 
