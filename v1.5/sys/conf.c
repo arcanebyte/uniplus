@@ -4,7 +4,9 @@
 
 /* #define	DISK_0 1 */
 
-#define	NBUF	30
+#define	NBUF	200	/* most buffers; see BUFPCT */
+#define	BUFPCT	10	/* buffers take 10% of free memory at boot */
+#define	NBUFMIN	30	/* but no fewer than 30 */
 #define	NINODE	50
 #define	NFILE	60
 #define	NMOUNT	8
@@ -20,7 +22,7 @@
 #define	NSABUF	5
 #define	POWER	0
 #define	MAXUP	25
-#define	NHBUF	64
+#define	NHBUF	128
 #define	NPBUF	4
 #define NFLOCK  200
 #define	X25LINKS	1

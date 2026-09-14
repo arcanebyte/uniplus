@@ -11,8 +11,21 @@ struct	buf	bfreelist;	/* head of the free list of buffers */
 struct	pfree	pfreelist;	/* Head of physio header pool */
 struct	buf	pbuf[NPBUF];	/* Physical io header pool */
 struct	buf	buf[NBUF];	/* buffer headers */
+#ifdef BUFPCT
+/*
+ * Lisa: binit() takes the buffer space from free memory at boot, sized
+ * at bufpct percent of it, between nbufmin and NBUF buffers.  Patch
+ * bufpct in /unix to change the share.
+ */
+caddr_t	buffers;
+#else
+#define	BUFPCT	0
+#define	NBUFMIN	0
 char	bspace[NBUF*SBUFSIZE+sizeof(int)-1];	/* actual buffer space */
 caddr_t	buffers = bspace;
+#endif
+int	bufpct = BUFPCT;	/* percent of free memory for buffers */
+int	nbufmin = NBUFMIN;	/* fewest buffers */
 
 struct	hbuf	hbuf[NHBUF];	/* buffer hash table */
 
