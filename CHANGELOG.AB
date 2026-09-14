@@ -110,7 +110,7 @@ tty driver: no erase echo with nothing left on the line
   the input line still has a character to remove (tt1.c, the line
   discipline the kernel is built with; also tt0.c, which it first went
   into by mistake).
-  Status: checked on the Mac; not yet built on the Lisa.
+  Status: tested on the Lisa (Delete in csh stops at the prompt).
 
 
 ========================================================================
