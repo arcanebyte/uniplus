@@ -3,7 +3,8 @@
  * Lisa (UniPlus+ with unix.net), ported from 2.9BSD's netser/tftp: see
  * tftp.c.  Also: binary mode sends "octet" (4.1c misspelled it), put
  * opens its file read-only, an interrupt cancels the retransmit alarm,
- * and host names come from /etc/hosts through libnetdb.a.
+ * and host names come from the name server or /etc/hosts through
+ * libnetdb.a.
  */
 
 /*

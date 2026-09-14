@@ -1,14 +1,16 @@
 /*
  * netdb.h -- network data base library for UniPlus+ on the Apple Lisa,
- * from the 4.1c BSD back-port in 2.9BSD (netdb.h 4.1 82/10/05).
+ * from the 4.1c BSD back-port in 2.9BSD (netdb.h 4.1 82/10/05), with
+ * struct hostent and h_errno from 4.3BSD (netdb.h 5.7 86/05/12) for the
+ * name server routines.
  *
  * Structures returned by the network data base library.  All addresses
  * are supplied in host order, and returned in network order (suitable
  * for use in system calls); on the 68000 the two are the same.
  *
- * The data bases are /etc/hosts, /etc/networks, /etc/protocols and
- * /etc/services.  There is no name server: gethostbyname() only knows
- * the names in /etc/hosts.
+ * gethostbyname() and gethostbyaddr() ask the name servers in
+ * /etc/resolv.conf, then look in /etc/hosts.  The other data bases are
+ * /etc/networks, /etc/protocols and /etc/services.
  */
 #include "bsd.h"
 
@@ -17,7 +19,8 @@ struct	hostent {
 	char	**h_aliases;	/* alias list */
 	int	h_addrtype;	/* host address type */
 	int	h_length;	/* length of address */
-	char	*h_addr;	/* address */
+	char	**h_addr_list;	/* list of addresses from name server */
+#define	h_addr	h_addr_list[0]	/* address, for backward compatiblity */
 };
 
 /*
@@ -51,7 +54,6 @@ struct	protoent {
  */
 #define	gethostbyname	gethbyname
 #define	gethostbyaddr	gethbyaddr
-#define	gethostent	gethent
 #define	sethostent	sethent
 #define	endhostent	endhent
 #define	getnetbyname	getnbyname
@@ -71,11 +73,23 @@ struct	protoent {
 #define	endprotoent	endpent
 #define	inet_netof	inet_nof
 #define	inet_network	inet_nwk
+#define	_gethtbyname	_ghtbyname
+#define	_gethtbyaddr	_ghtbyaddr
 
-struct hostent	*gethostbyname(), *gethostbyaddr(), *gethostent();
+struct hostent	*gethostbyname(), *gethostbyaddr();
 struct netent	*getnetbyname(), *getnetbyaddr(), *getnetent();
 struct servent	*getservbyname(), *getservbyport(), *getservent();
 struct protoent	*getprotobyname(), *getprotobynumber(), *getprotoent();
+
+/*
+ * Error return codes from gethostbyname() and gethostbyaddr()
+ */
+extern  int h_errno;
+
+#define	HOST_NOT_FOUND	1 /* Authoritive Answer Host not found */
+#define	TRY_AGAIN	2 /* Non-Authoritive Host not found, or SERVERFAIL */
+#define	NO_RECOVERY	3 /* Non recoverable errors, FORMERR, REFUSED, NOTIMP */
+#define NO_ADDRESS	4 /* Valid host name, no address, look for MX record */
 
 u_long	inet_addr();
 u_long	inet_netof();

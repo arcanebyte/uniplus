@@ -245,7 +245,7 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 4. **Default route: done** (`netlib/route`, `rtalloc()` fallback).
 5. **Network tools:** the Torch binaries can't run on the Lisa (they map a shared C library with a Torch-only system call and expect data at `0x400000`), so port from the 2.9BSD network kit (`bsd/2.9BSD/usr/net/src/netser/`), which uses the same 4.1a socket API:
    - `netlib/nc`: tested on the Lisa; `netlib/httpd`: tested on the Lisa from a browser on the Mac;
-   - `/etc/hosts` lookups (`netlib/netdb`): done; a DNS resolver (host names through slirp's DNS at 10.0.2.3): not started;
+   - `/etc/hosts` lookups (`netlib/netdb`): done; the 4.3BSD DNS resolver (host names through slirp's DNS at 10.0.2.3): done, tested on the Lisa (`hosttest`, `restest`, `ftp` by name; needs the `select()` fix or its workaround);
    - `telnet`, `ftp`: done, tested on the Lisa; `tftp`: done, to be tested; `rlogin`/`rsh`/`rcp`: not started;
    - `netstat`: done; `rwho`/`rwhod`: not started;
    - the servers: `telnetd` done (tested from the Lisa and from the Mac); `ftpd`, `rlogind` not started.

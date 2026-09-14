@@ -51,6 +51,7 @@ hookup(host, port)
 	} else {
 		static struct hostent def;
 		static struct in_addr defaddr;
+		static char *defptrs[2];	/* Lisa: 4.3BSD's h_addr_list */
 		static char namebuf[128];
 
 		defaddr.s_addr = inet_addr(host);
@@ -61,6 +62,7 @@ hookup(host, port)
 		strcpy(namebuf, host);
 		def.h_name = namebuf;
 		hostname = namebuf;
+		def.h_addr_list = defptrs;
 		def.h_addr = (char *)&defaddr;
 		def.h_length = sizeof (struct in_addr);
 		def.h_addrtype = AF_INET;
