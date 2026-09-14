@@ -1,0 +1,5 @@
+#
+# Internet networks: name, network number, aliases
+#
+loopback-net	127		software-loopback-net
+slirp-net	10		localnet

@@ -23,6 +23,19 @@ struct in_addr {
 #define	INADDR_ANY	0x00000000L	/* [K] */
 
 /*
+ * Class A/B/C network numbers, 68000 byte order: test the class with
+ * (s_addr & IN_CLASSA) == 0 and so on, as in 4.1a.
+ */
+#define	IN_CLASSA	0x80000000L	/* [U] */
+#define	IN_CLASSA_NET	0xff000000L	/* [U] 8 bits of net # */
+#define	IN_CLASSA_LNA	0x00ffffffL	/* [U] */
+#define	IN_CLASSB	0x40000000L	/* [U] */
+#define	IN_CLASSB_NET	0xffff0000L	/* [U] 16 bits of net # */
+#define	IN_CLASSB_LNA	0x0000ffffL	/* [U] */
+#define	IN_CLASSC_NET	0xffffff00L	/* [U] 24 bits of net # */
+#define	IN_CLASSC_LNA	0x000000ffL	/* [U] */
+
+/*
  * Internet socket address.  Must be the same size as
  * struct sockaddr (16 bytes).
  */

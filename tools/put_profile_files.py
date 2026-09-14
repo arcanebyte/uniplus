@@ -14,8 +14,11 @@ USAGE
     --base SECTOR  sector where the filesystem starts; default: the only
                    filesystem on the disk (see extract_profile_image.py --list)
     DEST=SOURCE    copy host file SOURCE to /DEST in that filesystem. The
-                   directory must already exist. An existing regular file of
-                   that name is replaced (its blocks are freed first).
+                   directory must already exist, unless --mkdir is given. An
+                   existing regular file of that name is replaced (its
+                   blocks are freed first).
+    --mkdir        create missing directories on the way to each DEST
+                   (mode 0755, owned by root)
 
     20 MB build disk, sources partition (mounted at /usr/src on the Lisa):
         python3 tools/put_profile_files.py uniplus_unix_20mb.build2.image \\
@@ -220,11 +223,38 @@ class FS:
         blk[o:o + 16] = rec
         self.put_block(bn, bytes(blk))
 
-    def put(self, dest, content, mode, mtime):
+    def mkdir(self, path, mtime):
+        """Create directory path (its parent must exist); returns its inode."""
+        parts = [p for p in path.split('/') if p]
+        name = parts[-1]
+        if len(name.encode('latin1')) > 14:
+            sys.exit('name longer than 14 characters: %s' % name)
+        pino = self.lookup('/'.join(parts[:-1]))
+        if pino is None:
+            sys.exit('directory does not exist: /%s' % '/'.join(parts[:-1]))
+        ino = self.ialloc()
+        bn = self.alloc()
+        ents = struct.pack('>H', ino) + b'.'.ljust(14, b'\0') + struct.pack('>H', pino) + b'..'.ljust(14, b'\0')
+        self.put_block(bn, ents.ljust(DATA, b'\0'))
+        self.put_inode(ino, S_IFDIR | 0o755, 2, len(ents), [bn] + [0] * 12, mtime)
+        self.add_entry(pino, name, ino)
+        pmode, pnlink, psize, paddr = self.inode(pino)   # the new ".." links to the parent
+        self.put_inode(pino, pmode, pnlink + 1, psize, paddr, mtime)
+        return ino
+
+    def put(self, dest, content, mode, mtime, mkdirs=False):
         parts = [p for p in dest.split('/') if p]
         name = parts[-1]
         if len(name.encode('latin1')) > 14:
             sys.exit('name longer than 14 characters: %s' % name)
+        if mkdirs:
+            for k in range(1, len(parts)):
+                sub = '/'.join(parts[:k])
+                ino = self.lookup(sub)
+                if ino is None:
+                    self.mkdir(sub, mtime)
+                elif self.inode(ino)[0] & S_IFMT != S_IFDIR:
+                    sys.exit('/%s exists and is not a directory' % sub)
         dino = self.lookup('/'.join(parts[:-1]))
         if dino is None:
             sys.exit('directory does not exist: /%s' % '/'.join(parts[:-1]))
@@ -312,6 +342,7 @@ def main():
     ap.add_argument('image')
     ap.add_argument('mappings', nargs='+', help='DEST=SOURCE')
     ap.add_argument('--base', type=int, help='sector where the filesystem starts')
+    ap.add_argument('--mkdir', action='store_true', help='create missing directories on the way to each DEST')
     args = ap.parse_args()
 
     raw = bytearray(open(args.image, 'rb').read())
@@ -336,7 +367,7 @@ def main():
         st = os.stat(src)
         content = open(src, 'rb').read()
         mode = 0o755 if st.st_mode & 0o111 else 0o644
-        what, ino = fs.put(dest, content, mode, int(st.st_mtime))
+        what, ino = fs.put(dest, content, mode, int(st.st_mtime), args.mkdir)
         results.append((dest, src, content, what, ino))
     fs.write_super()
 

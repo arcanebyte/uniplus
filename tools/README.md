@@ -21,3 +21,12 @@ python3 tools/extract_profile_image.py --base N IMAGE OUTDIR   # extract the one
 - **Not preserved:** owner, group, permissions.
 
 See the comment at the top of the script for full details.
+
+## lisa_names.py
+
+Checks C sources for the Lisa `cc`'s limits before they go onto the disk. `cc` keeps 7 characters of an external name, and a function missing from the Lisa's libc only shows up when linking on the Lisa. The script compiles each file with the host `clang` against `dump/usr/include`, lists external names with `nm`, and reports names that collide when cut to 7 characters, references nothing defines (sources, `-l` extras, `dump/lib/libc.a`), and definitions that libc also has. Requires Xcode's command-line tools.
+
+```
+python3 tools/lisa_names.py -I netlib/include -l netlib/sockcall.s netlib/ping.c
+python3 tools/lisa_names.py -I netlib/include -l netlib/sockcall.s netlib/netdb/*.c netlib/telnet/telnet.c
+```

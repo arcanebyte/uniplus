@@ -122,7 +122,7 @@ LisaEm can't paste into the Lisa, so new or changed source files go onto the dis
 ```
 python3 tools/put_profile_files.py uniplus_unix_20mb.image --base 19456 netlib/looptest.c=netlib/looptest.c
 ```
-Then `fsck /dev/rp0e` on the Lisa before mounting.
+Add `--mkdir` to create missing directories on the way (for example `netlib/netdb/gethostent.c=...`). Then `fsck /dev/rp0e` on the Lisa before mounting.
 
 ## 6. Ethernet in LisaEm (EtherBox and slirp)
 
