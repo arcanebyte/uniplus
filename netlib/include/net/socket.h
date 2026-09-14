@@ -92,3 +92,5 @@ extern int	netreset();
 #define	SIOCGIADDR	(('s'<<8)|14)	/* [K] long *: get the Internet address */
 					/*     compiled into conf.c (ubdinit flags) */
 #define	SIOCCIADDR	(('s'<<8)|13)	/* [K] long *: change it (root only) */
+#define	SIOCADDRT	(('s'<<8)|10)	/* [K] struct rtentry *: add a route (root only) */
+#define	SIOCDELRT	(('s'<<8)|11)	/* [K] struct rtentry *: delete a route (root only) */

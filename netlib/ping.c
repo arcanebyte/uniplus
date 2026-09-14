@@ -1,10 +1,14 @@
 /*
  * ping.c -- ICMP echo for UniPlus+ running unix.net
  *
- * usage: ping [-d] a.b.c.d [count]	(default 4; run as root)
+ * usage: ping [-d] [-w seconds] a.b.c.d [count]	(default 4; run as root)
  *
  * Sends ICMP echo requests on a raw ICMP socket, one a second, and
  * prints each echo reply with its round trip time (1/60 s resolution).
+ * It waits up to -w seconds (default 2) for each reply.  Late replies
+ * still count, and replies seen twice are marked (DUP!).  Round trip
+ * times are in the Lisa's time: a LisaEm running faster than real time
+ * makes remote hosts look slow, so use -w or a realistic CPU speed.
  *
  * -d turns on the kernel's ICMP console messages (icmpprintfs) while
  * ping runs, and prints the raw input queue (rawintrq) and netisr
@@ -35,9 +39,12 @@
 #define HZ	60		/* times() ticks a second */
 #define PRSIZE	44		/* struct protosw: 4 shorts, 9 pointers */
 #define NPRSCAN	16		/* protocol table entries to look through */
+#define MAXSEQ	1000		/* largest count */
 
 int timedout;
 int debug;
+long sentat[MAXSEQ + 1];	/* times() when each request was sent */
+char seen[MAXSEQ + 1];		/* a reply to it has been counted */
 
 fail(what)
 char *what;
@@ -255,17 +262,26 @@ char *argv[];
 	register int i;
 	unsigned long addr;
 	unsigned short sum;
-	long sent_at, ticks;
-	int s, n, count, seq, id, got, nrecv;
+	long ticks;
+	int s, n, count, seq, rseq, id, got, nrecv, ndup, wait, last;
 
-	if (argc > 1 && strcmp(argv[1], "-d") == 0) {
-		debug = 1;
+	wait = 2;
+	while (argc > 1 && argv[1][0] == '-') {
+		if (strcmp(argv[1], "-d") == 0)
+			debug = 1;
+		else if (strcmp(argv[1], "-w") == 0 && argc > 2 &&
+		    (wait = atoi(argv[2])) > 0) {
+			argv++;
+			argc--;
+		} else
+			argc = 0;		/* usage */
 		argv++;
 		argc--;
 	}
 	if (argc < 2 || argc > 3 || parseaddr(argv[1], &addr) < 0 ||
-	    (argc == 3 && (count = atoi(argv[2])) <= 0)) {
-		fprintf(stderr, "usage: ping [-d] a.b.c.d [count]\n");
+	    (argc == 3 && ((count = atoi(argv[2])) <= 0 || count > MAXSEQ))) {
+		fprintf(stderr, "usage: ping [-d] [-w seconds] a.b.c.d [count]\n");
+		fprintf(stderr, "count is at most %d\n", MAXSEQ);
 		exit(2);
 	}
 	if (argc == 2)
@@ -304,7 +320,7 @@ char *argv[];
 	prtaddr(addr);
 	printf(": %d data bytes\n", DATALEN);
 
-	nrecv = 0;
+	nrecv = ndup = 0;
 	for (seq = 1; seq <= count; seq++) {
 		pkt[0] = 8;			/* echo request */
 		pkt[1] = 0;
@@ -319,14 +335,21 @@ char *argv[];
 		pkt[2] = sum >> 8;
 		pkt[3] = sum;
 
-		sent_at = times(&tms);
+		sentat[seq] = times(&tms);
+		seen[seq] = 0;
 		if (send(s, (struct sockaddr *)&to, pkt, sizeof (pkt)) != sizeof (pkt))
 			fail("ping: send");
 
-		timedout = 0;
+		/*
+		 * Wait for this request's reply.  Replies to earlier requests
+		 * that come in meanwhile still count.  After the last request,
+		 * keep listening for stragglers until the wait runs out.
+		 */
+		last = (seq == count);
 		got = 0;
-		alarm(2);
-		while (!got && !timedout) {
+		timedout = 0;
+		alarm(wait);
+		while (!timedout && !(got && !(last && nrecv < count))) {
 			n = receive(s, (struct sockaddr *)&from, buf, sizeof (buf));
 			if (n < 0) {
 				if (errno == EINTR)
@@ -335,27 +358,36 @@ char *argv[];
 			}
 			if (n < 8 || buf[0] != 0 || (getshort(buf + 4) & 0xffff) != id)
 				continue;	/* not a reply to us */
-			ticks = times(&tms) - sent_at;
+			rseq = getshort(buf + 6);
+			if (rseq < 1 || rseq > seq)
+				continue;
+			ticks = times(&tms) - sentat[rseq];
 			printf("%d bytes from ", n);
 			prtaddr(ntohl(from.sin_addr.s_addr));
-			printf(": icmp_seq=%d time=%ld ms%s\n", getshort(buf + 6),
-			    ticks * 1000 / HZ,
-			    (getshort(buf + 6) != seq) ? " (late)" : "");
-			if (getshort(buf + 6) == seq) {
-				got = 1;
+			printf(": icmp_seq=%d time=%ld ms%s\n", rseq, ticks * 1000 / HZ,
+			    seen[rseq] ? " (DUP!)" : "");
+			if (seen[rseq])
+				ndup++;
+			else {
+				seen[rseq] = 1;
 				nrecv++;
 			}
+			if (rseq == seq)
+				got = 1;
 		}
 		alarm(0);
-		if (!got)
-			printf("no reply for icmp_seq=%d\n", seq);
-		if (seq < count)
+		if (!seen[seq])
+			printf("no reply for icmp_seq=%d within %d s\n", seq, wait);
+		if (!last)
 			sleep(1);
 	}
 
 	printf("--- ");
 	prtaddr(addr);
-	printf(" ping: %d sent, %d received\n", count, nrecv);
+	printf(" ping: %d sent, %d received", count, nrecv);
+	if (ndup)
+		printf(", %d duplicates", ndup);
+	printf("\n");
 	if (debug) {
 		kflag("_icmppri", 0);
 		kdump("after");
