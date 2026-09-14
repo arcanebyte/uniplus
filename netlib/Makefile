@@ -2,7 +2,7 @@
 CFLAGS	= -O -I./include
 AS	= as
 
-all: tcpconn tcpecho looptest udptest netinfo ping route
+all: tcpconn tcpecho looptest udptest netinfo ping route nc
 
 tcpconn: tcpconn.o sockcall.o
 	$(CC) $(CFLAGS) -o tcpconn tcpconn.o sockcall.o
@@ -46,8 +46,14 @@ route: route.o sockcall.o
 route.o: route.c include/net/socket.h include/net/in.h include/net/route.h
 	$(CC) $(CFLAGS) -c route.c
 
+nc: nc.o sockcall.o
+	$(CC) $(CFLAGS) -o nc nc.o sockcall.o
+
+nc.o: nc.c include/net/socket.h include/net/in.h
+	$(CC) $(CFLAGS) -c nc.c
+
 sockcall.o: sockcall.s
 	$(AS) -o sockcall.o sockcall.s
 
 clean:
-	rm -f tcpconn tcpecho looptest udptest netinfo ping route *.o
+	rm -f tcpconn tcpecho looptest udptest netinfo ping route nc *.o
