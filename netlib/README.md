@@ -34,6 +34,7 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `telnet/` | `telnet [host [port]]`, from 2.9BSD (4.1c): escape `^]` for `close`, `quit`, `status`, `options`, `escape` |
 | `tftp/` | `tftp [host [port]]`, from 2.9BSD (4.1c): `connect`, `mode binary`, `get`, `put`, `trace`, `status` |
 | `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, `passive` |
+| `telnetd/` | `telnetd [-d] [port]`, from 2.9BSD (4.1c): logins over telnet on the kernel's pseudo-terminals; `mkptys` makes `/dev/ptyp?` and `/dev/ttyp?` |
 | `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa (`netdb/` has its own) |
 
 ## Host names and services: libnetdb.a
@@ -93,6 +94,25 @@ ftp> get file
 ```
 
 Checked on the Mac with host shims for the 4.1a socket calls, against pyftpdlib: login from `.netrc`, active and passive get and put of binary files (byte for byte), ascii get, `ls`, `dir`, `pwd`, `mkdir`. Not yet built on the Lisa.
+
+## telnetd
+
+The 4.1c BSD telnet server, so you can telnet into the Lisa. For the Lisa:
+- **Pseudo-terminals:** the kernel's `pty.c` (16 pairs). `sh mkptys` as root makes `/dev/ptyp0`-`f` (controlling side, major 20) and `/dev/ttyp0`-`f` (terminal side, major 21).
+- **System V login:** `/bin/login` refuses to run without a utmp entry for its process ("No utmp entry"), which getty normally leaves, so telnetd writes a `LOGIN_PROCESS` entry for the pseudo-terminal first. At logout it marks the entry `DEAD_PROCESS` and adds a wtmp record.
+- **Controlling terminal:** the login process calls `setpgrp()` before opening its pseudo-terminal, so ^C and hangup reach the session (System V has no `TIOCNOTTY`).
+- **Modes:** termio instead of sgtty, set with `TCSETA` (in `pty.c`, `TCSETAW` from the controlling side throws away pending output).
+- **End of session:** `SIGCLD` from the login process; the controlling side of a pty doesn't read end of file here.
+
+On the Lisa, as root:
+```
+cd /usr/src/netlib/telnetd
+make install                  # /etc/telnetd and the pty device files
+/etc/telnetd                  # detaches; add it to /etc/rc to start at boot
+```
+From the Mac, with LisaEm started with `LISAEM_ETHERBOX_HOSTFWD=tcp:2323:23`: `telnet 127.0.0.1 2323`.
+
+Not yet built or run: telnetd needs the Lisa's pseudo-terminals and login, so it has only been through `tools/lisa_names.py`.
 
 ## Routes
 
