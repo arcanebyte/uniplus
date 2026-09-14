@@ -228,6 +228,8 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 
 ## 11. Next steps
 
+**Period cutoff:** functionality stays period-correct, meaning what 4.2BSD or UniSoft shipped by about 1985. Bug fixes that make period code work are allowed. Later additions stay on this list but are marked as later than the period.
+
 **Networking (uniplus):**
 1. **Loopback TCP and UDP: done.** `netlib/looptest` (TCP, 51 bytes round trip) and `netlib/udptest` (UDP datagram with addresses) pass on `unix.net` over 127.0.0.1; `netlib/netinfo` reads the host name and the configured address (`SIOCGIADDR`).
 2. **Rebuild `unix.net` from the fixed source: done.** `unix.net` rebuilt on the Lisa from the fixed `pro.c` is `/unix` on `build2`, so it no longer depends on the image patch. After a Lisa power-off/on within one LisaEm session it panicked in `ppintr` when slot 1 was empty. The cause was a LisaEm VIA Timer 1 latch bug, fixed in lisaem PR #55.
@@ -289,10 +291,10 @@ In order of effort:
 2. Offer the `csh` already in `/bin` (`!!` history, no arrow keys).
 3. Kernel console fixes: tab stops every 8 columns at start-up (`reinit.c`), backspace to the end of the previous row at column 0, swallow unknown `ESC [ ? n h/l` sequences, save/restore cursor (`ESC 7`/`ESC 8`) and insert character; then update the `vtl` termcap entry.
 4. Echo control characters as `^X` (a new `c_lflag` bit in `tt0.c` and `stty`), and don't erase past the start of the input line.
-5. A small line editor for the shell: arrow-key history, ^A/^E, in K&R C (as a front end on a pty, or in a rebuilt 4.1a `oldcsh` from `bsd/4.1aBSD`).
-6. Tab completion on top of 5, reading directories directly.
+5. *(Later than the period.)* A small line editor for the shell: arrow-key history, ^A/^E, in K&R C (as a front end on a pty, or in a rebuilt 4.1a `oldcsh` from `bsd/4.1aBSD`).
+6. *(Later than the period.)* Tab completion on top of 5, reading directories directly.
 
-**Window server:** the kernel has what one needs: `phys()` maps physical memory (the 720×364 bitmap display that `bm.c` draws on) into a root process, `/dev/mouse` (`ms.c`), and pseudo-terminals. The best fit is MGR (Bellcore, 1984–88, freely redistributable): built for small 68000 bitmap machines, including the 720×348 AT&T 3B1 running System V; clients talk to it with escape sequences over ptys, so it doesn't need 4.2BSD sockets. X10 would need 4.2BSD socket semantics (a new descriptor from `accept()`) and a much bigger port; X11 won't fit in 2 MB; Torch's OpenTop is a proprietary V.2 binary.
+**Window server** *(later than the period: MGR was released in the late 1980s)*: the kernel has what one needs: `phys()` maps physical memory (the 720×364 bitmap display that `bm.c` draws on) into a root process, `/dev/mouse` (`ms.c`), and pseudo-terminals. The best fit is MGR (Bellcore, 1984–88, freely redistributable): built for small 68000 bitmap machines, including the 720×348 AT&T 3B1 running System V; clients talk to it with escape sequences over ptys, so it doesn't need 4.2BSD sockets. X10 would need 4.2BSD socket semantics (a new descriptor from `accept()`) and a much bigger port; X11 won't fit in 2 MB; Torch's OpenTop is a proprietary V.2 binary.
 
 Steps to MGR:
 1. **Find the source:** an early K&R release of MGR (1988–89, before the ANSI-era 0.6x releases), ideally one with the 3B1 or another System V port; check its licence terms.

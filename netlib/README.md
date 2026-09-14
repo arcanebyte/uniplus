@@ -25,15 +25,15 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `netinfo.c` | Shows the host name (`gethostname`) and the Internet address compiled into the kernel (`SIOCGIADDR`) |
 | `ping.c` | ICMP echo on a raw socket: `ping [-d] [-w seconds] a.b.c.d [count]`, run as root. `-w` is how long to wait for each reply (default 2); late replies still count and duplicates are marked `(DUP!)`. `-d` turns on the kernel's ICMP console messages and shows the raw input queue. Needs a kernel with the raw socket fixes (see below). |
 | `route.c` | Routing table: `route [show]`, `route add dest gateway`, `route delete dest gateway`; `dest` is an address or `default`. `show` reads the kernel's `rthost`/`rtnet` tables through `/unix` and `/dev/kmem`; add and delete need root. A default route needs the `rtalloc()` fallback in `../v1.5/sys/route.c`. |
-| `nc.c` | Netcat: `nc [-v] [-c] [-q] [-w secs] a.b.c.d port`, or `-l port` to listen; `-u` for UDP |
-| `httpd.c`, `www/index.html` | Web server: `httpd [-p port] [docroot]`, `.html`/`.htm`/`.txt` from `/usr/www` |
+| `nc.c` | Netcat: `nc [-v] [-c] [-q] [-w secs] a.b.c.d port`, or `-l port` to listen; `-u` for UDP. A modern test and convenience tool, outside the period (netcat is from 1995) |
+| `httpd.c`, `www/index.html` | Web server: `httpd [-p port] [docroot]`, `.html`/`.htm`/`.txt` from `/usr/www`. A modern test and convenience tool, outside the period (the web is from the early 1990s) |
 | `ifconfig.c` | `ifconfig [interface]` lists interfaces from the kernel; `ifconfig eb0 a.b.c.d` sets the address (root) |
 | `include/netdb.h`, `include/bsd.h` | Network data base declarations, and the BSD types and `bcopy`/`bzero`/`index` names mapped onto System V |
 | `netdb/` | `libnetdb.a`: `gethostbyname`, `getservbyname` and the rest, plus `inet_addr`/`inet_ntoa`; `hosttest` checks it |
 | `etc/` | Sample `/etc/hosts`, `networks`, `protocols`, `services` |
 | `telnet/` | `telnet [host [port]]`, from 2.9BSD (4.1c): escape `^]` for `close`, `quit`, `status`, `options`, `escape` |
 | `tftp/` | `tftp [host [port]]`, from 2.9BSD (4.1c): `connect`, `mode binary`, `get`, `put`, `trace`, `status` |
-| `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, `passive` |
+| `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, and the modern `passive` |
 | `telnetd/` | `telnetd [-d] [port]`, from 2.9BSD (4.1c): logins over telnet on the kernel's pseudo-terminals; `mkptys` makes `/dev/ptyp?` and `/dev/ttyp?` |
 | `netstat/` | `netstat [-Aaimnrst] [interval]`, from 2.9BSD (4.1c): TCP/UDP connections, interfaces (`-i`), routes (`-r`), mbufs (`-m`), protocol statistics (`-s`) |
 | `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa (`netdb/` has its own) |
@@ -81,7 +81,7 @@ Checked on the Mac so far, with host shims for termio and the 4.1a socket calls:
 ## ftp
 
 The 4.1c BSD ftp client, as 2.9BSD converted it for the 4.1a socket calls (`compat.c` supplies 4.2BSD-style `accept`, `connect` and friends). For the Lisa:
-- **Passive mode:** `ftp -p` or the `passive` command makes ftp connect to the port the server gives in its PASV reply, instead of listening for the server (PORT). Use it through slirp's NAT; LisaEm's slirp can also rewrite PORT for servers on port 21.
+- **Passive mode** (a modern convenience, outside the period: the PASV command is in RFC 765 from 1980, but BSD's ftp client only gained a `passive` command years later): `ftp -p` or the `passive` command makes ftp connect to the port the server gives in its PASV reply, instead of listening for the server (PORT). Use it through slirp's NAT; LisaEm's slirp can also rewrite PORT for servers on port 21.
 - **Binary transfers fixed:** 4.1c kept each byte in a `char`, so a 0377 byte ended a transfer as if it were EOF.
 - **Login:** 4.1c's `ruserpass()` (from 2.9BSD's `net/common`): a `MACHhost=login,password` environment variable with the password encrypted by its own DES code, keyed to your terminal's `/etc/utmp` entry; then `machine`/`login`/`password` entries in `$HOME/.netrc` (which must not be readable by others if it holds a password); then it asks. For System V it takes only the `USER_PROCESS` utmp entry for the terminal. Nothing on the Lisa makes the encrypted variables (4.1c's `mkpwunclear()` is in the file but no program calls it), so in practice use `.netrc` or type the password.
 - `pwd`, `mkdir` and `rmdir` send 4.1c's `XPWD`, `XMKD` and `XRMD` (the experimental commands of RFC 775, the names of the time). Servers still accept them; RFC 959's `PWD`, `MKD` and `RMD` came in 1985.
