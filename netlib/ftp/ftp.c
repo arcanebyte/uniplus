@@ -189,8 +189,13 @@ getreply(expecteof)
 				originalcode = code;
 			continue;
 		}
-		if (empty(cin))
-			return (n - '0');
+		/*
+		 * Lisa: return after each complete reply, as 4.2BSD does.
+		 * 4.1c read on while more input was waiting, so a 125 reply
+		 * with the 226 behind it came back as 226 and the data
+		 * connection was closed unread.
+		 */
+		return (n - '0');
 	}
 }
 
