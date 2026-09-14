@@ -238,8 +238,14 @@ telnet
   two processes: one reads the network, one the keyboard and the escape
   commands.  Terminal modes use termio.  No "z" (no job control), and
   close does not half-close (no shutdown()).
+  End of line as 4.3BSD (telnet.c 5.16, 86/05/27) sends it: newline as
+  CR LF and carriage return as CR NUL (RFC 854), and while the remote
+  side echoes, Return is no longer mapped to newline (4.2BSD turned
+  CRMOD off there).  4.1c sent a bare newline, and telehack.com ignored
+  Return from the Lisa.
   Status: tested on the Lisa (logging in to its own telnetd); checked on
-  the Mac against a scripted server.
+  the Mac against a scripted server.  The end-of-line change is tested on
+  the Lisa (telehack.com answers Return).
 
 tftp
   Period correct: YES, with BUG FIXES

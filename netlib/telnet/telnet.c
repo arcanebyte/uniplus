@@ -13,6 +13,9 @@ static char sccsid[] = "@(#)telnet.c	4.11 (Berkeley) 10/7/82";
  *    job control, so no "z" command, and no shutdown(), so close just
  *    closes.
  *  - Host names come from the name server or /etc/hosts through libnetdb.a.
+ *  - End of line as 4.3BSD sends it: newline as CR LF, carriage return
+ *    as CR NUL, and Return not mapped to newline while the remote side
+ *    echoes.  4.1c sent a bare newline.
  */
 #include <stdio.h>
 #include <ctype.h>
@@ -288,6 +291,8 @@ help(argc, argv)
  * Terminal modes: 0 as we found it, 1 characters at a time without
  * echo (the remote side echoes), 2 characters at a time with local echo.
  * Interrupt and quit characters go to the remote side in 1 and 2.
+ * In 1, Return stays a carriage return (4.2BSD turned CRMOD off here);
+ * output still maps newline to CR LF.
  */
 mode(f)
 	register int f;
@@ -303,9 +308,10 @@ mode(f)
 	t = otermio;
 	if (f != 0) {
 		t.c_lflag &= ~(ICANON|ISIG);
-		if (f == 1)
+		if (f == 1) {
 			t.c_lflag &= ~ECHO;
-		else
+			t.c_iflag &= ~ICRNL;
+		} else
 			t.c_lflag |= ECHO;
 		t.c_cc[VMIN] = 1;
 		t.c_cc[VTIME] = 0;
@@ -316,6 +322,7 @@ mode(f)
 
 char	sibuf[BUFSIZ], *sbp;
 char	tibuf[BUFSIZ];
+char	tobuf[2 * BUFSIZ];
 int	scc;
 
 /*
@@ -363,7 +370,9 @@ telnet(s)
 
 /*
  * The keyboard process: copy the terminal to the network until the
- * escape character.
+ * escape character.  As in 4.3BSD, a newline goes out as CR LF and a
+ * carriage return as CR NUL, the telnet end of line (RFC 854); 4.1c
+ * sent a bare newline, which servers such as telehack.com ignore.
  */
 keyboard(s)
 	int s;
@@ -387,17 +396,24 @@ keyboard(s)
 			return;
 		}
 		zeros = 0;
-		for (p = q = tibuf; n > 0; n--, p++) {
+		for (p = tibuf, q = tobuf; n > 0; n--, p++) {
 			if (strip(*p) == escape) {
-				if (q > tibuf && write(s, tibuf, q - tibuf) < 0)
+				if (q > tobuf && write(s, tobuf, q - tobuf) < 0)
 					return;
 				command(0);
-				q = tibuf;
+				q = tobuf;
 				break;
 			}
-			*q++ = *p;
+			if (*p == '\n') {
+				*q++ = '\r';
+				*q++ = '\n';
+			} else if (*p == '\r') {
+				*q++ = '\r';
+				*q++ = '\0';
+			} else
+				*q++ = *p;
 		}
-		if (q > tibuf && write(s, tibuf, q - tibuf) < 0)
+		if (q > tobuf && write(s, tobuf, q - tobuf) < 0)
 			return;
 	}
 }
