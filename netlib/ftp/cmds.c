@@ -586,7 +586,7 @@ pwd()
 		printf("Not connected.\n");
 		return;
 	}
-	(void) command("PWD");
+	(void) command("XPWD");
 }
 
 /*
@@ -608,7 +608,7 @@ makedir(argc, argv)
 		printf("%s directory-name\n", argv[0]);
 		return;
 	}
-	(void) command("MKD %s", argv[1]);
+	(void) command("XMKD %s", argv[1]);
 }
 
 /*
@@ -630,7 +630,7 @@ removedir(argc, argv)
 		printf("%s directory-name\n", argv[0]);
 		return;
 	}
-	(void) command("RMD %s", argv[1]);
+	(void) command("XRMD %s", argv[1]);
 }
 
 /*

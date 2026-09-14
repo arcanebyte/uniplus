@@ -402,17 +402,23 @@ again:
 			    es->es_if.if_opackets++;
 			    es->es_oactive = 0;
 			    csr = ebrd_reg(pport, EB_XCSR);
-			    if (csr&0xff == 0xff)
+			    if ((csr & 0xff) == 0xff)
 				    csr = ebrd_reg(pport, EB_XCSR);
-				    if (csr&0xff == 0xff) {
+				    if ((csr & 0xff) == 0xff) {
 					printf("eb%d xmit status reg. botch\n",
 					    unit);
+					es->es_if.if_oerrors++;
 					goto cont;
 				    }
-			    if (csr & EB_COLL)
+			    if (csr & EB_COLL) {
+				    /* low nybble counts 0-15 collisions */
+				    es->es_if.if_collisions +=
+					ebrd_reg(pport, EB_COLLCNTR) & 0xf;
 				    /* clear counter */
 				    ebwr_reg(pport, EB_COLLCNTR, 0);
+			    }
 			    if (csr & EB_COLL16) {
+				    es->es_if.if_oerrors++;
 				    printf("eb%d: 16 collisions; resetting...\n"
 				   	, unit);
 				    ebreset(pport);

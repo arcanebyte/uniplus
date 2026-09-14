@@ -25,17 +25,17 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `netinfo.c` | Shows the host name (`gethostname`) and the Internet address compiled into the kernel (`SIOCGIADDR`) |
 | `ping.c` | ICMP echo on a raw socket: `ping [-d] [-w seconds] a.b.c.d [count]`, run as root. `-w` is how long to wait for each reply (default 2); late replies still count and duplicates are marked `(DUP!)`. `-d` turns on the kernel's ICMP console messages and shows the raw input queue. Needs a kernel with the raw socket fixes (see below). |
 | `route.c` | Routing table: `route [show]`, `route add dest gateway`, `route delete dest gateway`; `dest` is an address or `default`. `show` reads the kernel's `rthost`/`rtnet` tables through `/unix` and `/dev/kmem`; add and delete need root. A default route needs the `rtalloc()` fallback in `../v1.5/sys/route.c`. |
-| `nc.c` | Netcat: `nc [-v] [-c] [-q] [-w secs] a.b.c.d port`, or `-l port` to listen; `-u` for UDP |
-| `httpd.c`, `www/index.html` | Web server: `httpd [-p port] [docroot]`, `.html`/`.htm`/`.txt` from `/usr/www` |
+| `nc.c` | Netcat: `nc [-v] [-c] [-q] [-w secs] a.b.c.d port`, or `-l port` to listen; `-u` for UDP. A modern test and convenience tool, outside the period (netcat is from 1995) |
+| `httpd.c`, `www/index.html` | Web server: `httpd [-p port] [docroot]`, `.html`/`.htm`/`.txt` from `/usr/www`. A modern test and convenience tool, outside the period (the web is from the early 1990s) |
 | `ifconfig.c` | `ifconfig [interface]` lists interfaces from the kernel; `ifconfig eb0 a.b.c.d` sets the address (root) |
 | `include/netdb.h`, `include/bsd.h` | Network data base declarations, and the BSD types and `bcopy`/`bzero`/`index` names mapped onto System V |
 | `netdb/` | `libnetdb.a`: `gethostbyname`, `getservbyname` and the rest, plus `inet_addr`/`inet_ntoa`; `hosttest` checks it |
 | `etc/` | Sample `/etc/hosts`, `networks`, `protocols`, `services` |
 | `telnet/` | `telnet [host [port]]`, from 2.9BSD (4.1c): escape `^]` for `close`, `quit`, `status`, `options`, `escape` |
 | `tftp/` | `tftp [host [port]]`, from 2.9BSD (4.1c): `connect`, `mode binary`, `get`, `put`, `trace`, `status` |
-| `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, `passive` |
+| `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, and the modern `passive` |
 | `telnetd/` | `telnetd [-d] [port]`, from 2.9BSD (4.1c): logins over telnet on the kernel's pseudo-terminals; `mkptys` makes `/dev/ptyp?` and `/dev/ttyp?` |
-| `netstat/` | `netstat [-Aaimnrst] [interval]`, from 2.9BSD (4.1c): TCP/UDP connections, interfaces (`-i`), routes (`-r`), mbufs (`-m`) |
+| `netstat/` | `netstat [-Aaimnrst] [interval]`, from 2.9BSD (4.1c): TCP/UDP connections, interfaces (`-i`), routes (`-r`), mbufs (`-m`), protocol statistics (`-s`) |
 | `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa (`netdb/` has its own) |
 
 ## Host names and services: libnetdb.a
@@ -50,7 +50,7 @@ Changes for the Lisa:
 - **Byte order:** `inet_netof`, `inet_lnaof` and `inet_makeaddr` are rewritten for the 68000 using the class masks from UniSoft's `net/in.h`, now in `include/net/in.h`.
 - **`bsd.h`** (included by `netdb.h`) supplies `u_char`/`u_short`/`u_int`/`u_long` and maps `bcopy`, `bzero`, `bcmp`, `index`, `rindex` to libc's `memcpy`, `memset`, `memcmp`, `strchr`, `strrchr`.
 - `struct in_addr inet_makeaddr();` has to be declared after `net/in.h` by the caller.
-- Not ported: `rcmd`, `rexec`, `ruserpass`, `rhost`, `raddr` (for `rsh`/`rlogin`, not yet needed).
+- Not ported: `rcmd`, `rexec`, `rhost`, `raddr` (for `rsh`/`rlogin`, not yet needed). `ruserpass` is in `ftp/`.
 
 On the Lisa:
 ```
@@ -81,10 +81,10 @@ Checked on the Mac so far, with host shims for termio and the 4.1a socket calls:
 ## ftp
 
 The 4.1c BSD ftp client, as 2.9BSD converted it for the 4.1a socket calls (`compat.c` supplies 4.2BSD-style `accept`, `connect` and friends). For the Lisa:
-- **Passive mode:** `ftp -p` or the `passive` command makes ftp connect to the port the server gives in its PASV reply, instead of listening for the server (PORT). Use it through slirp's NAT; LisaEm's slirp can also rewrite PORT for servers on port 21.
+- **Passive mode** (a modern convenience, outside the period: the PASV command is in RFC 765 from 1980, but BSD's ftp client only gained a `passive` command years later): `ftp -p` or the `passive` command makes ftp connect to the port the server gives in its PASV reply, instead of listening for the server (PORT). Use it through slirp's NAT; LisaEm's slirp can also rewrite PORT for servers on port 21.
 - **Binary transfers fixed:** 4.1c kept each byte in a `char`, so a 0377 byte ended a transfer as if it were EOF.
-- **Login:** a smaller `ruserpass()` reads plain `machine`/`login`/`password` entries from `$HOME/.netrc`, then prompts. 4.1c's version also decrypted passwords kept in the environment.
-- `pwd`, `mkdir` and `rmdir` send the RFC 959 `PWD`, `MKD` and `RMD` (4.1c sent the older `XPWD`, `XMKD`, `XRMD`).
+- **Login:** 4.1c's `ruserpass()` (from 2.9BSD's `net/common`): a `MACHhost=login,password` environment variable with the password encrypted by its own DES code, keyed to your terminal's `/etc/utmp` entry; then `machine`/`login`/`password` entries in `$HOME/.netrc` (which must not be readable by others if it holds a password); then it asks. For System V it takes only the `USER_PROCESS` utmp entry for the terminal. Nothing on the Lisa makes the encrypted variables (4.1c's `mkpwunclear()` is in the file but no program calls it), so in practice use `.netrc` or type the password.
+- `pwd`, `mkdir` and `rmdir` send 4.1c's `XPWD`, `XMKD` and `XRMD` (the experimental commands of RFC 775, the names of the time). Servers still accept them; RFC 959's `PWD`, `MKD` and `RMD` came in 1985.
 - Transfer times are in whole seconds (no `gettimeofday()`). Names that clash in 7 characters are renamed in `varpat.h`, as 2.9BSD did for the PDP-11.
 - The shell escape (`!`) is unimplemented, as in 4.1c, and there is no `mget`/`mput`.
 
@@ -94,7 +94,7 @@ ftp> binary
 ftp> get file
 ```
 
-Checked on the Mac with host shims for the 4.1a socket calls, against pyftpdlib: login from `.netrc`, active and passive get and put of binary files (byte for byte), ascii get, `ls`, `dir`, `pwd`, `mkdir`. Not yet built on the Lisa.
+Checked on the Mac with host shims for the 4.1a socket calls, against pyftpdlib: login from `.netrc`, by prompting and from an encrypted environment variable, active and passive get and put of binary files (byte for byte), ascii get, `ls`, `dir`, `pwd`, `mkdir`, `rmdir`. Not yet built on the Lisa.
 
 ## telnetd
 
@@ -121,9 +121,10 @@ The 4.1c BSD netstat, reading the kernel's tables through `/unix` and `/dev/kmem
 - `netstat` / `netstat -a`: TCP and UDP connections (with `-a`, listening sockets too), with receive and send queues and TCP state.
 - `netstat -i [interval]`: interfaces with packet and error counts; with an interval, a running display.
 - `netstat -r`: the host and network routing tables (a default route shows as `default`).
+- `netstat -s`: IP, TCP and UDP error counts, in 4.2BSD's wording, from the kernel's `ipstat`, `tcpstat` and `udpstat`. This kernel keeps only a few counters (bad checksums, short or malformed headers and lengths, unacknowledged TCP packets) and no ICMP statistics, so that is all `-s` shows.
 - `netstat -m`: mbuf counts. `-n` shows numbers instead of names from `/etc/hosts` and `/etc/services`.
 
-For the Lisa it is built against the kernel's own headers, so the structures it reads match the kernel without hand-written offsets: `make KINC=/usr/src/include` (the default), where the kernel was built from. Also: `nlist` from `<a.out.h>`, the IMP host table (`-h`) and VAX crash-dump paging removed, and addresses printed with bytes masked because the kernel's `u_char` is signed.
+For the Lisa it is built against the kernel's own headers, so the structures it reads match the kernel without hand-written offsets: `make KINC=/usr/src/include` (the default), where the kernel was built from. Also: `nlist` from `<a.out.h>`, the IMP host table (`-h`) and VAX crash-dump paging removed, addresses printed with bytes masked because the kernel's `u_char` is signed, and `-s` added from 4.2BSD.
 
 Only checked with `tools/lisa_names.py` so far (against a copy of the kernel headers with two lines clang rejects fixed); not yet built on the Lisa.
 

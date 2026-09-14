@@ -178,3 +178,83 @@ inetname(in)
 	}
 	return (line);
 }
+
+#define	plural(n)	((n) != 1 ? "s" : "")
+
+/*
+ * Lisa: -s from 4.2BSD netstat, with only the counters this kernel's
+ * ipstat, tcpstat and udpstat keep (there is no icmpstat).
+ */
+
+/*
+ * Dump TCP statistics structure.
+ */
+tcp_stats(off, name)
+	off_t off;
+	char *name;
+{
+	struct tcpstat tcpstat;
+
+	if (off == 0) {
+		printf("%sstat: symbol not in namelist\n", name);
+		return;
+	}
+	klseek(kmem, off, 0);
+	read(kmem, (char *)&tcpstat, sizeof (tcpstat));
+	printf("%s:\n\t%d bad header checksum%s\n", name,
+		tcpstat.tcps_badsum, plural(tcpstat.tcps_badsum));
+	printf("\t%d bad header offset field%s\n",
+		tcpstat.tcps_badoff, plural(tcpstat.tcps_badoff));
+	printf("\t%d incomplete header%s\n",
+		tcpstat.tcps_hdrops, plural(tcpstat.tcps_hdrops));
+	printf("\t%d bad segment%s\n",
+		tcpstat.tcps_badsegs, plural(tcpstat.tcps_badsegs));
+	printf("\t%d unacknowledged packet%s\n",
+		tcpstat.tcps_unack, plural(tcpstat.tcps_unack));
+}
+
+/*
+ * Dump UDP statistics structure.
+ */
+udp_stats(off, name)
+	off_t off;
+	char *name;
+{
+	struct udpstat udpstat;
+
+	if (off == 0) {
+		printf("%sstat: symbol not in namelist\n", name);
+		return;
+	}
+	klseek(kmem, off, 0);
+	read(kmem, (char *)&udpstat, sizeof (udpstat));
+	printf("%s:\n\t%d bad header checksum%s\n", name,
+		udpstat.udps_badsum, plural(udpstat.udps_badsum));
+	printf("\t%d incomplete header%s\n",
+		udpstat.udps_hdrops, plural(udpstat.udps_hdrops));
+	printf("\t%d bad data length field%s\n",
+		udpstat.udps_badlen, plural(udpstat.udps_badlen));
+}
+
+/*
+ * Dump IP statistics structure.
+ */
+ip_stats(off, name)
+	off_t off;
+	char *name;
+{
+	struct ipstat ipstat;
+
+	if (off == 0) {
+		printf("%sstat: symbol not in namelist\n", name);
+		return;
+	}
+	klseek(kmem, off, 0);
+	read(kmem, (char *)&ipstat, sizeof (ipstat));
+	printf("%s:\n\t%d bad header checksum%s\n", name,
+		ipstat.ips_badsum, plural(ipstat.ips_badsum));
+	printf("\t%d with size smaller than minimum\n", ipstat.ips_toosmall);
+	printf("\t%d with data size < data length\n", ipstat.ips_tooshort);
+	printf("\t%d with header length < data size\n", ipstat.ips_badhlen);
+	printf("\t%d with data length < header length\n", ipstat.ips_badlen);
+}
