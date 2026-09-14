@@ -35,6 +35,7 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `tftp/` | `tftp [host [port]]`, from 2.9BSD (4.1c): `connect`, `mode binary`, `get`, `put`, `trace`, `status` |
 | `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, `passive` |
 | `telnetd/` | `telnetd [-d] [port]`, from 2.9BSD (4.1c): logins over telnet on the kernel's pseudo-terminals; `mkptys` makes `/dev/ptyp?` and `/dev/ttyp?` |
+| `netstat/` | `netstat [-Aaimnrst] [interval]`, from 2.9BSD (4.1c): TCP/UDP connections, interfaces (`-i`), routes (`-r`), mbufs (`-m`) |
 | `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa (`netdb/` has its own) |
 
 ## Host names and services: libnetdb.a
@@ -113,6 +114,18 @@ make install                  # /etc/telnetd and the pty device files
 From the Mac, with LisaEm started with `LISAEM_ETHERBOX_HOSTFWD=tcp:2323:23`: `telnet 127.0.0.1 2323`.
 
 Not yet built or run: telnetd needs the Lisa's pseudo-terminals and login, so it has only been through `tools/lisa_names.py`.
+
+## netstat
+
+The 4.1c BSD netstat, reading the kernel's tables through `/unix` and `/dev/kmem` (so `/unix` must be the running kernel):
+- `netstat` / `netstat -a`: TCP and UDP connections (with `-a`, listening sockets too), with receive and send queues and TCP state.
+- `netstat -i [interval]`: interfaces with packet and error counts; with an interval, a running display.
+- `netstat -r`: the host and network routing tables (a default route shows as `default`).
+- `netstat -m`: mbuf counts. `-n` shows numbers instead of names from `/etc/hosts` and `/etc/services`.
+
+For the Lisa it is built against the kernel's own headers, so the structures it reads match the kernel without hand-written offsets: `make KINC=/usr/src/include` (the default), where the kernel was built from. Also: `nlist` from `<a.out.h>`, the IMP host table (`-h`) and VAX crash-dump paging removed, and addresses printed with bytes masked because the kernel's `u_char` is signed.
+
+Only checked with `tools/lisa_names.py` so far (against a copy of the kernel headers with two lines clang rejects fixed); not yet built on the Lisa.
 
 ## Routes
 
