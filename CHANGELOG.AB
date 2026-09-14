@@ -107,8 +107,10 @@ tty driver: no erase echo with nothing left on the line
   With echoe, System V echoed backspace, space, backspace for every erase
   character, even on an empty line, wiping the prompt; with the console's
   reverse wrap it went on up the screen.  The erase is now echoed only if
-  the input line still has a character to remove (tt0.c).
-  Status: tested on the Lisa (Delete in csh stops at the prompt).
+  the input line still has a character to remove (tt1.c, the line
+  discipline the kernel is built with; also tt0.c, which it first went
+  into by mistake).
+  Status: checked on the Mac; not yet built on the Lisa.
 
 
 ========================================================================
