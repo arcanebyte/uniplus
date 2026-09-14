@@ -33,6 +33,7 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `etc/` | Sample `/etc/hosts`, `networks`, `protocols`, `services` |
 | `telnet/` | `telnet [host [port]]`, from 2.9BSD (4.1c): escape `^]` for `close`, `quit`, `status`, `options`, `escape` |
 | `tftp/` | `tftp [host [port]]`, from 2.9BSD (4.1c): `connect`, `mode binary`, `get`, `put`, `trace`, `status` |
+| `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, `passive` |
 | `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa (`netdb/` has its own) |
 
 ## Host names and services: libnetdb.a
@@ -74,6 +75,24 @@ tftp gateway                # tftp> mode binary, get file, put file, quit
 ```
 
 Checked on the Mac so far, with host shims for termio and the 4.1a socket calls: telnet against a scripted server (option negotiation, typing, the escape commands, remote close) and tftp get/put against an RFC 1350 server, including a dropped packet. Not yet built on the Lisa.
+
+## ftp
+
+The 4.1c BSD ftp client, as 2.9BSD converted it for the 4.1a socket calls (`compat.c` supplies 4.2BSD-style `accept`, `connect` and friends). For the Lisa:
+- **Passive mode:** `ftp -p` or the `passive` command makes ftp connect to the port the server gives in its PASV reply, instead of listening for the server (PORT). Use it through slirp's NAT; LisaEm's slirp can also rewrite PORT for servers on port 21.
+- **Binary transfers fixed:** 4.1c kept each byte in a `char`, so a 0377 byte ended a transfer as if it were EOF.
+- **Login:** a smaller `ruserpass()` reads plain `machine`/`login`/`password` entries from `$HOME/.netrc`, then prompts. 4.1c's version also decrypted passwords kept in the environment.
+- `pwd`, `mkdir` and `rmdir` send the RFC 959 `PWD`, `MKD` and `RMD` (4.1c sent the older `XPWD`, `XMKD`, `XRMD`).
+- Transfer times are in whole seconds (no `gettimeofday()`). Names that clash in 7 characters are renamed in `varpat.h`, as 2.9BSD did for the PDP-11.
+- The shell escape (`!`) is unimplemented, as in 4.1c, and there is no `mget`/`mput`.
+
+```
+ftp -p 10.0.2.2           # an FTP server on the Mac, through slirp
+ftp> binary
+ftp> get file
+```
+
+Checked on the Mac with host shims for the 4.1a socket calls, against pyftpdlib: login from `.netrc`, active and passive get and put of binary files (byte for byte), ascii get, `ls`, `dir`, `pwd`, `mkdir`. Not yet built on the Lisa.
 
 ## Routes
 
