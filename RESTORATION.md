@@ -278,6 +278,32 @@ Steps:
 - MicroEMACS (editor), `less` (pager), `patch`, `compress` (12-bit codes for the Lisa's memory), `uuencode`/`uudecode`.
 - The Lisa `cc` keeps 7 characters of external names, so check each port's names against each other and against `/lib/libc.a` (no `strstr`).
 
+**Console and shell** (the Lisa's own screen): the up arrow moves the cursor instead of recalling a command, and the cursor ends up in odd places, because:
+- `/bin/sh` (Bourne) has no history or completion;
+- the tty driver echoes an arrow key's `ESC [ A` verbatim (`tt0.c`), and the console's VT100 emulator (`vt100.c`) obeys it;
+- `vt100.c` starts with no tab stops (a real tab goes to column 87), backspace doesn't go back across a wrapped line, and ECHOE backspaces over the prompt on an empty line;
+- `TERM` is never set, though `/etc/termcap` has a matching `vtl` entry.
+
+In order of effort:
+1. `TERM=vtl; export TERM` in `/etc/profile` (fixes vi and curses programs).
+2. Offer the `csh` already in `/bin` (`!!` history, no arrow keys).
+3. Kernel console fixes: tab stops every 8 columns at start-up (`reinit.c`), backspace to the end of the previous row at column 0, swallow unknown `ESC [ ? n h/l` sequences, save/restore cursor (`ESC 7`/`ESC 8`) and insert character; then update the `vtl` termcap entry.
+4. Echo control characters as `^X` (a new `c_lflag` bit in `tt0.c` and `stty`), and don't erase past the start of the input line.
+5. A small line editor for the shell: arrow-key history, ^A/^E, in K&R C (as a front end on a pty, or in a rebuilt 4.1a `oldcsh` from `bsd/4.1aBSD`).
+6. Tab completion on top of 5, reading directories directly.
+
+**Window server:** the kernel has what one needs: `phys()` maps physical memory (the 720×364 bitmap display that `bm.c` draws on) into a root process, `/dev/mouse` (`ms.c`), and pseudo-terminals. The best fit is MGR (Bellcore, 1984–88, freely redistributable): built for small 68000 bitmap machines, including the 720×348 AT&T 3B1 running System V; clients talk to it with escape sequences over ptys, so it doesn't need 4.2BSD sockets. X10 would need 4.2BSD socket semantics (a new descriptor from `accept()`) and a much bigger port; X11 won't fit in 2 MB; Torch's OpenTop is a proprietary V.2 binary.
+
+Steps to MGR:
+1. **Find the source:** an early K&R release of MGR (1988–89, before the ANSI-era 0.6x releases), ideally one with the 3B1 or another System V port; check its licence terms.
+2. **Screen proof:** a small root program that maps the display with `phys()` (address from `bm.c`: the screen sits at the top of RAM, `*MEMEND`), draws a pattern and a mouse pointer from `/dev/mouse` (`ms.c`, `AL_GMOUSE`/`AL_SMOUSE` in `al_ioctl.h`), and restores the screen on exit.
+3. **Console hand-over (kernel):** an ioctl on the console to stop `bm.c`/`vt100.c` drawing while a program owns the screen, and to redraw on release; keyboard input in raw mode for the window server.
+4. **`select()` on the console keyboard and `/dev/mouse` (kernel):** a `d_select` path for them in `selscan()` (`syslocal.c`), which today only knows sockets and pty masters; the fallback is polling with `FIONREAD`.
+5. **Bit-blit:** MGR's portable C blit for the 720×364 1-bit display first, then 68000 assembly for the hot paths.
+6. **Port:** termio instead of sgtty, System V pseudo-terminal handling as in `netlib/telnetd` (utmp entries, `setpgrp()`), 7-character renames checked with `tools/lisa_names.py`, missing libc routines, fonts sized for the small screen.
+7. **Clients:** a shell window first, then MGR's small demo clients; memory use checked against 2 MB with several windows open.
+8. **LisaEm:** check that its video, mouse and vertical retrace emulation are good enough for a program drawing directly on the screen.
+
 **LisaEm (PR #55)**, full list in `ProFileEmulationTesting.md`:
 1. **Dual parallel card:** ProFile read/write and boot. It used to hang; not yet tried on the new emulation.
 2. **LOS 3.1 on the full emulation path:** first make `apply_los31_hacks()` respect "Hard drive acceleration" (`if (!los31_hle || !hle) return;`, not done).
