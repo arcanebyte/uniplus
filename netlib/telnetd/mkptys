@@ -1,0 +1,14 @@
+# mkptys -- make the pseudo-terminal device files for telnetd (run as root)
+# /dev/ptyp0-f is the controlling side, cdevsw 20 in v1.5/sys/conf.c
+# /dev/ttyp0-f is the terminal side, cdevsw 21
+cd /dev
+n=0
+for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f
+do
+	rm -f ptyp$i ttyp$i
+	/bin/mknod ptyp$i c 20 $n
+	/bin/mknod ttyp$i c 21 $n
+	chmod 666 ptyp$i ttyp$i
+	n=`expr $n + 1`
+done
+ls -l ptyp0 ttyp0
