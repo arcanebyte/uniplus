@@ -108,7 +108,7 @@ tty driver: no erase echo with nothing left on the line
   character, even on an empty line, wiping the prompt; with the console's
   reverse wrap it went on up the screen.  The erase is now echoed only if
   the input line still has a character to remove (tt0.c).
-  Status: checked on the Mac; not yet built on the Lisa.
+  Status: tested on the Lisa (Delete in csh stops at the prompt).
 
 
 ========================================================================
@@ -210,8 +210,8 @@ ftp
   reply at a time, as 4.2BSD does.  Addition, not period: the "passive"
   command and -p, needed to get through LisaEm's network address
   translation.
-  Status: built on the Lisa; passive login and commands work there (the
-  listing bug was found there); fix checked on the Mac.
+  Status: tested on the Lisa (passive mode to a server on the Mac: ls,
+  ascii, get).
 
 telnetd
   Period correct: YES (port of 4.1c BSD telnetd)
