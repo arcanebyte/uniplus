@@ -24,6 +24,7 @@
 #include "sys/ioctl.h"
 #include "net/in.h"
 #include "net/in_systm.h"
+#include "net/if.h"
 #include "net/route.h"
 
 /*
@@ -480,17 +481,58 @@ soioctl(so, cmd, cmdp)
 
 	switch (cmd) {
 
-	case SIOCCIADDR:
-		/* set internet address ie write into uba flags */
+	case SIOCCIADDR: {
+		/*
+		 * Set the internet address: write it into the uba flags, as
+		 * UniSoft did, and also give it to the Ethernet interface now
+		 * (the first Internet interface with a broadcast address, so
+		 * not loopback).  Its old network route goes, and its init
+		 * routine adds the new one and announces the address with
+		 * ARP, as SIOCSIFADDR does in 4.2BSD.  Without this the new
+		 * address only took effect at the next boot.
+		 */
+		register struct ifnet *ifp;
+		register struct sockaddr_in *sin;
+		struct rtentry route;
+		struct in_addr addr;
+
 		if (u.u_ruid != 0 && u.u_uid != 0) {
 			u.u_error = EPERM;
 			return;
 		}
-		if (copyin(cmdp, (caddr_t)iaddrp, sizeof (long))) {
+		if (copyin(cmdp, (caddr_t)&addr, sizeof (addr))) {
 			u.u_error = EFAULT;
 			return;
 		}
+		*iaddrp = (long)addr.s_addr;
+		for (ifp = ifnet; ifp; ifp = ifp->if_next)
+			if (ifp->if_addr.sa_family == AF_INET &&
+			    (ifp->if_flags & IFF_BROADCAST))
+				break;
+		if (ifp == 0 || addr.s_addr == 0)
+			return;
+
+		bzero((caddr_t)&route, sizeof (route));
+		sin = (struct sockaddr_in *)&route.rt_dst;
+		sin->sin_family = AF_INET;
+		sin->sin_addr = if_makeaddr((u_long)ifp->if_net, (u_long)0);
+		route.rt_gateway = ifp->if_addr;
+		(void) rtrequest((int)SIOCDELRT, &route);
+
+		sin = (struct sockaddr_in *)&ifp->if_addr;
+		sin->sin_family = AF_INET;
+		sin->sin_addr = addr;
+		ifp->if_net = in_netof(addr);
+		ifp->if_host[0] = in_lnaof(addr);
+		sin = (struct sockaddr_in *)&ifp->if_broadaddr;
+		sin->sin_family = AF_INET;
+		sin->sin_addr = if_makeaddr((u_long)ifp->if_net, (u_long)0);
+		if (ifp->if_init)
+			(*ifp->if_init)(ifp->if_unit);
+		else
+			if_rtinit(ifp, RTF_UP);
 		return;
+	}
 
 	case SIOCGIADDR:
 		if (copyout((caddr_t)iaddrp, cmdp, sizeof (long)))
