@@ -1,6 +1,7 @@
 #
 # Host data base: address, official name, aliases.
-# There is no name server; add the hosts you want to reach by name.
+# Used after the name servers in /etc/resolv.conf, and for names
+# they don't know.
 #
 127.0.0.1	localhost
 10.0.2.15	lisa		lisa.local
