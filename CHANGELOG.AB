@@ -102,6 +102,21 @@ Console: a fuller VT100 emulator
   is in /usr/src/console/termcap.vtl, and is installed in /etc/termcap.
   Status: running on the Lisa; checked on the Mac (35 checks).
 
+Buffer cache sized at boot
+  Period correct: YES (as 4.2BSD, which gives its cache 10% of memory)
+  The cache was 30 1K buffers in a fixed array, so programs, directories
+  and inodes were read from the ProFile again and again.  At boot the
+  kernel now takes 10% of free memory for buffers (bufpct), no fewer
+  than 30 and no more than 200, and says how many (main.c, conf.c,
+  /usr/include/sys/space.h).  The startup kernel (sunix) is unchanged.
+  In LisaEm the cache is 95 buffers.  LisaEm's ProFile counter shows it
+  working (a second "du -s /usr/bin" reads nothing), but timings don't
+  change: the emulated ProFile has no delay, so the 68000 is the limit.
+  A walk slightly bigger than the cache, such as "du -s /usr" (about 100
+  blocks), gets almost no hits when repeated, because each block read
+  pushes out the next one needed.  10% was kept; bufpct can be patched.
+  Status: tested on the Lisa.
+
 tty driver: no erase echo with nothing left on the line
   Period correct: YES (as Berkeley's tty driver)
   With echoe, System V echoed backspace, space, backspace for every erase
@@ -182,8 +197,9 @@ nc
 httpd
   Period correct: NO (the web is from the early 1990s)
   Serves .html and .txt files from /usr/www with HTTP/1.0; kept as a
-  demonstration.
-  Status: not yet tested on the Lisa.
+  demonstration.  The page (/usr/www/index.html) is in netlib/www.
+  Status: tested on the Lisa (a browser on the Mac through a LisaEm port
+  forward).
 
 telnet
   Period correct: YES (port of 4.1c BSD telnet from 2.9BSD)
@@ -222,7 +238,7 @@ telnetd
   telnetd writes one first and marks it dead at logout.  mkptys first
   used ":" comments, which the shell rejected; they are "#" comments now.
   Status: tested on the Lisa (telnet 127.0.0.1 logs in; who lists the
-  session).
+  session) and from the Mac through a LisaEm port forward.
 
 netstat
   Period correct: YES (4.1c BSD netstat, with 4.2BSD's -s)

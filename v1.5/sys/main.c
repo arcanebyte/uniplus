@@ -19,6 +19,7 @@
 #include "sys/iobuf.h"
 #include "sys/tty.h"
 #include "sys/var.h"
+#include "sys/map.h"
 #include	<sys/file.h>
 
 /*
@@ -237,6 +238,29 @@ binit()
 	register unsigned i;
 	register long b;
 
+	/*
+	 * Lisa: without static buffer space, take bufpct percent of free
+	 * memory for the cache, as the PDP-11 takes message buffers from
+	 * coremap.  30 buffers left programs and inodes being read from the
+	 * ProFile again and again.
+	 */
+	if (buffers == NULL) {
+		extern int bufpct, nbufmin;
+		register int c;
+
+		i = ctob((long)maxmem) / 100 * bufpct / SBUFSIZE;
+		if (i > v.v_buf)
+			i = v.v_buf;
+		if (i < nbufmin)
+			i = nbufmin;
+		c = btoc((long)i * SBUFSIZE);
+		if ((b = malloc(coremap, c)) == 0)
+			panic("no memory for buffers");
+		maxmem -= c;
+		buffers = (caddr_t)ctob(b);
+		v.v_buf = i;
+		printf("Buffer cache is %d buffers (%dK)\n", i, i * (SBUFSIZE / 1024));
+	}
 	dp = &bfreelist;
 	dp->b_forw = dp; dp->b_back = dp;
 	dp->av_forw = dp; dp->av_back = dp;

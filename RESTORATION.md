@@ -230,17 +230,23 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 
 **Period cutoff:** functionality stays period-correct, meaning what 4.2BSD or UniSoft shipped by about 1985. Bug fixes that make period code work are allowed. Later additions stay on this list but are marked as later than the period.
 
+**Order of work (September 2026):**
+1. **Buffer cache sized at boot** (Disk speed and space, item 1): done, measured on the Lisa.
+2. **ProFile queue order** (Disk speed and space, items 2 and 3): on hold; LisaEm's ProFile has no seek or transfer delay, so there is nothing to measure there.
+3. **Test `httpd` on the Lisa** through a LisaEm port forward: done.
+4. Later: `select()` on terminals (Kernel improvements, item 4), when a program needs it (wm, 4.3BSD `window`, `talk`).
+
 **Networking (uniplus):**
 1. **Loopback TCP and UDP: done.** `netlib/looptest` (TCP, 51 bytes round trip) and `netlib/udptest` (UDP datagram with addresses) pass on `unix.net` over 127.0.0.1; `netlib/netinfo` reads the host name and the configured address (`SIOCGIADDR`).
 2. **Rebuild `unix.net` from the fixed source: done.** `unix.net` rebuilt on the Lisa from the fixed `pro.c` is `/unix` on `build2`, so it no longer depends on the image patch. After a Lisa power-off/on within one LisaEm session it panicked in `ppintr` when slot 1 was empty. The cause was a LisaEm VIA Timer 1 latch bug, fixed in lisaem PR #55.
 3. **Etherbox emulation in LisaEm: done** (section 9, lisaem PR #57).
 4. **Default route: done** (`netlib/route`, `rtalloc()` fallback).
 5. **Network tools:** the Torch binaries can't run on the Lisa (they map a shared C library with a Torch-only system call and expect data at `0x400000`), so port from the 2.9BSD network kit (`bsd/2.9BSD/usr/net/src/netser/`), which uses the same 4.1a socket API:
-   - `netlib/nc` and `netlib/httpd`: written, to be tested on the Lisa;
-   - a DNS resolver (host names through slirp's DNS at 10.0.2.3) and `/etc/hosts` lookups;
-   - `telnet`, `ftp`, `tftp`, `rlogin`/`rsh`/`rcp`;
-   - `netstat`, `rwho`/`rwhod`;
-   - later the servers (`telnetd`, `ftpd`, `rlogind`), which need the kernel's pseudo-terminals.
+   - `netlib/nc`: tested on the Lisa; `netlib/httpd`: tested on the Lisa from a browser on the Mac;
+   - `/etc/hosts` lookups (`netlib/netdb`): done; a DNS resolver (host names through slirp's DNS at 10.0.2.3): not started;
+   - `telnet`, `ftp`: done, tested on the Lisa; `tftp`: done, to be tested; `rlogin`/`rsh`/`rcp`: not started;
+   - `netstat`: done; `rwho`/`rwhod`: not started;
+   - the servers: `telnetd` done (tested from the Lisa and from the Mac); `ftpd`, `rlogind` not started.
 
 **Kernel improvements from later BSD** (in order):
 1. **`shutdown()` system call.** Every protocol already handles `PRU_SHUTDOWN`; only the call is missing. Lets `nc`, `ftp` and `httpd` half-close a TCP connection.
@@ -270,7 +276,12 @@ Steps:
 - Later: Pico 2 W with Wi-Fi, doing NAT in the box like the slirp backend (Wi-Fi can't bridge the Lisa's MAC).
 
 **Disk speed and space:**
-1. **Buffer cache sized at boot.** The cache is `NBUF 30` 1K buffers (`conf.c`, `SBUFSIZE` = 1K with `FsTYPE 3`), 30K on a 2MB Lisa, so programs and metadata are read from the ProFile again and again. `space.h` already reaches the buffer data through a pointer (`caddr_t buffers = bspace`), and `startup()` (`machdep.c`) runs before `binit()`. So `startup()` can take a share of free memory (for example 10%, kept between 30 and a compiled-in maximum) from the front of the free clicks, point `buffers` at it, and set `v.v_buf`. `NBUF` becomes the header count (about 60 bytes each), `bspace` goes away, and `NHBUF` rises to 128. A patchable variable in `/unix` overrides the share. Measure with LisaEm's ProFile command count on a fixed workload (kernel `make`, `ls -lR /usr`) with 30 and with the boot-sized cache.
+1. **Buffer cache sized at boot** *(done; tested on the Lisa)*. `binit()` (`main.c`) now takes the space from `coremap`, as System V on the PDP-11 takes its message buffers: `bufpct` percent (10) of free memory, between `nbufmin` (30) and `NBUF` (now 200 headers), with `NHBUF` 128; `conf.c` sets `BUFPCT` and `NBUFMIN`, and without them (`s_conf.c`, `sunix`) `space.h` keeps the static `bspace`. The boot message gives the size; change the share with `adb -w /unix` (`bufpct?W 0t20`, not yet tried). Measured in LisaEm at 5 MHz (September 2026), 30 buffers against the boot-sized 95 (10% of about 950K free):
+   - `time` shows no gain: `ls7 -lR /usr` 0:51, `du -s /usr` 0:19, `sum /usr/bin/*` 0:39 with either kernel, every run 97–101% CPU. The emulated ProFile answers at once, so the time is the 68000 (and the driver's byte-by-byte copy), not waiting for the disk. On a real ProFile, with seeks and slow transfers, the saved reads are real time.
+   - LisaEm's `Profile_sectors_R/W` counter shows the cache working: a second `du -s /usr/bin` read 0 sectors (the first read 45).
+   - A second `du -s /usr` read as much as the first (197, then 202 sectors). The walk touches about 100 1K blocks, a little more than the 95-buffer cache, and with least-recently-used replacement, repeating it in the same order evicts each block just before it is needed again, so nearly every read misses. A 20% cache (about 190 buffers) would hold it, but 10% was kept to leave memory for programs; `bufpct` can be patched for a machine with more memory or a different load.
+
+   The original note: the cache was `NBUF 30` 1K buffers (`conf.c`, `SBUFSIZE` = 1K with `FsTYPE 3`), 30K on a 2MB Lisa, so programs and metadata are read from the ProFile again and again. `space.h` already reaches the buffer data through a pointer (`caddr_t buffers = bspace`), and `startup()` (`machdep.c`) runs before `binit()`. So `startup()` can take a share of free memory (for example 10%, kept between 30 and a compiled-in maximum) from the front of the free clicks, point `buffers` at it, and set `v.v_buf`. `NBUF` becomes the header count (about 60 bytes each), `bspace` goes away, and `NHBUF` rises to 128. A patchable variable in `/unix` overrides the share. Measure with LisaEm's ProFile command count on a fixed workload (kernel `make`, `ls -lR /usr`) with 30 and with the boot-sized cache.
 2. **`disksort()` in the ProFile driver.** `pro.c` adds requests to the end of the queue; `priam.c` and `cv.c` sort them. Fewer seeks with several processes using the disk, and read-ahead and delayed writes queue more requests once the cache is larger.
 3. **Free-list order:** `fsck -S` with gap and blocks-per-cylinder values suited to the ProFile, so new files aren't scattered. No kernel change.
 4. **Priam DataTower in LisaEm.** The kernel already supports it (`priam.c`, block device 3; `config.c` finds the card by ID 5 (`ID_PRIAM`) and offers it for swap and root). The drive reports its size, so `a` is the whole disk after 100 boot blocks and 4,000 swap blocks. LisaEm needs an expansion card that reports ID 5, the controller registers from `priam.h` (status/command, 16-bit data, six parameter/result registers, parity) and its two-interrupts-per-command sequence. Boot from the ProFile first, with root and swap on the Priam; booting from the Priam needs the card's boot ROM or a replacement for it. Until then, a larger ProFile image with more `prlmap` partitions in `pro.c` is the quick way to more space (emulator only). The Corvus driver (`cv.c`) uses a fixed 18MB layout, so it adds no space.
