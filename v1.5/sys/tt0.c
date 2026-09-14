@@ -277,8 +277,6 @@ int skip;
  */
 #define	LCLESC	0400
 
-static int ttrubok();
-
 ttin(tp)
 register struct tty *tp;
 {

@@ -187,6 +187,49 @@ register struct tty *tp;
 }
 
 /*
+ * Is there a character on the current input line for an erase to remove?
+ * Lisa, September 2026: without this check ECHOE echoed backspace, space,
+ * backspace for an erase on an empty line, wiping the prompt, and on the
+ * console (which now wraps backwards) the text above it.  canon() does the
+ * real erasing when the line is read, so this replays the raw queue up to,
+ * but not including, its last skip characters (the erase being echoed and
+ * any that arrived with it), as canon() will: a delimiter or the kill
+ * character empties the line, an erase removes one character, and a
+ * character after a backslash is taken literally.
+ */
+static int
+ttrubok(tp, skip)
+register struct tty *tp;
+int skip;
+{
+	register struct cblock *bp;
+	register int i, c, n = 0;
+	int left = tp->t_rawq.c_cc - skip;
+	int esc = 0;
+
+	for (bp = tp->t_rawq.c_cf; bp && left > 0; bp = bp->c_next)
+		for (i = bp->c_first; i < bp->c_last && left > 0; i++, left--) {
+			c = bp->c_data[i] & 0377;
+			if (esc) {
+				esc = 0;
+				n++;
+			} else if (c == '\\') {
+				esc = 1;
+				n++;
+			} else if (c == '\n' || c == tp->t_cc[VEOF]
+			    || c == tp->t_cc[VEOL] || c == tp->t_cc[VEOL2]
+			    || c == tp->t_cc[VKILL])
+				n = 0;
+			else if (c == tp->t_cc[VERASE]) {
+				if (n > 0)
+					n--;
+			} else
+				n++;
+		}
+	return (n > 0);
+}
+
+/*
  * Place a character on raw TTY input queue, putting in delimiters
  * and waking up top half as needed.
  * Also echo if required.
@@ -322,6 +365,9 @@ register struct tty *tp;
 				if (c == '\\')
 					tp->t_state |= CLESC;
 				if (c == tp->t_cc[VERASE] && flg&ECHOE) {
+					/* nothing left on this line to erase */
+					if (!ttrubok(tp, nchar + 1))
+						continue;
 					if (flg&ECHO)
 						ttxput(tp, '\b', 0);
 					flg |= ECHO;
