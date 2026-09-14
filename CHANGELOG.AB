@@ -109,7 +109,13 @@ Buffer cache sized at boot
   kernel now takes 10% of free memory for buffers (bufpct), no fewer
   than 30 and no more than 200, and says how many (main.c, conf.c,
   /usr/include/sys/space.h).  The startup kernel (sunix) is unchanged.
-  Status: written; not yet built on the Lisa.
+  In LisaEm the cache is 95 buffers.  LisaEm's ProFile counter shows it
+  working (a second "du -s /usr/bin" reads nothing), but timings don't
+  change: the emulated ProFile has no delay, so the 68000 is the limit.
+  A walk slightly bigger than the cache, such as "du -s /usr" (about 100
+  blocks), gets almost no hits when repeated, because each block read
+  pushes out the next one needed.  10% was kept; bufpct can be patched.
+  Status: tested on the Lisa.
 
 tty driver: no erase echo with nothing left on the line
   Period correct: YES (as Berkeley's tty driver)
