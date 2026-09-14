@@ -14,6 +14,8 @@
  *   [K] layout or value is forced by the surviving kernel source
  *   [B] value taken from 4.1a/4.1c BSD; the kernel only uses the
  *       symbol, so verify before relying on it
+ *   [U] from UniSoft's own user headers of the same generation, on the
+ *       Torch Triple X disk (torch/portable-disk/sector-20504/include/net)
  */
 
 /*

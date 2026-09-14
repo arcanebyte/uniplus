@@ -28,7 +28,36 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `nc.c` | Netcat: `nc [-v] [-c] [-q] [-w secs] a.b.c.d port`, or `-l port` to listen; `-u` for UDP |
 | `httpd.c`, `www/index.html` | Web server: `httpd [-p port] [docroot]`, `.html`/`.htm`/`.txt` from `/usr/www` |
 | `ifconfig.c` | `ifconfig [interface]` lists interfaces from the kernel; `ifconfig eb0 a.b.c.d` sets the address (root) |
-| `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa |
+| `include/netdb.h`, `include/bsd.h` | Network data base declarations, and the BSD types and `bcopy`/`bzero`/`index` names mapped onto System V |
+| `netdb/` | `libnetdb.a`: `gethostbyname`, `getservbyname` and the rest, plus `inet_addr`/`inet_ntoa`; `hosttest` checks it |
+| `etc/` | Sample `/etc/hosts`, `networks`, `protocols`, `services` |
+| `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa (`netdb/` has its own) |
+
+## Host names and services: libnetdb.a
+
+`netdb/` is the 4.1c BSD network data base library as back-ported in 2.9BSD (`../bsd/2.9BSD/usr/net/src/net`), for programs ported from Berkeley:
+- `gethostbyname`, `gethostbyaddr`, `gethostent`; `getnetbyname`, `getnetbyaddr`; `getservbyname`, `getservbyport`; `getprotobyname`, `getprotobynumber`; the `set`/`end` routines;
+- `inet_addr`, `inet_network`, `inet_netof`, `inet_lnaof`, `inet_makeaddr`, and 4.2BSD's `inet_ntoa`.
+
+Changes for the Lisa:
+- **Data bases in `/etc`:** `/etc/hosts`, `/etc/networks`, `/etc/protocols`, `/etc/services` (2.9BSD used `/usr/lib`; UniSoft's own programs on the Torch disk use `/etc/hosts`). There is no name server, so only names in `/etc/hosts` resolve.
+- **Short names:** `cc` keeps 7 characters of an external name, so `netdb.h` renames the routines apart (`gethostbyname` is `gethbyname`, `sethostent` is `sethent`, and so on). Always include `<netdb.h>` rather than declaring them yourself.
+- **Byte order:** `inet_netof`, `inet_lnaof` and `inet_makeaddr` are rewritten for the 68000 using the class masks from UniSoft's `net/in.h`, now in `include/net/in.h`.
+- **`bsd.h`** (included by `netdb.h`) supplies `u_char`/`u_short`/`u_int`/`u_long` and maps `bcopy`, `bzero`, `bcmp`, `index`, `rindex` to libc's `memcpy`, `memset`, `memcmp`, `strchr`, `strrchr`.
+- `struct in_addr inet_makeaddr();` has to be declared after `net/in.h` by the caller.
+- Not ported: `rcmd`, `rexec`, `ruserpass`, `rhost`, `raddr` (for `rsh`/`rlogin`, not yet needed).
+
+On the Lisa:
+```
+cd /usr/src/netlib/netdb
+make                # libnetdb.a and hosttest
+make install         # copies ../etc/hosts, networks, protocols, services to /etc (root)
+./hosttest           # PASS/FAIL for each lookup against the sample files
+./hosttest lisa gateway 10.0.2.3
+```
+Link programs with `../netdb/libnetdb.a` (after their own objects). `make install` overwrites `/etc/hosts`; merge by hand if you already have one.
+
+Checked on the Mac so far (September 2026): the library builds and `hosttest` passes against `etc/` when compiled natively, and `tools/lisa_names.py` finds no 7-character clashes or missing libc routines. Not yet built on the Lisa.
 
 ## Routes
 

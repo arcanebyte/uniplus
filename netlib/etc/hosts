@@ -1,0 +1,11 @@
+#
+# Host data base: address, official name, aliases.
+# There is no name server; add the hosts you want to reach by name.
+#
+127.0.0.1	localhost
+10.0.2.15	lisa		lisa.local
+#
+# LisaEm's slirp network (the EtherBox slirp backend)
+#
+10.0.2.2	gateway		mac slirp
+10.0.2.3	nameserver	dns
