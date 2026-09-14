@@ -25,7 +25,10 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `netinfo.c` | Shows the host name (`gethostname`) and the Internet address compiled into the kernel (`SIOCGIADDR`) |
 | `ping.c` | ICMP echo on a raw socket: `ping [-d] [-w seconds] a.b.c.d [count]`, run as root. `-w` is how long to wait for each reply (default 2); late replies still count and duplicates are marked `(DUP!)`. `-d` turns on the kernel's ICMP console messages and shows the raw input queue. Needs a kernel with the raw socket fixes (see below). |
 | `route.c` | Routing table: `route [show]`, `route add dest gateway`, `route delete dest gateway`; `dest` is an address or `default`. `show` reads the kernel's `rthost`/`rtnet` tables through `/unix` and `/dev/kmem`; add and delete need root. A default route needs the `rtalloc()` fallback in `../v1.5/sys/route.c`. |
-| `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping` and `route` on the Lisa |
+| `nc.c` | Netcat: `nc [-v] [-c] [-q] [-w secs] a.b.c.d port`, or `-l port` to listen; `-u` for UDP |
+| `httpd.c`, `www/index.html` | Web server: `httpd [-p port] [docroot]`, `.html`/`.htm`/`.txt` from `/usr/www` |
+| `ifconfig.c` | `ifconfig [interface]` lists interfaces from the kernel; `ifconfig eb0 a.b.c.d` sets the address (root) |
+| `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa |
 
 ## Routes
 
