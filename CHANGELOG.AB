@@ -75,7 +75,7 @@ Setting the Ethernet address while running
   UniSoft's SIOCCIADDR only stored the address for the next boot.  It now
   replaces the interface's address and network route at once and
   announces the address with ARP (socket.c).  Used by ifconfig.
-  Status: built on the Lisa; not yet tested.
+  Status: tested on the Lisa (ifconfig eb0 10.0.2.15, then ping).
 
 EtherBox driver: statistics and a status check
   Period correct: BUG FIX / YES
@@ -102,6 +102,14 @@ Console: a fuller VT100 emulator
   is in /usr/src/console/termcap.vtl, and is installed in /etc/termcap.
   Status: running on the Lisa; checked on the Mac (35 checks).
 
+tty driver: no erase echo with nothing left on the line
+  Period correct: YES (as Berkeley's tty driver)
+  With echoe, System V echoed backspace, space, backspace for every erase
+  character, even on an empty line, wiping the prompt; with the console's
+  reverse wrap it went on up the screen.  The erase is now echoed only if
+  the input line still has a character to remove (tt0.c).
+  Status: checked on the Mac; not yet built on the Lisa.
+
 
 ========================================================================
 2. NETWORK LIBRARY AND DATA FILES (/usr/src/netlib)
@@ -124,7 +132,7 @@ libnetdb.a: host, network, service and protocol names
   routines rewritten for 68000 byte order.  Names are shortened for the
   7-character limit of cc (gethbyname and so on, through netdb.h).  No
   name server: only /etc/hosts.  hosttest checks every lookup.
-  Status: built on the Lisa; hosttest checked on the Mac.
+  Status: tested on the Lisa (hosttest passes).
 
 /etc/hosts, networks, protocols, services
   Period correct: YES
@@ -161,13 +169,13 @@ ifconfig
   Period correct: YES (new code; ifconfig is a 4.2BSD command)
   Lists interfaces with flags, addresses and packet counts; ifconfig eb0
   a.b.c.d sets the Ethernet address (needs the socket.c change).
-  Status: built on the Lisa.
+  Status: tested on the Lisa.
 
 nc
   Period correct: NO (netcat is from 1995)
   Connect to or listen on a TCP port, or send and receive UDP; kept as a
   test tool.
-  Status: not yet tested on the Lisa.
+  Status: tested on the Lisa (a TCP conversation with the Mac).
 
 httpd
   Period correct: NO (the web is from the early 1990s)
@@ -213,7 +221,7 @@ netstat
   Period correct: YES (4.1c BSD netstat, with 4.2BSD's -s)
   Connections, interfaces (-i), routing tables (-r), mbuf counts (-m) and
   IP/TCP/UDP statistics (-s), built against the kernel's own headers.
-  Status: built and run on the Lisa.
+  Status: tested on the Lisa (-i, -r, -s, -m).
 
 ls7 and rm7 (/usr/src/ucb)
   Period correct: YES (4.2BSD ls 1982, 4.1BSD rm 1981, from 2.9BSD)
