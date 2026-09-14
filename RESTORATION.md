@@ -231,7 +231,7 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 **Order of work (September 2026):**
 1. **Buffer cache sized at boot** (Disk speed and space, item 1): done, measured on the Lisa.
 2. **ProFile queue order** (Disk speed and space, items 2 and 3): on hold; LisaEm's ProFile has no seek or transfer delay, so there is nothing to measure there.
-3. **Test `httpd` on the Lisa** through a LisaEm port forward.
+3. **Test `httpd` on the Lisa** through a LisaEm port forward: done.
 4. Later: `select()` on terminals (Kernel improvements, item 4), when a program needs it (wm, 4.3BSD `window`, `talk`).
 
 **Networking (uniplus):**
@@ -240,7 +240,7 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 3. **Etherbox emulation in LisaEm: done** (section 9, lisaem PR #57).
 4. **Default route: done** (`netlib/route`, `rtalloc()` fallback).
 5. **Network tools:** the Torch binaries can't run on the Lisa (they map a shared C library with a Torch-only system call and expect data at `0x400000`), so port from the 2.9BSD network kit (`bsd/2.9BSD/usr/net/src/netser/`), which uses the same 4.1a socket API:
-   - `netlib/nc`: tested on the Lisa; `netlib/httpd`: written, to be tested on the Lisa;
+   - `netlib/nc`: tested on the Lisa; `netlib/httpd`: tested on the Lisa from a browser on the Mac;
    - `/etc/hosts` lookups (`netlib/netdb`): done; a DNS resolver (host names through slirp's DNS at 10.0.2.3): not started;
    - `telnet`, `ftp`: done, tested on the Lisa; `tftp`: done, to be tested; `rlogin`/`rsh`/`rcp`: not started;
    - `netstat`: done; `rwho`/`rwhod`: not started;

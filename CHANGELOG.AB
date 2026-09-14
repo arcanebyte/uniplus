@@ -197,8 +197,9 @@ nc
 httpd
   Period correct: NO (the web is from the early 1990s)
   Serves .html and .txt files from /usr/www with HTTP/1.0; kept as a
-  demonstration.
-  Status: not yet tested on the Lisa.
+  demonstration.  The page (/usr/www/index.html) is in netlib/www.
+  Status: tested on the Lisa (a browser on the Mac through a LisaEm port
+  forward).
 
 telnet
   Period correct: YES (port of 4.1c BSD telnet from 2.9BSD)
