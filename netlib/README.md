@@ -31,6 +31,8 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `include/netdb.h`, `include/bsd.h` | Network data base declarations, and the BSD types and `bcopy`/`bzero`/`index` names mapped onto System V |
 | `netdb/` | `libnetdb.a`: `gethostbyname`, `getservbyname` and the rest, plus `inet_addr`/`inet_ntoa`; `hosttest` checks it |
 | `etc/` | Sample `/etc/hosts`, `networks`, `protocols`, `services` |
+| `telnet/` | `telnet [host [port]]`, from 2.9BSD (4.1c): escape `^]` for `close`, `quit`, `status`, `options`, `escape` |
+| `tftp/` | `tftp [host [port]]`, from 2.9BSD (4.1c): `connect`, `mode binary`, `get`, `put`, `trace`, `status` |
 | `Makefile` | Builds `tcpconn`, `tcpecho`, `looptest`, `udptest`, `netinfo`, `ping`, `route`, `nc`, `httpd` and `ifconfig` on the Lisa (`netdb/` has its own) |
 
 ## Host names and services: libnetdb.a
@@ -58,6 +60,20 @@ make install         # copies ../etc/hosts, networks, protocols, services to /et
 Link programs with `../netdb/libnetdb.a` (after their own objects). `make install` overwrites `/etc/hosts`; merge by hand if you already have one.
 
 Checked on the Mac so far (September 2026): the library builds and `hosttest` passes against `etc/` when compiled natively, and `tools/lisa_names.py` finds no 7-character clashes or missing libc routines. Not yet built on the Lisa.
+
+## telnet and tftp
+
+Both come from 2.9BSD's network kit (`../bsd/2.9BSD/usr/net/src/netser`) and link with `sockcall.o` and `netdb/libnetdb.a`. Build the library first, then `make` in `telnet/` and `tftp/`.
+
+- **telnet:** the kernel's `select()` can't wait on a terminal, so a connection runs as two processes: the parent reads the network and writes the screen, a child reads the keyboard. The escape character (`^]`) gives the `telnet>` prompt; an empty line goes back to the connection. Terminal modes use termio. There is no `z` (no job control), and `close` just closes (no `shutdown()`).
+- **tftp:** fixed for current servers: it follows the server's transfer port instead of sending everything to port 69, and binary mode sends `octet` (4.1c sent `octect`). Use `mode binary` for anything but text; `ascii` mode does no CR/LF conversion.
+
+```
+telnet 10.0.2.2 2323        # a telnet server on the Mac, through slirp
+tftp gateway                # tftp> mode binary, get file, put file, quit
+```
+
+Checked on the Mac so far, with host shims for termio and the 4.1a socket calls: telnet against a scripted server (option negotiation, typing, the escape commands, remote close) and tftp get/put against an RFC 1350 server, including a dropped packet. Not yet built on the Lisa.
 
 ## Routes
 
