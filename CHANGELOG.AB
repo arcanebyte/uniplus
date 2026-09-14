@@ -1,0 +1,296 @@
+CHANGELOG.AB -- changes to UniPlus+ System V V.1.5+ on the Apple Lisa
+September 2026
+
+This file lists what has been ported, written or changed to bring the
+network kernel (unix.net) up on the Lisa, with its programs, and what was
+changed in the LisaEm emulator to run it.  It describes each change; the
+code and full details are in the source tree (/usr/src) and in the git
+history of the uniplus and lisaem projects.
+
+Each entry has a "Period correct" line:
+
+  YES      what 4.1c/4.2BSD or UniSoft had by about 1985, or a port of it
+  BUG FIX  period code corrected so that it works
+  PARTLY   period behaviour plus some later conveniences (explained)
+  NO       a modern addition, kept as a test or convenience tool
+  N/A      runs on the Mac or in the emulator, not on the Lisa
+
+"Status" says how far each change has been tried: tested on the Lisa,
+built on the Lisa, checked on the Mac only, or not yet built.
+
+
+========================================================================
+1. KERNEL (/usr/src/sys, /usr/src/include)
+========================================================================
+
+Network kernel headers reconstructed
+  Period correct: YES
+  The kernel source survived without its network headers.  All 34
+  include/net headers came from UniSoft's own UniPlus+ on a Torch Triple X
+  disk of the same generation (Oct 1984); sys/config.h, sys/al_ioctl.h and
+  sys/speaker.h were reconstructed from the kernel, the Lisa binaries and
+  the Lisa manual.  PROVENANCE.md labels every file.
+  Status: tested on the Lisa (unix.net builds and boots).
+
+Kernel build fixes
+  Period correct: BUG FIX
+  config.h gained NTE, so the Tecmar serial card tables link; cxstub.c
+  supplies empty context routines (the real ones are for another MMU);
+  the Makefile defines m68000 for the Torch IP headers; a diagnostic
+  unix.pad target was added.
+  Status: tested on the Lisa.
+
+pro.c: partition e on a 20 MB ProFile
+  Period correct: NO (ProFiles stopped at 10 MB)
+  The second half of a 20 MB disk image is /dev/p0e (19456 blocks), the
+  source filesystem mounted on /usr/src.
+  Status: tested on the Lisa.
+
+conf.c: Ethernet address 10.0.2.15
+  Period correct: YES (a configuration value)
+  The EtherBox address was Berkeley's 89.0.41.8; it is now the address
+  LisaEm's slirp network gives the Lisa.
+  Status: tested on the Lisa.
+
+Raw ICMP sockets
+  Period correct: BUG FIX
+  No program had used raw sockets on this kernel.  Five faults: a raw
+  ICMP socket matched the ICMP input entry and called a null pointer
+  (proto.c); the raw socket code expected addresses in mbufs where this
+  kernel passes pointers (raw_cb.c, raw_usrreq.c); it overwrote its own
+  mbuf headers and panicked with "mfreep" (raw_cb.c, raw_usrreq.c,
+  raw_ip.c); icmp_input freed echo replies twice, and read the ICMP header
+  past the first mbuf (ip_icmp.c).
+  Status: tested on the Lisa (ping 127.0.0.1, 10.0.2.2, 8.8.8.8).
+
+Default routes
+  Period correct: YES (as 4.2BSD)
+  rtalloc() only found host and class-based network routes.  It now falls
+  back to a route to 0.0.0.0, so "route add default 10.0.2.2" reaches the
+  internet (route.c).
+  Status: tested on the Lisa.
+
+Setting the Ethernet address while running
+  Period correct: YES (as 4.2BSD's SIOCSIFADDR)
+  UniSoft's SIOCCIADDR only stored the address for the next boot.  It now
+  replaces the interface's address and network route at once and
+  announces the address with ARP (socket.c).  Used by ifconfig.
+  Status: tested on the Lisa (ifconfig eb0 10.0.2.15, then ping).
+
+EtherBox driver: statistics and a status check
+  Period correct: BUG FIX / YES
+  The driver now counts collisions (from the box's collision counter) and
+  output errors (16 collisions, unreadable transmit status), as 4.2BSD
+  drivers did.  A misplaced parenthesis made the "unreadable transmit
+  status" check test the underflow bit instead (if_eb.c).
+  Status: built on the Lisa.
+
+Console: a fuller VT100 emulator
+  Period correct: PARTLY
+  vt100.c was reworked into one state machine.  VT100 behaviour added:
+  tab stops every 8 columns at power-on; complete parsing of escape
+  sequences, so unknown ones no longer print characters; scrolling
+  regions and origin mode; save and restore cursor (ESC 7, ESC 8); index,
+  next line, reverse index (now blanking the new top line); insert and
+  erase characters, insert mode (VT102); autowrap on/off; application
+  cursor keys (kb.c, s_kb.c); replies to "what terminal" and "where is
+  the cursor"; ESC c reset; cursor hide/show (VT220, 1983).
+  Later conveniences, not period: deferred wrap on the last column and
+  reverse wrap for backspace (so erasing a wrapped line works), as in
+  xterm; ESC [ s and ESC [ u.
+  reinit.c restores the default tab stops.  A new termcap entry for vtl
+  is in /usr/src/console/termcap.vtl, and is installed in /etc/termcap.
+  Status: running on the Lisa; checked on the Mac (35 checks).
+
+tty driver: no erase echo with nothing left on the line
+  Period correct: YES (as Berkeley's tty driver)
+  With echoe, System V echoed backspace, space, backspace for every erase
+  character, even on an empty line, wiping the prompt; with the console's
+  reverse wrap it went on up the screen.  The erase is now echoed only if
+  the input line still has a character to remove (tt1.c, the line
+  discipline the kernel is built with; also tt0.c, which it first went
+  into by mistake).
+  Status: tested on the Lisa (Delete in csh stops at the prompt).
+
+
+========================================================================
+2. NETWORK LIBRARY AND DATA FILES (/usr/src/netlib)
+========================================================================
+
+Socket headers and system call stubs
+  Period correct: YES
+  include/net/socket.h, in.h and route.h describe the 4.1a BSD socket
+  interface this kernel has (socket with a local address and options,
+  accept connecting the listening socket, send/receive); sockcall.s holds
+  the trap stubs for system calls 70-79.  Also include/bsd.h, mapping BSD
+  names (u_long, bcopy, bzero, index) onto System V.
+  Status: tested on the Lisa.
+
+libnetdb.a: host, network, service and protocol names
+  Period correct: YES (4.1c BSD library from 2.9BSD, plus 4.2BSD's
+  inet_ntoa)
+  gethostbyname, getservbyname and the rest, reading /etc/hosts,
+  /etc/networks, /etc/protocols and /etc/services, and the inet_ address
+  routines rewritten for 68000 byte order.  Names are shortened for the
+  7-character limit of cc (gethbyname and so on, through netdb.h).  No
+  name server: only /etc/hosts.  hosttest checks every lookup.
+  Status: tested on the Lisa (hosttest passes).
+
+/etc/hosts, networks, protocols, services
+  Period correct: YES
+  Sample files for LisaEm's network: localhost, lisa (10.0.2.15),
+  gateway/mac (10.0.2.2), nameserver (10.0.2.3); services include telnet,
+  ftp, tftp, finger and http.
+  Status: installed on the Lisa.
+
+
+========================================================================
+3. PROGRAMS
+========================================================================
+
+tcpconn, tcpecho, looptest, udptest, netinfo
+  Period correct: NO (new test programs, written for the period API)
+  A TCP client and echo server, loopback TCP and UDP round-trip tests, and
+  a program showing the host name and address.
+  Status: tested on the Lisa.
+
+ping
+  Period correct: YES (new code; ping itself dates from December 1983)
+  ICMP echo on a raw socket, run as root.  Counts late replies with their
+  real times, marks duplicates, -w sets the wait, -d shows kernel ICMP
+  messages.  Refuses to run on a kernel without the raw socket fixes.
+  Status: tested on the Lisa.
+
+route
+  Period correct: YES (4.1a BSD route semantics)
+  route show lists the kernel's routing tables; route add and route
+  delete take an address or "default" and a gateway.
+  Status: tested on the Lisa.
+
+ifconfig
+  Period correct: YES (new code; ifconfig is a 4.2BSD command)
+  Lists interfaces with flags, addresses and packet counts; ifconfig eb0
+  a.b.c.d sets the Ethernet address (needs the socket.c change).
+  Status: tested on the Lisa.
+
+nc
+  Period correct: NO (netcat is from 1995)
+  Connect to or listen on a TCP port, or send and receive UDP; kept as a
+  test tool.
+  Status: tested on the Lisa (a TCP conversation with the Mac).
+
+httpd
+  Period correct: NO (the web is from the early 1990s)
+  Serves .html and .txt files from /usr/www with HTTP/1.0; kept as a
+  demonstration.
+  Status: not yet tested on the Lisa.
+
+telnet
+  Period correct: YES (port of 4.1c BSD telnet from 2.9BSD)
+  The kernel's select() cannot wait on a terminal, so a connection runs as
+  two processes: one reads the network, one the keyboard and the escape
+  commands.  Terminal modes use termio.  No "z" (no job control), and
+  close does not half-close (no shutdown()).
+  Status: tested on the Lisa (logging in to its own telnetd); checked on
+  the Mac against a scripted server.
+
+tftp
+  Period correct: YES, with BUG FIXES
+  Port of 4.1c BSD tftp.  Fixed so it works with any server: it follows
+  the port the server replies from, binary mode sends "octet" (4.1c sent
+  "octect"), and request packets no longer carry stray bytes.
+  Status: built on the Lisa; checked on the Mac against a test server.
+
+ftp
+  Period correct: YES, with one addition (NO)
+  Port of 4.1c BSD ftp with 2.9BSD's 4.1a socket conversion, 4.1c's
+  XPWD/XMKD/XRMD commands and its original ruserpass (.netrc and
+  environment passwords).  Bug fix: a byte of 0377 no longer ends a binary
+  transfer.  Bug fix: when the server's "125" and "226" replies both
+  arrived before ftp read them, it took the 226 as the answer and closed
+  the data connection unread, so ls showed nothing; it now handles one
+  reply at a time, as 4.2BSD does.  Addition, not period: the "passive"
+  command and -p, needed to get through LisaEm's network address
+  translation.
+  Status: tested on the Lisa (passive mode to a server on the Mac: ls,
+  ascii, get).
+
+telnetd
+  Period correct: YES (port of 4.1c BSD telnetd)
+  Logins over telnet on the kernel's pseudo-terminals (mkptys makes
+  /dev/ptyp0-f and /dev/ttyp0-f).  System V's login needs a utmp entry, so
+  telnetd writes one first and marks it dead at logout.  mkptys first
+  used ":" comments, which the shell rejected; they are "#" comments now.
+  Status: tested on the Lisa (telnet 127.0.0.1 logs in; who lists the
+  session).
+
+netstat
+  Period correct: YES (4.1c BSD netstat, with 4.2BSD's -s)
+  Connections, interfaces (-i), routing tables (-r), mbuf counts (-m) and
+  IP/TCP/UDP statistics (-s), built against the kernel's own headers.
+  Status: tested on the Lisa (-i, -r, -s, -m).
+
+ls7 and rm7 (/usr/src/ucb)
+  Period correct: YES (4.2BSD ls 1982, 4.1BSD rm 1981, from 2.9BSD)
+  Berkeley ls beside System V's: columns on a terminal, -F, -A, -R, owner
+  and group in -l.  It is the ls7 that root's 1984 .cshrc already names
+  ("alias ls ls7 -F").  Berkeley rm takes its options as separate
+  arguments.  A small opendir/readdir reads System V directories.
+  Status: tested on the Lisa.
+
+
+========================================================================
+4. TOOLS ON THE MAC (not on the Lisa)
+========================================================================
+
+  Period correct: N/A
+
+  extract_profile_image.py  copies files out of Lisa and Torch disk images
+  make_profile_image.py     builds a ProFile image from folders
+  put_profile_files.py      adds files to a disk image in place, checking
+                            the filesystem before and after (--mkdir makes
+                            directories); how sources reach the Lisa
+  lisa_names.py             finds names that clash in 7 characters and
+                            calls missing from the Lisa's libc
+  vt100test                 runs the console emulator against a model of
+                            the screen
+
+
+========================================================================
+5. LISAEM EMULATOR (not on the Lisa)
+========================================================================
+
+  Period correct: N/A
+
+Faithful ProFile drive and parallel port emulation (lisaem #55)
+  The ProFile and the parallel card's 6522 behave as the hardware does,
+  replacing patches that only worked for UniPlus 1.4's kernel, so rebuilt
+  kernels boot.  Also fixed a Timer 1 latch fault that crashed UniPlus
+  after a power cycle.
+
+EtherBox emulation with slirp networking (lisaem #57)
+  Emulates the 3Com EtherBox on a dual parallel card port, and connects it
+  to the Mac and the internet through libslirp: the Lisa is 10.0.2.15,
+  the Mac 10.0.2.2.  Port forwards reach the Lisa from the Mac; packet
+  traces and pcap files for debugging.
+
+slirp TFTP server (lisaem etherbox-tftp)
+  LISAEM_ETHERBOX_TFTP=directory lets the Lisa fetch files from the Mac
+  with tftp (read only, binary mode).
+
+Double bus fault halts instead of quitting; mouse crash (lisaem #58)
+  UniPlus's reboot command made LisaEm quit.  A 68000 double bus fault now
+  halts the CPU and powers the Lisa off, as the real CPU halts; a crash
+  when the mouse moved during a message box is fixed.
+
+
+========================================================================
+6. KNOWN ISSUES
+========================================================================
+
+  - reboot still ends in a double bus fault: the kernel jumps to the ROM
+    monitor with an unusable stack.  Use sync and power off instead.
+  - The EtherBox's lost-interrupt problem (3Com memo, May 1983) is not
+    handled by the driver; LisaEm's timing hides it.
+  - root's 1984 .cshrc aliases rm to "rm -i", which breaks "rm -f"; use
+    "alias rm rm7 -i" with ls7/rm7 installed, or remove the alias.

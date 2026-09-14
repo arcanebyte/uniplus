@@ -1,0 +1,188 @@
+#ifndef	lint
+static char *sccsid = "@(#)rm.c	4.3 (Berkeley) 1/4/81";
+#endif
+int	errcode;
+
+/*
+ * Lisa (UniPlus+ System V), from 2.9BSD's src/cmd/rm.c, installed as rm7
+ * beside System V's rm, whose options must all be in the first argument:
+ * no <sys/file.h>, so access() mode 2 is spelled out; no symbolic links.
+ */
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/stat.h>
+#include <sys/dir.h>
+
+#define	FACCESS_WRITE	2
+#ifndef	S_IFLNK
+#define	S_IFLNK		0120000	/* never a System V file type */
+#endif
+
+char	*sprintf();
+
+main(argc, argv)
+char *argv[];
+{
+	register char *arg;
+	int fflg, iflg, rflg;
+
+	fflg = 0;
+	if (isatty(0) == 0)
+		fflg++;
+	iflg = 0;
+	rflg = 0;
+	while(argc>1 && argv[1][0]=='-') {
+		arg = *++argv;
+		argc--;
+
+		/*
+		 *  all files following a null option are considered file names
+		 */
+		if (*(arg+1) == '\0') break;
+
+		while(*++arg != '\0')
+			switch(*arg) {
+			case 'f':
+				fflg++;
+				break;
+			case 'i':
+				iflg++;
+				break;
+			case 'r':
+				rflg++;
+				break;
+			default:
+				printf("rm: unknown option %s\n", *argv);
+				exit(1);
+			}
+	}
+	while(--argc > 0) {
+		if(!strcmp(*++argv, "..")) {
+			fprintf(stderr, "rm: cannot remove `..'\n");
+			continue;
+		}
+		rm(*argv, fflg, rflg, iflg, 0);
+	}
+
+	exit(errcode);
+}
+
+rm(arg, fflg, rflg, iflg, level)
+char arg[];
+{
+	struct stat buf;
+	struct direct direct;
+	char name[100];
+	int d;
+
+#ifdef	UCB_SYMLINKS
+	if(lstat(arg, &buf))
+#else
+	if(stat(arg, &buf))
+#endif
+		{
+		if (fflg==0) {
+			printf("rm: %s nonexistent\n", arg);
+			++errcode;
+		}
+		return;
+	}
+	if ((buf.st_mode&S_IFMT) == S_IFDIR) {
+		if(rflg) {
+			if (access(arg, FACCESS_WRITE) < 0) {
+				if (fflg==0)
+					printf("%s not changed\n", arg);
+				errcode++;
+				return;
+			}
+			if(iflg && level!=0) {
+				printf("remove directory %s? ", arg);
+				if(!yes())
+					return;
+			}
+			if((d=open(arg, 0)) < 0) {
+				printf("rm: cannot read %s?\n", arg);
+				exit(1);
+			}
+			while(read(d, (char *)&direct, sizeof(direct)) == sizeof(direct)) {
+				if(direct.d_ino != 0 && !dotname(direct.d_name)) {
+					sprintf(name, "%s/%.14s", arg, direct.d_name);
+					rm(name, fflg, rflg, iflg, level+1);
+				}
+			}
+			close(d);
+			errcode += rmdir(arg, iflg);
+			return;
+		}
+		printf("rm: %s directory\n", arg);
+		++errcode;
+		return;
+	}
+
+	if(iflg) {
+		printf("rm: remove %s? ", arg);
+		if(!yes())
+			return;
+	}
+	else if(!fflg) {
+		if ((buf.st_mode&S_IFMT) != S_IFLNK && access(arg, FACCESS_WRITE)<0) {
+			printf("rm: override protection %o for %s? ", buf.st_mode&0777, arg);
+			if(!yes())
+				return;
+		}
+	}
+	if(unlink(arg) && (fflg==0 || iflg)) {
+		printf("rm: %s not removed\n", arg);
+		++errcode;
+	}
+}
+
+dotname(s)
+char *s;
+{
+	if(s[0] == '.')
+		if(s[1] == '.')
+			if(s[2] == '\0')
+				return(1);
+			else
+				return(0);
+		else if(s[1] == '\0')
+			return(1);
+	return(0);
+}
+
+rmdir(f, iflg)
+char *f;
+{
+	int status, i;
+
+	if(dotname(f))
+		return(0);
+	if(iflg) {
+		printf("rm: remove %s? ", f);
+		if(!yes())
+			return(0);
+	}
+	while((i=fork()) == -1)
+		sleep(3);
+	if(i) {
+		wait(&status);
+		return(status);
+	}
+	execl("/bin/rmdir", "rmdir", f, 0);
+	execl("/usr/bin/rmdir", "rmdir", f, 0);
+	printf("rm: can't find rmdir\n");
+	exit(1);
+	/*NOTREACHED*/
+}
+
+yes()
+{
+	int i, b;
+
+	i = b = getchar();
+	while(b != '\n' && b != EOF)
+		b = getchar();
+	return(i == 'y');
+}
