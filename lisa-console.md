@@ -13,7 +13,7 @@ The Lisa's own screen and keyboard are the `console` device (`v1.5/sys/co.c`). O
 
 Two things are the shell and tty driver, not the emulator:
 - **Arrow keys:** `/bin/sh` has no history, so up-arrow's `ESC [ A` is echoed by the tty driver and moves the cursor. Use csh's history (`!!`, `!vi`, `^old^new`) instead.
-- **The empty line:** erasing past the start of an empty line backs over the prompt. That's how System V's `ECHOE` works.
+- **The empty line:** System V's `ECHOE` echoed backspace-space-backspace for every erase, even with nothing left to erase, so it wiped the prompt (and, once the console wrapped backwards, the text above). `tt0.c` now checks the line first; see below.
 
 ## The reworked emulator (September 2026)
 
@@ -34,7 +34,9 @@ Two things are the shell and tty driver, not the emulator:
 
 Not emulated: 132 columns, double-width lines, the line-drawing character set (the Lisa font has none), blink, reverse screen (`ESC [ ? 5 h`), and separate bold (bold shows as reverse, as before).
 
-Files changed: `vt100.c`; `kb.c` and `s_kb.c` (`kb_ckm`, application cursor keys); `reinit.c` (default tabs instead of none).
+**Erase on an empty line (`tt0.c`):** with `echoe`, an erase is only echoed when the input line has a character left to remove, as Berkeley's tty driver did. The driver echoes when a character arrives but erases when the line is read, so `ttrubok()` replays the raw input queue (newline, EOF, EOL and the kill character start a new line; an erase removes one character; a character after `\` is literal). This works on every terminal, not just the console.
+
+Files changed: `vt100.c`; `kb.c` and `s_kb.c` (`kb_ckm`, application cursor keys); `reinit.c` (default tabs instead of none); `tt0.c` (erase echo).
 
 **Testing:** `tools/vt100test/run.sh` builds `vt100.c` on the Mac against a character-grid model of the `bm.c` routines and checks wrapping, reverse wrap and erase, tabs, unknown sequences, cursor visibility, scrolling regions, insert and delete line and character, insert mode, saved cursor, attributes, the replies, origin mode and reset. Run it after changing `vt100.c`. On the Lisa it needs a kernel rebuild (`rm -f net.o unix.net` first).
 
