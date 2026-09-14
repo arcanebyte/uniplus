@@ -84,7 +84,7 @@ The 4.1c BSD ftp client, as 2.9BSD converted it for the 4.1a socket calls (`comp
 - **Passive mode:** `ftp -p` or the `passive` command makes ftp connect to the port the server gives in its PASV reply, instead of listening for the server (PORT). Use it through slirp's NAT; LisaEm's slirp can also rewrite PORT for servers on port 21.
 - **Binary transfers fixed:** 4.1c kept each byte in a `char`, so a 0377 byte ended a transfer as if it were EOF.
 - **Login:** a smaller `ruserpass()` reads plain `machine`/`login`/`password` entries from `$HOME/.netrc`, then prompts. 4.1c's version also decrypted passwords kept in the environment.
-- `pwd`, `mkdir` and `rmdir` send the RFC 959 `PWD`, `MKD` and `RMD` (4.1c sent the older `XPWD`, `XMKD`, `XRMD`).
+- `pwd`, `mkdir` and `rmdir` send 4.1c's `XPWD`, `XMKD` and `XRMD` (the experimental commands of RFC 775, the names of the time). Servers still accept them; RFC 959's `PWD`, `MKD` and `RMD` came in 1985.
 - Transfer times are in whole seconds (no `gettimeofday()`). Names that clash in 7 characters are renamed in `varpat.h`, as 2.9BSD did for the PDP-11.
 - The shell escape (`!`) is unimplemented, as in 4.1c, and there is no `mget`/`mput`.
 
