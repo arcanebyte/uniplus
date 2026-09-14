@@ -233,7 +233,50 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 2. **Rebuild `unix.net` from the fixed source: done.** `unix.net` rebuilt on the Lisa from the fixed `pro.c` is `/unix` on `build2`, so it no longer depends on the image patch. After a Lisa power-off/on within one LisaEm session it panicked in `ppintr` when slot 1 was empty. The cause was a LisaEm VIA Timer 1 latch bug, fixed in lisaem PR #55.
 3. **Etherbox emulation in LisaEm: done** (section 9, lisaem PR #57).
 4. **Default route: done** (`netlib/route`, `rtalloc()` fallback).
-5. **Network tools:** the Torch binaries can't run on the Lisa (they map a shared C library with a Torch-only system call and expect data at `0x400000`), so port from the 2.9BSD network kit (`bsd/2.9BSD/usr/net/src/netser/`), which uses the same 4.1a socket API: a small `nc` first, then `telnet`, `ftp`/`tftp`, `netstat`, `/etc/hosts` lookups and a DNS resolver, then the servers.
+5. **Network tools:** the Torch binaries can't run on the Lisa (they map a shared C library with a Torch-only system call and expect data at `0x400000`), so port from the 2.9BSD network kit (`bsd/2.9BSD/usr/net/src/netser/`), which uses the same 4.1a socket API:
+   - `netlib/nc` and `netlib/httpd`: written, to be tested on the Lisa;
+   - a DNS resolver (host names through slirp's DNS at 10.0.2.3) and `/etc/hosts` lookups;
+   - `telnet`, `ftp`, `tftp`, `rlogin`/`rsh`/`rcp`;
+   - `netstat`, `rwho`/`rwhod`;
+   - later the servers (`telnetd`, `ftpd`, `rlogind`), which need the kernel's pseudo-terminals.
+
+**Kernel improvements from later BSD** (in order):
+1. **`shutdown()` system call.** Every protocol already handles `PRU_SHUTDOWN`; only the call is missing. Lets `nc`, `ftp` and `httpd` half-close a TCP connection.
+2. **Runtime interface address:** make `SIOCCIADDR` re-initialise the interface and its routes, and add a small `ifconfig`, so changing the address needs no rebuild.
+3. **Boot-time ARP:** set the send queue length before `ifinit()` calls each interface's init, so the ARP request `ebinit()` sends isn't dropped.
+4. **`select()` on terminals,** so `telnet` and `nc` can be one process.
+5. **4.2BSD socket calls** (`bind`, `listen`, `accept` returning a new descriptor, `sendto`/`recvfrom`, `getsockname`, `setsockopt`): first as a user-space compatibility library over the 4.1a calls, then in the kernel if concurrent servers need it.
+6. **Later:** 4.3BSD TCP retransmit timing and slow start; enabling the COFF loader in `exec` (`sys1.c`, `#ifdef notdef`).
+- Out of reach: long file names, symbolic links, the Fast File System, job control, demand paging on a 68000.
+
+**EtherBox lost interrupts** (3Com/Apple memo, 27 May 1983): the box signals on edge-triggered CA1, and any port A access clears the 6522's CA1 flag, so a frame arriving while the driver talks to the box at `spl6` loses its interrupt. With the original box the frame waits for the next interrupt; with the revised box (INT latched) BSY stays high and receive stops.
+1. **Driver:** `if_eb.c` has no check for this. `ebintr` only re-reads AUXCSR before returning, and `ebpoll` (`/* sigh */`) resets the controller and re-arms both receive buffers every 10 s, dropping unread frames and possibly an in-flight transmit. Add the memo's fix: after each use of the box in `ebstart`/`eboutput`, still at `spl6`, check AUXCSR for a buffer given back to the Lisa, and transmit done, and call `ebintr` if either is set. Then make `ebpoll` a watchdog that resets only when the box looks stuck.
+2. **LisaEm:** the box model pulses CA1 only when the CPU can take the interrupt at once (`is_vector_available`) and takes frames from the backend only then, so the race never happens, and it ignores the controller reset (`eb_write_aux` only traces it; a long trace log had 4,161 resets from `ebpoll`). Add an option that times interrupts as the hardware does (pulse CA1 when the frame arrives, whatever the CPU's interrupt mask) and resets the controller, to reproduce the lost interrupts and test the driver fix before it runs on a real Lisa.
+
+**EtherBox hardware for a real Lisa** (DB-25 to RJ-45, no change to the Lisa or `if_eb.c`). The original box ([3Com EtherBox External Reference Specification, Sep 1983](https://bitsavers.org/communications/3Com/Etherbox_Sep83.pdf), with all 12 schematic sheets and the lost-interrupt memo) needs a SEEQ DQ8001 and discrete 10K ECL, so instead build a box that speaks the same register protocol with current parts:
+- Raspberry Pi Pico 2 (RP2350) or Pico: PIO handles each strobe on the bus, core 0 runs the register model, core 1 the Ethernet side.
+- WIZnet W5500 module (MACRAW, 10/100 PHY) on SPI.
+- 74LVC245 on D0–D7 with 33–100 Ω series resistors (the driver sets DRW to read one instruction before it turns port A to input), 74LVC14 on PSTRB/CMD/DRW/CRES, 74AHCT125 driving BSY and PARITY; OCD grounded; DB-25 female; USB-C power; link/TX/RX/BSY LEDs.
+- In the box: hold BSY while an interrupt is pending, and if one is still pending about 1 ms after the Lisa stops strobing, drop and raise BSY again to make a fresh CA1 edge (the 1983 memo's workaround, done in the box). Locally administered MAC from the Pico's unique ID; USB console with the LisaEm-style trace and optional pcap.
+
+Steps:
+1. **Measure strobe timing in LisaEm:** trace the gap between strobes in `ebrd_data`/`ebwr_data` loops and from DRW changing to the first read, at 5 MHz, to size the PIO design.
+2. **Split `etherbox.c`'s register model into a plain C library** built by both LisaEm and the Pico firmware; add what the spec defines and the driver doesn't use (receive match modes, 2K buffers and receive error bits, PROM date/assembly/checksum bytes, looping back the box's own broadcasts; check which receive mode `if_eb.c` sets).
+3. **Pico firmware:** PIO bus program, register core, W5500 backend; test against a logic analyser or a second Pico acting as the Lisa's 6522.
+4. **KiCad board:** Pico, W5500 module, buffers, DB-25, USB-C; small two-layer board.
+5. **Real Lisa:** dual parallel card in slot 2 (UniPlus unit 5), unmodified `unix.net`.
+- Later: Pico 2 W with Wi-Fi, doing NAT in the box like the slirp backend (Wi-Fi can't bridge the Lisa's MAC).
+
+**Disk speed and space:**
+1. **Buffer cache sized at boot.** The cache is `NBUF 30` 1K buffers (`conf.c`, `SBUFSIZE` = 1K with `FsTYPE 3`), 30K on a 2MB Lisa, so programs and metadata are read from the ProFile again and again. `space.h` already reaches the buffer data through a pointer (`caddr_t buffers = bspace`), and `startup()` (`machdep.c`) runs before `binit()`. So `startup()` can take a share of free memory (for example 10%, kept between 30 and a compiled-in maximum) from the front of the free clicks, point `buffers` at it, and set `v.v_buf`. `NBUF` becomes the header count (about 60 bytes each), `bspace` goes away, and `NHBUF` rises to 128. A patchable variable in `/unix` overrides the share. Measure with LisaEm's ProFile command count on a fixed workload (kernel `make`, `ls -lR /usr`) with 30 and with the boot-sized cache.
+2. **`disksort()` in the ProFile driver.** `pro.c` adds requests to the end of the queue; `priam.c` and `cv.c` sort them. Fewer seeks with several processes using the disk, and read-ahead and delayed writes queue more requests once the cache is larger.
+3. **Free-list order:** `fsck -S` with gap and blocks-per-cylinder values suited to the ProFile, so new files aren't scattered. No kernel change.
+4. **Priam DataTower in LisaEm.** The kernel already supports it (`priam.c`, block device 3; `config.c` finds the card by ID 5 (`ID_PRIAM`) and offers it for swap and root). The drive reports its size, so `a` is the whole disk after 100 boot blocks and 4,000 swap blocks. LisaEm needs an expansion card that reports ID 5, the controller registers from `priam.h` (status/command, 16-bit data, six parameter/result registers, parity) and its two-interrupts-per-command sequence. Boot from the ProFile first, with root and swap on the Priam; booting from the Priam needs the card's boot ROM or a replacement for it. Until then, a larger ProFile image with more `prlmap` partitions in `pro.c` is the quick way to more space (emulator only). The Corvus driver (`cv.c`) uses a fixed 18MB layout, so it adds no space.
+- A 68000 cross-compiler on the Mac (gcc or vbcc) with a converter to UniSoft's object format would lift the Lisa `cc` limits for larger ports.
+
+**Utilities to port** (1983–87 freely distributed C, from Usenet `net.sources`/`mod.sources` and the TUHS archives):
+- MicroEMACS (editor), `less` (pager), `patch`, `compress` (12-bit codes for the Lisa's memory), `uuencode`/`uudecode`.
+- The Lisa `cc` keeps 7 characters of external names, so check each port's names against each other and against `/lib/libc.a` (no `strstr`).
 
 **LisaEm (PR #55)**, full list in `ProFileEmulationTesting.md`:
 1. **Dual parallel card:** ProFile read/write and boot. It used to hang; not yet tried on the new emulation.
