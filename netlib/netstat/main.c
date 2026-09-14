@@ -165,6 +165,13 @@ use:
 		routepr((off_t)nl[N_RTHOST].n_value, (off_t)nl[N_RTNET].n_value);
 		exit(0);
 	}
+	if (sflag) {
+		/* Lisa: the order of /etc/protocols; no icmpstat */
+		ip_stats((off_t)nl[N_IPSTAT].n_value, "ip");
+		tcp_stats((off_t)nl[N_TCPSTAT].n_value, "tcp");
+		udp_stats((off_t)nl[N_UDPSTAT].n_value, "udp");
+		exit(0);
+	}
 	setprotoent(1);
 	setservent(1);
 	while (p = getprotoent()) {
