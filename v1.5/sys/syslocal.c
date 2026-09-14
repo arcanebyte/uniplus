@@ -299,7 +299,8 @@ selscan(nfd, fds, nfdp, flag)
 		
 	bits = fds.fds_bits[0];
 	while (i = ffs(bits)) {
-		if (i >= nfd)
+		/* ffs counts from 1: i is descriptor i-1, which is < nfd */
+		if (i > nfd)
 			break;
 		bits &= ~(1L<<(i-1));
 		fp = u.u_ofile[i-1];

@@ -127,6 +127,31 @@ tty driver: no erase echo with nothing left on the line
   into by mistake).
   Status: tested on the Lisa (Delete in csh stops at the prompt).
 
+select(): the last descriptor is checked
+  Period correct: BUG FIX
+  selscan() (syslocal.c) finds each requested descriptor with ffs(),
+  which counts bits from 1, and stopped when that count reached nfds, so
+  it never checked descriptor nfds-1.  The usual select(s + 1, ...)
+  waited out its timeout with data queued on s.  ftp (20) and telnetd
+  (32) pass larger counts and didn't notice.  The name server resolver
+  found it: slirp's answers reached the Lisa (pcap) but select() never
+  returned them.  One character: stop when the count is greater than
+  nfds.
+  History: the same test is in 2.9BSD's network kit
+  (bsd/2.9BSD/usr/net/sys/sys/syslocal.c) and in UniPlus V.1.0
+  (v1.0/sys/syslocal.c); the matching code suggests UniSoft's select()
+  came from that back-port (not confirmed).  Berkeley's own kernels were
+  right: 4.2BSD's select() (sys_generic.c 6.1, 83/07/29) masks the
+  requested bits with (1 << nd) - 1 and its selscan() has no nfds test,
+  and 4.3BSD loops while i < nfd (unix-history-repo, BSD-4_2 and
+  BSD-4_3).  Programs of the time mostly passed a fixed count (20, 32),
+  which hides the bug.  No report of it was found; Usenet was not
+  searched.
+  Status: tested on the Lisa: with the rebuilt unix.net as /unix,
+  netlib/netdb/restest's select(s + 1) returns slirp's DNS answer at once
+  (before, it waited out 10 seconds).  The previous kernel is
+  /unix.preselect on build2.
+
 
 ========================================================================
 2. NETWORK LIBRARY AND DATA FILES (/usr/src/netlib)

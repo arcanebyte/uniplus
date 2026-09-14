@@ -203,6 +203,8 @@ Plan and register-level details: `etherbox-emulation-plan.md`. Code: lisaem bran
 
 **Emulated speed.** The Lisa's clock follows emulated time. With LisaEm at 512 MHz a 20 ms round trip to the internet took over 2 seconds of Lisa time, so `ping` gave up before the replies came; at 5 MHz all replies arrive in time. TCP timers work the same way, so talk to real hosts at a realistic speed. slirp opens one host ICMP socket per request, and macOS hands a reply to every socket with the same ID, so overlapping requests produce duplicate replies (`ping` marks them).
 
+**`select()` skipped the last descriptor.** `selscan()` (`syslocal.c`) numbers descriptors from 1 with `ffs()` and stopped when the number reached `nfds`, so `select(s + 1, …)` never looked at `s`. The 4.3BSD resolver was the first program here to call it that way: slirp's DNS answers reached the Lisa (seen in a LisaEm pcap) but `select()` timed out. The same test is in 2.9BSD's network kit and UniPlus V.1.0; 4.2BSD and 4.3BSD are correct. Fixed (stop when the number is greater than `nfds`) and tested on the Lisa with `netlib/netdb/restest`; details in `CHANGELOG.AB`.
+
 **Build trap:** the Lisa's clock can go backwards between LisaEm sessions. Objects compiled later then look older than `net.o`, and `make` installs the old `unix.net` without relinking. Remove `net.o unix.net` before rebuilding (`lisa-build.md`).
 
 ## 10. Current state
@@ -219,7 +221,7 @@ Test build: `~/github/lisaem-etherbox/bin/LisaEm.app` (a worktree of the lisaem 
 
 | Image | State |
 |---|---|
-| `uniplus_unix_20mb.build2.image` | **Current.** `/unix` = `unix.net` built from this branch (10.0.2.15, raw socket and ICMP fixes); `/unix.prev` = the earlier `unix.net` (89.0.41.8); `/unix.orig` = 1.4. Partition e has the sources, objects, logs and `netlib` including `ping`. |
+| `uniplus_unix_20mb.build2.image` | **Current.** `/unix` = `unix.net` built from this branch (10.0.2.15, raw socket and ICMP fixes); `/unix.preselect` = the kernel before the `select()` fix; `/unix.prev` = the earlier `unix.net` (89.0.41.8); `/unix.orig` = 1.4. Partition e has the sources, objects, logs and `netlib` including `ping`. |
 | `uniplus_unix_20mb.build2.before-*.image` | Backups taken before each change written from the Mac (`ping`, `rawfix`, `icmpfix`, `pingdebug`, `pullup`, and earlier) |
 | `uniplus_unix_20mb.build2.before-prlmap-patch.image` | Backup from just before the `/unix` partition e patch |
 | `uniplus_unix_20mb.original.image` | Earlier build (before the link fixes) |
