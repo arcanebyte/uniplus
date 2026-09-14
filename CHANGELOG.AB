@@ -75,7 +75,7 @@ Setting the Ethernet address while running
   UniSoft's SIOCCIADDR only stored the address for the next boot.  It now
   replaces the interface's address and network route at once and
   announces the address with ARP (socket.c).  Used by ifconfig.
-  Status: not yet built on the Lisa.
+  Status: built on the Lisa; not yet tested.
 
 EtherBox driver: statistics and a status check
   Period correct: BUG FIX / YES
@@ -83,7 +83,7 @@ EtherBox driver: statistics and a status check
   output errors (16 collisions, unreadable transmit status), as 4.2BSD
   drivers did.  A misplaced parenthesis made the "unreadable transmit
   status" check test the underflow bit instead (if_eb.c).
-  Status: not yet built on the Lisa.
+  Status: built on the Lisa.
 
 Console: a fuller VT100 emulator
   Period correct: PARTLY
@@ -99,8 +99,8 @@ Console: a fuller VT100 emulator
   reverse wrap for backspace (so erasing a wrapped line works), as in
   xterm; ESC [ s and ESC [ u.
   reinit.c restores the default tab stops.  A new termcap entry for vtl
-  is in /usr/src/console/termcap.vtl.
-  Status: checked on the Mac (35 checks); not yet built on the Lisa.
+  is in /usr/src/console/termcap.vtl, and is installed in /etc/termcap.
+  Status: running on the Lisa; checked on the Mac (35 checks).
 
 
 ========================================================================
@@ -181,8 +181,8 @@ telnet
   two processes: one reads the network, one the keyboard and the escape
   commands.  Terminal modes use termio.  No "z" (no job control), and
   close does not half-close (no shutdown()).
-  Status: built on the Lisa (connect refused as expected with no server);
-  checked on the Mac against a scripted server.
+  Status: tested on the Lisa (logging in to its own telnetd); checked on
+  the Mac against a scripted server.
 
 tftp
   Period correct: YES, with BUG FIXES
@@ -204,14 +204,16 @@ telnetd
   Period correct: YES (port of 4.1c BSD telnetd)
   Logins over telnet on the kernel's pseudo-terminals (mkptys makes
   /dev/ptyp0-f and /dev/ttyp0-f).  System V's login needs a utmp entry, so
-  telnetd writes one first and marks it dead at logout.
-  Status: built on the Lisa; not yet run.
+  telnetd writes one first and marks it dead at logout.  mkptys first
+  used ":" comments, which the shell rejected; they are "#" comments now.
+  Status: tested on the Lisa (telnet 127.0.0.1 logs in; who lists the
+  session).
 
 netstat
   Period correct: YES (4.1c BSD netstat, with 4.2BSD's -s)
   Connections, interfaces (-i), routing tables (-r), mbuf counts (-m) and
   IP/TCP/UDP statistics (-s), built against the kernel's own headers.
-  Status: built on the Lisa (before -s was added).
+  Status: built and run on the Lisa.
 
 ls7 and rm7 (/usr/src/ucb)
   Period correct: YES (4.2BSD ls 1982, 4.1BSD rm 1981, from 2.9BSD)
@@ -219,7 +221,7 @@ ls7 and rm7 (/usr/src/ucb)
   and group in -l.  It is the ls7 that root's 1984 .cshrc already names
   ("alias ls ls7 -F").  Berkeley rm takes its options as separate
   arguments.  A small opendir/readdir reads System V directories.
-  Status: checked on the Mac; not yet built on the Lisa.
+  Status: tested on the Lisa.
 
 
 ========================================================================
