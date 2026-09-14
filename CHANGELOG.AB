@@ -102,6 +102,15 @@ Console: a fuller VT100 emulator
   is in /usr/src/console/termcap.vtl, and is installed in /etc/termcap.
   Status: running on the Lisa; checked on the Mac (35 checks).
 
+Buffer cache sized at boot
+  Period correct: YES (as 4.2BSD, which gives its cache 10% of memory)
+  The cache was 30 1K buffers in a fixed array, so programs, directories
+  and inodes were read from the ProFile again and again.  At boot the
+  kernel now takes 10% of free memory for buffers (bufpct), no fewer
+  than 30 and no more than 200, and says how many (main.c, conf.c,
+  /usr/include/sys/space.h).  The startup kernel (sunix) is unchanged.
+  Status: written; not yet built on the Lisa.
+
 tty driver: no erase echo with nothing left on the line
   Period correct: YES (as Berkeley's tty driver)
   With echoe, System V echoed backspace, space, backspace for every erase
@@ -222,7 +231,7 @@ telnetd
   telnetd writes one first and marks it dead at logout.  mkptys first
   used ":" comments, which the shell rejected; they are "#" comments now.
   Status: tested on the Lisa (telnet 127.0.0.1 logs in; who lists the
-  session).
+  session) and from the Mac through a LisaEm port forward.
 
 netstat
   Period correct: YES (4.1c BSD netstat, with 4.2BSD's -s)
