@@ -204,9 +204,14 @@ ftp
   Port of 4.1c BSD ftp with 2.9BSD's 4.1a socket conversion, 4.1c's
   XPWD/XMKD/XRMD commands and its original ruserpass (.netrc and
   environment passwords).  Bug fix: a byte of 0377 no longer ends a binary
-  transfer.  Addition, not period: the "passive" command and -p, needed
-  to get through LisaEm's network address translation.
-  Status: built on the Lisa; checked on the Mac against an FTP server.
+  transfer.  Bug fix: when the server's "125" and "226" replies both
+  arrived before ftp read them, it took the 226 as the answer and closed
+  the data connection unread, so ls showed nothing; it now handles one
+  reply at a time, as 4.2BSD does.  Addition, not period: the "passive"
+  command and -p, needed to get through LisaEm's network address
+  translation.
+  Status: built on the Lisa; passive login and commands work there (the
+  listing bug was found there); fix checked on the Mac.
 
 telnetd
   Period correct: YES (port of 4.1c BSD telnetd)
