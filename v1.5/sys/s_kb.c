@@ -26,6 +26,7 @@ extern struct rtime rtime;
 
 char *kb_keytab = ToLA;
 char kb_altkp;			/* are we in alternate keypad mode? (set in vt100.c) */
+char kb_ckm;			/* application cursor keys: ESC O x (set in vt100.c) */
 
 char pportplug;
 char ms_plg, ms_btn;
@@ -66,7 +67,7 @@ kbintr()
 			if (ARROW(i,a)) {	/* check arrow keys */
 				kb_chrbuf = Esc;    /* send 3-char sequence */
 				cointr(0);
-				kb_chrbuf = '[';
+				kb_chrbuf = kb_ckm ? 'O' : '[';
 				cointr(0);
 				kb_chrbuf = a;
 				cointr(0);

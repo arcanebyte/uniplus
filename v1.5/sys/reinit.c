@@ -46,14 +46,14 @@ extern char ToLA[];
 extern char kb_altkp;
 extern int (*te_putc)();
 extern int vt_putc();
-extern char vt_tabset[];
+extern char kb_ckm;
+extern int vt_tabdf();
 /*
  *	reinit - called from RESTART console ioctl call in sunix
  */
 reinit()
 {
 	extern int teslotsused;
-	register i;
 
 	mpid = 0;
 
@@ -62,10 +62,9 @@ reinit()
 	retabinit(&cvtab, CV2, cvstat);
 
 	kb_keytab = ToLA;
-	kb_shft = kb_lock = kb_altkp = 0;
+	kb_shft = kb_lock = kb_altkp = kb_ckm = 0;
 	te_putc = vt_putc;
-	for (i = 0 ; i < 88 ; i++ )
-		vt_tabset[i] = 0;
+	vt_tabdf();			/* tab stops every 8 columns */
 
 	remapinit(&coremap[0], CMAPSIZ);
 	remapinit(&swapmap[0], SMAPSIZ);
