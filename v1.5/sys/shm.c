@@ -152,7 +152,12 @@ shmat()
 	if (sp->shm_perm.mode & SHM_CLEAR) {
 		i = btoc(sp->shm_segsz);
 #ifdef NONSCATLOAD
-		ix = btoc(segbeg);
+		/*
+		 * The segment's own clicks, from shmget's
+		 * malloc(coremap, size) -- not the logical address it is
+		 * being attached at, which is not a click number at all.
+		 */
+		ix = sp->shm_scat;
 		while (--i >= 0)
 			clearseg(ix++);
 #else

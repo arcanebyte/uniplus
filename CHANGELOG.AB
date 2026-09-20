@@ -127,6 +127,27 @@ tty driver: no erase echo with nothing left on the line
   into by mistake).
   Status: tested on the Lisa (Delete in csh stops at the prompt).
 
+shmat cleared memory chosen by the attach address, not by the segment
+  Period correct: BUG FIX
+  The clear-on-first-attach in shm.c used the caller's logical attach
+  address as a physical click number, where shmget had put the segment's
+  real clicks in sp->shm_scat.  The scatter build a few lines below uses
+  shm_scat and is right; only the NONSCATLOAD branch, which is how this
+  kernel is built, was wrong.  v1.0/sys/shm.c has it too, so it predates
+  this tree, and the BSD reference sources have no System V IPC at all
+  to compare against.
+  The effect is that the first shmat of a new segment zeroes 64 KB of
+  whatever physical memory carries the number of the logical address
+  asked for, which can be the kernel.  It only becomes visible when that
+  number is out of range: attaching at 0x400000 makes the kernel
+  bus-error inside its own clear loop and panic with "kernel memory
+  management error" (ireg 0x48E0, the movem.l in clear(), a0 0x400200,
+  faulting on 0x4001FC).
+  Found by the lisa-mae project (~/github/lisa-mae), which wants a
+  segment at 0x400000 because that is where a Macintosh's ROM lives.
+  Status: tested on the Lisa.  With the fix in unix.net, lisa-mae's
+  phase 0 probe attaches 64 KB at 0x400000, writes both ends of it and
+  reads them back; the same call panicked the kernel before.
 select(): the last descriptor is checked
   Period correct: BUG FIX
   selscan() (syslocal.c) finds each requested descriptor with ffs(),
