@@ -29,8 +29,9 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 | `httpd.c`, `www/index.html` | Web server: `httpd [-p port] [docroot]`, `.html`/`.htm`/`.txt` from `/usr/www`. A modern test and convenience tool, outside the period (the web is from the early 1990s) |
 | `ifconfig.c` | `ifconfig [interface]` lists interfaces from the kernel; `ifconfig eb0 a.b.c.d` sets the address (root) |
 | `include/netdb.h`, `include/bsd.h` | Network data base declarations, and the BSD types and `bcopy`/`bzero`/`index` names mapped onto System V |
-| `netdb/` | `libnetdb.a`: `gethostbyname`, `getservbyname` and the rest, plus `inet_addr`/`inet_ntoa`; `hosttest` checks it |
-| `etc/` | Sample `/etc/hosts`, `networks`, `protocols`, `services` |
+| `include/arpa/nameser.h`, `include/resolv.h` | 4.3BSD name server packet format and resolver state |
+| `netdb/` | `libnetdb.a`: `gethostbyname` (name server, then `/etc/hosts`), `getservbyname` and the rest, plus `inet_addr`/`inet_ntoa`; `hosttest` checks it |
+| `etc/` | Sample `/etc/hosts`, `networks`, `protocols`, `services`, `resolv.conf` |
 | `telnet/` | `telnet [host [port]]`, from 2.9BSD (4.1c): escape `^]` for `close`, `quit`, `status`, `options`, `escape` |
 | `tftp/` | `tftp [host [port]]`, from 2.9BSD (4.1c): `connect`, `mode binary`, `get`, `put`, `trace`, `status` |
 | `ftp/` | `ftp [-v] [-d] [-i] [-n] [-p] [host [port]]`, from 2.9BSD (4.1c): `open`, `user`, `binary`, `get`, `put`, `ls`, `dir`, `cd`, `pwd`, `mkdir`, and the modern `passive` |
@@ -40,35 +41,54 @@ The kernel's network stack is **4.1a BSD**, not 4.2BSD. There is no `bind`, `lis
 
 ## Host names and services: libnetdb.a
 
-`netdb/` is the 4.1c BSD network data base library as back-ported in 2.9BSD (`../bsd/2.9BSD/usr/net/src/net`), for programs ported from Berkeley:
-- `gethostbyname`, `gethostbyaddr`, `gethostent`; `getnetbyname`, `getnetbyaddr`; `getservbyname`, `getservbyport`; `getprotobyname`, `getprotobynumber`; the `set`/`end` routines;
+`netdb/` is the 4.1c BSD network data base library as back-ported in 2.9BSD (`../bsd/2.9BSD/usr/net/src/net`), for programs ported from Berkeley, with the host routines replaced by 4.3BSD's name server versions (below):
+- `gethostbyname`, `gethostbyaddr`; `getnetbyname`, `getnetbyaddr`; `getservbyname`, `getservbyport`; `getprotobyname`, `getprotobynumber`; the `set`/`end` routines;
 - `inet_addr`, `inet_network`, `inet_netof`, `inet_lnaof`, `inet_makeaddr`, and 4.2BSD's `inet_ntoa`.
 
 Changes for the Lisa:
-- **Data bases in `/etc`:** `/etc/hosts`, `/etc/networks`, `/etc/protocols`, `/etc/services` (2.9BSD used `/usr/lib`; UniSoft's own programs on the Torch disk use `/etc/hosts`). There is no name server, so only names in `/etc/hosts` resolve.
+- **Data bases in `/etc`:** `/etc/hosts`, `/etc/networks`, `/etc/protocols`, `/etc/services` (2.9BSD used `/usr/lib`; UniSoft's own programs on the Torch disk use `/etc/hosts`).
 - **Short names:** `cc` keeps 7 characters of an external name, so `netdb.h` renames the routines apart (`gethostbyname` is `gethbyname`, `sethostent` is `sethent`, and so on). Always include `<netdb.h>` rather than declaring them yourself.
 - **Byte order:** `inet_netof`, `inet_lnaof` and `inet_makeaddr` are rewritten for the 68000 using the class masks from UniSoft's `net/in.h`, now in `include/net/in.h`.
 - **`bsd.h`** (included by `netdb.h`) supplies `u_char`/`u_short`/`u_int`/`u_long` and maps `bcopy`, `bzero`, `bcmp`, `index`, `rindex` to libc's `memcpy`, `memset`, `memcmp`, `strchr`, `strrchr`.
 - `struct in_addr inet_makeaddr();` has to be declared after `net/in.h` by the caller.
 - Not ported: `rcmd`, `rexec`, `rhost`, `raddr` (for `rsh`/`rlogin`, not yet needed). `ruserpass` is in `ftp/`.
 
+### Name server (resolver)
+
+`gethostbyname` and `gethostbyaddr` are 4.3BSD's (`named/gethostnamadr.c` 6.12, `sethostent.c`, `res_comp.c`, `res_init.c`, `res_mkquery.c`, `res_send.c`, `arpa/nameser.h`, `resolv.h`, from the 4.3BSD tape: https://www.tuhs.org/cgi-bin/utree.pl?file=4.3BSD/usr/src/lib/libc/net). They send a query to each name server in `/etc/resolv.conf` (`nameserver a.b.c.d`, up to 3; `domain name` sets the default domain added to names without a dot) and read the answer, including CNAMEs and several addresses. `struct hostent` now has 4.3BSD's `h_addr_list`, with `h_addr` as the first entry, and failures set `h_errno` (`HOST_NOT_FOUND`, `TRY_AGAIN`, `NO_RECOVERY`, `NO_ADDRESS`). `res_debug.c` (the `RES_DEBUG` printout) is not included.
+
+Changes for the Lisa:
+- **4.1a sockets:** queries go by datagram with `send()` and `receive()`, and `select()` with a timeout in milliseconds waits for the answer. `select()` is given one descriptor more than it should need: the kernel's `selscan()` (`../v1.5/sys/syslocal.c`) numbers descriptors from 1 and stops at `nfds`, so before that was fixed (branch `lisa-select`) it never checked descriptor `nfds-1`; the extra one keeps older kernels working. 4.3BSD's TCP path (`RES_USEVC`, and retrying a truncated answer over TCP) is left out: a truncated answer is used as it is, and `sethostent(1)` only keeps the datagram socket open.
+- **`/etc/hosts` after the name server:** when the name server gives no answer, for any reason, `/etc/hosts` is searched. 4.3BSD did that only when no name server was running, because a site with `named` served its own host names; the servers the Lisa can reach don't know `lisa` or `gateway`.
+- **No `nameserver` line, no name server:** 4.3BSD then asked `named` on the local host. The Lisa has none, so it goes straight to `/etc/hosts`. Remove `/etc/resolv.conf` to work without a network.
+- **Bug fixes:** `res_mkquery` used System V's `sprintf()` return value as a string (BSD's returns the buffer), and it never cleared the header's unused bits, so a query carried whatever was on the stack there (servers now read those bits as the DNSSEC AD and CD flags); a PTR answer left the alias list of the previous lookup.
+- **Names:** `gethostnamadr.c` is `gethnamadr.c` (14 characters). `_gethtbyname` and `_gethtbyaddr` are `_ghtbyname` and `_ghtbyaddr` (7 characters), through `netdb.h`. `sethostfile()` (which did nothing, and clashes with `sethostname()`) is left out, and so is `gethostent()`, which 4.3BSD's name server library didn't have either.
+- **Bit fields:** `nameser.h` uses the "bit zero on left" layout of `HEADER` for `mc68000`; the kernel's own `net/ip.h` and `net/tcp.h` depend on the Lisa `cc` assigning bit fields that way. `hosttest` checks it.
+
+Timeouts are 4.3BSD's: 4, 8, 16 and 32 seconds per try, divided among the name servers. If slirp's DNS at 10.0.2.3 doesn't answer (the Mac is offline), a lookup takes about a minute before it falls back to `/etc/hosts`.
+
+Programs that use the library must now also link `../sockcall.o` (the resolver calls `socket`, `send`, `receive`, `select` and `gethostname`); `telnet`, `tftp`, `ftp` and `telnetd` already did, and `netstat` now does (its global variable `socket` in `inet.c` became `static` to keep it apart from the `socket()` stub). Rebuild them to get name server lookups. `nc`, `ping` and `httpd` take only numeric addresses and don't use the library.
+
 On the Lisa:
 ```
 cd /usr/src/netlib/netdb
 make                # libnetdb.a and hosttest
-make install         # copies ../etc/hosts, networks, protocols, services to /etc (root)
-./hosttest           # PASS/FAIL for each lookup against the sample files
+make install         # copies ../etc/hosts, networks, protocols, services, resolv.conf to /etc (root)
+./hosttest           # PASS/FAIL for the resolver's packets and each lookup against the sample files
 ./hosttest lisa gateway 10.0.2.3
+./hosttest www.tuhs.org 8.8.8.8     # through slirp's name server at 10.0.2.3
 ```
-Link programs with `../netdb/libnetdb.a` (after their own objects). `make install` overwrites `/etc/hosts`; merge by hand if you already have one.
+Link programs with `../sockcall.o ../netdb/libnetdb.a` (after their own objects). `make install` overwrites `/etc/hosts` and `/etc/resolv.conf`; merge by hand if you already have them.
 
 Checked on the Mac so far (September 2026): the library builds and `hosttest` passes against `etc/` when compiled natively, and `tools/lisa_names.py` finds no 7-character clashes or missing libc routines. Not yet built on the Lisa.
+
+The resolver (September 2026) is checked on the Mac only: compiled natively with shims for the 4.1a socket calls, against a scripted name server (A, CNAME with two addresses, PTR, NXDOMAIN falling back to `/etc/hosts`, an answer with a stale ID, a truncated answer, the default domain, a timeout with two tries, no name server) and against 1.1.1.1. `tools/lisa_names.py` passes for the library, `hosttest`, `telnet`, `tftp`, `telnetd` and `netstat`, and for `ftp` apart from `environ`, as before. Tested on the Lisa (September 2026), on a kernel with the `select()` fix: `hosttest` passes (including the packet layout and `HEADER` bit field checks), `restest www.tuhs.org` gets slirp's answer at once and `gethostbyname` returns `oldminnie.tuhs.org`, alias `www.tuhs.org`, 50.116.15.146, and `ftp` connects by host name. `telnet`, `tftp`, `ftp`, `netstat` and `telnetd` build against the new library, and `telnetd` works. Not yet tried on the Lisa: the `s + 2` workaround on an unfixed kernel, and `tftp`, `telnet` and `netstat` with host names.
 
 ## telnet and tftp
 
 Both come from 2.9BSD's network kit (`../bsd/2.9BSD/usr/net/src/netser`) and link with `sockcall.o` and `netdb/libnetdb.a`. Build the library first, then `make` in `telnet/` and `tftp/`.
 
-- **telnet:** the kernel's `select()` can't wait on a terminal, so a connection runs as two processes: the parent reads the network and writes the screen, a child reads the keyboard. The escape character (`^]`) gives the `telnet>` prompt; an empty line goes back to the connection. Terminal modes use termio. There is no `z` (no job control), and `close` just closes (no `shutdown()`).
+- **telnet:** the kernel's `select()` can't wait on a terminal, so a connection runs as two processes: the parent reads the network and writes the screen, a child reads the keyboard. The escape character (`^]`) gives the `telnet>` prompt; an empty line goes back to the connection. In LisaEm on macOS, `^]` could not be typed: Option-], Control-] and Command-] gave `]` or nothing, and Option-C didn't interrupt (September 2026), so LisaEm isn't sending the Lisa's Apple key, which UniPlus uses as Control, so set another escape character before connecting: run `telnet` with no host, then `escape`, then `` ` ``, then `open host`. That works on the Lisa. Terminal modes use termio. There is no `z` (no job control), and `close` just closes (no `shutdown()`).
 - **tftp:** fixed for current servers: it follows the server's transfer port instead of sending everything to port 69, and binary mode sends `octet` (4.1c sent `octect`). Use `mode binary` for anything but text; `ascii` mode does no CR/LF conversion.
 
 ```

@@ -12,7 +12,7 @@ static char sccsid[] = "@(#)telnet.c	4.11 (Berkeley) 10/7/82";
  *  - Terminal modes use System V termio instead of sgtty.  There is no
  *    job control, so no "z" command, and no shutdown(), so close just
  *    closes.
- *  - Host names come from /etc/hosts through libnetdb.a.
+ *  - Host names come from the name server or /etc/hosts through libnetdb.a.
  */
 #include <stdio.h>
 #include <ctype.h>

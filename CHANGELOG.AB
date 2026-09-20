@@ -148,6 +148,30 @@ shmat cleared memory chosen by the attach address, not by the segment
   Status: tested on the Lisa.  With the fix in unix.net, lisa-mae's
   phase 0 probe attaches 64 KB at 0x400000, writes both ends of it and
   reads them back; the same call panicked the kernel before.
+select(): the last descriptor is checked
+  Period correct: BUG FIX
+  selscan() (syslocal.c) finds each requested descriptor with ffs(),
+  which counts bits from 1, and stopped when that count reached nfds, so
+  it never checked descriptor nfds-1.  The usual select(s + 1, ...)
+  waited out its timeout with data queued on s.  ftp (20) and telnetd
+  (32) pass larger counts and didn't notice.  The name server resolver
+  found it: slirp's answers reached the Lisa (pcap) but select() never
+  returned them.  One character: stop when the count is greater than
+  nfds.
+  History: the same test is in 2.9BSD's network kit
+  (bsd/2.9BSD/usr/net/sys/sys/syslocal.c) and in UniPlus V.1.0
+  (v1.0/sys/syslocal.c); the matching code suggests UniSoft's select()
+  came from that back-port (not confirmed).  Berkeley's own kernels were
+  right: 4.2BSD's select() (sys_generic.c 6.1, 83/07/29) masks the
+  requested bits with (1 << nd) - 1 and its selscan() has no nfds test,
+  and 4.3BSD loops while i < nfd (unix-history-repo, BSD-4_2 and
+  BSD-4_3).  Programs of the time mostly passed a fixed count (20, 32),
+  which hides the bug.  No report of it was found; Usenet was not
+  searched.
+  Status: tested on the Lisa: with the rebuilt unix.net as /unix,
+  netlib/netdb/restest's select(s + 1) returns slirp's DNS answer at once
+  (before, it waited out 10 seconds).  The previous kernel is
+  /unix.preselect on build2.
 
 
 ========================================================================
@@ -173,11 +197,42 @@ libnetdb.a: host, network, service and protocol names
   name server: only /etc/hosts.  hosttest checks every lookup.
   Status: tested on the Lisa (hosttest passes).
 
+Name server resolver (4.3BSD) in libnetdb.a
+  Period correct: YES, with BUG FIXES (port of the 4.3BSD resolver, 1986)
+  gethostbyname and gethostbyaddr ask the name servers in
+  /etc/resolv.conf (res_init, res_mkquery, res_send, res_comp,
+  gethostnamadr.c as gethnamadr.c), then /etc/hosts.  struct hostent
+  gains 4.3BSD's h_addr_list, and h_errno is set.  For the 4.1a socket
+  calls, queries go by datagram with send/receive and select; the TCP
+  path is left out.  /etc/hosts is searched whenever the name server has
+  no answer (4.3BSD only did so with no named running), and without a
+  nameserver line only /etc/hosts is used.  select() is passed one
+  descriptor more than needed, so kernels without the selscan() fix
+  ("select(): the last descriptor is checked") work too.  Bug fixes:
+  res_mkquery used System V's sprintf() result as a string and sent
+  uncleared header bits; a PTR answer kept the previous lookup's
+  aliases.  ftp sets h_addr_list for a numeric address; netstat links
+  sockcall.o, and its variable named socket (inet.c) is now static so it
+  doesn't clash with the socket() call.  Programs using the library must be rebuilt.  hosttest
+  checks the packet layout and HEADER bit fields; restest shows each
+  step of a lookup.
+  Status: tested on the Lisa, on a kernel with the selscan() fix:
+  hosttest passes, restest resolves www.tuhs.org through slirp's DNS
+  (10.0.2.3) with a CNAME in about a second, and ftp connects by host
+  name.  telnet, tftp, ftp, netstat and telnetd build against the
+  library; telnetd works.  Before the kernel fix the query and slirp's
+  answer were both right (LisaEm pcap) but select() never returned the
+  answer.  Not tried on the Lisa: the s + 2 workaround on an unfixed
+  kernel, and tftp, telnet and netstat with host names.  Also checked on
+  the Mac with socket shims, against a scripted name server and a real
+  one.
+
 /etc/hosts, networks, protocols, services
   Period correct: YES
   Sample files for LisaEm's network: localhost, lisa (10.0.2.15),
   gateway/mac (10.0.2.2), nameserver (10.0.2.3); services include telnet,
-  ftp, tftp, finger and http.
+  ftp, tftp, finger and http.  resolv.conf names slirp's DNS server,
+  10.0.2.3.
   Status: installed on the Lisa.
 
 
@@ -326,6 +381,11 @@ Double bus fault halts instead of quitting; mouse crash (lisaem #58)
 6. KNOWN ISSUES
 ========================================================================
 
+  - LisaEm on macOS sends no control characters: UniPlus uses the Lisa's
+    Apple key as Control, and neither Option, Control nor Command with ]
+    or C reaches the Lisa as one.  telnet's ^] escape can't be typed; set
+    another escape character (telnet, escape, `, open host).  To be
+    fixed in LisaEm's keyboard mapping.
   - reboot still ends in a double bus fault: the kernel jumps to the ROM
     monitor with an unusable stack.  Use sync and power off instead.
   - The EtherBox's lost-interrupt problem (3Com memo, May 1983) is not

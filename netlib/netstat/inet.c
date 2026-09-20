@@ -29,7 +29,7 @@ static char sccsid[] = "@(#)inet.c	4.4 82/10/07";
 
 struct	inpcb inpcb;
 struct	tcpcb tcpcb;
-struct	socket socket;
+static struct socket socket;	/* Lisa: static, apart from socket() in sockcall.o */
 struct	protosw proto;
 extern	int kmem;
 extern	int Aflag;

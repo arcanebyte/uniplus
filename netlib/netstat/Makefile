@@ -10,8 +10,11 @@ OBJS	= main.o inet.o if.o route.o mbuf.o
 
 all: netstat
 
-netstat: $(OBJS) $(NETDB)
-	$(CC) $(CFLAGS) -o netstat $(OBJS) $(NETDB)
+netstat: $(OBJS) ../sockcall.o $(NETDB)
+	$(CC) $(CFLAGS) -o netstat $(OBJS) ../sockcall.o $(NETDB)
+
+../sockcall.o: ../sockcall.s
+	cd ..; make sockcall.o
 
 $(NETDB):
 	cd ../netdb; make libnetdb.a
